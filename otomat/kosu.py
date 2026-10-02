@@ -1,21 +1,22 @@
 """Komut satırı. `duman`: yüklemesiz, sabit veriyle tek kısa video (CI'da koşar)."""
 
 import argparse
+import json
 import time
 from pathlib import Path
 
-from otomat import usgs_ornek
 from otomat.ayarlar import KOK
 from otomat.gorsel import nokta_harita
+from otomat.veri import usgs
 
 
 def duman(cikti: Path, saniye: float = 2, kucuk: bool = True) -> Path:
-    olaylar = usgs_ornek.olaylar(KOK / "tests" / "veri" / "usgs_ornek.json")
+    ham = json.loads((KOK / "tests" / "veri" / "usgs_ornek.json").read_text(encoding="utf-8"))
+    olaylar = [[d.zaman, d.boylam, d.enlem, d.buyukluk] for d in usgs.depremler(ham)]
     g, y = (270, 480) if kucuk else (1080, 1920)
     return nokta_harita.ciz(
         olaylar,
-        "Every M4.5+ earthquake",
-        "smoke test",
+        "Every M4.5+ earthquake (smoke test)",
         "USGS",
         cikti,
         genislik=g,

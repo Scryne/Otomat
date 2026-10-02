@@ -184,6 +184,7 @@ def paketler(geojson: dict, url: str, cekildi: str, gun: int = 365) -> list[Olgu
                 "sablon": "sirali_cubuk",
                 "ogeler": [{"etiket": d.bolge, "deger": d.buyukluk, "not": _gun_ay_yil(d.zaman)} for d in ilk10],
                 "birim": "magnitude",
+                "ondalik": 1,
             },
             kaynak=kaynak,
             etiketler=["earthquake", "ranking"],

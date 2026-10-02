@@ -13,7 +13,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | --- | --- | --- | --- |
 | 1 | İskelet ve sağlık | ✅ Tamamlandı | Private repo `Scryne/Otomat`; CI (ruff + pytest + duman koşusu) yeşil; `.github/dependabot.yml` (uv); `config/modeller.toml`; Actions runner'da qwen3:4b + Kokoro + render süresi ölçülmüş ve yazılmış |
 | 2 | Veri ve olgu motoru | ✅ Tamamlandı | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
-| 3 | Görsel motor | ⏳ Bekliyor | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
+| 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ⏳ Bekliyor | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ⏳ Bekliyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ⏳ Bekliyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
@@ -77,7 +77,18 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **İşler:** üç şablon; kamera/zoom; ilk 1 sn'de kancayı görsel olarak taşıyan açılış; tipografi (OFL font) ve renk
   kimliği (`DESIGN.md`); kapak karesi; atıf köşesi.
 - **Bitti Kriteri:** tablodaki gibi; kareler `gorsel-dogrulama` mantığıyla (taşma, okunurluk) gözle kontrol.
+- **Sonuç (2026-10-02):** `otomat/gorsel/` — `sahne` (kanca kartı, başlık, atıf, güvenli alan), `nokta_harita` (bölge
+  videosunda 2 sn yakınlaşma + 5° ızgara), `sirali_cubuk` (10→1 geri sayım, 1. sıra turuncu, ortanca çizgisi), `koroplet`
+  (dünya/Avrupa, rank tabanlı beşte birlik tonlar + sınır değerleri, ilk 3 turuncu kenar, küçük ülkeler halka).
+  `ornekler.py` 9 gerçek-veri videosu üretti (3 × şablon), her biri 4 kontrol karesiyle incelendi; 30 sn video ~25 sn.
+  Kimlik `DESIGN.md` frontmatter'ından okunuyor (tek kaynak), lint 0 hata/0 uyarı; renkler dataviz doğrulayıcısından geçti.
 - **Notlar:**
+  - İlk turda bulunan ve düzeltilen kusurlar: okyanus bölgesinde (Tonga) boş harita → ızgara; üç satırlık başlık Avrupa
+    haritasına çarpıyordu → içerik üst sınırı başlığın gerçek yüksekliğinden hesaplanıyor; dünya koropleti dikeyde kısa →
+    altına büyük ilk-3 listesi; rank tabanlı renk + min/max lejant yanıltıcıydı → beşte birlik sınır değerleri.
+  - World Bank "ülke" listesinde Macao, Hong Kong gibi bölgeler var; nüfus yoğunluğunda ilk 3'ün üçü de harita üstünde
+    nokta kadar. Faz 4: kapsam ifadesi "countries and territories"; haydut bu tür paketlerde çubuk şablonunu seçebilir.
+  - `npx @google/design.md` yine zaman aşımına düştü; paket scratchpad'e kurulup `.bin/design.md` ile çalıştı.
 
 ### Faz 4: Anlatım ve kapılar
 - **İşler:** olgu tipi → cümle şablon havuzu; LLM istemleri (kanca kalıbı parametreli); sayı/tutucu kapısı; anlamsal

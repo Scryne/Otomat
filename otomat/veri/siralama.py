@@ -54,6 +54,7 @@ def siralama_paketleri(
                         {"etiket": isimler.get(i, i), "deger": _yuvarla(v, ondalik), "iso3": i} for i, v in sirali
                     ],
                     "birim": birim,
+                    "ondalik": ondalik,
                     "koroplet": koroplet,
                     "kapsam": kapsam,
                 },
@@ -100,6 +101,7 @@ def siralama_paketleri(
                             for i, _ in sirali
                         ],
                         "birim": birim,
+                        "ondalik": ondalik,
                         "kapsam": kapsam,
                     },
                     kaynak=kaynak,

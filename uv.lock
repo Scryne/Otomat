@@ -751,6 +751,7 @@ dependencies = [
     { name = "imageio-ffmpeg" },
     { name = "matplotlib" },
     { name = "numpy" },
+    { name = "pyyaml" },
 ]
 
 [package.optional-dependencies]
@@ -772,6 +773,7 @@ requires-dist = [
     { name = "kokoro-onnx", marker = "extra == 'ses'", specifier = ">=0.4" },
     { name = "matplotlib", specifier = ">=3.10" },
     { name = "numpy", specifier = ">=2.0" },
+    { name = "pyyaml", specifier = ">=6.0.3" },
 ]
 provides-extras = ["ses"]
 

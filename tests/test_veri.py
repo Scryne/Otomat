@@ -73,8 +73,11 @@ def test_dunya_bankasi_toplamlari_ayiklar_ve_siralar():
 def test_dunya_bankasi_degisim_tutarli():
     gecerli = dunya_bankasi.ulkeler(oku("wb_ulkeler.json"))
     g = {"kod": "SP.DYN.LE00.IN", "ad": "life expectancy at birth", "birim": "years", "ondalik": 1}
-    p = next(x for x in dunya_bankasi.paketler(g, oku("wb_SP.DYN.LE00.IN.json"), gecerli, "u", CEKILDI)
-             if x.tur == "en_cok_artan_10")  # fmt: skip
+    p = next(
+        x
+        for x in dunya_bankasi.paketler(g, oku("wb_SP.DYN.LE00.IN.json"), gecerli, "u", CEKILDI)
+        if x.tur == "en_cok_artan_10"
+    )
     o = p.olgular
     assert o["to_year"].deger - o["from_year"].deger == 10
     assert o["rank1_to"].deger - o["rank1_from"].deger >= o["rank2_to"].deger - o["rank2_from"].deger - 0.11
