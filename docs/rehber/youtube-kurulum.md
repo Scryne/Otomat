@@ -11,9 +11,10 @@ public yüzeye yazılmaz (Kurallar). Google'ın denetim formu iletişim bilgisi 
 
 ## D1 — Kanal için e-posta ve YouTube kanalı (≈5 dk)
 
-1. Yeni bir Google hesabı aç (kanalın e-postası olacak; kişisel hesabını kullanma). Önerilen ad: kanalın adı
-   + "data" (ör. `kanal-hesabi@ornek.invalid`). Adı birlikte seçeriz; aklında yoksa ben öneririm.
-2. Bu hesapla youtube.com'a gir → sağ üst profil → **Kanal oluştur** → kanal adını yaz.
+1. Yeni bir Google hesabı aç (kanalın e-postası olacak; kişisel hesabını kullanma). Önerilen: `kanal-hesabi@ornek.invalid`
+   (doluysa benzeri; hesapta ad olarak "Earth in Numbers" yaz, kendi adını değil).
+2. Bu hesapla youtube.com'a gir → sağ üst profil → **Kanal oluştur** → kanal adı **Earth in Numbers**. Kullanıcı adı (handle) için `@earth.in.numbers` boştu (2026-10-02;
+   `@EarthInNumbers` alınmış).
 3. Kanal ayarlarında: **Ayarlar → Kanal → Gelişmiş ayarlar → Ülke: Türkiye**, "Çocuklara özel değil".
 4. **Ayarlar → Kanal → Özellik uygunluğu** → telefonla doğrulama (uzun video ve özel küçük resim için; bir kez).
 

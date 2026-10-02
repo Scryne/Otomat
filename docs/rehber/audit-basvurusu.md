@@ -15,9 +15,9 @@ sayfasında kullanılmamalı, gizlilik politikası YouTube bölümünü içermel
 
 **Google Cloud project number(s):** [D2'den]
 
-**Website / homepage:** [GitHub Pages adresi, ör. https://<kullanıcı>.github.io/otomat-site/]
+**Website / homepage:** https://scryne.github.io/otomat-site/
 
-**Privacy policy URL:** [site]/privacy.html — **Terms of service URL:** [site]/terms.html
+**Privacy policy URL:** https://scryne.github.io/otomat-site/privacy.html — **Terms of service URL:** https://scryne.github.io/otomat-site/terms.html
 
 **Which API services do you use?** YouTube Data API v3 (videos.insert, videos.update, captions.insert, channels.list),
 YouTube Analytics API (reports.query).
@@ -34,7 +34,7 @@ YouTube Analytics API (reports.query).
 > any other channel, does not download or scrape YouTube content, and does not display YouTube data to anyone.
 > Credentials are stored as encrypted GitHub Actions secrets and are only used for my channel.
 
-**How many users / channels?** One (my own channel: [kanal URL'si]).
+**How many users / channels?** One (my own channel, Earth in Numbers: [kanal URL'si, D1'den sonra]).
 
 **Expected daily quota usage:** ~1 upload (videos.insert, upload bucket), ~5 captions.insert (2,000 units),
 ~1 videos.update (50 units), ~5 Analytics queries. Well within the default quota; no quota increase requested.
