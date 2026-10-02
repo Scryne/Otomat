@@ -2,8 +2,8 @@
 
 [llm]
 saglayici = "ollama"
-model = "qwen3:4b"
-yedek = "qwen3:8b"
+model = "qwen3:4b-instruct"
+yedek = "gemma3:4b"
 
 [tts]
 motor = "kokoro-onnx"

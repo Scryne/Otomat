@@ -26,7 +26,7 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 | Veri | USGS FDSN/GeoJSON, World Bank API v2, Eurostat API (JSON-stat) | Üçü de ticari kullanıma açık (USGS kamu malı, diğerleri CC BY 4.0 + atıf); anahtarsız |
 | Harita tabanı | Natural Earth 1:110m/1:50m (GeoJSON) | Kamu malı; ülke kodu (ISO A3) World Bank/Eurostat ile birleşir |
 | Görsel | matplotlib (Agg) + ffmpeg (imageio-ffmpeg) rawvideo pipe | S4: 30 sn 1080×1920 video 17 sn'de, CPU. Ek bağımlılık ve tarayıcı yok |
-| LLM (kanca, başlık, çeviri, hakem) | Ollama + qwen3:4b (varsayılan), qwen3:8b (runner kaldırırsa) | K-1 bedava, yerel; `think:false` ile hızlı. Model kimliği `config/modeller.toml`'da (sağlık nöbeti izler) |
+| LLM (kanca, başlık, çeviri, hakem) | Ollama + qwen3:4b-instruct (varsayılan), gemma3:4b (yedek) | K-1 bedava, yerel; düşünmesiz model, runner'da kanca ~3,5 sn (Faz 1 ölçümü). Model kimliği `config/modeller.toml`'da (sağlık nöbeti izler) |
 | Anlamsal hakem | Yerel qwen3 ile Jev arasında Faz 4 ölçümü | D-8: maliyetsiz olan ve daha çok yanlış yakalayan kazanır |
 | TTS | Kokoro v1.0 ONNX (`kokoro-onnx`), tek kanal sesi `am_michael` | S3: Apache-2.0, CPU'da gerçek zamanın ~4 katı; Whisper geri dökümü birebir |
 | Altyazı zamanlaması | faster-whisper (small, int8) kelime zaman damgası, bilinen metne hizalama | Ses bizim ürettiğimiz metin; Whisper yalnız zamanlamayı verir |

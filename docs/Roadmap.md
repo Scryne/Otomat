@@ -11,7 +11,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 
 | Faz | Adı | Durum | Bitti Kriteri |
 | --- | --- | --- | --- |
-| 1 | İskelet ve sağlık | ⏳ Bekliyor | Private repo `Scryne/Otomat`; CI (ruff + pytest + duman koşusu) yeşil; `.github/dependabot.yml` (uv); `config/modeller.toml`; Actions runner'da qwen3:4b + Kokoro + render süresi ölçülmüş ve yazılmış |
+| 1 | İskelet ve sağlık | ✅ Tamamlandı | Private repo `Scryne/Otomat`; CI (ruff + pytest + duman koşusu) yeşil; `.github/dependabot.yml` (uv); `config/modeller.toml`; Actions runner'da qwen3:4b + Kokoro + render süresi ölçülmüş ve yazılmış |
 | 2 | Veri ve olgu motoru | ⏳ Bekliyor | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
 | 3 | Görsel motor | ⏳ Bekliyor | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ⏳ Bekliyor | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
@@ -35,7 +35,25 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Ölçülecek:** runner'da qwen3:4b ile 5 kanca üretim süresi, Kokoro 30 sn ses süresi, render süresi, cache geri yükleme
   süresi, toplam koşu dakikası → ayda dakika bütçesi.
 - **Bitti Kriteri:** tablodaki gibi; ölçümler bu bölüme yazılır.
+- **Ölçümler (2026-10-02, ubuntu-latest private runner, 7,8 GiB RAM):**
+
+  | Model | Isınma | Kanca (5 deneme) | Kokoro 16 sn ses | Render 30 sn 1080×1920 |
+  | --- | --- | --- | --- | --- |
+  | qwen3:4b | 61,8 sn | 60–250 sn | 13,1 sn | 28,3 sn |
+  | gemma3:4b | 16,6 sn | 3,0–4,5 sn | 8,5 sn | 19,2 sn |
+  | qwen3:4b-instruct | 5,2 sn | 3,3–4,6 sn | 9,0 sn | 20,7 sn |
+
+  Ollama kurulumu + model çekme ilk koşuda ~1,5 dk; ölçüm adımı ~1 dk. Günlük koşu tahmini 3–5 dk → ayda ~150 dk
+  (kota 2.000 dk).
 - **Notlar:**
+  - `qwen3:4b` etiketi `think:false`'u yok sayıp düşünme metni üretti (yanıtlar "Hmm, the user wants…" ile başlıyor),
+    kanca başı dakikalar sürdü. **Karar:** `qwen3:4b-instruct` (düşünmesiz, Apache-2.0) varsayılan, `gemma3:4b` yedek.
+    Lokaldeki `qwen3:8b` aynı ayarla düşünmüyordu: etiketler zamanla farklı modellere işaret edebiliyor → model kimliği
+    config'te ve sağlık nöbetinde, kod LLM yanıtının düşünme metniyle başlamadığını da kontrol etmeli (Faz 4).
+  - Kanca çeşitliliği iki modelde de zayıf (5 denemede 3 kez aynı kalıp) → Faz 4'te kanca kalıbı parametreli istem,
+    sıcaklık ve tekrar süzgeci.
+  - İlk push'ta lint hatası: ölçüm dosyası CI adımları yerelde koşulmadan push edildi. Kural zaten vardı, uygulanmadı.
+  - GitHub token'ı `workflow` kapsamı olmadan `gh repo create --push` reddetti; düz `git push` (Git Credential Manager) geçti.
 
 ### Faz 2: Veri ve olgu motoru
 - **İşler:** adaptör arayüzü (`olgu_paketleri() -> list[OlguPaketi]`); USGS (son 30 gün, ülke bazında en güçlü,
