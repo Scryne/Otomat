@@ -112,8 +112,8 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 
     v2 seçildi; kaçırdığı tek cümle ("because of regional threats") politika kapısında yakalanıyor → birlikte 13/13.
     Jev ölçülmedi: ücretli (istek başı ~$0,00003), K-1 gereği Scryne'ın anahtarından harcama yapılmadı.
-  - **10 uçtan uca video** (`calisma/uretim/2026-10-02/`): 10/10 üretildi; 13 parçanın (kanca+başlık) 20'sinin 15'i LLM'den,
-    5'i yedekten. Video 19–35 sn. Yerel süre/video: anlatım 2–7 sn, ses 5–10 sn, görsel 17–34 sn. Bir videonun sesi
+  - **10 uçtan uca video** (`calisma/uretim/2026-10-02/`): 10/10 üretildi; 20 parçanın (10 kanca + 10 başlık) 16'sı LLM'den
+    (kanca 9/10, başlık 7/10), 4'ü yedekten. Video 19–35 sn. Yerel süre/video: anlatım 2–7 sn, ses 5–10 sn, görsel 17–34 sn. Bir videonun sesi
     Whisper'la geri döküldü: ekran metniyle birebir ("€4,800" → "4,800 euros").
 - **Notlar:**
   - Altyazı Whisper kelime zamanı yerine **cümle zamanı + karakter orantısı**: her cümle ayrı seslendirildiği için
