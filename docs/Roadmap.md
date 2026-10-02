@@ -15,7 +15,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 2 | Veri ve olgu motoru | ✅ Tamamlandı | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
 | 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
-| 5 | Yayın ve audit | ⏳ Bekliyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
+| 5 | Yayın ve audit | 🔄 Devam Ediyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ⏳ Bekliyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
@@ -135,7 +135,24 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   `localizations` (EN, ES, PT, DE, FR); `captions.insert` (5 dil); GitHub Pages; audit başvuru metni; Plan B: haftanın
   videoları + metadata dosyası Actions artifact'ı olarak, Studio'da toplu yükleme rehberi.
 - **Bitti Kriteri:** tablodaki gibi.
+- **Durum (2026-10-02):** hesap gerektirmeyen kısım bitti; Scryne'ın D1–D3'ünü ve site onayını bekliyor.
+  - Yazılan: `otomat/yayin/youtube.py` (OAuth masaüstü akışı, `videos.insert` + `publishAt` + `localizations`,
+    `captions.insert`, `invalid_grant` hatası), `ceviri.py` (ES/PT/DE/FR; kapı: çeviride rakam kümesi kaynakla aynı),
+    `srt.py`, `hazirla.py`, `otomat/gunluk.py` + `.github/workflows/gunluk.yml` (her gün 06:17 UTC; `OTOMAT_YAYIN=teslim`
+    iken Plan B: videolar haftanın GitHub Release'ine), `docs/rehber/youtube-kurulum.md` (D1–D3 adım adım),
+    `docs/rehber/audit-basvurusu.md` (form metni), `site/` (uygulama sayfası, gizlilik, şartlar; kişisel veri yok).
+  - Çeviri ölçümü: 10 video × 4 dil = 40 çiftin 36'sı kapıdan geçti (%90); geçemeyen dil o videoda atlanır.
+  - Yerel günlük koşu uçtan uca geçti (teslim modu): 105 paket → seçim → 27 sn video → 4 dil → teslim klasörü.
+  - **Runner koşusu geçti** (2026-10-02, workflow_dispatch): toplam ~14 dk (Ollama 1 dk, üretim 12 dk), video haftanın
+    Release'ine (teslim-2026-H40) eklendi, durum ve rapor repoya commit'lendi. Ayda ~420 dk (kota 2.000).
+  - Bekleyen: D1 kanal + kanal e-postası, D2 Cloud projesi + OAuth + `yetki`, D3 audit formu; site için public repo
+    (`Scryne/otomat-site`, GitHub Pages) Scryne onayıyla ve `yayin-oncesi` kapısından geçerek.
 - **Notlar:**
+  - Çeviri ilk sürümde 4 kelimelik altyazı parçalarını tek tek çevirtiyordu: model cümle ortasından bölünmüş satırları
+    birleştirdi (13 → 9 satır), kapı ~%50 reddetti. Tam cümle çevirisi + aynı zamanlarla yeniden parçalama → %90.
+  - Rakam ayrıştırıcı "August 14, 2026"yı tek sayı sanıyordu; binlik ayracı yalnız ardından tam 3 hane gelirse sayılır.
+  - Plan B için artifact yerine haftalık Release: Scryne haftada tek sayfadan 7 videoyu indirir.
+  - GitHub Pages private repoda ücretsiz değil → site ayrı public repoya gider (K-1).
 
 ### Faz 6: Geri besleme ve işletim
 - **İşler:** analitik toplayıcı (günlük; `engagedViews`, `averageViewPercentage`; 72 sa olgunlaşma); ödül tanımı;
