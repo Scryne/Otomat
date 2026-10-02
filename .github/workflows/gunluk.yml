@@ -1,0 +1,61 @@
+name: Günlük üretim
+
+# Her gün bir video: veri → anlatım (kapılar) → ses → görsel → çeviri → yayın (api) ya da teslim paketi (Plan B).
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gunluk
+  cancel-in-progress: false
+
+jobs:
+  uret:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      OTOMAT_YAYIN: ${{ vars.OTOMAT_YAYIN || 'teslim' }}
+      YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
+      YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra ses
+      - name: Model önbelleği
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.ollama/models
+            modeller
+          key: modeller-${{ hashFiles('config/modeller.toml') }}
+      - name: Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > /tmp/ollama.log 2>&1 &)
+          sleep 5
+          ollama pull "$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)"
+      - name: Üret
+        run: uv run python -m otomat.gunluk
+      - name: Teslim paketi (Plan B) → haftanın Release'i
+        if: hashFiles('teslim/**') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="teslim-$(date -u +%G-H%V)"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Teslim $(date -u +%G) / hafta $(date -u +%V)" \
+            --notes "Plan B: bu haftanın videoları. Her video için tarihli YUKLE.md dosyasındaki başlık, açıklama ve saati kullan (docs/rehber/youtube-kurulum.md)."
+          gh release upload "$TAG" teslim/* --clobber
+      - name: Durumu kaydet
+        if: always()
+        run: |
+          git config user.name "otomat-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add durum/ raporlar/
+          git diff --cached --quiet || git commit -m "Günlük koşu: durum ve rapor ($(date -u +%F))"
+          git push

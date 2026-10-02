@@ -30,3 +30,9 @@ spikes/out/
 # Koşu çıktıları ve model önbelleği
 calisma/
 modeller/
+
+# OAuth istemcisi ve token (asla commit edilmez)
+sirlar/
+
+# Plan B teslim dosyaları (GitHub Release olarak yüklenir)
+teslim/

@@ -1,13 +1,14 @@
 """Kalıcı durum (SQLite, repoda). Şimdilik: üretilen paketler ve tekrar engeli."""
 
 import datetime as dt
+import os
 import sqlite3
 from pathlib import Path
 
 from otomat.ayarlar import KOK
 from otomat.veri import OlguPaketi
 
-VARSAYILAN = KOK / "durum" / "otomat.db"
+VARSAYILAN = Path(os.environ.get("OTOMAT_DURUM", KOK / "durum" / "otomat.db"))
 TEKRAR_GUN = 60
 
 SEMA = """

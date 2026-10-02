@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Otomat — open data shorts</title>
+<meta name="description" content="Otomat is a single-user tool that turns open public datasets into short data-visualization videos for one YouTube channel.">
+<style>
+  :root { --surface:#0b1220; --ink:#f2f5f9; --ink2:#a9b4c4; --muted:#6b7890; --primary:#ee5a2a; --edge:#26334a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--surface); color:var(--ink); font:17px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 42rem; margin: 0 auto; padding: 3rem 1rem 4rem; }
+  h1 { font-size: 2rem; line-height:1.15; margin:0 0 .5rem; }
+  h2 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+  p, li { color: var(--ink2); }
+  a { color: var(--ink); text-decoration-color: var(--primary); text-underline-offset: 3px; }
+  .accent { display:inline-block; width:.6rem; height:.6rem; border-radius:50%; background:var(--primary); margin-right:.5rem; }
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--edge); color: var(--muted); font-size: .9rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="accent" aria-hidden="true"></span>Otomat</h1>
+  <p>Otomat is a private, single-user tool. It turns open public datasets into short, vertical data-visualization
+    videos and publishes them to one YouTube channel owned by its operator.</p>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Reads open data: the U.S. Geological Survey earthquake catalog, World Bank World Development Indicators and
+      Eurostat. Every video credits its source and license on screen and in the description.</li>
+    <li>Renders a map or chart animation from that data, with synthetic narration and captions.</li>
+    <li>Uploads the video to the operator's own channel through the YouTube Data API and reads that channel's own
+      YouTube Analytics to choose future topics.</li>
+  </ul>
+
+  <h2>What it does not do</h2>
+  <ul>
+    <li>It has no other users and does not access any channel other than the operator's own.</li>
+    <li>It does not download, scrape or redistribute YouTube content.</li>
+    <li>It does not collect data about viewers.</li>
+  </ul>
+
+  <p><a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms of service</a></p>
+  <footer>Otomat is not affiliated with or endorsed by YouTube or Google.</footer>
+</main>
+</body>
+</html>
