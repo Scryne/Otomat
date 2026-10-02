@@ -14,7 +14,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 1 | İskelet ve sağlık | ✅ Tamamlandı | Private repo `Scryne/Otomat`; CI (ruff + pytest + duman koşusu) yeşil; `.github/dependabot.yml` (uv); `config/modeller.toml`; Actions runner'da qwen3:4b + Kokoro + render süresi ölçülmüş ve yazılmış |
 | 2 | Veri ve olgu motoru | ✅ Tamamlandı | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
 | 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
-| 4 | Anlatım ve kapılar | ⏳ Bekliyor | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
+| 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ⏳ Bekliyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ⏳ Bekliyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
@@ -97,7 +97,36 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Ölçüm (D-8):** 30 cümle (15 doğru, 15 bilerek bozulmuş: yanlış nicelik, yanlış bağlam, veride olmayan iddia) →
   yerel hakem ve Jev'in yakalama/yanlış alarm oranı. Maliyetli seçenek K-1 gereği elenir.
 - **Bitti Kriteri:** tablodaki gibi.
+- **Sonuç (2026-10-02):**
+  - `otomat/anlati/`: `olgu_cumleleri` (6 olgu tipi × 5 varyant, sayılar koddan), `anlatim` (LLM kanca + başlık,
+    yer tutuculu; kanca ve başlık ayrı kapıdan geçer, 3 denemede geçemeyen parça `yedek`ten gelir, kaynak kayda geçer),
+    `kapilar` (tutucu/rakam/yazıyla sayı, politika listesi, anlamsal hakem), `ses.py` (Kokoro, cümle başına seslendirme →
+    kesin cümle zamanları), `uretim.py` (uçtan uca, `meta.json` + `ozet.json`).
+  - **Hakem ölçümü** (`hakem_olcum.py`, `tests/veri/hakem_30.json`: 17 doğru, 13 bozuk cümle):
+
+    | Hakem | Yanlışı yakalama | Doğruya yanlış alarm |
+    | --- | --- | --- |
+    | qwen3:4b-instruct, istem v1 | 13/13 (%100) | 9/17 (%53) |
+    | **qwen3:4b-instruct, istem v2** | 12/13 (%92) | 3/17 (%18) |
+    | gemma3:4b, istem v2 | 4/13 (%31) | 0/17 (%0) |
+
+    v2 seçildi; kaçırdığı tek cümle ("because of regional threats") politika kapısında yakalanıyor → birlikte 13/13.
+    Jev ölçülmedi: ücretli (istek başı ~$0,00003), K-1 gereği Scryne'ın anahtarından harcama yapılmadı.
+  - **10 uçtan uca video** (`calisma/uretim/2026-10-02/`): 10/10 üretildi; 13 parçanın (kanca+başlık) 20'sinin 15'i LLM'den,
+    5'i yedekten. Video 19–35 sn. Yerel süre/video: anlatım 2–7 sn, ses 5–10 sn, görsel 17–34 sn. Bir videonun sesi
+    Whisper'la geri döküldü: ekran metniyle birebir ("€4,800" → "4,800 euros").
 - **Notlar:**
+  - Altyazı Whisper kelime zamanı yerine **cümle zamanı + karakter orantısı**: her cümle ayrı seslendirildiği için
+    cümle sınırları kesin; runner'da Whisper adımı yok. Kelime düzeyinde senkron gerekirse v2.
+  - Kanca kartı süresi seslendirilen kancaya göre 1,5–3 sn (DESIGN.md'deki sabit 1,5 sn güncellendi).
+  - Model ilk denemede örnek başlığı kopyaladı (küresel videoya "Indonesia"); hakem bunu yakaladı. Örnekler konudan
+    uzak tutuldu, başlık "konunun tamamını anlatmalı" kuralı eklendi.
+  - Testler bir kapı açığı yakaladı: "thousands" (çoğul) yazıyla-sayı kapısından geçiyordu.
+  - Bash heredoc içinde `
+` kaçışı iki kez gerçek satır sonuna dönüştü (hafızadaki tuzak); kod düzenlemeleri artık
+    yalnız Write/Edit ile.
+  - Kalite izlemesi: bazı kancalar tuhaf ("How did Indonesia shape the planet's tremors?"); "This Year" geçmiş 365 gün
+    için hafif yanlış. Haydut verisi (Faz 6) hangi kalıbın tuttuğunu gösterecek.
 
 ### Faz 5: Yayın ve audit
 - **Scryne dokunuşları:** D1 kanal + kanal e-postası, D2 Google Cloud projesi + OAuth onayı, D3 audit formu

@@ -1,0 +1,37 @@
+[
+  {"anahtar": "usgs:dunya_30g", "cumle": "Earth recorded 528 strong earthquakes in just 30 days.", "destek": true, "tur": "dogru"},
+  {"anahtar": "usgs:dunya_30g", "cumle": "Which country shook the most this month?", "destek": true, "tur": "soru"},
+  {"anahtar": "usgs:dunya_30g", "cumle": "Indonesia had 6 earthquakes above magnitude 6.", "destek": false, "tur": "yanlis_baglam"},
+  {"anahtar": "usgs:dunya_30g", "cumle": "The strongest quake, magnitude 6.6, devastated New Caledonia.", "destek": false, "tur": "uydurma_sonuc"},
+  {"anahtar": "usgs:dunya_30g", "cumle": "More than 600 earthquakes hit in 30 days.", "destek": false, "tur": "yanlis_nicelik"},
+
+  {"anahtar": "usgs:bolge_yillik:Japan", "cumle": "Japan shook 650 times in a single year.", "destek": true, "tur": "parafraz"},
+  {"anahtar": "usgs:bolge_yillik:Japan", "cumle": "Do you live in Japan? Watch every strong quake of the past year.", "destek": true, "tur": "soru"},
+  {"anahtar": "usgs:bolge_yillik:Japan", "cumle": "Japan's busiest month for earthquakes was November 2025.", "destek": true, "tur": "dogru"},
+  {"anahtar": "usgs:bolge_yillik:Japan", "cumle": "Japan has the most earthquakes of any country on Earth.", "destek": false, "tur": "uydurma_ustunluk"},
+  {"anahtar": "usgs:bolge_yillik:Japan", "cumle": "The strongest quake in Japan, magnitude 7.4, struck in November 2025.", "destek": false, "tur": "yanlis_baglam"},
+
+  {"anahtar": "usgs:en_guclu_10", "cumle": "The Philippines had one of the two strongest earthquakes of the year.", "destek": true, "tur": "parafraz"},
+  {"anahtar": "usgs:en_guclu_10", "cumle": "Where did the planet's biggest earthquakes strike?", "destek": true, "tur": "soru"},
+  {"anahtar": "usgs:en_guclu_10", "cumle": "Fifteen earthquakes reached magnitude 7 or more this year.", "destek": true, "tur": "dogru"},
+  {"anahtar": "usgs:en_guclu_10", "cumle": "The strongest earthquake of the year hit Indonesia at magnitude 8.1.", "destek": false, "tur": "yanlis_nicelik"},
+  {"anahtar": "usgs:en_guclu_10", "cumle": "A magnitude 7.6 quake in the Drake Passage triggered a tsunami.", "destek": false, "tur": "uydurma_sonuc"},
+
+  {"anahtar": "dunya_bankasi:en_yuksek_10:MS.MIL.XPND.GD.ZS", "cumle": "Ukraine spends a bigger share of its economy on the military than any other country.", "destek": true, "tur": "parafraz"},
+  {"anahtar": "dunya_bankasi:en_yuksek_10:MS.MIL.XPND.GD.ZS", "cumle": "How unevenly is military spending spread across the world?", "destek": true, "tur": "soru"},
+  {"anahtar": "dunya_bankasi:en_yuksek_10:MS.MIL.XPND.GD.ZS", "cumle": "Israel spends 8.8% of its GDP on the military.", "destek": true, "tur": "dogru"},
+  {"anahtar": "dunya_bankasi:en_yuksek_10:MS.MIL.XPND.GD.ZS", "cumle": "Israel spends more on its military than Ukraine.", "destek": false, "tur": "yanlis_karsilastirma"},
+  {"anahtar": "dunya_bankasi:en_yuksek_10:MS.MIL.XPND.GD.ZS", "cumle": "Algeria spends 8% of GDP on defense because of regional threats.", "destek": false, "tur": "uydurma_neden"},
+
+  {"anahtar": "eurostat:en_dusuk_10:sdg_04_20", "cumle": "Which European country has the lowest share of young graduates?", "destek": true, "tur": "soru"},
+  {"anahtar": "eurostat:en_dusuk_10:sdg_04_20", "cumle": "In Romania, only 23% of 25 to 34 year olds hold a university degree.", "destek": true, "tur": "dogru"},
+  {"anahtar": "eurostat:en_dusuk_10:sdg_04_20", "cumle": "Italy has fewer young graduates than most of Europe.", "destek": true, "tur": "parafraz"},
+  {"anahtar": "eurostat:en_dusuk_10:sdg_04_20", "cumle": "Italy has the lowest share of young graduates in Europe.", "destek": false, "tur": "yanlis_siralama"},
+  {"anahtar": "eurostat:en_dusuk_10:sdg_04_20", "cumle": "Only 23% of adults in Bosnia and Herzegovina have a degree.", "destek": false, "tur": "yanlis_baglam"},
+
+  {"anahtar": "dunya_bankasi:en_cok_artan_10:SP.DYN.LE00.IN", "cumle": "Life expectancy in the Central African Republic rose from 40.3 to 57.7 years.", "destek": true, "tur": "dogru"},
+  {"anahtar": "dunya_bankasi:en_cok_artan_10:SP.DYN.LE00.IN", "cumle": "Where did people gain the most years of life in a decade?", "destek": true, "tur": "soru"},
+  {"anahtar": "dunya_bankasi:en_cok_artan_10:SP.DYN.LE00.IN", "cumle": "South Sudan and the Central African Republic both reached 57.7 years.", "destek": true, "tur": "dogru"},
+  {"anahtar": "dunya_bankasi:en_cok_artan_10:SP.DYN.LE00.IN", "cumle": "Eswatini now has the longest life expectancy in the world.", "destek": false, "tur": "uydurma_ustunluk"},
+  {"anahtar": "dunya_bankasi:en_cok_artan_10:SP.DYN.LE00.IN", "cumle": "Better hospitals added 17 years of life in the Central African Republic.", "destek": false, "tur": "uydurma_neden"}
+]

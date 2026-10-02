@@ -23,6 +23,7 @@ def ciz(
     yukseklik: int = 1920,
     fps: int = 30,
     saniye: float = 30,
+    **sahne_kw,
 ) -> Path:
     ulkeler = harita.ulkeler(kapsam)
     var = {k: v for k, v in degerler.items() if k in ulkeler}
@@ -33,7 +34,7 @@ def ciz(
     n = len(sirali)
     ilk3 = [k for k, _ in sirali[::-1][:3]]
 
-    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye)
+    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye, **sahne_kw)
     g = s.g
     # Dünya haritası 9:16'da kısa kalır: altındaki boşluğu büyük ilk-3 listesi doldurur (DESIGN.md Koroplet)
     alt, ust = (0.47, min(0.80, s.icerik_ust)) if kapsam == "dunya" else (0.40, min(0.80, s.icerik_ust))

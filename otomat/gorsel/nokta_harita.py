@@ -23,6 +23,7 @@ def ciz(
     yukseklik: int = 1920,
     fps: int = 30,
     saniye: float = 30,
+    **sahne_kw,
 ) -> Path:
     if not olaylar:
         raise ValueError("olay yok")
@@ -33,7 +34,7 @@ def ciz(
     t0, t1 = ev[0, 0], ev[-1, 0]
     sure = max(t1 - t0, 1.0)
 
-    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye)
+    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye, **sahne_kw)
     g = s.g
     harita_alt, harita_ust = 0.36, min(0.80, s.icerik_ust)
     ax = s.eksen(harita_alt, harita_ust)

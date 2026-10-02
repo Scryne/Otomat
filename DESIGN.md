@@ -82,10 +82,10 @@ ekranında, sıkıştırılmış ve 1 saniyede kaydırılan bir videoda okunurlu
 ## Components
 
 - **Güvenli alan:** YouTube Shorts arayüzü altta ~%20'yi (başlık, kanal adı, abone düğmesi) ve sağda ~%14'ü (beğeni,
-  yorum, paylaş) örter. Önemli içerik `safe-*` sınırlarının içinde kalır. Altyazı Faz 4'te alt güvenli sınırın
-  hemen üstüne gelir.
-- **Kanca kartı:** ilk 1,5 sn'de ekranın üst yarısında kanca cümlesi `title` boyutunda, harita arkada `surface`
-  üstünde %40 karartılmış. 1,5 sn'de kart kalkar, veri hareketi başlar. Kaydırma kararı ilk saniyede verilir.
+  yorum, paylaş) örter. Önemli içerik `safe-*` sınırlarının içinde kalır. Altyazı alt güvenli sınırın hemen üstünde,
+  ortalı, `title` boyutunun %85'i, zemin renginde kalın kontur; kanca kartı açıkken gösterilmez.
+- **Kanca kartı:** kanca seslendirilirken (1,5–3 sn) ekranın üst yarısında kanca cümlesi `title` boyutunda, harita arkada `surface`
+  üstünde %40 karartılmış. Kart kalkınca veri hareketi başlar. Kaydırma kararı ilk saniyede verilir.
 - **Nokta harita:** olay `data` ile değil `primary` ile belirir (halka genişleyip söner), sonra `primary` %35 opaklıkta
   nokta olarak kalır. Büyüklük alanla kodlanır. Bölge videosunda kamera olayların kutusuna yakınlaşır.
 - **Sıralı çubuk:** geri sayım: 10. sıradan 1. sıraya doğru birer birer gelir. Çubuklar `data`, yalnız 1. sıra

@@ -23,12 +23,13 @@ def ciz(
     yukseklik: int = 1920,
     fps: int = 30,
     saniye: float = 30,
+    **sahne_kw,
 ) -> Path:
     if not ogeler:
         raise ValueError("öğe yok")
     ogeler = ogeler[:10]
     n = len(ogeler)
-    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye)
+    s = Sahne(baslik, kaynak, kanca, genislik=genislik, yukseklik=yukseklik, fps=fps, saniye=saniye, **sahne_kw)
     g = s.g
     alt, ust = 0.30, min(0.79, s.icerik_ust)
     ax = s.eksen(alt, ust, g["sol"], g["sag"])

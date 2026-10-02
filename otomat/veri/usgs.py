@@ -72,6 +72,11 @@ def depremler(geojson: dict) -> list[Deprem]:
     return sorted(sonuc, key=lambda d: d.zaman)
 
 
+def _yuzde(x: float) -> int | float:
+    """%10 ve üstü tam sayı, altı tek ondalık (küçük bölgeler '%0' görünmesin)."""
+    return int(round(x)) if x >= 10 else round(x, 1)
+
+
 def _gun_ay_yil(t: float) -> str:
     d = dt.datetime.fromtimestamp(t, dt.UTC)
     return f"{d.strftime('%B')} {d.day}, {d.year}"
@@ -151,7 +156,7 @@ def paketler(geojson: dict, url: str, cekildi: str, gun: int = 365) -> list[Olgu
                     "strongest_magnitude": Olgu(en.buyukluk, "magnitude of the strongest earthquake in region"),
                     "strongest_date": Olgu(_gun_ay_yil(en.zaman), "date of the strongest earthquake in region"),
                     "share_of_world_pct": Olgu(
-                        round(100 * len(olaylar) / len(tum)),
+                        _yuzde(100 * len(olaylar) / len(tum)),
                         "region's share of all such earthquakes worldwide",
                         "%",
                     ),
