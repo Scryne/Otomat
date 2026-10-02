@@ -1,0 +1,42 @@
+name: Ölçüm
+
+# Faz 1: runner'da LLM + TTS + render süresini ölçer. Elle tetiklenir.
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "Ollama modeli (boşsa config/modeller.toml)"
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  olcum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --locked --extra ses
+      - name: Model önbelleği
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.ollama/models
+            modeller
+          key: modeller-${{ hashFiles('config/modeller.toml') }}-${{ inputs.model }}
+      - name: Ollama
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          (ollama serve > /tmp/ollama.log 2>&1 &)
+          sleep 5
+          MODEL="${{ inputs.model }}"
+          [ -z "$MODEL" ] && MODEL=$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)
+          echo "OTOMAT_LLM=$MODEL" >> "$GITHUB_ENV"
+          time ollama pull "$MODEL"
+      - name: Sistem
+        run: nproc; free -h
+      - run: uv run python -m otomat.olcum

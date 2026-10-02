@@ -26,3 +26,7 @@ __pycache__/
 
 # Spike çıktıları ve model dosyaları
 spikes/out/
+
+# Koşu çıktıları ve model önbelleği
+calisma/
+modeller/
