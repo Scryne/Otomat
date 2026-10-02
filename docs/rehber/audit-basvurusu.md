@@ -13,7 +13,7 @@ sayfasında kullanılmamalı, gizlilik politikası YouTube bölümünü içermel
 
 **API client name:** Otomat
 
-**Google Cloud project number(s):** [D2'den]
+**Google Cloud project number(s):** 93875631034 (project ID: otomat-510419)
 
 **Website / homepage:** https://scryne.github.io/otomat-site/
 
@@ -34,7 +34,7 @@ YouTube Analytics API (reports.query).
 > any other channel, does not download or scrape YouTube content, and does not display YouTube data to anyone.
 > Credentials are stored as encrypted GitHub Actions secrets and are only used for my channel.
 
-**How many users / channels?** One (my own channel, Earth in Numbers: [kanal URL'si, D1'den sonra]).
+**How many users / channels?** One (my own channel, Earth in Numbers: https://www.youtube.com/channel/UC6vokENR8hP2Yo1UdZSqdiQ).
 
 **Expected daily quota usage:** ~1 upload (videos.insert, upload bucket), ~5 captions.insert (2,000 units),
 ~1 videos.update (50 units), ~5 Analytics queries. Well within the default quota; no quota increase requested.
@@ -42,5 +42,4 @@ YouTube Analytics API (reports.query).
 **Do you store YouTube API data?** Only my own channel's video IDs and aggregated analytics numbers (views, average view
 percentage) for my own videos, kept in a private repository to choose future topics. Deleted on request.
 
-**Screencast / screenshots (if asked):** Actions çıktısı (yükleme adımı) + Studio'da planlı video ekran görüntüsü —
-ilk gerçek yüklemeden sonra hazırlarım.
+**Screencast / screenshots (if asked):** ilk API yüklemesi 2026-10-02: video `DBVL_Cakzbw` (private, 5 yerelleştirme, 5 altyazı izi); kayıt: `spikes/s9_test_yukleme.py` çıktısı. Gerekirse Studio ekran görüntüsü.

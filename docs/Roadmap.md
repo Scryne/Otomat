@@ -145,8 +145,11 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Yerel günlük koşu uçtan uca geçti (teslim modu): 105 paket → seçim → 27 sn video → 4 dil → teslim klasörü.
   - **Runner koşusu geçti** (2026-10-02, workflow_dispatch): toplam ~14 dk (Ollama 1 dk, üretim 12 dk), video haftanın
     Release'ine (teslim-2026-H40) eklendi, durum ve rapor repoya commit'lendi. Ayda ~420 dk (kota 2.000).
-  - Bekleyen: D1 kanal + kanal e-postası, D2 Cloud projesi + OAuth + `yetki`, D3 audit formu; site için public repo
-    (`Scryne/otomat-site`, GitHub Pages) Scryne onayıyla ve `yayin-oncesi` kapısından geçerek.
+  - **D1 ✅ D2 ✅ (2026-10-02):** kanal **Earth in Numbers** (UC6vokENR8hP2Yo1UdZSqdiQ), Cloud projesi `otomat-510419`
+    (no. 93875631034), OAuth uygulaması Otomat "In production" (doğrulanmamış), token + istemci GitHub Secrets'ta.
+    Site public: https://scryne.github.io/otomat-site/ (yayın-öncesi taraması 0 bulgu). Kanal ülkesi boş (Scryne kararı).
+  - **İlk API yüklemesi ✅:** `DBVL_Cakzbw` private; 5 yerelleştirme (en/es/pt/de/fr), 5 altyazı izi doğrulandı.
+  - Bekleyen: **D3** audit formu (Scryne). Onay gelince repo değişkeni `OTOMAT_YAYIN=api` → planlı public yayın.
 - **Notlar:**
   - Çeviri ilk sürümde 4 kelimelik altyazı parçalarını tek tek çevirtiyordu: model cümle ortasından bölünmüş satırları
     birleştirdi (13 → 9 satır), kapı ~%50 reddetti. Tam cümle çevirisi + aynı zamanlarla yeniden parçalama → %90.
