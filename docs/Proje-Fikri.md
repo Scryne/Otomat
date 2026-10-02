@@ -77,12 +77,34 @@ Otomat bu üç kusuru hedefler.
 8 hafta sonunda kanal, para kazanma eşiğine (1.000 abone + 90 günde 10M Shorts izlenmesi) giden yolun %20'sinin
 altındaysa konsept değişir (niş ya da format); iki konsept üst üste ölürse kol kapanır, motor diğer kollara kalır.
 
+## Spike sonuçları (2026-10-02)
+
+- **S4 Görsel motor ✅** — `spikes/s4_render.py`: matplotlib (Agg) + ffmpeg pipe, USGS son 30 gün M4.5+ (526 deprem)
+  üzerine 1080×1920, 30 fps, 30 sn animasyon **16,9 sn'de** (CPU). GPU gerekmiyor → GitHub Actions'ta da koşabilir.
+  Kusur: dünya haritası dikey kadrajda küçük kalıyor; bölgesel zoom/kamera hareketi gerekir.
+- **S3 TTS ✅** — `spikes/s3_tts.py`: Kokoro v1.0 (ONNX, CPU, Apache-2.0) EN/ES/PT; 13,8 sn ses 3,7 sn'de. Anlaşılırlık
+  vekili: Whisper geri dökümü üç dilde metinle kelimesi kelimesine aynı (`s3_geri.py`). Doğallık kulakla ölçülmedi.
+- **Senaryo + kapı (kısmi)** — `spikes/s5_senaryo.py`, gemma3:4b, 7 sn. Sayı kapısı "80"i yakaladı ama o sayı yer
+  adının içindeydi (yanlış alarm); "thirty" yazıyla geçti (kaçak); asıl hata **anlamsal**: "Indonesia accounted for 68
+  of the most active areas" — sayı doğru, cümle yanlış. Sonuç: sayı kapısı yetmez. Tasarım kararı adayı: LLM sayı
+  yazmaz, yer tutucu (`{total_quakes}`) yazar, kod doldurur; ayrıca anlamsal kontrol (olgu ↔ cümle) — aday TypeSafe
+  (maliyet şartı K-1'e takılırsa yerel ikinci model hakem).
+- **Yer tutucu denemesi** — `spikes/s6_yer_tutucu.py`, qwen3:8b (`think:false`, ~2 sn): sayı kapısı 3/3 geçti, ama
+  anlamsal hatalar sürdü: "over 526" (yanlış nicelik), "6 of these" (dünya geneli 6'yı Endonezya'nın 68'ine bağladı),
+  "powerful enough to cause significant damage" (veride olmayan iddia), "in the past 30," (birim düştü). **Sonuç:**
+  olgu cümleleri koddan gelen çeşitli şablonlarla kurulur; LLM yalnız kanca, başlık ve geçiş cümlesi yazar; her video
+  bir anlamsal hakemden geçer (karar adayı K-4, denetimde kapanır).
+- **S2/S5/S6 ✅** — `docs/arastirma/03-youtube-api.md`: doğrulanmamış projede her yükleme private'a kilitli → audit
+  v1'in kritik yolu; yükleme artık 1 birim; ek ses kanalı API'de yok ama YouTube otomatik dublajı (27 dil) bedava ve
+  varsayılan açık; analitik 48–72 saat gecikmeli, "swiped away" API'de yok.
+- Örnek birleşik çıktı: `spikes/out/ornek_shorts.mp4` (git dışı).
+
 ## Açık Sorular
 
 - **S1 Niş:** hangi veri konusu Shorts'ta tutuyor, nerede rakip zayıf? (yt-dlp ile rakip kanal istatistiği)
-- **S2 Yükleme kilidi:** doğrulanmamış API projesinde video private'a kilitleniyor. Denetim (audit) formu bedava;
+- ~~S2~~ (kapandı, yukarıda) **Yükleme kilidi:** doğrulanmamış API projesinde video private'a kilitleniyor. Denetim (audit) formu bedava;
   süresi ve onay şansı? Plan B: Scryne haftada bir Studio'da toplu "herkese açık" (≤ 1 dk).
-- **S3 TTS kalitesi:** Kokoro/Piper İngilizce anlatımı "robot" algısı yaratıyor mu? Çok dilde aynı kalite?
-- **S4 Görsel motor:** Python (matplotlib/Pillow + ffmpeg) mı, Remotion mı? 8 GB GPU'da 60 sn video kaç dakikada?
-- **S5 Çok dilli ses kanalı:** YouTube Data API ek ses kanalı yüklemeyi destekliyor mu?
+- ~~S3~~ (kapandı; doğallık kulakla bakılmadı) **TTS kalitesi:** Kokoro/Piper İngilizce anlatımı "robot" algısı yaratıyor mu? Çok dilde aynı kalite?
+- ~~S4~~ (kapandı: Python) **Görsel motor:** Python (matplotlib/Pillow + ffmpeg) mı, Remotion mı? 8 GB GPU'da 60 sn video kaç dakikada?
+- ~~S5~~ (kapandı) **Çok dilli ses kanalı:** YouTube Data API ek ses kanalı yüklemeyi destekliyor mu?
 - **S6 Çalışma yeri:** bilgisayar kapalıyken ne olur? (GitHub Actions'ta CPU ile render mümkün mü)
