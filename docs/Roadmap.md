@@ -12,7 +12,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | Faz | Adı | Durum | Bitti Kriteri |
 | --- | --- | --- | --- |
 | 1 | İskelet ve sağlık | ✅ Tamamlandı | Private repo `Scryne/Otomat`; CI (ruff + pytest + duman koşusu) yeşil; `.github/dependabot.yml` (uv); `config/modeller.toml`; Actions runner'da qwen3:4b + Kokoro + render süresi ölçülmüş ve yazılmış |
-| 2 | Veri ve olgu motoru | ⏳ Bekliyor | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
+| 2 | Veri ve olgu motoru | ✅ Tamamlandı | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
 | 3 | Görsel motor | ⏳ Bekliyor | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ⏳ Bekliyor | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ⏳ Bekliyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
@@ -61,7 +61,17 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   (eğitim, GSYH, nüfus göstergeleri); ülke kodu eşleme (ISO A3 ↔ Natural Earth ↔ Eurostat geo); SQLite şeması;
   tekrar engeli (60 gün).
 - **Bitti Kriteri:** tablodaki gibi.
+- **Sonuç (2026-10-02):** canlı toplayıcı 105 benzersiz paket: USGS 40 (38 bölge + dünya 30 gün + yılın en güçlü 10'u),
+  World Bank 35 (12 gösterge × en yüksek/en düşük/en çok artan), Eurostat 30 (10 veri seti). Sözleşme testleri
+  `tests/veri/kayit/` altındaki kırpılmış gerçek yanıtlarla (16 test). Tekrar engeli: hash ya da anahtar 60 gün.
 - **Notlar:**
+  - World Bank'ta askerî harcama kodu `MS.MIL.XPND.GD.ZS` (hafızadan yazdığım `.GD.PT` geçersizdi) — gösterge kodları
+    hep canlı uçla doğrulanır.
+  - USGS bölge adları normalize edilmeli: "Japan" / "Japan region", "Fiji" / "Fiji Islands" / "Fiji region" aynı bölge.
+    Okyanus sırtları (Mid-Atlantic Ridge vb.) "senin ülken" çerçevesine girmez, ayıklanıyor.
+  - Hassas içerik: askerî harcamada 1. sıra Ukrayna (%34,5, savaş). Faz 4 politika listesi savaş/ölüm çerçevesini
+    nötr tutmalı ("military spending" veridir, yorum değil).
+  - Kaynak API'lerin şeması değişirse adaptör sessizce az paket üretebilir → Faz 6'da günlük paket sayısı alarmı.
 
 ### Faz 3: Görsel motor
 - **İşler:** üç şablon; kamera/zoom; ilk 1 sn'de kancayı görsel olarak taşıyan açılış; tipografi (OFL font) ve renk

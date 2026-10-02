@@ -1,0 +1,149 @@
+# Veri adaptörlerinin gösterge listeleri. Yeni gösterge eklemek kod değişikliği gerektirmez.
+# ad: videoda ve LLM'de kullanılacak kısa İngilizce ad; birim: değerin yanında yazılan birim;
+# ondalik: yuvarlama basamağı.
+
+[usgs]
+gun = 365
+min_buyukluk = 4.5
+
+[[dunya_bankasi]]
+kod = "MS.MIL.XPND.GD.ZS"
+ad = "military spending as a share of GDP"
+birim = "% of GDP"
+ondalik = 1
+
+[[dunya_bankasi]]
+kod = "SP.DYN.LE00.IN"
+ad = "life expectancy at birth"
+birim = "years"
+ondalik = 1
+
+[[dunya_bankasi]]
+kod = "GC.DOD.TOTL.GD.ZS"
+ad = "central government debt"
+birim = "% of GDP"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "NY.GDP.PCAP.CD"
+ad = "GDP per person"
+birim = "US$"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "SP.DYN.TFRT.IN"
+ad = "births per woman"
+birim = "births per woman"
+ondalik = 2
+
+[[dunya_bankasi]]
+kod = "EN.POP.DNST"
+ad = "population density"
+birim = "people per km²"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "IT.NET.USER.ZS"
+ad = "share of people using the internet"
+birim = "%"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "EG.ELC.ACCS.ZS"
+ad = "share of people with electricity"
+birim = "%"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "AG.LND.FRST.ZS"
+ad = "forest cover"
+birim = "% of land"
+ondalik = 0
+
+[[dunya_bankasi]]
+kod = "EN.GHG.CO2.PC.CE.AR5"
+ad = "CO2 emissions per person"
+birim = "tonnes per person"
+ondalik = 1
+
+[[dunya_bankasi]]
+kod = "SL.UEM.TOTL.ZS"
+ad = "unemployment rate"
+birim = "%"
+ondalik = 1
+
+[[dunya_bankasi]]
+kod = "SH.XPD.CHEX.GD.ZS"
+ad = "health spending as a share of GDP"
+birim = "% of GDP"
+ondalik = 1
+
+[[eurostat]]
+kod = "sdg_08_10"
+filtre = { unit = "CLV20_EUR_HAB" }
+ad = "real GDP per person"
+birim = "€"
+ondalik = 0
+
+[[eurostat]]
+kod = "sdg_04_20"
+filtre = { sex = "T" }
+ad = "share of 25–34 year olds with a university degree"
+birim = "%"
+ondalik = 0
+
+[[eurostat]]
+kod = "sdg_07_40"
+filtre = { nrg_bal = "REN" }
+ad = "share of energy from renewables"
+birim = "%"
+ondalik = 0
+
+[[eurostat]]
+kod = "tepsr_wc170"
+filtre = { age = "Y15-24" }
+ad = "youth unemployment rate"
+birim = "%"
+ondalik = 1
+
+[[eurostat]]
+kod = "tps00001"
+filtre = {}
+ad = "population"
+birim = "people"
+ondalik = 0
+
+[[eurostat]]
+kod = "tps00177"
+filtre = { agedef = "REACH" }
+ad = "people who emigrated in one year"
+birim = "people"
+ondalik = 0
+
+[[eurostat]]
+kod = "sdg_08_30"
+filtre = { sex = "T" }
+ad = "employment rate (ages 20–64)"
+birim = "%"
+ondalik = 1
+
+[[eurostat]]
+kod = "sdg_11_40"
+filtre = { tra_infr = "TOTAL", unit = "RT" }
+ad = "road deaths per 100,000 people"
+birim = "per 100,000"
+ondalik = 1
+
+[[eurostat]]
+kod = "tps00204"
+filtre = { indic_de = "GBIRTHRT_THSP" }
+ad = "births per 1,000 people"
+birim = "per 1,000"
+ondalik = 1
+
+[[eurostat]]
+kod = "sdg_01_10"
+filtre = { age = "TOTAL", unit = "PC" }
+ad = "share of people at risk of poverty or social exclusion"
+birim = "%"
+ondalik = 1
