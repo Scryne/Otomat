@@ -15,7 +15,9 @@ public yüzeye yazılmaz (Kurallar). Google'ın denetim formu iletişim bilgisi 
    (doluysa benzeri; hesapta ad olarak "Earth in Numbers" yaz, kendi adını değil).
 2. Bu hesapla youtube.com'a gir → sağ üst profil → **Kanal oluştur** → kanal adı **Earth in Numbers**. Kullanıcı adı (handle) için `@earth.in.numbers` boştu (2026-10-02;
    `@EarthInNumbers` alınmış).
-3. Kanal ayarlarında: **Ayarlar → Kanal → Gelişmiş ayarlar → Ülke: Türkiye**, "Çocuklara özel değil".
+3. Kanal ayarlarında: **Ayarlar → Kanal → Gelişmiş ayarlar** → "Çocuklara özel değil". **Ülke alanını boş bırak**
+   (Scryne kararı, 2026-10-02). Para kazanma başvurusunda doldurulur; YPP şartı "programın mevcut olduğu bir ülkede
+   yaşamak" olduğundan orada gerçek ikamet ülkesi yazılır. Kitleyi kanal ülkesi değil video dili/metadata belirler.
 4. **Ayarlar → Kanal → Özellik uygunluğu** → telefonla doğrulama (uzun video ve özel küçük resim için; bir kez).
 
 ## D2 — Google Cloud projesi ve izin (≈10 dk)
