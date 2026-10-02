@@ -22,24 +22,47 @@ public yüzeye yazılmaz (Kurallar). Google'ın denetim formu iletişim bilgisi 
 
 ## D2 — Google Cloud projesi ve izin (≈10 dk)
 
-Bunu kanal e-postasıyla giriş yapmış tarayıcıda yap.
+**Ne için:** botun senin kanalına video yükleyebilmesi için Google'dan bir "anahtar" alıyoruz. Bu anahtar yalnız senin
+kanalına çalışır. Google bu ekranları 2025'te yeniden düzenledi; menüde arama, aşağıdaki **doğrudan bağlantıları** aç.
 
-1. https://console.cloud.google.com → üstte proje seçici → **Yeni proje** → ad: `otomat`.
-2. **API'ler ve Hizmetler → Kitaplık** → "YouTube Data API v3" → **Etkinleştir**. Aynı yerden
-   "YouTube Analytics API" → **Etkinleştir**.
-3. **API'ler ve Hizmetler → OAuth izin ekranı** (Google Auth Platform):
-   - Kullanıcı türü: **Harici**. Uygulama adı: kanalın adı. Destek e-postası: kanal e-postası.
-   - Kitle (Audience) → **Test kullanıcıları**'na kanal e-postasını ekle.
-   - Ardından **Uygulamayı yayınla (Publish app → In production)**. Doğrulama istemez; bunu yapmazsan izin 7 günde
-     düşer ve bot durur (docs/arastirma/03).
-4. **İstemciler (Credentials) → Kimlik bilgisi oluştur → OAuth istemci kimliği → Masaüstü uygulaması** → ad: `otomat`.
-   **JSON'u indir.**
-5. İndirilen dosyayı `C:\Users\scryn\Documents\Projeler\Otomat\sirlar\istemci.json` olarak kaydet
-   (`sirlar/` klasörü git'e girmez).
-6. Proje klasöründe bir terminalde (ya da bana `! uv run --extra ses python -m otomat.yayin.youtube yetki` yaz):
-   tarayıcı açılır → kanal hesabını seç → "Google bu uygulamayı doğrulamadı" uyarısında **Gelişmiş → otomat'a git
-   (güvenli değil)** → izinleri onayla. Bu uyarı normal: uygulama senin, tek kullanıcısı sensin.
-   Sonunda `sirlar/token.json` yazılır.
+Bütün bağlantıları **kanal hesabıyla** (D1'de açtığın Gmail) giriş yapılmış tarayıcıda aç. Kişisel hesabınla açıksan
+sağ üstteki profil resminden kanal hesabına geç. Konsol Türkçe açılabilir; düğmeleri İngilizce / Türkçe yazdım.
+
+**Adım 1 — Proje aç.** https://console.cloud.google.com/projectcreate
+- "Project name / Proje adı" kutusuna `otomat` yaz → **Create / Oluştur**. 10–20 sn bekle.
+- Sağ üstte bildirim çıkar, **Select project / Projeyi seç** de. Sayfanın üstündeki proje kutusunda `otomat` yazmalı;
+  aşağıdaki her adımda bunu kontrol et.
+
+**Adım 2 — İki API'yi aç.**
+- https://console.cloud.google.com/apis/library/youtube.googleapis.com → mavi **Enable / Etkinleştir**.
+- https://console.cloud.google.com/apis/library/youtubeanalytics.googleapis.com → **Enable / Etkinleştir**.
+
+**Adım 3 — Uygulamayı tanıt.** https://console.cloud.google.com/auth/overview
+- **Get started / Başlayın** düğmesine bas. Dört kısa ekran gelir:
+  1. App information: App name `Earth in Numbers`, User support email: kanal e-postası → Next.
+  2. Audience / Kitle: **External / Harici** → Next.
+  3. Contact information: kanal e-postası → Next.
+  4. Kutuyu işaretle (Google politikalarını kabul) → **Continue** → **Create / Oluştur**.
+
+**Adım 4 — Uygulamayı "yayında" yap.** https://console.cloud.google.com/auth/audience
+- "Publishing status: Testing" yazar. **Publish app / Uygulamayı yayınla** → **Confirm / Onayla**.
+  Durum "In production" olmalı. Bu Google incelemesi başlatmaz; yapmazsak izin 7 günde düşer ve bot durur.
+
+**Adım 5 — Anahtar dosyasını indir.** https://console.cloud.google.com/auth/clients
+- **Create client / İstemci oluştur** → Application type: **Desktop app / Masaüstü uygulaması** → Name: `otomat`
+  → **Create / Oluştur**.
+- Açılan pencerede **Download JSON / JSON'u indir**. (Kapattıysan: listede `otomat`'a tıkla → sağda indirme simgesi.)
+- İnen dosyanın adı `client_secret_....json` gibidir. Adını **`istemci.json`** yap ve şu klasöre koy:
+  `C:\Users\scryn\Documents\Projeler\Otomat\sirlar\` (klasör yoksa oluştur). Bu klasör git'e hiç girmez.
+
+**Adım 6 — İzni ver (birlikte yaparız).** Bana "anahtar hazır" de; komutu ben veririm ya da sen bu sohbete
+`! uv run --extra ses python -m otomat.yayin.youtube yetki` yazarsın. Tarayıcı açılır:
+- Kanal hesabını seç.
+- "Google hasn't verified this app / Google bu uygulamayı doğrulamadı" uyarısı çıkar. Normal: uygulama senin, tek
+  kullanıcısı sensin. **Advanced / Gelişmiş** → **Go to Earth in Numbers (unsafe)** → izinlerin hepsini işaretle →
+  **Continue**. "The authentication flow has completed" yazısını görünce sekmeyi kapat.
+
+Takılırsan ekranın görüntüsünü bu sohbete at; nerede olduğuna bakıp sonraki tıklamayı söylerim.
 
 D2 bitince ben: token'ı ve istemciyi GitHub Secrets'a koyarım (`YT_ISTEMCI_JSON`, `YT_TOKEN_JSON`), `kontrol` komutuyla
 kanala bağlandığımızı doğrularım.
