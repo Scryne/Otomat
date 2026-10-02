@@ -97,11 +97,31 @@ altındaysa konsept değişir (niş ya da format); iki konsept üst üste ölür
 - **S2/S5/S6 ✅** — `docs/arastirma/03-youtube-api.md`: doğrulanmamış projede her yükleme private'a kilitli → audit
   v1'in kritik yolu; yükleme artık 1 birim; ek ses kanalı API'de yok ama YouTube otomatik dublajı (27 dil) bedava ve
   varsayılan açık; analitik 48–72 saat gecikmeli, "swiped away" API'de yok.
+- **S1 Niş ✅** — `docs/arastirma/04-nis-analizi.md`: düz veri şablonu 0,3–6K izlenmede kalıyor; hit'ler (1–15M)
+  çerçeveden geliyor (merak, "senin ülken", ölçek/çarpıtma, duygusal sıralama). En yakın kodla-veri analoğu küçük
+  kalmış. **Değer verinin kendisinde değil, veri + çerçevede.** Haydudun deneyeceği şey bu yüzden konu değil,
+  konu × kanca çifti.
 - Örnek birleşik çıktı: `spikes/out/ornek_shorts.mp4` (git dışı).
+
+## Karar adayları (denetimde kapanır)
+
+- **K-4 Olgu koddan, çerçeve modelden.** Olgu cümleleri çeşitlendirilmiş kod şablonlarıyla kurulur; yerel LLM
+  (qwen3:8b) yalnız kanca, başlık ve geçiş yazar; her video anlamsal hakemden geçer.
+- **K-5 Niş: "gezegen ve ülkeler, gerçek veriyle merak".** İngilizce, global. Başlangıç kolları (haydut kolları):
+  (1) "your country" rekorları (NOAA GHCN, USGS, Wikidata), (2) gerçek veriyle "what if" tehlike senaryosu (USGS,
+  deniz seviyesi + yükselti), (3) Avrupa ülke ülke (Eurostat), (4) World Bank + duygusal çerçeve (askerî harcama,
+  borç, yaşam süresi), (5) uzay ölçek (Wikidata/NASA kamu malı). Elenen: düz bar-chart-race, OSM "şehir çiziliyor",
+  tarih/toprak (tarihî sınır verisi belirsiz). Kanca kalıpları: soru, "your country", duygusal etiket, ölçek.
+- **K-6 Çalışma yeri: GitHub Actions** (private repo, günlük cron). Render CPU'da 17 sn, TTS CPU'da gerçek zamanın
+  4 katı hızlı; bilgisayar kapalıyken de döner. LLM'in Actions CPU'sunda süresi Faz 1'de ölçülür (yedek: qwen3:4b).
+- **K-7 Yükleme yolu:** YouTube Data API + audit başvurusu Faz 1'de (gizlilik politikası ve uygulama sayfası
+  GitHub Pages'ta). Audit gelene kadar Plan B: haftalık toplu Studio yüklemesi (Scryne, ~5 dk). Tarayıcıyla Studio
+  otomasyonu yok (kanal kapanma riski).
+- **K-8 Çok dil:** başlık/açıklama/altyazı EN + ES + PT + DE + FR botla; ses için YouTube otomatik dublajı.
 
 ## Açık Sorular
 
-- **S1 Niş:** hangi veri konusu Shorts'ta tutuyor, nerede rakip zayıf? (yt-dlp ile rakip kanal istatistiği)
+- ~~S1~~ (kapandı) **Niş:** hangi veri konusu Shorts'ta tutuyor, nerede rakip zayıf? (yt-dlp ile rakip kanal istatistiği)
 - ~~S2~~ (kapandı, yukarıda) **Yükleme kilidi:** doğrulanmamış API projesinde video private'a kilitleniyor. Denetim (audit) formu bedava;
   süresi ve onay şansı? Plan B: Scryne haftada bir Studio'da toplu "herkese açık" (≤ 1 dk).
 - ~~S3~~ (kapandı; doğallık kulakla bakılmadı) **TTS kalitesi:** Kokoro/Piper İngilizce anlatımı "robot" algısı yaratıyor mu? Çok dilde aynı kalite?
