@@ -39,7 +39,8 @@ sağ üstteki profil resminden kanal hesabına geç. Konsol Türkçe açılabili
 
 **Adım 3 — Uygulamayı tanıt.** https://console.cloud.google.com/auth/overview
 - **Get started / Başlayın** düğmesine bas. Dört kısa ekran gelir:
-  1. App information: App name `Earth in Numbers`, User support email: kanal e-postası → Next.
+  1. App information: App name `Otomat` (sitedeki ve denetim formundaki adla aynı olmalı), User support email: kanal
+     e-postası → Next.
   2. Audience / Kitle: **External / Harici** → Next.
   3. Contact information: kanal e-postası → Next.
   4. Kutuyu işaretle (Google politikalarını kabul) → **Continue** → **Create / Oluştur**.
@@ -59,7 +60,7 @@ sağ üstteki profil resminden kanal hesabına geç. Konsol Türkçe açılabili
 `! uv run --extra ses python -m otomat.yayin.youtube yetki` yazarsın. Tarayıcı açılır:
 - Kanal hesabını seç.
 - "Google hasn't verified this app / Google bu uygulamayı doğrulamadı" uyarısı çıkar. Normal: uygulama senin, tek
-  kullanıcısı sensin. **Advanced / Gelişmiş** → **Go to Earth in Numbers (unsafe)** → izinlerin hepsini işaretle →
+  kullanıcısı sensin. **Advanced / Gelişmiş** → **Go to Otomat (unsafe)** → izinlerin hepsini işaretle →
   **Continue**. "The authentication flow has completed" yazısını görünce sekmeyi kapat.
 
 Takılırsan ekranın görüntüsünü bu sohbete at; nerede olduğuna bakıp sonraki tıklamayı söylerim.
