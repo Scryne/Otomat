@@ -13,7 +13,7 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 |---|---|---|---|
 | D1 ✅ 2026-10-03 (marka hesabı) | YouTube kanalı (marka hesabı) açmak | Hesap kişiye ait | 5 dk |
 | D2 ✅ 2026-10-03 (kendi hesabında) | Google Cloud projesinde YouTube Data API'yi açıp OAuth onayını vermek | Kimlik doğrulama sahibin elinde | 10 dk (adım adım rehberle) |
-| D3 | API denetim (audit) formunu göndermek | Başvuru sahibi beyanı | 5 dk (metni ben hazırlarım) |
+| D3 ✅ 2026-10-03 | API denetim (audit) formunu göndermek | Başvuru sahibi beyanı | 5 dk (metni ben hazırlarım) |
 | D4 | Para kazanma eşiği aşılınca: AdSense, kimlik/PIN, 20/B istisna belgesi | Yasal kimlik, posta, vergi dairesi | eşik anında, ~1 gün |
 
 ## Süren

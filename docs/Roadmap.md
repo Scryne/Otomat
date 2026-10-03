@@ -159,6 +159,10 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - **D1 ✅ D2 ✅ (2026-10-03, marka hesabı):** kanal Earth in Numbers `UClWIcIloPvkYIHEJf8ntArA` (`@earth.innumbers`,
     ülke boş), Cloud projesi `otomat-510508` (no. 915389790988) Scryne'ın kendi hesabında, token + istemci Secrets'ta
     (üzerine yazıldı). Test yüklemesi bilerek ertelendi (aynı güne yığmama dersi). Sırada D3 (ertesi gün).
+  - **D3 ✅ (2026-10-03 14:09):** audit formu gönderildi, Google'dan "Thank you for your submission" onayı geldi. Kanıtlar:
+    site ekran görüntüleri + `docs/rehber/kanit/otomat-oauth-yukleme-analitik.pdf` + `docs/rehber/otomat-mimari.png`.
+    Kullanım alanı: Video Yükleme + Analiz ve Raporlama; ek kota istenmedi (videos.insert 5/gün beyanı). Sırada: Google'ın
+    yanıtı (süre taahhüdü yok). Onay → repo değişkeni `OTOMAT_YAYIN=api`, Faz 5 kapanır.
 - **Notlar:**
   - Çeviri ilk sürümde 4 kelimelik altyazı parçalarını tek tek çevirtiyordu: model cümle ortasından bölünmüş satırları
     birleştirdi (13 → 9 satır), kapı ~%50 reddetti. Tam cümle çevirisi + aynı zamanlarla yeniden parçalama → %90.
