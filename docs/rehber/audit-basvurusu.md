@@ -13,7 +13,7 @@ sayfasında kullanılmamalı, gizlilik politikası YouTube bölümünü içermel
 
 **API client name:** Otomat
 
-**Google Cloud project number(s):** 93875631034 (project ID: otomat-510419)
+**Google Cloud project number(s):** [yeni projeden — ilk proje 2026-10-03 hesap askıya alınınca kapandı]
 
 **Website / homepage:** https://scryne.github.io/otomat-site/
 
@@ -34,7 +34,7 @@ YouTube Analytics API (reports.query).
 > any other channel, does not download or scrape YouTube content, and does not display YouTube data to anyone.
 > Credentials are stored as encrypted GitHub Actions secrets and are only used for my channel.
 
-**How many users / channels?** One (my own channel, Earth in Numbers: https://www.youtube.com/channel/UC6vokENR8hP2Yo1UdZSqdiQ).
+**How many users / channels?** One (my own channel, Earth in Numbers: [yeni marka hesabı kanalının URL'si]).
 
 **Expected daily quota usage:** ~1 upload (videos.insert, upload bucket), ~5 captions.insert (2,000 units),
 ~1 videos.update (50 units), ~5 Analytics queries. Well within the default quota; no quota increase requested.

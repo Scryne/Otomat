@@ -150,6 +150,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     Site public: https://scryne.github.io/otomat-site/ (yayın-öncesi taraması 0 bulgu). Kanal ülkesi boş (Scryne kararı).
   - **İlk API yüklemesi ✅:** `DBVL_Cakzbw` private; 5 yerelleştirme (en/es/pt/de/fr), 5 altyazı izi doğrulandı.
   - Bekleyen: **D3** audit formu (Scryne). Onay gelince repo değişkeni `OTOMAT_YAYIN=api` → planlı public yayın.
+  - **2026-10-03 geri adım:** yeni açılan kanal hesabı (`earthinnumbers.data`) aynı gün Cloud projesi + doğrulanmamış OAuth
+    + API yüklemesi sonrası Google'ın otomatik güvenlik sistemine takıldı: girişte telefon istiyor, her numarayı reddediyor;
+    OAuth istemcisi `disabled_client`. İlk proje, token ve test videosu kayıp sayıldı (`sirlar/eski-askida/`). Karar
+    (Scryne): kanal, Scryne'ın eski Google hesabının altında **marka hesabı**; D1–D2 bu yolla tekrar. Günlük hat
+    teslim modunda etkilenmedi. Ders: otomasyon kanalını yeni hesapla değil, yaşlı hesabın marka hesabıyla aç; kurulum
+    adımlarını aynı güne yığma.
 - **Notlar:**
   - Çeviri ilk sürümde 4 kelimelik altyazı parçalarını tek tek çevirtiyordu: model cümle ortasından bölünmüş satırları
     birleştirdi (13 → 9 satır), kapı ~%50 reddetti. Tam cümle çevirisi + aynı zamanlarla yeniden parçalama → %90.
