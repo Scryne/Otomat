@@ -22,7 +22,7 @@ public yüzeye yazılmaz (Kurallar). Google'ın denetim formu iletişim bilgisi 
    **Create / Oluştur**. Bu bir marka hesabı açar; kişisel kanalından ayrıdır.
 3. Kanal açılınca sağ üst profil resminde bu kanala geçili olduğunu kontrol et (gerekirse **Hesap değiştir →
    Earth in Numbers**).
-4. Kullanıcı adı: YouTube Studio → **Özelleştirme → Temel bilgiler → Herkese açık kullanıcı adı** → `@earth.in.numbers`
+4. Kullanıcı adı: YouTube Studio → **Özelleştirme → Temel bilgiler → Herkese açık kullanıcı adı** → **`@Earth.inNumbers`** (Scryne, 2026-10-03)
    (2026-10-02'de boştu; `@EarthInNumbers` alınmış).
 5. Kanal ayarlarında: **Ayarlar → Kanal → Gelişmiş ayarlar** → "Çocuklara özel değil". **Ülke alanını boş bırak**
    (Scryne kararı, 2026-10-02). Para kazanma başvurusunda doldurulur; YPP şartı "programın mevcut olduğu bir ülkede
