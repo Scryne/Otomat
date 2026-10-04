@@ -123,3 +123,11 @@ def test_seslendirme_okunusu():
     )
     assert seslendir("Timor-Leste: 1.6% of GDP") == "Timor Lesh-tay: 1 point 6% of GDP"
     assert seslendir("Palauan") == "Palauan"  # yalnız tam kelime
+
+
+def test_deger_yazisi_saklanan_hassasiyeti_korur():
+    assert kapilar.deger_yazisi(7.84, "per 100,000") == "7.84 per 100,000"
+    assert kapilar.deger_yazisi(7.8, "per 100,000") == "7.8 per 100,000"
+    assert kapilar.deger_yazisi(0.02, "tonnes per person") == "0.02 tonnes per person"
+    assert kapilar.deger_yazisi(12.0, "%") == "12%"
+    assert kapilar.deger_yazisi(1047, "") == "1,047"

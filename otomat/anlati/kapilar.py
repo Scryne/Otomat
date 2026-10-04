@@ -55,6 +55,9 @@ def deger_yazisi(deger, birim: str, ondalik: int | None = None) -> str:
 
     if not isinstance(deger, int | float) or isinstance(deger, bool):
         return str(deger)
+    if ondalik is None and isinstance(deger, float) and not deger.is_integer():
+        # eşitlik yüzünden 2 basamakla saklanan değer (7.84) metinde "7.8" olmasın: sıralama yeniden eşit görünür
+        ondalik = 1 if round(deger, 1) == deger else 2
     d = sayi(deger, ondalik)
     if not birim or birim in ("days",):
         return d
