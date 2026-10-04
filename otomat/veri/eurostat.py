@@ -4,11 +4,12 @@ import urllib.parse
 from collections import defaultdict
 
 from otomat.veri import Kaynak, OlguPaketi
+from otomat.veri.adlar import goster
 from otomat.veri.http import json_al
 from otomat.veri.siralama import referans_yili, siralama_paketleri
 
 API = "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data"
-LISANS = "CC BY 4.0 (Eurostat)"
+LISANS = "CC BY 4.0"
 
 # Eurostat iki harfli kodları ISO 3166-1'den iki yerde ayrılır: EL (Yunanistan), UK.
 ISO3 = {
@@ -95,7 +96,7 @@ def yil_tablosu(js: dict) -> tuple[dict[int, dict[str, float]], dict[str, str]]:
             continue  # EU27_2020, EA20 gibi toplamlar
         iso = ISO3[kod]
         ad = geo["label"][kod]
-        isimler[iso] = ISIM_DUZELT.get(ad, ad.split(" (")[0])
+        isimler[iso] = goster(ISIM_DUZELT.get(ad, ad.split(" (")[0]))
         for yil, ti in zaman.items():
             deger = js["value"].get(str(gi * adim["geo"] + ti * adim["time"]))
             if deger is not None:

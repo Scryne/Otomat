@@ -25,7 +25,8 @@ def _donem(gun: int) -> str:
 def _birimli(o: dict, b: dict, k: str) -> str:
     from otomat.anlati.kapilar import deger_yazisi
 
-    ondalik = o.get("__ondalik") if k.endswith(("_value", "_from", "_to")) else None
+    # sıralama değerleri paketin ondalığıyla (eşitlik varsa bir fazlası); ortanca kendi değeriyle, "1.60" olmasın
+    ondalik = o.get("__ondalik") if k.endswith(("_value", "_from", "_to")) and k != "median_value" else None
     return deger_yazisi(o[k], b.get(k, ""), ondalik)
 
 

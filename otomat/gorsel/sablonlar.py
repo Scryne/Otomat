@@ -32,7 +32,15 @@ def ciz(
     kaynak = paket.kaynak.ad
     if sablon == "nokta_harita":
         return nokta_harita.ciz(
-            g["olaylar"], baslik, kaynak, cikti, kutu=g.get("kutu"), kanca=kanca, saniye=saniye, **kw
+            g["olaylar"],
+            baslik,
+            kaynak,
+            cikti,
+            kutu=g.get("kutu"),
+            kanca=kanca,
+            bolge_adi=paket.olgular["region"].deger if "region" in paket.olgular and g.get("kutu") else None,
+            saniye=saniye,
+            **kw,
         )
     ortanca = paket.olgular.get("median_value")
     if sablon == "sirali_cubuk":

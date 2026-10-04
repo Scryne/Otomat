@@ -4,11 +4,12 @@ import datetime as dt
 from collections import defaultdict
 
 from otomat.veri import Kaynak, OlguPaketi
+from otomat.veri.adlar import goster
 from otomat.veri.http import json_al
 from otomat.veri.siralama import referans_yili, siralama_paketleri
 
 API = "https://api.worldbank.org/v2"
-LISANS = "CC BY 4.0 (World Bank WDI)"
+LISANS = "CC BY 4.0"
 GERI_YIL = 14
 
 
@@ -18,7 +19,7 @@ def ulkeler_indir() -> list[dict]:
 
 def ulkeler(ham: list[dict]) -> dict[str, str]:
     """Gerçek ülkeler (bölge toplamları hariç): ISO3 -> ad."""
-    return {u["id"]: u["name"] for u in ham if u["region"]["id"] != "NA"}
+    return {u["id"]: goster(u["name"]) for u in ham if u["region"]["id"] != "NA"}
 
 
 def gosterge_url(kod: str, bitis: int) -> str:

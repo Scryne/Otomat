@@ -44,9 +44,23 @@ class Anlatim:
         return [seslendir(c) for c in [self.kanca, *self.cumleler]]
 
 
+# Kokoro'nun yanlış okuduğu yer adları; ekranda asıl ad kalır. 175 adın TTS → Whisper taramasıyla bulundu (2026-10-04):
+# "Türkiye" → "Tuakii", "Timor-Leste" → "T-MoreLest", "Nauru" → "Now who", "Palau" → "Palo", "U.S." → durak.
+OKUNUS = {
+    "Türkiye": "Tur-kee-yay",
+    "Timor-Leste": "Timor Lesh-tay",
+    "Nauru": "Na-oo-roo",
+    "Palau": "Pa-lau",
+    "U.S.": "US",
+}
+
+
 def seslendir(metin: str) -> str:
     """Ekran metnini TTS'in kararsız okuduğu kalıplardan arındır (ekranda '1.6', seste '1 point 6')."""
-    m = metin.replace("km²", "square kilometers").replace("per km2", "per square kilometer")
+    m = metin
+    for ad, okunus in OKUNUS.items():
+        m = re.sub(rf"(?<!\w){re.escape(ad)}(?!\w)", okunus, m)
+    m = m.replace("km²", "square kilometers").replace("per km2", "per square kilometer")
     m = re.sub(r"\$(\d[\d,]*)", r"\1 dollars", m)
     m = re.sub(r"€(\d[\d,]*)", r"\1 euros", m)
     m = re.sub(r"(\d)\.(\d+)", r"\1 point \2", m)

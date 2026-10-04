@@ -9,10 +9,11 @@ from collections import Counter, defaultdict
 from dataclasses import dataclass
 
 from otomat.veri import Kaynak, Olgu, OlguPaketi
+from otomat.veri.adlar import goster
 from otomat.veri.http import json_al
 
 SERVIS = "https://earthquake.usgs.gov/fdsnws/event/1/query"
-LISANS = "Public domain (U.S. Geological Survey)"
+LISANS = "public domain"
 ASGARI_ULKE_OLAYI = 25
 _YON = re.compile(
     r"^(?:\d+\s*km\s+)?(?:(?:north|south|east|west|northern|southern|eastern|western|central|off the coast of)"
@@ -30,8 +31,9 @@ class Deprem:
     bolge: str
 
 
-_ESANLAM = {"Fiji Islands": "Fiji", "Timor Leste": "Timor-Leste", "Burma (Myanmar)": "Myanmar"}
-_OKYANUS = re.compile(r"\b(Ridge|Rise|Passage|Ocean|Sea|Basin|Trench|Gulf|Strait|Fracture Zone)\b|^[a-z]")
+_OKYANUS = re.compile(
+    r"\b(Ridge|Rise|Passage|Ocean|Sea|Basin|Trench|Gulf|Strait|Fracture Zone|Junction|Channel)\b|^[a-z]"
+)
 
 
 def bolge(yer: str | None) -> str:
@@ -40,7 +42,7 @@ def bolge(yer: str | None) -> str:
         return "Unknown"
     ad = yer.rsplit(",", 1)[1].strip() if "," in yer else (_YON.sub("", yer.strip()).strip() or yer.strip())
     ad = re.sub(r"\s+region$", "", ad)
-    return _ESANLAM.get(ad, ad)
+    return goster(ad)
 
 
 def kara_mi(bolge_adi: str) -> bool:
@@ -165,7 +167,7 @@ def paketler(geojson: dict, url: str, cekildi: str, gun: int = 365) -> list[Olgu
                 },
                 gorsel={"sablon": "nokta_harita", "olaylar": _noktalar(olaylar), "kutu": _kutu(olaylar)},
                 kaynak=kaynak,
-                etiketler=["earthquake", "your country"],
+                etiketler=["earthquake", ad],
             )
         )
 

@@ -23,8 +23,12 @@ def oku(ad):
         ("80 km ENE of Tadine, New Caledonia", "New Caledonia"),
         ("south of the Fiji Islands", "Fiji"),
         ("Kermadec Islands region", "Kermadec Islands"),
-        ("central Mid-Atlantic Ridge", "central Mid-Atlantic Ridge"),
-        ("12 km S of Ankara, Turkey", "Turkey"),
+        ("central Mid-Atlantic Ridge", "Central Mid-Atlantic Ridge"),
+        ("12 km S of Ankara, Turkey", "Türkiye"),
+        ("M 7.5 - 2026 Noto Peninsula, Japan Earthquake", "Japan"),
+        ("2025 Hubbard Glacier Earthquake", "Hubbard Glacier"),
+        ("10 km NW of Ferndale, CA", "California"),
+        ("off the west coast of northern Sumatra", "Northern Sumatra"),
         (None, "Unknown"),
     ],
 )
@@ -138,3 +142,29 @@ def test_artis_paketi_yalniz_gercek_artislar():
     p = artis({u: (11.0 - i * 0.2 if i < 4 else (10.04 if i == 4 else 9.0)) for i, u in enumerate(ulkeler)})
     assert [o["iso3"] for o in p.gorsel["ogeler"]] == ["C00", "C01", "C02", "C03"]
     assert all(o["deger"] > o["onceki"] for o in p.gorsel["ogeler"])
+
+
+def test_dunya_bankasi_adlari_okunur():
+    from otomat.veri.adlar import goster
+
+    assert [goster(a) for a in ("Korea, Rep.", "Congo, Dem. Rep.", "Bahamas, The", "Lao PDR", "St. Lucia")] == [
+        "South Korea",
+        "DR Congo",
+        "The Bahamas",
+        "Laos",
+        "Saint Lucia",
+    ]
+    assert goster("Puerto Rico (US)") == "Puerto Rico" and goster("Turkiye") == goster("Turkey") == "Türkiye"
+
+
+def test_esit_degerde_birinci_iddiasi_yok():
+    from otomat.veri import Kaynak
+    from otomat.veri.siralama import ayrisan_ondalik, siralama_paketleri
+
+    assert ayrisan_ondalik([7.84, 7.79, 7.1, 6.0], 1) == 2  # 7.8 = 7.8 → bir basamak daha
+    assert ayrisan_ondalik([100, 100, 100, 99.9], 0) is None  # doymuş: paket yok
+    ulkeler = [f"C{i:02d}" for i in range(20)]
+    doymus = {u: (100.0 if i < 12 else 90.0 - i) for i, u in enumerate(ulkeler)}
+    kaynak = Kaynak("W", "u", "CC", CEKILDI)
+    turler = {p.tur for p in siralama_paketleri("wb", "k", "x", "%", 0, 2024, doymus, {}, kaynak, "the world")}
+    assert turler == {"en_dusuk_10"}  # "en yüksek" yok: 12 ülke %100

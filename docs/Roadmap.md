@@ -203,6 +203,16 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     3. Sıralı çubuk: artış grafiğinde çubuk seviyeyi, sıra artışı gösteriyordu (3. sıra en uzun çubuk olabiliyordu);
        artık çubuk artışın kendisi, değer "+x", etikette "önceki to son". 10 satırda çubuk içindeki değer çubuktan
        taşıyordu (her 10'lu videoda); değer fontu satır yüksekliğine, köşe yarıçapı DESIGN'daki 4 px'e bağlandı.
+  - (2026-10-04) Tam katalog taraması (104 paket × tüm varyantlar, 175 yer adı TTS → Whisper, şablon başına kare):
+    4. Ham World Bank adları anlatı ve grafikteydi ("Congo, Dem. Rep.", "Korea, Rep.", "Bahamas, The" → cümle sonunda
+       "Rep.."); USGS adlandırılmış depremleri bölge sanıyordu ("Japan Earthquake", "2025 Hubbard Glacier Earthquake"),
+       "CA" kısaltması, Turkey/Turkiye/Türkiye üç biçim. Tek ad katmanı: `otomat/veri/adlar.py` (üç adaptör).
+    5. Eşitlikte sahte "birinci": onlarca ülke %100'deyken alfabede önce gelen "en yüksek" oluyordu (elektrik, internet,
+       orman %0, CO2 0.0). İlk 4 değer gösterimde ayrışmıyorsa bir ondalık daha; yine ayrışmıyorsa paket yok. 104 → 98.
+    6. TTS yanlış okuyordu: Türkiye → "Tuakii", Palau, Nauru, Timor-Leste, "U.S." durağı. Yalnız seste yazım değişir
+       (`anlatim.OKUNUS`), ekranda asıl ad.
+    7. Ada bölgelerinde (110m kara verisinde yok) yakınlaşınca harita boş kalıyordu: bölge adı haritanın üstünde.
+    8. Açıklama: iç içe parantezli lisans ve "#TheWorld", "#YourCountry" etiketleri sadeleşti.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

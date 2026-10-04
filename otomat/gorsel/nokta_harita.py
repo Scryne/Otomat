@@ -19,6 +19,7 @@ def ciz(
     kutu: dict | None = None,
     kanca: str | None = None,
     sayac_etiketi: str = "earthquakes",
+    bolge_adi: str | None = None,  # bölge videosu: küçük adalar 110m kara verisinde yok, yakınlaşınca harita boş kalır
     genislik: int = 1080,
     yukseklik: int = 1920,
     fps: int = 30,
@@ -49,6 +50,17 @@ def ciz(
             ax.axvline(b, **izgara)
         for e in range(-85, 86, 5):
             ax.axhline(e, **izgara)
+        if bolge_adi:
+            s.fig.text(
+                g["sol"],
+                harita_ust - 0.008,
+                bolge_adi,
+                ha="left",
+                va="top",
+                zorder=5,
+                color=renk("ink-secondary"),
+                fontproperties=font("label", s.olcek),
+            )
     dunya = harita.KUTU_DUNYA if not kaydirma else (10.0, 370.0, -58.0, 84.0)
     hedef = (kutu["boylam"][0], kutu["boylam"][1], kutu["enlem"][0], kutu["enlem"][1]) if kutu else dunya
     harita.kutu_ayarla(ax, dunya, en_boy)

@@ -113,3 +113,13 @@ def test_altyazi_parcalari():
     p = altyazi_parcalari([Parca(1.0, 3.0, "one two three four five six seven eight")], kelime=4)
     assert [x.metin for x in p] == ["one two three four", "five six seven eight"]
     assert p[0].bas == 1.0 and abs(p[-1].son - 3.0) < 1e-9
+
+
+def test_seslendirme_okunusu():
+    from otomat.anlati.anlatim import seslendir
+
+    assert seslendir("Türkiye, then Palau and the U.S. Virgin Islands.") == (
+        "Tur-kee-yay, then Pa-lau and the US Virgin Islands."
+    )
+    assert seslendir("Timor-Leste: 1.6% of GDP") == "Timor Lesh-tay: 1 point 6% of GDP"
+    assert seslendir("Palauan") == "Palauan"  # yalnız tam kelime

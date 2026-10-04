@@ -34,7 +34,10 @@ def kaynak_sayfasi(paket: OlguPaketi) -> str:
 
 
 def aciklama(paket: OlguPaketi, a: anlatim.Anlatim) -> str:
-    etiket = " ".join("#" + re.sub(r"\W", "", e.title()) for e in paket.etiketler if e)
+    # kelime başı büyük, gerisi olduğu gibi: "DR Congo" → #DRCongo (title() "#DrCongo" yapıyordu)
+    etiket = " ".join(
+        "#" + re.sub(r"\W", "", "".join(w[:1].upper() + w[1:] for w in e.split())) for e in paket.etiketler if e
+    )
     return (
         f"{a.kanca}\n\n{' '.join(a.cumleler)}\n\n"
         f"Data: {paket.kaynak.ad} ({paket.kaynak.lisans}), retrieved {paket.kaynak.cekildi[:10]}.\n"
