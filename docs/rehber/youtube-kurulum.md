@@ -96,8 +96,7 @@ Metni ben hazırladım: `docs/rehber/audit-basvurusu.md`. Form: https://support.
 ## Plan B — audit gelene kadar (haftada ~5 dk)
 
 Bot her gün videoyu üretir ve GitHub'da haftalık paketi hazırlar. Haftada bir:
-1. GitHub → Scryne/Otomat → **Releases** → bu haftanın "Teslim" sürümü → videoları indir (her gün bir `tarih_video.mp4`
-   + `tarih_YUKLE.md` + altyazılar).
-2. YouTube Studio → **Oluştur → Video yükle** → klasördeki mp4'leri sürükle.
-3. Her video için `YUKLE.md`'deki başlık ve açıklamayı yapıştır, **Planla** ile yazan saati seç. Altyazılar `.srt` olarak
-   klasörde; Studio → Altyazılar → Dosya yükle (isteğe bağlı, otomatik dublaj zaten açık).
+1. GitHub → Scryne/Otomat → **Releases** → bu haftanın "Teslim" sürümü → videoları ve `HAFTA.md`'yi indir.
+2. `HAFTA.md`'yi aç: videolar sırayla, her biri için yayın saati (TR, bir sonraki haftaya günde bir) ve kopyala-yapıştır
+   blokları orada. Studio → **Oluştur → Video yükle** → mp4'leri sürükle, her videoya kendi bloğunu yapıştır, **Planla**.
+   Başlık birebir kalmalı: bot videoyu kanalda başlığından tanıyıp analitiğini ona bağlar.

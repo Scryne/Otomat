@@ -16,3 +16,37 @@ def test_srt():
     assert metin.startswith("1\n00:00:00,000 --> 00:00:01,500\nHello world\n")
     assert "2\n00:00:01,500 --> 00:01:01,250\nSecond" in metin
     assert "Hola" in srt([Parca(0, 1, "Hello")], ["Hola"])
+
+
+def test_hafta_sayfasi_teslim_dosyalarindan(tmp_path, monkeypatch):
+    import datetime as dt
+    import json
+
+    from otomat import gunluk
+    from otomat.yayin import hafta
+
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    for gun, baslik in (("2026-10-04", "Second Video"), ("2026-10-02", "First: Video")):
+        d = tmp_path / gun
+        d.mkdir()
+        (d / "video.mp4").write_bytes(b"x")
+        meta = {"baslik": baslik, "aciklama": "Line one\n\n#Shorts #Data", "etiketler": ["data", "the world"]}
+        (d / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+        gunluk.teslime_koy(d, dt.date.fromisoformat(gun))
+    eski = "# 2026-10-03: yayın 2026-10-04 14:00 UTC\n\n**Başlık:** Old\n\n"
+    eski += "**Açıklama:**\n\n```\nA\n```\n\n**Etiketler:** \n"
+    (tmp_path / "teslim" / "2026-10-03_YUKLE.md").write_text(eski, encoding="utf-8")
+    yukleler = [hafta.oku(p.read_text(encoding="utf-8")) for p in sorted((tmp_path / "teslim").glob("*_YUKLE.md"))]
+    assert yukleler[0] == {
+        "tarih": "2026-10-02",
+        "baslik": "First: Video",
+        "aciklama": "Line one\n\n#Shorts #Data",
+        "etiketler": "data, the world",
+    }
+    assert yukleler[1]["baslik"] == "Old" and yukleler[1]["etiketler"] == ""
+    sayfa = hafta.olustur(list(reversed(yukleler)), "teslim-2026-H40")
+    # H40 videoları H41'e günde bir: pazartesi 5 Ekim 14:00 UTC = 17:00 TR
+    assert "## 1. `2026-10-02_video.mp4` → Pazartesi 05.10.2026 17:00 (TR)" in sayfa
+    assert "## 3. `2026-10-04_video.mp4` → Çarşamba 07.10.2026 17:00 (TR)" in sayfa
+    assert "```\nFirst: Video\n```" in sayfa and "```\nLine one\n\n#Shorts #Data\n```" in sayfa
+    assert hafta.takvim("teslim-2026-H53", 1)[0].date().isoformat() == "2027-01-04"

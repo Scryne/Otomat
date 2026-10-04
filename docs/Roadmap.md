@@ -169,6 +169,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Rakam ayrıştırıcı "August 14, 2026"yı tek sayı sanıyordu; binlik ayracı yalnız ardından tam 3 hane gelirse sayılır.
   - Plan B için artifact yerine haftalık Release: Scryne haftada tek sayfadan 7 videoyu indirir.
   - GitHub Pages private repoda ücretsiz değil → site ayrı public repoya gider (K-1).
+  - (2026-10-04) Plan B'de günlük YUKLE.md "üretimin ertesi günü, UTC" saati yazıyordu; haftalık toplu yüklemede bu
+    saatler geçmiş olur ve Studio TR saati ister. Artık Release'e `HAFTA.md` (`otomat/yayin/hafta.py`) eklenir: H hafta
+    videoları H+1'e günde bir, 17:00 TR, kopyala-yapıştır bloklarıyla. H40 sayfası elle üretilip Release'e kondu.
 
 ### Faz 6: Geri besleme ve işletim
 - **İşler:** analitik toplayıcı (günlük; `engagedViews`, `averageViewPercentage`; 72 sa olgunlaşma); ödül tanımı;

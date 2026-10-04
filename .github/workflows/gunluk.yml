@@ -52,8 +52,14 @@ jobs:
         run: |
           TAG="teslim-$(date -u +%G-H%V)"
           gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Teslim $(date -u +%G) / hafta $(date -u +%V)" \
-            --notes "Plan B: bu haftanın videoları. Her video için tarihli YUKLE.md dosyasındaki başlık, açıklama ve saati kullan (docs/rehber/youtube-kurulum.md)."
+            --notes "Plan B: bu haftanın videoları."
           gh release upload "$TAG" teslim/* --clobber
+          # haftanın tüm YUKLE.md'lerinden tek sayfa: sıra, TR yayın saati, kopyala-yapıştır blokları
+          mkdir -p hafta
+          gh release download "$TAG" -p "*_YUKLE.md" -D hafta --clobber
+          uv run python -m otomat.yayin.hafta hafta "$TAG" > HAFTA.md
+          gh release upload "$TAG" HAFTA.md --clobber
+          gh release edit "$TAG" --notes "Plan B: bu haftanın videoları. Yüklerken yalnız HAFTA.md'yi aç: sıra, yayın saati (TR) ve yapıştırılacak metinler orada."
       - name: Durumu kaydet
         if: always()
         run: |

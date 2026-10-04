@@ -22,9 +22,9 @@ from otomat.gorsel import sablonlar
 from otomat.uretim import uret
 from otomat.veri import OlguPaketi
 from otomat.veri.toplayici import topla
+from otomat.yayin.hafta import YAYIN_SAATI_UTC
 from otomat.yayin.hazirla import hazirla
 
-YAYIN_SAATI_UTC = 14  # ABD sabahı / Avrupa öğleden sonrası
 RAPOR = KOK / "raporlar" / "gunluk.jsonl"
 ALARM = KOK / "calisma" / "alarm.md"
 YETKI_COZUMU = (
@@ -58,8 +58,9 @@ def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
     return video_id
 
 
-def teslime_koy(dizin: Path, bugun: dt.date, yayin_ani: dt.datetime) -> Path:
-    """Dosyalar tarih önekiyle düz bir klasöre: Actions bunları haftanın GitHub Release'ine ekler."""
+def teslime_koy(dizin: Path, bugun: dt.date) -> Path:
+    """Dosyalar tarih önekiyle düz bir klasöre: Actions bunları haftanın GitHub Release'ine ekler ve o haftanın
+    YUKLE.md'lerinden yayın saatli HAFTA.md'yi üretir (yayin/hafta.py)."""
     hedef = KOK / "teslim"
     hedef.mkdir(parents=True, exist_ok=True)
     on = bugun.isoformat()
@@ -67,7 +68,7 @@ def teslime_koy(dizin: Path, bugun: dt.date, yayin_ani: dt.datetime) -> Path:
         shutil.copy(dizin / ad, hedef / f"{on}_{ad}")
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
     (hedef / f"{on}_YUKLE.md").write_text(
-        f"# {bugun.isoformat()}: yayın {yayin_ani.strftime('%Y-%m-%d %H:%M')} UTC\n\n"
+        f"# {bugun.isoformat()}\n\nYayın saati ve sıra: bu haftanın HAFTA.md dosyası.\n\n"
         f"**Başlık:** {meta['baslik']}\n\n**Açıklama:**\n\n```\n{meta['aciklama']}\n```\n\n"
         f"**Etiketler:** {', '.join(meta['etiketler'])}\n",
         encoding="utf-8",
@@ -138,7 +139,7 @@ def main() -> None:
         yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
         video_id = yayinla_api(dizin, yayin_ani) if mod == "api" else None
         if mod != "api":
-            kayit["teslim"] = str(teslime_koy(dizin, bugun, yayin_ani).relative_to(KOK))
+            kayit["teslim"] = str(teslime_koy(dizin, bugun).relative_to(KOK))
         durum.kaydet(db, paket, bugun, video_id)
         durum.secim_kaydet(db, bugun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)
         kayit.update(
