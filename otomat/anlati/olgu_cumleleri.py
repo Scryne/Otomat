@@ -176,7 +176,7 @@ def _siralama(yon: str) -> list[Varyant]:
 def _artis() -> list[Varyant]:
     return [
         lambda o, b: [
-            f"Where did {o['indicator']} rise the most since {o['from_year']}?",
+            f"Where did the {o['indicator']} rise the most since {o['from_year']}?",
             f"In {o['rank1_country']}, it went from {_birimli(o, b, 'rank1_from')} to {_birimli(o, b, 'rank1_to')}.",
             f"{o['rank2_country']} went from {_birimli(o, b, 'rank2_from')} to {_birimli(o, b, 'rank2_to')}.",
             f"And {o['rank3_country']}, from {_birimli(o, b, 'rank3_from')} to {_birimli(o, b, 'rank3_to')}.",
@@ -188,7 +188,7 @@ def _artis() -> list[Varyant]:
             f"Then {o['rank2_country']} and {o['rank3_country']}.",
         ],
         lambda o, b: [
-            f"Between {o['from_year']} and {o['to_year']}, {o['indicator']} in {o['rank1_country']} climbed from "
+            f"Between {o['from_year']} and {o['to_year']}, the {o['indicator']} in {o['rank1_country']} climbed from "
             f"{_birimli(o, b, 'rank1_from')} to {_birimli(o, b, 'rank1_to')}.",
             f"No country {_yer(o)} rose faster.",
             f"{o['rank2_country']} was second, {o['rank3_country']} third.",
@@ -200,7 +200,7 @@ def _artis() -> list[Varyant]:
             f"First, {o['rank1_country']}: {_birimli(o, b, 'rank1_from')} to {_birimli(o, b, 'rank1_to')}.",
         ],
         lambda o, b: [
-            f"In {o['from_year']}, {o['indicator']} in {o['rank1_country']} was {_birimli(o, b, 'rank1_from')}.",
+            f"In {o['from_year']}, the {o['indicator']} in {o['rank1_country']} was {_birimli(o, b, 'rank1_from')}.",
             f"By {o['to_year']}, it was {_birimli(o, b, 'rank1_to')}, the biggest rise {_yer(o)}.",
             f"{o['rank2_country']} and {o['rank3_country']} follow.",
         ],

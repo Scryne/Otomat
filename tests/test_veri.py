@@ -113,3 +113,28 @@ def test_hash_kararli():
     b = usgs.paketler(oku("usgs.json"), "baska-url", "2030-01-01T00:00:00+00:00")
     assert [p.hash for p in a] == [p.hash for p in b]
     assert len({p.hash for p in a}) == len(a)
+
+
+def test_artis_paketi_yalniz_gercek_artislar():
+    from otomat.veri import Kaynak
+    from otomat.veri.siralama import siralama_paketleri
+
+    kaynak = Kaynak("E", "u", "CC", CEKILDI)
+    ulkeler = [f"C{i:02d}" for i in range(20)]
+    isim = {u: u for u in ulkeler}
+    eski = {u: 10.0 for u in ulkeler}
+
+    def artis(yeni):
+        p = siralama_paketleri(
+            "eurostat", "k", "birth rate", "per 1,000", 1, 2025, yeni, isim, kaynak, "Europe", eski, 2015
+        )
+        return next((x for x in p if x.tur == "en_cok_artan_10"), None)
+
+    # hepsi düştü (en az düşen −0,2): "en çok artan" paketi olmamalı
+    assert artis({u: 9.8 - i * 0.1 for i, u in enumerate(ulkeler)}) is None
+    # yalnız iki ülke arttı: üç sıralık anlatım kurulamaz
+    assert artis({u: (10.5 if i < 2 else 9.0) for i, u in enumerate(ulkeler)}) is None
+    # yuvarlamada artış kaybolan (10.0 → 10.04) sayılmaz; grafik yalnız artanları taşır
+    p = artis({u: (11.0 - i * 0.2 if i < 4 else (10.04 if i == 4 else 9.0)) for i, u in enumerate(ulkeler)})
+    assert [o["iso3"] for o in p.gorsel["ogeler"]] == ["C00", "C01", "C02", "C03"]
+    assert all(o["deger"] > o["onceki"] for o in p.gorsel["ogeler"])

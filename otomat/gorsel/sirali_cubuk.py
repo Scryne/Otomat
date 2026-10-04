@@ -1,4 +1,8 @@
-"""Sıralı çubuk şablonu: 10. sıradan 1. sıraya geri sayım, 1. sıra vurgu renginde."""
+"""Sıralı çubuk şablonu: 10. sıradan 1. sıraya geri sayım, 1. sıra vurgu renginde.
+
+Değişim modu (en çok artanlar): çubuk artışın kendisidir, değer "+x" yazılır, satır etiketinde "<önceki> to <son>"
+durur (Barlow'da ok glifi yok). Yoksa sıra artışa göre, çubuk seviyeye göre olur ve 3. sıra en uzun çubuğu taşıyabilir.
+"""
 
 from pathlib import Path
 
@@ -19,6 +23,7 @@ def ciz(
     ortanca: float | None = None,
     ondalik: int | None = None,
     kanca: str | None = None,
+    degisim: bool = False,  # ogeler'de "onceki" olmalı
     genislik: int = 1080,
     yukseklik: int = 1920,
     fps: int = 30,
@@ -33,12 +38,20 @@ def ciz(
     g = s.g
     alt, ust = 0.30, min(0.79, s.icerik_ust)
     ax = s.eksen(alt, ust, g["sol"], g["sag"])
-    en_buyuk = max(abs(o["deger"]) for o in ogeler) or 1
+    if degisim:
+        cubuk_deger = [round(o["deger"] - o["onceki"], ondalik if ondalik is not None else 6) for o in ogeler]
+    else:
+        cubuk_deger = [o["deger"] for o in ogeler]
+    on_ek = "+" if degisim else ""
+    en_buyuk = max(abs(v) for v in cubuk_deger) or 1
     ax.set_xlim(0, en_buyuk * 1.0)
     ax.set_ylim(n - 0.5, -0.5)
     satir_yuk = 0.62
     sutun_etiket = font("label", s.olcek)
-    sutun_deger = font("title", s.olcek, 0.8)
+    satir_px = (ust - alt) * yukseklik / n  # bir satırın piksel yüksekliği
+    cubuk_px = satir_px * (satir_yuk - 0.16)
+    # değer çubuğun içine de yazılabilir: 10 satırda title boyutu çubuktan uzun kalıyordu
+    sutun_deger = font("title", s.olcek, min(0.8, 0.85 * cubuk_px / (64 * s.olcek)))
 
     cubuklar, etiketler, degerler = [], [], []
     for i, o in enumerate(ogeler):
@@ -47,7 +60,7 @@ def ciz(
             (0, i - satir_yuk / 2 + 0.16),
             0,
             satir_yuk - 0.16,
-            boxstyle="round,pad=0,rounding_size=0.06",
+            boxstyle=f"round,pad=0,rounding_size={4 * s.olcek / satir_px}",  # DESIGN: rounded.bar 4px
             mutation_aspect=1 / (en_buyuk * 0.12),
             facecolor=renk_i,
             edgecolor="none",
@@ -58,7 +71,8 @@ def ciz(
             ax.text(
                 0,
                 i - 0.30,
-                f"{i + 1}. {o['etiket']}",
+                f"{i + 1}. {o['etiket']}"
+                + (f"   {sayi(o['onceki'], ondalik)} to {sayi(o['deger'], ondalik)}" if degisim else ""),
                 ha="left",
                 va="center",
                 color=renk("ink-primary"),
@@ -66,7 +80,9 @@ def ciz(
             )
         )
         degerler.append(
-            ax.text(0, i + 0.13, "", ha="left", va="center", color=renk("ink-primary"), fontproperties=sutun_deger)
+            ax.text(
+                0, i + 0.08, "", ha="left", va="center_baseline", color=renk("ink-primary"), fontproperties=sutun_deger
+            )
         )
     if ortanca is not None:
         ax.axvline(ortanca, color=renk("ink-muted"), linewidth=1.5 * s.olcek, linestyle=(0, (4, 4)), zorder=0)
@@ -94,14 +110,14 @@ def ciz(
             basla = s.baslangic + sira * aralik
             oran = yumusat((t - basla) / SATIR_SURE)
             gorunur = t >= basla
-            deger = ogeler[i]["deger"]
+            deger = cubuk_deger[i]
             gen = abs(deger) * oran
             cubuklar[i].set_width(gen)
             cubuklar[i].set_visible(gorunur)
             etiketler[i].set_visible(gorunur)
             etiketler[i].set_alpha(min(1.0, oran * 2))
             degerler[i].set_visible(gorunur)
-            degerler[i].set_text(sayi(deger * oran if oran < 1 else deger, ondalik))
+            degerler[i].set_text(on_ek + sayi(deger * oran if oran < 1 else deger, ondalik))
             degerler[i].set_x(gen + en_buyuk * 0.015)
             if gen + en_buyuk * 0.015 > en_buyuk * 0.82:  # değer çubuğun içine
                 degerler[i].set_x(gen - en_buyuk * 0.015)

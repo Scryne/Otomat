@@ -194,6 +194,15 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - `gh issue list --label alarm` etiket yokken 1 ile çıkıyor; Actions `bash -e` ile koştuğu için etiket önce `--force`
     ile oluşturulur (yerelde sınandı).
   - Ödül mutlak izlenme değil komşu sırası: büyüyen kanalda her yeni video eskisini geçer, bu konu/kanca başarısı değil.
+  - (2026-10-04) Yayın öncesi içerik taraması, gerçek metin ve karelerden üç hata çıkardı (Faz 2–4'ten kalma):
+    1. "En çok artan" paketi düşüşü artış diye anlatıyordu: 2015–2025'te Avrupa'da doğum oranı hiçbir ülkede artmamış,
+       yine de "biggest rise… Serbia, up from 9.3 to 9.1" üretildi. Artık yalnız yuvarlanmış değeri gerçekten artanlar
+       aday; 3'ten azsa paket yok (`siralama.py`, testli). Paket sayısı 105 → 104.
+    2. Dört gösterge adı "the highest {ad}" kalıbına oturmuyordu ("the highest people who emigrated in one year"):
+       fertility rate, yearly emigration, road death rate, birth rate. Artış şablonlarına "the" eklendi.
+    3. Sıralı çubuk: artış grafiğinde çubuk seviyeyi, sıra artışı gösteriyordu (3. sıra en uzun çubuk olabiliyordu);
+       artık çubuk artışın kendisi, değer "+x", etikette "önceki to son". 10 satırda çubuk içindeki değer çubuktan
+       taşıyordu (her 10'lu videoda); değer fontu satır yüksekliğine, köşe yarıçapı DESIGN'daki 4 px'e bağlandı.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

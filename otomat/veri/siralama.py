@@ -65,8 +65,13 @@ def siralama_paketleri(
 
     if eski and eski_yil:
         degisim = {k: degerler[k] - eski[k] for k in degerler.keys() & eski.keys()}
-        if len(degisim) >= 15:
-            sirali = sorted(degisim.items(), key=lambda x: x[1], reverse=True)[:10]
+        # yalnız gerçekten (yuvarlanmış değerde de) artanlar: hepsi düştüyse "en az düşen" artış diye anlatılmasın
+        sirali = [
+            (iso, d)
+            for iso, d in sorted(degisim.items(), key=lambda x: x[1], reverse=True)
+            if _yuvarla(degerler[iso], ondalik) > _yuvarla(eski[iso], ondalik)
+        ][:10]
+        if len(degisim) >= 15 and len(sirali) >= 3:
             olgular = {
                 "indicator": Olgu(ad, "what is being compared"),
                 "from_year": Olgu(eski_yil, "start year"),

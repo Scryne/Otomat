@@ -45,6 +45,7 @@ def ciz(
             ortanca=ortanca.deger if ortanca else None,
             ondalik=g.get("ondalik"),
             kanca=kanca,
+            degisim=paket.tur == "en_cok_artan_10",
             saniye=saniye,
             **kw,
         )

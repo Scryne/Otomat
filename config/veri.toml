@@ -32,7 +32,7 @@ ondalik = 0
 
 [[dunya_bankasi]]
 kod = "SP.DYN.TFRT.IN"
-ad = "births per woman"
+ad = "fertility rate"
 birim = "births per woman"
 ondalik = 2
 
@@ -116,7 +116,7 @@ ondalik = 0
 [[eurostat]]
 kod = "tps00177"
 filtre = { agedef = "REACH" }
-ad = "people who emigrated in one year"
+ad = "yearly emigration"
 birim = "people"
 ondalik = 0
 
@@ -130,14 +130,14 @@ ondalik = 1
 [[eurostat]]
 kod = "sdg_11_40"
 filtre = { tra_infr = "TOTAL", unit = "RT" }
-ad = "road deaths per 100,000 people"
+ad = "road death rate"
 birim = "per 100,000"
 ondalik = 1
 
 [[eurostat]]
 kod = "tps00204"
 filtre = { indic_de = "GBIRTHRT_THSP" }
-ad = "births per 1,000 people"
+ad = "birth rate"
 birim = "per 1,000"
 ondalik = 1
 
