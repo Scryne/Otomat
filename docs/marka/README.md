@@ -12,6 +12,7 @@ yazı Barlow Condensed SemiBold (OFL), glifler path'e çevrildi (canlı metin yo
 | `sembol/` | favicon (küçük kesim), app ikonları, siyah/beyaz/tek renk varyantlar, `head-snippet.html` |
 | `yatay/` | Yatay logo (koyu/açık zemin, siyah, beyaz) |
 | `master/` | Kaynak SVG'ler + üretici betikler (`final.py`) |
+| `sunum/` | Sunum panosu (5 slayt: brief, konsept, kullanım örnekleri) |
 
 **Kurallar:** 32 px ve altında `sembol-kucuk-*` (3 bant). Boşluk: logonun çevresinde en az bir bant yüksekliği.
 Bantlar yeniden renklendirilmez; turuncu yalnız taşan bantta. Koyu zeminde mavi bantlar, açık zeminde `#184f95`.

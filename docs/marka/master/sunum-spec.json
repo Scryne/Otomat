@@ -1,0 +1,27 @@
+{
+  "brand": "Earth in Numbers",
+  "tagline": "Maps and rankings from open data",
+  "brief": "A YouTube Shorts channel of maps and rankings drawn in code from open data (USGS, World Bank). Calm documentary tone, one warm signal per video for the number that matters.",
+  "adjectives": ["calm", "precise", "curious", "honest"],
+  "criteria": "Distinct from flag and rainbow-globe map channels, readable as a 40 px avatar, works in one colour, ties to the single-orange-accent rule of the videos.",
+  "mockups": ["social", "app-icon", "favicon-tab", "website", "sticker", "tshirt"],
+  "nav": ["Shorts", "Sources", "About"],
+  "brand_color": "#0b1220",
+  "greyscale": false,
+  "designer": "Otomat",
+  "round": 1,
+  "concepts": [
+    {
+      "name": "Off the scale",
+      "symbol": "out/sembol-acik-zemin.svg",
+      "lockup": "out/yatay-acik-zemin.svg",
+      "symbol_on_tile": "out/sembol-koyu-zemin.svg",
+      "lockup_on_dark": "out/yatay-koyu-zemin.svg",
+      "tile_color": "#0b1220",
+      "idea": "A striped Earth whose middle band runs past the globe: the one number that stands out.",
+      "rationale": ["Same single orange accent as every video", "Bands read as a ranking chart and as latitudes", "A 3-band cut keeps it clear at 16-32 px"]
+    }
+  ],
+  "recommendation": "Off the scale: the most ownable direction; the striped-disc kinship with the Eclipse IDE icon is broken by blue bands and the protruding bar.",
+  "next_steps": ["Upload avatar, banner and watermark in YouTube Studio", "Use the small cut at 32 px and below"]
+}

@@ -218,3 +218,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
 - **Notlar:**
+  - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design
+    skill'i; şeritli dünya + taşan turuncu bant). Studio'ya yükleme Scryne'da; nereye ne gittiği `docs/marka/README.md`.
+  - **AgentTube karşılaştırması (2026-10-04, darkzOGx/youtube-automation-agent):** kod alınmadı (README'de memecoin
+    adresi, Gemini'ye video ürettiriyor). İki fikri zaten bizde: "doğrulanmamış iddia yayını durdurur" = anlamsal hakem +
+    politika kapısı (Faz 4); "yeniden seslendirmede sahne süresi sesten gelir" = cümle başına Kokoro, süre sesten (Faz 4).
+    Medya hakkı kapısının karşılığı açık veri + açıklamadaki `Data:`/`Source:` atfı (`uretim.py`).
