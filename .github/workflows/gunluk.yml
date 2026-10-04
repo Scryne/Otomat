@@ -1,6 +1,7 @@
 name: Günlük üretim
 
-# Her gün bir video: veri → anlatım (kapılar) → ses → görsel → çeviri → yayın (api) ya da teslim paketi (Plan B).
+# Her gün bir video: analitik → veri → haydut seçimi → anlatım (kapılar) → ses → görsel → çeviri → yayın (api) ya da
+# teslim paketi (Plan B). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
 on:
   schedule:
     - cron: "17 6 * * *"
@@ -8,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: gunluk
@@ -41,6 +43,7 @@ jobs:
           sleep 5
           ollama pull "$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)"
       - name: Üret
+        id: uret
         run: uv run python -m otomat.gunluk
       - name: Teslim paketi (Plan B) → haftanın Release'i
         if: hashFiles('teslim/**') != ''
@@ -59,3 +62,23 @@ jobs:
           git add durum/ raporlar/
           git diff --cached --quiet || git commit -m "Günlük koşu: durum ve rapor ($(date -u +%F))"
           git push
+      - name: Alarm (issue)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SONUC: ${{ job.status }}
+          KOSU: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          if [ "$SONUC" != "success" ] && [ ! -f calisma/alarm.md ]; then
+            mkdir -p calisma
+            printf 'Günlük koşu %s: iş adımı düştü (%s), Python alarm yazamadan.\n' "$(date -u +%F)" "$SONUC" > calisma/alarm.md
+          fi
+          gh label create alarm --color B60205 --description "Otomat günlük koşu alarmı" --force
+          ACIK=$(gh issue list --label alarm --state open --json number --jq '.[0].number // empty')
+          if [ -f calisma/alarm.md ]; then
+            printf '\n[Koşu kaydı](%s) · @Scryne\n' "$KOSU" >> calisma/alarm.md
+            if [ -n "$ACIK" ]; then gh issue comment "$ACIK" --body-file calisma/alarm.md
+            else gh issue create --title "Otomat alarmı" --label alarm --body-file calisma/alarm.md; fi
+          elif [ -n "$ACIK" ]; then
+            gh issue close "$ACIK" --comment "Temiz koşu ($(date -u +%F)): alarm kapandı. $KOSU"
+          fi

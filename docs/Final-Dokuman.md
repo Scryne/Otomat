@@ -56,14 +56,19 @@ cron (Actions, günde 1)
                                                └─ yayın: API yükleme + planlama (audit varsa)
                                                     │   ya da Plan B: Actions artifact (haftalık paket)
                                                     └─ kayıt: SQLite + rapor
-cron (Actions, günde 1, ayrı iş) → analitik toplayıcı → SQLite → haydut parametreleri
-cron (haftalık) → raporlar/YYYY-WW.md (üretilen, düşen, yüklenen, en iyi/kötü video, haydut durumu, dokunuş süresi)
+aynı cron, üretimden önce → analitik toplayıcı (eşleştir + 3 günlük pencere) → SQLite → haydut posteriorları
+aynı cron, pazartesi → raporlar/YYYY-HWW.md (üretilen, düşen, yüklenen, en iyi/kötü video, haydut durumu, dokunuş süresi)
+sorun (analitik, kaynak, üretim, token) → calisma/alarm.md → "alarm" etiketli GitHub issue; temiz koşu kapatır
 ```
 
 Önemli tasarım kararları:
 - **K-4 Olgu koddan, çerçeve modelden.** LLM hiçbir sayı ya da özel ad üretmez; `{yer_tutucu}` yazar. Olgu cümleleri her
   olgu tipi için en az 5 varyantlı şablon havuzundan seçilir (politika: şablon tekrarı riski).
 - **Kapı başarısızsa yayın yok** (K-3). Aynı koşuda bir kez yeniden üretilir; ikinci kez düşerse video bırakılır.
+- **Ödül (Faz 6):** videonun ±14 gündeki komşularına göre sırası, yayın günü + 2 günlük pencerede: 0,7 × engagedViews
+  + 0,3 × ortalama izlenme yüzdesi. Mutlak sayı değil, çünkü kanal büyüdükçe her video öncekini geçer. Konu (kol) ve
+  kanca kalıbı için ayrı Beta(1, 1) posteriorları, son 56 günün ödülleriyle her koşuda baştan hesaplanır. Örnekleme
+  ters CDF ile: aynı u'larla veri olmadan seçilecek kol da bulunur, fark logda `degisti` olarak görünür.
 - **Tekrar engeli:** olgu paketi hash'i + (kol, ülke/bölge, gösterge) üçlüsü 60 gün içinde tekrar edilmez (videodaki
   botun %91 benzerlik eşiğinin bizdeki karşılığı, ama veride).
 - **Hacim:** günde 1 video (v1). Artış, öldürme kriteri penceresindeki veriye göre karar olur.

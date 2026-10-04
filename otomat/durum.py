@@ -1,6 +1,7 @@
-"""Kalıcı durum (SQLite, repoda). Şimdilik: üretilen paketler ve tekrar engeli."""
+"""Kalıcı durum (SQLite, repoda): üretilen paketler (tekrar engeli), seçim logu ve analitik ölçümleri."""
 
 import datetime as dt
+import json
 import os
 import sqlite3
 from pathlib import Path
@@ -22,6 +23,30 @@ CREATE TABLE IF NOT EXISTS uretilen (
     PRIMARY KEY (hash, tarih)
 );
 CREATE INDEX IF NOT EXISTS uretilen_anahtar ON uretilen (anahtar, tarih);
+-- Günde bir video: seçimin kolu (konu) ve kanca kalıbı haydudun öğrendiği eksenlerdir; `gunluk` haydudun kaydı (JSON).
+CREATE TABLE IF NOT EXISTS secimler (
+    tarih TEXT PRIMARY KEY,
+    anahtar TEXT NOT NULL,
+    hash TEXT NOT NULL,
+    konu TEXT NOT NULL,
+    kalip TEXT NOT NULL,
+    sablon TEXT NOT NULL,
+    baslik TEXT NOT NULL,
+    yayin_ani TEXT NOT NULL,
+    video_id TEXT,
+    gunluk TEXT
+);
+-- Ödül penceresi ölçümü: yayın günü + 2 gün (Analytics), bir kez yazılır.
+CREATE TABLE IF NOT EXISTS olcumler (
+    video_id TEXT PRIMARY KEY,
+    yayin_gunu TEXT NOT NULL,
+    olculdu TEXT NOT NULL,
+    views INTEGER NOT NULL,
+    engaged_views INTEGER NOT NULL,
+    ort_izlenme_yuzde REAL NOT NULL,
+    ort_izlenme_sn REAL NOT NULL,
+    abone INTEGER NOT NULL
+);
 """
 
 
@@ -48,3 +73,60 @@ def kaydet(db: sqlite3.Connection, paket: OlguPaketi, bugun: dt.date, video_id: 
         (paket.hash, paket.kol, paket.tur, paket.anahtar, bugun.isoformat(), video_id),
     )
     db.commit()
+
+
+def secim_kaydet(
+    db: sqlite3.Connection,
+    bugun: dt.date,
+    paket: OlguPaketi,
+    kalip: str,
+    sablon: str,
+    baslik: str,
+    yayin_ani: dt.datetime,
+    video_id: str | None,
+    gunluk: dict | None,
+) -> None:
+    db.execute(
+        "INSERT OR REPLACE INTO secimler VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        (
+            bugun.isoformat(),
+            paket.anahtar,
+            paket.hash,
+            paket.kol,
+            kalip,
+            sablon,
+            baslik,
+            yayin_ani.isoformat(),
+            video_id,
+            json.dumps(gunluk, ensure_ascii=False) if gunluk else None,
+        ),
+    )
+    db.commit()
+
+
+def gecmisi_doldur(db: sqlite3.Connection, rapor: Path) -> int:
+    """Faz 6 öncesi günlük koşuları (raporlar/gunluk.jsonl) seçim tablosuna taşır; elle yüklenen videolar eşleşsin."""
+    if not rapor.exists():
+        return 0
+    n = 0
+    for satir in rapor.read_text(encoding="utf-8").splitlines():
+        k = json.loads(satir)
+        if k.get("durum") != "tamam":
+            continue
+        kol = k["anahtar"].split(":")[0]
+        n += db.execute(
+            "INSERT OR IGNORE INTO secimler VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NULL)",
+            (
+                k["tarih"],
+                k["anahtar"],
+                k["hash"],
+                kol,
+                k["kalip"],
+                k["sablon"],
+                k["baslik"],
+                k["yayin_ani"],
+                k.get("video_id"),
+            ),
+        ).rowcount
+    db.commit()
+    return n

@@ -21,3 +21,4 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 |---|---|---|---|
 | R1 | Haftalık raporu okumak (vault + Kokpit) | haftalık | 2 dk |
 | R2 | (Plan B, audit onaylanmazsa) Studio'da haftanın videolarını toplu "herkese açık" yapmak | haftalık | 1 dk |
+| A1 | (yalnız alarm issue'su token düştü derse) yerelde yeniden yetki: tarayıcıda izin, sonra secret güncelleme | olay | 2 dk |

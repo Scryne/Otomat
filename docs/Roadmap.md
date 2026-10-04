@@ -16,7 +16,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | 🔄 Devam Ediyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
-| 6 | Geri besleme ve işletim | ⏳ Bekliyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
+| 6 | Geri besleme ve işletim | 🔄 Devam Ediyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
@@ -174,7 +174,23 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **İşler:** analitik toplayıcı (günlük; `engagedViews`, `averageViewPercentage`; 72 sa olgunlaşma); ödül tanımı;
   konu ve kanca için ayrı Beta posteriorları; seçim logu; haftalık rapor şablonu; alarm.
 - **Bitti Kriteri:** tablodaki gibi.
+- **Durum (2026-10-04):** kod bitti ve yerelde uçtan uca doğrulandı; "3 gün kesintisiz" sayacı 2026-10-05 koşusuyla başlar.
+  - Yazılan: `otomat/analitik.py` (yükleme listesi ↔ seçim başlık eşleştirmesi, Plan B'de elle yüklenen videolar için;
+    3 günlük ödül penceresi, 2 gün gecikmeyle bir kez ölçülür), `otomat/haydut.py` (ödül, Beta posteriorları, ters CDF'li
+    Thompson, `veri_olmadan` karşı-olgusu), `otomat/rapor.py` (haftalık rapor; elle `python -m otomat.rapor 2026-H41`),
+    `durum.py`'de `secimler` + `olcumler` tabloları ve Faz 6 öncesi koşuların `gunluk.jsonl`'dan taşınması. `gunluk.py`:
+    analitik üretimden önce (düşerse üretim sürer, alarm), konu ve kanca haydutta (kol rotasyonu kalktı), pazartesi rapor.
+    `gunluk.yml`: `issues: write`, "Alarm (issue)" adımı.
+  - Ödül tanımı: Final-Doküman "Önemli tasarım kararları".
+  - Doğrulama: 9 yeni test (40/40). Gerçek DB kopyası + gerçek token ile yerel günlük koşu geçti (analitik 0 eşleşme /
+    0 ölçüm, çünkü kanalda video yok; haydut veri yokken θ = u, `degisti` boş; video + 4 dil). Gerçek API ile H40 raporu
+    üretildi. Bozuk refresh token ile analitik adımı `invalid_grant` alarmını çözüm komutuyla yazdı, üretim sürdü.
+  - Açık: haydut audit gelene ya da Plan B videoları elle yüklenene kadar veri görmez; o zamana dek seçim prior'dan
+    rastgeledir. Analitik toplayıcının gerçek bir videoyla ilk ölçümü ilk public videodan ~5 gün sonra.
 - **Notlar:**
+  - `gh issue list --label alarm` etiket yokken 1 ile çıkıyor; Actions `bash -e` ile koştuğu için etiket önce `--force`
+    ile oluşturulur (yerelde sınandı).
+  - Ödül mutlak izlenme değil komşu sırası: büyüyen kanalda her yeni video eskisini geçer, bu konu/kanca başarısı değil.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
