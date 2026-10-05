@@ -101,6 +101,18 @@ def ciz(
         g["sol"], 0.255, birim, ha="left", va="top", color=renk("ink-secondary"), fontproperties=font("label", s.olcek)
     )
 
+    # Değerin yeri son genişliğe göre baştan seçilir: büyürken eşiği geçince dışarıdan içeri zıplıyordu (1. sıra)
+    bosluk = en_buyuk * 0.015
+    icte = [abs(v) + bosluk > en_buyuk * 0.82 for v in cubuk_deger]
+    ax_px = ax.get_window_extent(s.fig.canvas.get_renderer()).width
+    metin_gen = []  # son değer metninin genişliği (veri birimi): çubuk bundan kısayken içteki değer gizli
+    for i, d in enumerate(degerler):
+        d.set_text(on_ek + sayi(cubuk_deger[i], ondalik))
+        metin_gen.append(d.get_window_extent(s.fig.canvas.get_renderer()).width / ax_px * en_buyuk)
+        if icte[i]:
+            d.set_ha("right")
+            d.set_color(renk("surface"))
+
     son_tutma = 2.5
     pencere = max(saniye - s.baslangic - son_tutma, n * SATIR_SURE)
     aralik = pencere / n
@@ -117,12 +129,8 @@ def ciz(
             cubuklar[i].set_visible(gorunur)
             etiketler[i].set_visible(gorunur)
             etiketler[i].set_alpha(min(1.0, oran * 2))
-            degerler[i].set_visible(gorunur)
+            degerler[i].set_visible(gorunur and (not icte[i] or gen >= metin_gen[i] + 2 * bosluk))
             degerler[i].set_text(on_ek + sayi(deger * oran if oran < 1 else deger, ondalik))
-            degerler[i].set_x(gen + en_buyuk * 0.015)
-            if gen + en_buyuk * 0.015 > en_buyuk * 0.82:  # değer çubuğun içine
-                degerler[i].set_x(gen - en_buyuk * 0.015)
-                degerler[i].set_ha("right")
-                degerler[i].set_color(renk("surface"))
+            degerler[i].set_x(gen - bosluk if icte[i] else gen + bosluk)
 
     return s.calistir(cikti, guncelle)
