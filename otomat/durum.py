@@ -75,6 +75,11 @@ def kaydet(db: sqlite3.Connection, paket: OlguPaketi, bugun: dt.date, video_id: 
     db.commit()
 
 
+def bugun_secildi_mi(db: sqlite3.Connection, bugun: dt.date) -> bool:
+    """Günde bir video: yedek cron ya da elle tetikleme aynı günü ikinci kez üretmesin."""
+    return db.execute("SELECT 1 FROM secimler WHERE tarih = ?", (bugun.isoformat(),)).fetchone() is not None
+
+
 def secim_kaydet(
     db: sqlite3.Connection,
     bugun: dt.date,

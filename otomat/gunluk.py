@@ -3,6 +3,7 @@
 Ortam:
 - OTOMAT_YAYIN = "api" | "teslim" (varsayılan teslim; audit gelene kadar API yüklemesi private'a kilitlenir)
 - YT_ISTEMCI_JSON, YT_TOKEN_JSON (yükleme ve analitik; ikisi de aynı token)
+Gün zaten üretildiyse (yedek cron, elle tetikleme) hiçbir şey yapmadan çıkar.
 Pazartesi bir önceki haftanın raporunu yazar. Bir şey ters giderse `calisma/alarm.md` yazılır; Actions bunu
 GitHub issue'suna çevirir (gunluk.yml), sonraki temiz koşu issue'yu kapatır.
 """
@@ -124,6 +125,9 @@ def main() -> None:
     alarmlar: list[str] = []
     db = durum.baglan()
     durum.gecmisi_doldur(db, RAPOR)
+    if durum.bugun_secildi_mi(db, bugun):
+        print(f"{bugun.isoformat()} zaten üretildi; koşu atlandı.")
+        return
     yt, ya = analitik_adimi(db, bugun, kayit, alarmlar)
     try:
         paketler, hatalar = topla()

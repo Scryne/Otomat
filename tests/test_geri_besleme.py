@@ -205,3 +205,15 @@ def test_alarm(tmp_path, monkeypatch):
     assert (tmp_path / "alarm.md").read_text(encoding="utf-8") == "Günlük koşu 2026-10-05:\n\na\n\n---\n\nb\n"
     gunluk.alarm_yaz(GUN, [])
     assert not (tmp_path / "alarm.md").exists()
+
+
+def test_gun_zaten_uretildiyse_kosu_atlanir(db, tmp_path, monkeypatch):
+    bugun = dt.datetime.now(dt.UTC).date()
+    monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
+    monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
+    monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: pytest.fail("ikinci koşu üretime girdi"))
+    assert not durum.bugun_secildi_mi(db, bugun)
+    secim(db, bugun, "usgs", "soru", "A")
+    assert durum.bugun_secildi_mi(db, bugun)
+    gunluk.main()
+    assert not (tmp_path / "gunluk.jsonl").exists()

@@ -2,9 +2,12 @@ name: Günlük üretim
 
 # Her gün bir video: analitik → veri → haydut seçimi → anlatım (kapılar) → ses → görsel → çeviri → yayın (api) ya da
 # teslim paketi (Plan B). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
+# GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05): ikinci cron yedektir, gün zaten
+# üretildiyse koşu "Bugün üretildi mi" adımında biter.
 on:
   schedule:
     - cron: "17 6 * * *"
+    - cron: "47 16 * * *"
   workflow_dispatch:
 
 permissions:
@@ -24,12 +27,25 @@ jobs:
       YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
       YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
     steps:
+      # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
       - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Bugün üretildi mi
+        id: kontrol
+        run: |
+          if [ -f durum/otomat.db ] && python3 -c "import sqlite3, sys, datetime as d; sys.exit(0 if sqlite3.connect('durum/otomat.db').execute('SELECT 1 FROM secimler WHERE tarih = ?', (d.datetime.now(d.UTC).date().isoformat(),)).fetchone() else 1)"; then
+            echo "Bugün zaten üretildi, koşu atlanıyor."
+            echo "atla=1" >> "$GITHUB_OUTPUT"
+          fi
       - uses: astral-sh/setup-uv@v7
+        if: steps.kontrol.outputs.atla != '1'
         with:
           enable-cache: true
       - run: uv sync --locked --extra ses
+        if: steps.kontrol.outputs.atla != '1'
       - name: Model önbelleği
+        if: steps.kontrol.outputs.atla != '1'
         uses: actions/cache@v6
         with:
           path: |
@@ -37,6 +53,7 @@ jobs:
             modeller
           key: modeller-${{ hashFiles('config/modeller.toml') }}
       - name: Ollama
+        if: steps.kontrol.outputs.atla != '1'
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           (ollama serve > /tmp/ollama.log 2>&1 &)
@@ -44,6 +61,7 @@ jobs:
           ollama pull "$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)"
       - name: Üret
         id: uret
+        if: steps.kontrol.outputs.atla != '1'
         run: uv run python -m otomat.gunluk
       - name: Teslim paketi (Plan B) → haftanın Release'i
         if: hashFiles('teslim/**') != ''
@@ -61,7 +79,7 @@ jobs:
           gh release upload "$TAG" HAFTA.md --clobber
           gh release edit "$TAG" --notes "Plan B: bu haftanın videoları. Yüklerken yalnız HAFTA.md'yi aç: sıra, yayın saati (TR) ve yapıştırılacak metinler orada."
       - name: Durumu kaydet
-        if: always()
+        if: always() && steps.kontrol.outputs.atla != '1'
         run: |
           git config user.name "otomat-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -69,7 +87,7 @@ jobs:
           git diff --cached --quiet || git commit -m "Günlük koşu: durum ve rapor ($(date -u +%F))"
           git push
       - name: Alarm (issue)
-        if: always()
+        if: always() && steps.kontrol.outputs.atla != '1'
         env:
           GH_TOKEN: ${{ github.token }}
           SONUC: ${{ job.status }}
