@@ -30,5 +30,7 @@ jobs:
         run: |
           umask 077
           printf '%s\n' "$OTOMAT_SITE_ANAHTAR" > /tmp/site_anahtar
-          GIT_SSH_COMMAND="ssh -i /tmp/site_anahtar -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
-            git ls-remote git@github.com:Scryne/otomat-site.git HEAD
+          export GIT_SSH_COMMAND="ssh -i /tmp/site_anahtar -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          git clone -q --depth 1 git@github.com:Scryne/otomat-site.git /tmp/site
+          # dry-run receive-pack'e bağlanır: salt okunur anahtar burada reddedilir, hiçbir şey yazılmaz
+          git -C /tmp/site push --dry-run origin HEAD:refs/heads/yazma-kontrolu
