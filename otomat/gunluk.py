@@ -1,8 +1,11 @@
 """Günlük koşu: analitik → veri topla → haydut seçer → üret → çevir → yayınla (API) ya da teslim paketine koy (Plan B).
 
 Ortam:
-- OTOMAT_YAYIN = "api" | "teslim" (varsayılan teslim; audit gelene kadar API yüklemesi private'a kilitlenir)
-- YT_ISTEMCI_JSON, YT_TOKEN_JSON (yükleme ve analitik; ikisi de aynı token)
+- OTOMAT_YAYIN = "buffer" | "api" | "teslim" (varsayılan teslim). buffer: Buffer yükler, planlama ve altyazı bizim
+  API'mizle (audit gerektirmez, docs/arastirma/06); api: audit gelince doğrudan yükleme; teslim: Plan B Release
+  paketi. Buffer yayını düşerse video teslim paketine düşer, alarm yazılır.
+- YT_ISTEMCI_JSON, YT_TOKEN_JSON (yükleme ve analitik; ikisi de aynı token); buffer ayrıca BUFFER_API_KEY ve
+  OTOMAT_SITE_ANAHTAR (otomat-site deploy key) ister.
 Gün zaten üretildiyse (yedek cron, elle tetikleme) hiçbir şey yapmadan çıkar.
 Pazartesi bir önceki haftanın raporunu yazar. Bir şey ters giderse `calisma/alarm.md` yazılır; Actions bunu
 GitHub issue'suna çevirir (gunluk.yml), sonraki temiz koşu issue'yu kapatır.
@@ -56,6 +59,45 @@ def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
     )
     for srt in sorted(dizin.glob("*.srt")):
         youtube.altyazi_ekle(video_id, srt.stem, srt.read_text(encoding="utf-8"), yt=yt)
+    return video_id
+
+
+def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
+    """Günde tek yayın, YAYIN_SAATI_UTC'de: en erken bir saat sonrası, kanala yüklenmiş son videonun ertesi günü."""
+    aday = simdi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0)
+    if aday < simdi + dt.timedelta(hours=1):
+        aday += dt.timedelta(days=1)
+    son = db.execute("SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL").fetchone()[0]
+    if son:
+        ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
+        aday = max(aday, ertesi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0))
+    return aday
+
+
+def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str]) -> str:
+    """Buffer private yükler; planlı yayın, etiket, yerelleştirme ve altyazı bizim API'mizle. Video kanala çıktıktan
+    sonraki hata yayını geri almaz: alarm yazılır, video id yine döner (seçim kaydı ve analitik için)."""
+    from otomat.yayin import buffer, youtube
+
+    meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
+    yerel_yol = dizin / "yerel.json"
+    yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))["yerel"] if yerel_yol.exists() else None
+    dosya = f"{ad}.mp4"
+    url = buffer.medya_koy(dizin / "video.mp4", dosya)
+    try:
+        video_id = buffer.gonder(url, meta["baslik"], meta["aciklama"])
+    finally:
+        try:
+            buffer.medya_kaldir(dosya)
+        except Exception as e:  # noqa: BLE001
+            alarmlar.append(f"**Site reposundan medya silinemedi** (`media/{dosya}`, zararsız): {e}"[:500])
+    try:
+        yt = youtube.servis()
+        youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
+        for srt in sorted(dizin.glob("*.srt")):
+            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
+    except Exception as e:  # noqa: BLE001
+        alarmlar.append(f"**Video yüklendi ama planlanamadı** (`{video_id}` private kalmış olabilir):\n\n" + _hata(e))
     return video_id
 
 
@@ -140,9 +182,19 @@ def main() -> None:
         dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
         meta = uret(paket, kalip, sablon, dizin, bugun.isoformat())
         diller = hazirla(dizin)
-        yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
-        video_id = yayinla_api(dizin, yayin_ani) if mod == "api" else None
-        if mod != "api":
+        if mod in ("api", "buffer"):
+            yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
+        else:
+            yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
+        video_id = None
+        if mod == "api":
+            video_id = yayinla_api(dizin, yayin_ani)
+        elif mod == "buffer":
+            try:
+                video_id = yayinla_buffer(dizin, yayin_ani, bugun.isoformat(), alarmlar)
+            except Exception as e:  # noqa: BLE001
+                alarmlar.append("**Buffer yayını düştü**, video Plan B paketine kondu:\n\n" + _hata(e))
+        if video_id is None:
             kayit["teslim"] = str(teslime_koy(dizin, bugun).relative_to(KOK))
         durum.kaydet(db, paket, bugun, video_id)
         durum.secim_kaydet(db, bugun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)

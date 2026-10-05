@@ -1,7 +1,7 @@
 name: Günlük üretim
 
-# Her gün bir video: analitik → veri → haydut seçimi → anlatım (kapılar) → ses → görsel → çeviri → yayın (api) ya da
-# teslim paketi (Plan B). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
+# Her gün bir video: analitik → veri → haydut seçimi → anlatım (kapılar) → ses → görsel → çeviri → yayın (buffer/api)
+# ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
 # GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05): ikinci cron yedektir, gün zaten
 # üretildiyse koşu "Bugün üretildi mi" adımında biter.
 on:
@@ -26,6 +26,9 @@ jobs:
       OTOMAT_YAYIN: ${{ vars.OTOMAT_YAYIN || 'teslim' }}
       YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
       YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+      # buffer modu (docs/arastirma/06): Buffer API + otomat-site deploy key (medya geçici olarak Pages'ta)
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
     steps:
       # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
       - uses: actions/checkout@v7

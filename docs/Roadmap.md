@@ -15,7 +15,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 2 | Veri ve olgu motoru | ✅ Tamamlandı | USGS, World Bank, Eurostat adaptörleri; her biri ≥ 20 farklı olgu paketi üretir (kaynak URL, zaman, hash); sözleşme testleri kayıtlı gerçek yanıtla; tekrar engeli çalışıyor |
 | 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
-| 5 | Yayın ve audit | 🔄 Devam Ediyor | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
+| 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | 🔄 Devam Ediyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
@@ -163,6 +163,14 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     site ekran görüntüleri + `docs/rehber/kanit/otomat-oauth-yukleme-analitik.pdf` + `docs/rehber/otomat-mimari.png`.
     Kullanım alanı: Video Yükleme + Analiz ve Raporlama; ek kota istenmedi (videos.insert 5/gün beyanı). Sırada: Google'ın
     yanıtı (süre taahhüdü yok). Onay → repo değişkeni `OTOMAT_YAYIN=api`, Faz 5 kapanır.
+  - **✅ 2026-10-05 — audit'siz yol: `OTOMAT_YAYIN=buffer`.** Kilit yalnız bizim projemizin `videos.insert`'ünde. Buffer'ın
+    (ücretsiz plan, GraphQL API) audit'li YouTube bağlantısı videoyu private yükler; `youtube.duzenle` ile etiket,
+    yerelleştirme, `publishAt` ve altyazı bizim API'mizden yazılır (`otomat/yayin/buffer.py`, `gunluk.yayinla_buffer`).
+    Buffer dosya almaz: video gönderim süresince public `otomat-site/media/`'da durur, sonra silinir (deploy key secret
+    `OTOMAT_SITE_ANAHTAR`). Günde tek slot (`yayin_slotu`: 14:00 UTC, kanaldaki son videonun ertesi günü). Buffer düşerse
+    video Plan B paketine düşer + alarm. Kanıt: H40 üç video bu kodla yayında/planlı (`LPUuwdrc0E0` public, oturumsuz
+    oEmbed 200; `W8-h8hWh5Pc` 06.10, `cv2snoQBV80` 07.10), 10-05 `JXSEMofyS3k` 08.10; 5 dil altyazı izleri doğrulandı.
+    Araştırma ve test: `docs/arastirma/06-ucuncu-taraf-yukleme.md`. Audit gelirse `api` moduna dönmek isteğe bağlı.
 - **Notlar:**
   - Çeviri ilk sürümde 4 kelimelik altyazı parçalarını tek tek çevirtiyordu: model cümle ortasından bölünmüş satırları
     birleştirdi (13 → 9 satır), kapı ~%50 reddetti. Tam cümle çevirisi + aynı zamanlarla yeniden parçalama → %90.

@@ -79,18 +79,13 @@ def servis(k=None):
     return build("youtube", "v3", credentials=k or kimlik(), cache_discovery=False)
 
 
-def yukle(
-    video: Path,
+def _govde(
     baslik: str,
     aciklama: str,
     etiketler: list[str],
     yayin_ani: dt.datetime | None,
-    yerellestirme: dict[str, dict] | None = None,
-    yt=None,
-) -> str:
-    from googleapiclient.http import MediaFileUpload
-
-    yt = yt or servis()
+    yerellestirme: dict[str, dict] | None,
+) -> tuple[dict, str]:
     govde = {
         "snippet": {
             "title": baslik[:100],
@@ -114,6 +109,22 @@ def yukle(
             d: {"title": v["title"][:100], "description": v["description"][:5000]} for d, v in yerellestirme.items()
         }
         parcalar += ",localizations"
+    return govde, parcalar
+
+
+def yukle(
+    video: Path,
+    baslik: str,
+    aciklama: str,
+    etiketler: list[str],
+    yayin_ani: dt.datetime | None,
+    yerellestirme: dict[str, dict] | None = None,
+    yt=None,
+) -> str:
+    from googleapiclient.http import MediaFileUpload
+
+    yt = yt or servis()
+    govde, parcalar = _govde(baslik, aciklama, etiketler, yayin_ani, yerellestirme)
     istek = yt.videos().insert(
         part=parcalar, body=govde, media_body=MediaFileUpload(str(video), mimetype="video/mp4", resumable=True)
     )
@@ -121,6 +132,27 @@ def yukle(
     while yanit is None:
         _, yanit = istek.next_chunk(num_retries=DENEME)
     return yanit["id"]
+
+
+def duzenle(
+    video_id: str,
+    baslik: str,
+    aciklama: str,
+    etiketler: list[str],
+    yayin_ani: dt.datetime | None,
+    yerellestirme: dict[str, dict] | None = None,
+    yt=None,
+) -> None:
+    """Başka bir yoldan (Buffer) yüklenmiş videoya metadata, planlı yayın ve yerelleştirme yazar. Kilit yalnız bizim
+    projemizin videos.insert'ünde; update serbest (docs/arastirma/06, 10-05 testi). yayin_ani yoksa hemen public."""
+    yt = yt or servis()
+    govde, parcalar = _govde(baslik, aciklama, etiketler, yayin_ani, yerellestirme)
+    govde["id"] = video_id
+    # status güncellemesi verilmeyen alanları varsayılana çeker (publicStatsViewable false oluyordu)
+    govde["status"].update(embeddable=True, publicStatsViewable=True, license="youtube")
+    if not yayin_ani:
+        govde["status"]["privacyStatus"] = "public"
+    yt.videos().update(part=parcalar, body=govde).execute(num_retries=DENEME)
 
 
 def altyazi_ekle(video_id: str, dil: str, srt_metni: str, yt=None) -> None:

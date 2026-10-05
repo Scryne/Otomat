@@ -1,0 +1,34 @@
+name: Yayın yolu kontrolü
+
+# Elle: buffer modunun üç bağımlılığı Actions'ta çalışıyor mu (Buffer anahtarı + kanal, YouTube token'ı,
+# otomat-site deploy key'i). Hiçbir şey yüklemez, yazmaz.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  kontrol:
+    runs-on: ubuntu-latest
+    env:
+      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+      OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
+      YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
+      YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Buffer
+        run: uv run python -c "from otomat.yayin import buffer; print('buffer kanal:', buffer.kanal_id())"
+      - name: YouTube
+        run: uv run python -m otomat.yayin.youtube kontrol
+      - name: Site deploy key
+        run: |
+          umask 077
+          printf '%s\n' "$OTOMAT_SITE_ANAHTAR" > /tmp/site_anahtar
+          GIT_SSH_COMMAND="ssh -i /tmp/site_anahtar -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new" \
+            git ls-remote git@github.com:Scryne/otomat-site.git HEAD
