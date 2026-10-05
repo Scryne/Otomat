@@ -97,7 +97,7 @@ class Sahte:
                     def cagir(**k):
                         sahte.cagrilar.append((kaynak, metod, k))
                         y = sahte.yanitlar[(kaynak, metod)]
-                        return type("I", (), {"execute": lambda _s: y(k) if callable(y) else y})()
+                        return type("I", (), {"execute": lambda _s, num_retries=0: y(k) if callable(y) else y})()
 
                     return cagir
 

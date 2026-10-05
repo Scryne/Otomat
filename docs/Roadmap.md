@@ -213,6 +213,17 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
        (`anlatim.OKUNUS`), ekranda asıl ad.
     7. Ada bölgelerinde (110m kara verisinde yok) yakınlaşınca harita boş kalıyordu: bölge adı haritanın üstünde.
     8. Açıklama: iç içe parantezli lisans ve "#TheWorld", "#YourCountry" etiketleri sadeleşti.
+  - (2026-10-05) "3 gün kesintisiz" sayacının ilk günü: 06:17 UTC planlı koşu 13:30'a kadar hiç başlamadı (önceki iki gün
+    5–6 sa gecikmişti). Koşu elle tetiklendi, geçti (98 paket, orman örtüsü videosu, H41 Release'i, H40 raporu). Önlem:
+    ikinci cron 16:47 UTC yedek; gün zaten üretildiyse koşu Ollama kurulmadan biter (`durum.bugun_secildi_mi` + workflow
+    adımı); checkout dalın o anki ucunu alır (kuyrukta bekleyen koşu öncekinin durum commit'ini görsün). Sayaç için elle
+    tetikleme de bir gün sayılır: ölçülen şey hattın kesintisiz video üretmesi, GitHub zamanlayıcısı değil.
+  - (2026-10-05) Analitik adımı YouTube'un tek seferlik `500 INTERNAL_ERROR`'üyle düştü, alarm açıldı; aynı çağrı yerelde
+    geçti. API okumaları ve devam ettirilebilir yükleme artık 5xx/429'da 4 kez üstel bekleyerek yeniden dener
+    (`youtube.DENEME`); `captions.insert` çift iz açabileceği için denemesiz. H40 raporu analitikle yeniden yazıldı.
+  - (2026-10-05) Sıralı çubukta 10 satırda etiketin inen harfleri ("j", "g") çubuğa değiyordu: etiketin alt kenarı artık
+    çubuğun 6 px üstünde. Etkilenen iki teslim videosu (H40 10-04, H41 10-05) yalnız görsel yeniden çizilerek Release'te
+    değiştirildi: aynı paket (hash kontrolü), aynı ses izi, altyazı zamanları SRT'den.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

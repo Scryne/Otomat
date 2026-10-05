@@ -67,14 +67,15 @@ def ciz(
         )
         ax.add_patch(kutu)
         cubuklar.append(kutu)
+        # etiketin alt kenarı (inen harfler dahil) çubuğun 6 px üstünde: ortalıyken 10 satırda "j", "g" çubuğa değiyordu
         etiketler.append(
             ax.text(
                 0,
-                i - 0.30,
+                i - satir_yuk / 2 + 0.16 - 6 * s.olcek / satir_px,
                 f"{i + 1}. {o['etiket']}"
                 + (f"   {sayi(o['onceki'], ondalik)} to {sayi(o['deger'], ondalik)}" if degisim else ""),
                 ha="left",
-                va="center",
+                va="bottom",
                 color=renk("ink-primary"),
                 fontproperties=sutun_etiket,
             )

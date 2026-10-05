@@ -10,6 +10,8 @@ import datetime as dt
 import re
 import sqlite3
 
+from otomat.yayin.youtube import DENEME
+
 PENCERE_GUN = 3  # ödül penceresi: yayın günü dahil 3 gün
 GECIKME_GUN = 2  # Analytics gecikmesi
 ESLESTIRME_GUN = 60  # bu kadar eski seçim artık eşleştirilmez
@@ -32,11 +34,15 @@ def _norm(baslik: str) -> str:
 
 def yuklemeler(yt, sayfa: int = 4) -> list[tuple[str, str]]:
     """Kanalın son yüklemeleri: (video_id, başlık), en yeni önce, en fazla 50 × sayfa."""
-    kanal = yt.channels().list(part="contentDetails", mine=True).execute()["items"][0]
+    kanal = yt.channels().list(part="contentDetails", mine=True).execute(num_retries=DENEME)["items"][0]
     liste = kanal["contentDetails"]["relatedPlaylists"]["uploads"]
     sonuc, belirtec = [], None
     for _ in range(sayfa):
-        y = yt.playlistItems().list(part="snippet", playlistId=liste, maxResults=50, pageToken=belirtec).execute()
+        y = (
+            yt.playlistItems()
+            .list(part="snippet", playlistId=liste, maxResults=50, pageToken=belirtec)
+            .execute(num_retries=DENEME)
+        )
         sonuc += [(i["snippet"]["resourceId"]["videoId"], i["snippet"]["title"]) for i in y.get("items", [])]
         if not (belirtec := y.get("nextPageToken")):
             break
@@ -66,7 +72,7 @@ def durumlar(yt, video_idler: list[str]) -> dict[str, dict]:
     """video_id → {"public": bool, "yayin_gunu": date | None}."""
     sonuc = {}
     for i in range(0, len(video_idler), 50):
-        y = yt.videos().list(part="status,snippet", id=",".join(video_idler[i : i + 50])).execute()
+        y = yt.videos().list(part="status,snippet", id=",".join(video_idler[i : i + 50])).execute(num_retries=DENEME)
         for v in y.get("items", []):
             gun = v["snippet"].get("publishedAt", "")[:10]
             sonuc[v["id"]] = {
@@ -86,7 +92,7 @@ def pencere(ya, video_id: str, yayin_gunu: dt.date) -> dict:
             metrics=METRIKLER,
             filters=f"video=={video_id}",
         )
-        .execute()
+        .execute(num_retries=DENEME)
     )
     satir = (y.get("rows") or [[0, 0, 0, 0, 0]])[0]
     return dict(zip(["views", "engaged_views", "ort_izlenme_yuzde", "ort_izlenme_sn", "abone"], satir, strict=True))
@@ -129,10 +135,10 @@ def kanal(yt, ya, bas: dt.date, son: dt.date) -> dict:
             endDate=son.isoformat(),
             metrics="views,engagedViews,subscribersGained,subscribersLost",
         )
-        .execute()
+        .execute(num_retries=DENEME)
     )
     views, engaged, kazanilan, kaybedilen = (y.get("rows") or [[0, 0, 0, 0]])[0]
-    ist = yt.channels().list(part="statistics", mine=True).execute()["items"][0]["statistics"]
+    ist = yt.channels().list(part="statistics", mine=True).execute(num_retries=DENEME)["items"][0]["statistics"]
     return {
         "views": views,
         "engaged_views": engaged,

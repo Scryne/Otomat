@@ -23,6 +23,9 @@ KAPSAMLAR = [
 ]
 SIRLAR = KOK / "sirlar"
 KATEGORI_BILIM = "28"  # Science & Technology
+# 5xx/429/bağlantı hatasında üstel bekleyerek yeniden dene (10-05 analitik adımı tek seferlik 500 ile düştü).
+# Yalnız tekrarı zararsız çağrılarda: okumalar ve devam ettirilebilir yükleme; captions.insert çift iz açabilir.
+DENEME = 4
 
 
 class YetkiHatasi(RuntimeError):
@@ -116,7 +119,7 @@ def yukle(
     )
     yanit = None
     while yanit is None:
-        _, yanit = istek.next_chunk()
+        _, yanit = istek.next_chunk(num_retries=DENEME)
     return yanit["id"]
 
 
@@ -142,7 +145,12 @@ def main() -> None:
     if a.komut == "yetki":
         print("token yazıldı:", yetki_al())
     else:
-        kanal = servis().channels().list(part="snippet", mine=True).execute()["items"][0]["snippet"]["title"]
+        kanal = (
+            servis()
+            .channels()
+            .list(part="snippet", mine=True)
+            .execute(num_retries=DENEME)["items"][0]["snippet"]["title"]
+        )
         print("token geçerli, kanal:", kanal)
 
 
