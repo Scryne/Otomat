@@ -4,6 +4,7 @@ import re
 import zlib
 from dataclasses import dataclass, field
 
+from otomat import kanal
 from otomat.anlati import kapilar, olgu_cumleleri, yedek
 from otomat.anlati.llm import LLMHatasi, json_uret
 from otomat.veri import OlguPaketi
@@ -21,12 +22,11 @@ SEMA = {
 }
 DENEME = 3
 GIZLI = {"days", "from_year", "to_year", "year", "scope", "countries_compared"}  # LLM'e doğal düşmeyen tutucular
-ORNEKLER = (
-    "Examples of the style (different topics, do not copy):\n"
-    '- hook: "Guess which country tops this list." title: "Where People Live the Longest"\n'
-    '- hook: "Is your country on this map?" title: "How Often the Ground Shakes in {region}"\n'
-    '- hook: "The leader is far ahead of everyone else." title: "{rank1_country} Leads the World in Forest Cover"\n'
-)
+
+
+def _ornekler() -> str:
+    """Üslup örnekleri kanal profilinden (kanallar/<id>/kanal.toml)."""
+    return f"Examples of the style (different topics, do not copy):\n{kanal.aktif().ornekler}\n"
 
 
 @dataclass
@@ -77,7 +77,8 @@ def _istem(paket: OlguPaketi, kalip: str, gecmis: list[dict]) -> str:
     if gecmis:
         ret = "\nYour previous attempt was rejected: " + "; ".join(gecmis[-1]["hatalar"]) + ". Fix that.\n"
     return (
-        "You write the opening hook and the YouTube title for a 30-second vertical data video.\n"
+        "You write the opening hook and the YouTube title for a 30-second vertical video on a channel with "
+        f"{kanal.aktif().tanim}.\n"
         f"Video topic: {paket.konu}.\n"
         f"Angle for the hook: {KALIPLAR[kalip]}.\n"
         "Never write digits or number words (no 'one', 'ten', 'thousands'). Prefer names over numbers. To use a fact, "
@@ -86,7 +87,7 @@ def _istem(paket: OlguPaketi, kalip: str, gecmis: list[dict]) -> str:
         "Rules: the hook is one short sentence (max 12 words), spoken first; it may be a question. The title is max "
         "60 characters, Title Case, no hashtags, no emojis, no clickbait, no calls to subscribe or like, and it must "
         "describe the whole video topic, not a single detail. Make no claim beyond the facts.\n"
-        f"{ORNEKLER}{ret}\nReturn JSON with keys hook and title."
+        f"{_ornekler()}{ret}\nReturn JSON with keys hook and title."
     )
 
 

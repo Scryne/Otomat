@@ -10,10 +10,9 @@ import json
 import sqlite3
 from pathlib import Path
 
-from otomat import haydut
-from otomat.ayarlar import KOK
+from otomat import haydut, kanal
 
-RAPORLAR = KOK / "raporlar"
+RAPORLAR = kanal.aktif().raporlar
 OLDURME = {"views": 1_200_000, "abone": 200, "gun": 56}  # Faz 8
 
 

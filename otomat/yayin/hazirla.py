@@ -3,6 +3,7 @@
 import json
 from pathlib import Path
 
+from otomat import kanal
 from otomat.ses import Parca, altyazi_parcalari
 from otomat.yayin import ceviri
 from otomat.yayin.srt import srt
@@ -15,7 +16,7 @@ def hazirla(dizin: Path, deneme: int = 3) -> dict:
     (dizin / "en.srt").write_text(srt(altyazi_parcalari(cumle_parcalari)), encoding="utf-8")
     cumleler = [p.metin for p in cumle_parcalari]
     yerel, atlanan = {}, []
-    for dil in ceviri.DILLER:
+    for dil in kanal.aktif().diller:
         sonuc = None
         for tohum in range(deneme):
             sonuc = ceviri.cevir(dil, meta["baslik"], meta["aciklama"], cumleler, tohum=tohum)

@@ -7,7 +7,8 @@ import yaml
 from matplotlib import font_manager
 from matplotlib.font_manager import FontProperties
 
-from otomat.ayarlar import KOK, VARLIKLAR
+from otomat import kanal
+from otomat.ayarlar import VARLIKLAR
 
 FONT_DOSYALARI = {
     ("Barlow Condensed", 700): "BarlowCondensed-Bold.ttf",
@@ -20,10 +21,10 @@ GENISLIK, YUKSEKLIK = 1080, 1920  # token'ların piksel referansı
 
 @cache
 def tokenlar() -> dict:
-    metin = (KOK / "DESIGN.md").read_text(encoding="utf-8")
+    metin = kanal.aktif().tasarim.read_text(encoding="utf-8")
     eslesme = re.match(r"^---\n(.*?)\n---", metin, re.S)
     if not eslesme:
-        raise RuntimeError("DESIGN.md frontmatter yok")
+        raise RuntimeError(f"{kanal.aktif().tasarim.name} frontmatter yok")
     return yaml.safe_load(eslesme.group(1))
 
 

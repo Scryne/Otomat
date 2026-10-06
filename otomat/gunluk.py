@@ -4,8 +4,9 @@ Ortam:
 - OTOMAT_YAYIN = "buffer" | "api" | "teslim" (varsayılan teslim). buffer: Buffer yükler, planlama ve altyazı bizim
   API'mizle (audit gerektirmez, docs/arastirma/06); api: audit gelince doğrudan yükleme; teslim: Plan B Release
   paketi. Buffer yayını düşerse video teslim paketine düşer, alarm yazılır.
-- YT_ISTEMCI_JSON, YT_TOKEN_JSON (yükleme ve analitik; ikisi de aynı token); buffer ayrıca BUFFER_API_KEY ve
-  OTOMAT_SITE_ANAHTAR (otomat-site deploy key) ister.
+- OTOMAT_KANAL: kanal profili (kanallar/<id>/kanal.toml, varsayılan earth).
+- YT_ISTEMCI_JSON (tüm kanallar), YT_TOKEN_JSON<sir_eki> (kanalın token'ı; yükleme ve analitik); buffer ayrıca
+  BUFFER_API_KEY ve OTOMAT_SITE_ANAHTAR (otomat-site deploy key) ister.
 Gün zaten üretildiyse (yedek cron, elle tetikleme) hiçbir şey yapmadan çıkar.
 Pazartesi bir önceki haftanın raporunu yazar. Bir şey ters giderse `calisma/alarm.md` yazılır; Actions bunu
 GitHub issue'suna çevirir (gunluk.yml), sonraki temiz koşu issue'yu kapatır.
@@ -19,21 +20,23 @@ import re
 import shutil
 from pathlib import Path
 
-from otomat import analitik, durum, haydut, rapor
+from otomat import analitik, durum, haydut, kanal, rapor
 from otomat.anlati import anlatim
 from otomat.ayarlar import KOK
 from otomat.gorsel import sablonlar
 from otomat.uretim import uret
 from otomat.veri import OlguPaketi
 from otomat.veri.toplayici import topla
-from otomat.yayin.hafta import YAYIN_SAATI_UTC
 from otomat.yayin.hazirla import hazirla
 
-RAPOR = KOK / "raporlar" / "gunluk.jsonl"
+RAPOR = kanal.aktif().raporlar / "gunluk.jsonl"
+YAYIN_SAATI_UTC = kanal.aktif().yayin_saati_utc
 ALARM = KOK / "calisma" / "alarm.md"
+_K = kanal.aktif()
 YETKI_COZUMU = (
-    "Token düşmüş (invalid_grant). Yerelde `uv run python -m otomat.yayin.youtube yetki`, sonra "
-    "`gh secret set YT_TOKEN_JSON < sirlar/token.json`."
+    f"Token düşmüş (invalid_grant). Yerelde `OTOMAT_KANAL={_K.id} uv run python -m otomat.yayin.youtube yetki` "
+    f"(izin ekranında **{_K.ad}** kanalını seç), sonra "
+    f"`gh secret set {_K.token_degiskeni} < sirlar/{_K.token_dosyasi.name}`."
 )
 
 

@@ -1,8 +1,9 @@
 """YouTube Data API v3: OAuth (masaüstü uygulaması), yükleme, planlama, yerelleştirme, altyazı.
 
 Sırlar koda ve repoya girmez:
-- Yerel: `sirlar/istemci.json` (Google Cloud OAuth istemcisi), `sirlar/token.json` (ilk yetkiden sonra yazılır).
-- Actions: `YT_ISTEMCI_JSON` ve `YT_TOKEN_JSON` ortam değişkenleri (GitHub Secrets).
+- Yerel: `sirlar/istemci.json` (Google Cloud OAuth istemcisi, tüm kanallar), kanal başına token dosyası
+  (earth: `sirlar/token.json`; diğerleri `sirlar/token_<id>.json`, ilk yetkiden sonra yazılır).
+- Actions: `YT_ISTEMCI_JSON` ve kanalın `YT_TOKEN_JSON<sir_eki>` ortam değişkeni (GitHub Secrets).
 
 Not: Google'ın denetiminden (audit) geçmemiş projede yüklenen her video private'a kilitlenir (docs/arastirma/03).
 `publishAt` yine yazılır; audit gelince aynı kod planlı public yayına geçer.
@@ -14,6 +15,7 @@ import json
 import os
 from pathlib import Path
 
+from otomat import kanal
 from otomat.ayarlar import KOK
 
 KAPSAMLAR = [
@@ -22,7 +24,7 @@ KAPSAMLAR = [
     "https://www.googleapis.com/auth/yt-analytics.readonly",  # Faz 6 geri besleme
 ]
 SIRLAR = KOK / "sirlar"
-KATEGORI_BILIM = "28"  # Science & Technology
+KATEGORI = kanal.aktif().kategori  # earth: 28 Science & Technology
 # 5xx/429/bağlantı hatasında üstel bekleyerek yeniden dene (10-05 analitik adımı tek seferlik 500 ile düştü).
 # Yalnız tekrarı zararsız çağrılarda: okumalar ve devam ettirilebilir yükleme; captions.insert çift iz açabilir.
 DENEME = 4
@@ -46,10 +48,11 @@ def kimlik():
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
 
-    if ham := os.environ.get("YT_TOKEN_JSON"):
+    k_ = kanal.aktif()
+    if ham := os.environ.get(k_.token_degiskeni):
         bilgi = json.loads(ham)
-    elif (SIRLAR / "token.json").exists():
-        bilgi = json.loads((SIRLAR / "token.json").read_text(encoding="utf-8"))
+    elif k_.token_dosyasi.exists():
+        bilgi = json.loads(k_.token_dosyasi.read_text(encoding="utf-8"))
     else:
         raise YetkiHatasi("token yok: önce yerelde `python -m otomat.yayin.youtube yetki` çalıştır")
     k = Credentials.from_authorized_user_info(bilgi, KAPSAMLAR)
@@ -62,13 +65,13 @@ def kimlik():
 
 
 def yetki_al() -> Path:
-    """Yerelde bir kez: tarayıcıda izin verilir, refresh token sirlar/token.json'a yazılır."""
+    """Yerelde kanal başına bir kez (OTOMAT_KANAL): izin ekranında o kanal seçilir, refresh token kanalın dosyasına."""
     from google_auth_oauthlib.flow import InstalledAppFlow
 
     akis = InstalledAppFlow.from_client_config(_istemci_bilgisi(), KAPSAMLAR)
     k = akis.run_local_server(port=0, prompt="consent", access_type="offline")
     SIRLAR.mkdir(exist_ok=True)
-    yol = SIRLAR / "token.json"
+    yol = kanal.aktif().token_dosyasi  # kanal başına ayrı token, aynı OAuth istemcisi
     yol.write_text(k.to_json(), encoding="utf-8")
     return yol
 
@@ -91,7 +94,7 @@ def _govde(
             "title": baslik[:100],
             "description": aciklama[:5000],
             "tags": etiketler[:15],
-            "categoryId": KATEGORI_BILIM,
+            "categoryId": KATEGORI,
             "defaultLanguage": "en",
             "defaultAudioLanguage": "en",
         },
@@ -171,7 +174,7 @@ def main() -> None:
 
     p = argparse.ArgumentParser()
     alt = p.add_subparsers(dest="komut", required=True)
-    alt.add_parser("yetki", help="tarayıcıda izin ver, token'ı sirlar/token.json'a yaz")
+    alt.add_parser("yetki", help="tarayıcıda izin ver, token'ı kanalın sirlar/ dosyasına yaz")
     alt.add_parser("kontrol", help="token geçerli mi, kanal adı ne")
     a = p.parse_args()
     if a.komut == "yetki":

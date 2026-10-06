@@ -11,7 +11,8 @@ from pathlib import Path
 
 import numpy as np
 
-from otomat.ayarlar import KOK, modeller
+from otomat import kanal
+from otomat.ayarlar import KOK
 
 ARA = 0.28  # cümleler arası sessizlik (sn)
 HIZ = 1.05
@@ -39,10 +40,9 @@ def seslendir(ses_cumleleri: list[str], ekran_cumleleri: list[str], cikti: Path)
     if len(ses_cumleleri) != len(ekran_cumleleri):
         raise ValueError("ses ve ekran cümle sayısı farklı")
     k = _kokoro()
-    t = modeller()["tts"]
     parcalar, sesler, an, sr = [], [], 0.0, 24000
     for ses_metni, ekran_metni in zip(ses_cumleleri, ekran_cumleleri, strict=True):
-        ornek, sr = k.create(ses_metni, voice=t["ses"], speed=HIZ, lang="en-us")
+        ornek, sr = k.create(ses_metni, voice=kanal.aktif().ses, speed=HIZ, lang="en-us")
         sure = len(ornek) / sr
         parcalar.append(Parca(an, an + sure, ekran_metni))
         sesler += [ornek, np.zeros(int(ARA * sr), dtype=np.float32)]

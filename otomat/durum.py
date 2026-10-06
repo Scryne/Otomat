@@ -6,10 +6,10 @@ import os
 import sqlite3
 from pathlib import Path
 
-from otomat.ayarlar import KOK
+from otomat import kanal
 from otomat.veri import OlguPaketi
 
-VARSAYILAN = Path(os.environ.get("OTOMAT_DURUM", KOK / "durum" / "otomat.db"))
+VARSAYILAN = Path(os.environ.get("OTOMAT_DURUM", kanal.aktif().durum))
 TEKRAR_GUN = 60
 
 SEMA = """
@@ -135,3 +135,10 @@ def gecmisi_doldur(db: sqlite3.Connection, rapor: Path) -> int:
         ).rowcount
     db.commit()
     return n
+
+
+if __name__ == "__main__":
+    # Actions "Bugün üretildi mi" adımı (uv kurulmadan, sistem python3'üyle): kanalın bugünkü seçimi varsa 0.
+    import sys
+
+    sys.exit(0 if bugun_secildi_mi(baglan(), dt.datetime.now(dt.UTC).date()) else 1)
