@@ -1,6 +1,6 @@
-# Cosmic Yardstick — uzay kanalı (K-10…K-14, docs/arastirma/07). Earth'ten ayrışır: veri, şablon, kimlik, ses, saat.
+# Orbit Ruler — uzay kanalı (K-10…K-14, docs/arastirma/07). Earth'ten ayrışır: veri, şablon, kimlik, ses, saat.
 id = "uzay"
-ad = "Cosmic Yardstick"
+ad = "Orbit Ruler"
 tanim = "short videos that explain space by scale: asteroids passing Earth and planets around other stars"
 kaynaklar = ["jpl", "otegezegen"]
 veri = "kanallar/uzay/veri.toml"

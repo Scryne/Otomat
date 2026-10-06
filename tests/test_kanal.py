@@ -55,3 +55,28 @@ def test_is_akisi_matrisi_profillerle_uyumlu():
         k = kanal.yukle(satir["kanal"])  # profili olmayan kanal koşamaz
         assert satir["sir"] == k.sir_eki, f"{k.id}: matristeki token eki profille aynı olmalı"
     assert len({s["etiket"] for s in matris}) == len(matris), "iki kanal aynı Release önekini paylaşıyor"
+
+
+class _SahteYT:
+    def __init__(self, ad):
+        self.ad = ad
+
+    def channels(self):
+        return self
+
+    def list(self, **_):
+        return self
+
+    def execute(self, **_):
+        return {"items": [{"snippet": {"title": self.ad}}]}
+
+
+def test_yanlis_kanalin_tokeni_reddedilir():
+    from otomat.yayin import youtube
+
+    youtube._DOGRULANDI.clear()
+    with pytest.raises(youtube.YetkiHatasi, match="beklenen 'Earth in Numbers'"):
+        youtube.kanal_dogrula(_SahteYT("Orbit Ruler"))
+    youtube.kanal_dogrula(_SahteYT("Earth in Numbers"))
+    youtube.kanal_dogrula(_SahteYT("başka"))  # süreçte bir kez doğrulanır
+    youtube._DOGRULANDI.clear()

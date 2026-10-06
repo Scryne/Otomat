@@ -71,7 +71,7 @@ YAKIN_GECIS_LISTE: list[Varyant] = [
         f"It passed on {o['closest_date']}, {_ay(o, 'closest_')}.",
     ],
     lambda o, b: [
-        f"The white ring is the Moon's orbit. Watch {_d(o, 'flyby_count')} asteroids pass by.",
+        f"The white ring is the Moon's orbit. These are the closest of {_d(o, 'flyby_count')} asteroids that passed.",
         f"The closest, {o['closest_name']}, came {_ay(o, 'closest_')}.",
         f"Speed: {_d(o, 'closest_speed_kms', 1)} kilometers per second. Estimated size: {_boy(o, 'closest_')}.",
     ],

@@ -135,7 +135,7 @@ def paketler(ham: dict, url: str, cekildi: str, bugun: dt.date) -> list[OlguPake
     if len(yakin) >= 3:
         en = yakin[0]
         olgular = {
-            "flyby_count": Olgu(len(tum), "asteroids passing within about 20 Moon distances in these ten days"),
+            "flyby_count": Olgu(len(tum), "asteroids passing within about 20 Moon distances in this period"),
             "closer_than_moon": Olgu(sum(g.ld < 1 for g in tum), "of those, how many came closer than the Moon"),
             "period_start": Olgu(_tarih(tum[0].an), "first day of the period"),
             "period_end": Olgu(_tarih(tum[-1].an), "last day of the period"),

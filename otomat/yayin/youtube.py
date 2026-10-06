@@ -79,7 +79,25 @@ def yetki_al() -> Path:
 def servis(k=None):
     from googleapiclient.discovery import build
 
-    return build("youtube", "v3", credentials=k or kimlik(), cache_discovery=False)
+    yt = build("youtube", "v3", credentials=k or kimlik(), cache_discovery=False)
+    kanal_dogrula(yt)
+    return yt
+
+
+_DOGRULANDI: set[str] = set()
+
+
+def kanal_dogrula(yt) -> None:
+    """Token gerçekten etkin kanala mı ait? Çok kanalda yanlış token, videoyu öbür kanalda düzenlemeye ve analitiği
+    yanlış kanaldan okumaya götürür. Süreç başına bir kez (1 kota birimi)."""
+    beklenen = kanal.aktif().ad
+    if beklenen in _DOGRULANDI:
+        return
+    ogeler = yt.channels().list(part="snippet", mine=True).execute(num_retries=DENEME).get("items", [])
+    ad = ogeler[0]["snippet"]["title"] if ogeler else None
+    if ad != beklenen:
+        raise YetkiHatasi(f"token '{ad}' kanalına ait, beklenen '{beklenen}' (OTOMAT_KANAL={kanal.aktif().id})")
+    _DOGRULANDI.add(beklenen)
 
 
 def _govde(

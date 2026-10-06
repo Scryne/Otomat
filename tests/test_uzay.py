@@ -122,3 +122,13 @@ def test_her_varyant_kurulur_ve_sayilar_paketten(kaynak):
         "gezegen_tekil", "en_yakin_8", "en_sicak_8", "en_kisa_yil_8"}  # fmt: skip
     assert turler == beklenen
     assert all(len(uzay_cumleleri.HAVUZ[t]) >= 5 for t in turler)
+
+
+def test_rakamli_ad_tutucuya_cevrilir():
+    from otomat.anlati.anlatim import _tutucuya_cevir
+
+    p = next(p for p in _jpl() if p.tur == "yakin_gecis_tekil")
+    ad = p.olgular["name"].deger
+    assert _tutucuya_cevir(f"Asteroid {ad} Slipped Past the Moon", p) == "Asteroid {name} Slipped Past the Moon"
+    assert _tutucuya_cevir("Asteroid {name} again", p) == "Asteroid {name} again"
+    assert kapilar.tutucu_kapisi(_tutucuya_cevir(f"{ad} passed by", p), p) == []

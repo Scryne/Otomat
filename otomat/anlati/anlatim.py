@@ -96,6 +96,15 @@ def _istem(paket: OlguPaketi, kalip: str, gecmis: list[dict]) -> str:
     )
 
 
+def _tutucuya_cevir(metin: str, paket: OlguPaketi) -> str:
+    """Model rakam içeren bir adı (asteroit "2026 TP2", gezegen "TOI-700 d") tutucu yerine aynen yazdıysa tutucuya
+    çevir: değer olgunun kendisi, uydurma değil. Uzun ad önce (bir ad öbürünün parçası olabilir)."""
+    adlar = [(k, o.deger) for k, o in paket.olgular.items() if isinstance(o.deger, str) and re.search(r"\d", o.deger)]
+    for k, deger in sorted(adlar, key=lambda x: -len(x[1])):
+        metin = re.sub(rf"(?<![\w{{]){re.escape(deger)}(?![\w}}])", "{" + k + "}", metin)
+    return metin
+
+
 def _denetle(ad: str, metin: str, paket: OlguPaketi, hakem_kullan: bool) -> list[str]:
     hatalar = [f"{ad}: {h}" for h in kapilar.tutucu_kapisi(metin, paket) + kapilar.politika_kapisi(metin)]
     if ad == "hook" and len(metin.split()) > 14:
@@ -126,7 +135,7 @@ def olustur(paket: OlguPaketi, kalip: str, tohum: str, hakem_kullan: bool = True
             continue
         kayit: dict = {"deneme": deneme, "hatalar": []}
         for ad in ("hook", "title"):
-            metin = yanit.get(ad, "").strip().strip('"')
+            metin = _tutucuya_cevir(yanit.get(ad, "").strip().strip('"'), paket)
             kayit[ad] = metin
             if ad in kabul:
                 continue

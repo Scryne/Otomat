@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: Cosmic Yardstick
+name: Orbit Ruler
 description: Uzay kanalının dikey (9:16) video kimliği — yakın geçen asteroitler ve ötegezegenler, ölçekle anlatılır.
 colors:
   surface: "#04050b"
@@ -54,7 +54,7 @@ layout:
   attribution-align: center
 ---
 
-# Cosmic Yardstick
+# Orbit Ruler
 
 Earth in Numbers'tan bilerek ayrışan ikinci kanal kimliği (docs/arastirma/07, K-11). Aynı motor, farklı görünüş:
 farklı renk ailesi, farklı font, ortalanmış başlık ve farklı sahne yerleşimi. Global dark glassmorphism burada da
