@@ -26,6 +26,7 @@ jobs:
         # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
         include:
           - { kanal: earth, sir: "", etiket: teslim }
+          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
     concurrency:
       group: gunluk-${{ matrix.kanal }}
       cancel-in-progress: false

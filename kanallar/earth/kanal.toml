@@ -12,6 +12,7 @@ yayin_saati_utc = 14  # 17:00 TR; ABD sabahı / Avrupa öğleden sonrası
 diller = ["es", "pt", "de", "fr"]
 kategori = "28"  # Science & Technology
 sir_eki = ""  # YT_TOKEN_JSON
+buffer_kanal_id = "6ac3c3346a5c39ccb620b6af"  # Buffer GraphQL kanal kimliği (2026-10-06)
 ornekler = """
 - hook: "Guess which country tops this list." title: "Where People Live the Longest"
 - hook: "Is your country on this map?" title: "How Often the Ground Shakes in {region}"

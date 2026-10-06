@@ -12,6 +12,7 @@ yayin_saati_utc = 20  # 23:00 TR; ABD öğleden sonrası. Earth'le aynı saat de
 diller = ["es", "pt", "de", "fr"]
 kategori = "28"  # Science & Technology
 sir_eki = "_UZAY"  # YT_TOKEN_JSON_UZAY
+buffer_kanal_id = "6ac549856a5c39ccb634a0b1"  # Buffer GraphQL kanal kimliği (2026-10-06)
 # Uzay anlatısında korku çerçevesi yok: çarpma/tehlike dili politika kapısında
 yasak = ["hit (?:the )?earth", "impact\\w*", "collid\\w*", "collision", "danger\\w*", "threat\\w*", "hazard\\w*",
          "close call", "near miss", "doomsday", "planet killer", "city killer", "wipe out"]
