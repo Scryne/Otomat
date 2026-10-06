@@ -8,6 +8,7 @@
 import json
 import re
 
+from otomat import kanal
 from otomat.anlati.llm import json_uret
 from otomat.veri import OlguPaketi
 
@@ -27,7 +28,8 @@ TUTUCU = re.compile(r"\{(\w+)\}")
 
 def izinli_sayilar(paket: OlguPaketi) -> set[str]:
     """Paketin yapısından gelen, olgu olmayan sayılar ('Top 10' listesindeki 10 gibi)."""
-    return {"10"} if paket.tur.endswith("_10") else set()
+    m = re.search(r"_(\d+)$", paket.tur)
+    return {m.group(1)} if m else set()
 
 
 def olgusuz_soru(metin: str) -> bool:
@@ -46,7 +48,10 @@ def tutucu_kapisi(metin: str, paket: OlguPaketi) -> list[str]:
 
 
 def politika_kapisi(metin: str) -> list[str]:
-    return [f"yasak ifade: {m.lower()}" for m in sorted(set(YASAK.findall(metin)))]
+    bulunan = set(m.lower() for m in YASAK.findall(metin))
+    for desen in kanal.aktif().yasak:  # kanala özel (ör. uzay: çarpma/tehlike dili)
+        bulunan |= {m.group(0).lower() for m in re.finditer(rf"\b(?:{desen})\b", metin, re.I)}
+    return [f"yasak ifade: {m}" for m in sorted(bulunan)]
 
 
 def deger_yazisi(deger, birim: str, ondalik: int | None = None) -> str:
@@ -81,8 +86,13 @@ def doldur(metin: str, paket: OlguPaketi) -> str:
 KUCUK_KELIME = {"a", "an", "the", "of", "in", "on", "at", "by", "for", "to", "with", "and", "or", "as", "per", "vs"}
 
 
-def baslik_duzeni(metin: str) -> str:
-    """Title Case: küçük bağlaçlar küçük (ilk kelime hariç); rakam ya da büyük harf içeren kelimeye dokunma."""
+def baslik_duzeni(metin: str, korunan: tuple[str, ...] = ()) -> str:
+    """Title Case: küçük bağlaçlar küçük (ilk kelime hariç); rakam ya da büyük harf içeren kelimeye dokunma.
+    `korunan` özel adlar olduğu gibi kalır ("LTT 1445 A b" → "LTT 1445 a B" olmasın)."""
+    yer = []
+    for ad in sorted((a for a in korunan if a and a in metin), key=len, reverse=True):
+        metin = metin.replace(ad, f"\x00{len(yer)}\x00")  # rakamlı işaret: aşağıda dokunulmaz
+        yer.append(ad)
     kelimeler = metin.split()
     sonuc = []
     for i, k in enumerate(kelimeler):
@@ -92,7 +102,10 @@ def baslik_duzeni(metin: str) -> str:
             sonuc.append(k.lower())
         else:
             sonuc.append(k[:1].upper() + k[1:])
-    return " ".join(sonuc)
+    sonuc_metin = " ".join(sonuc)
+    for i, ad in enumerate(yer):
+        sonuc_metin = sonuc_metin.replace(f"\x00{i}\x00", ad)
+    return sonuc_metin
 
 
 HAKEM_SEMA = {

@@ -20,6 +20,10 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
+| 10 | Çok kanal temeli | 🔄 Devam Ediyor | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
+| 11 | Kanal 2: Orbit Ruler (uzay) | 🔄 Devam Ediyor | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
+| 12 | Kanal 3: iklim/okyanus (koşullu) | ⏳ Bekliyor | Koşul: kanal 2'nin ilk 7 günü alarmsız (K-13). ERA5 (ARCO/CDS) + OISST; Earth'ün "senin ülken" açısından ayrışan küresel/okyanus/yıllar içi sıra açısı; aynı bitti tanımı |
+| 13 | Portföy işletimi | ⏳ Bekliyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
 
 ## Faz Detayları
 
@@ -232,6 +236,36 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - (2026-10-05) Sıralı çubukta 10 satırda etiketin inen harfleri ("j", "g") çubuğa değiyordu: etiketin alt kenarı artık
     çubuğun 6 px üstünde. Etkilenen iki teslim videosu (H40 10-04, H41 10-05) yalnız görsel yeniden çizilerek Release'te
     değiştirildi: aynı paket (hash kontrolü), aynı ses izi, altyazı zamanları SRT'den.
+
+### Faz 10–13: Çok kanal (2026-10-06)
+- **Neden:** Scryne: "farklı kanallarda farklı konulu kanallar… projeyi en üst seviyeye çıkaracak her şey, tamamen sana
+  bırakıyorum." Araştırma, sınırlar ve kararlar: `docs/arastirma/07-cok-kanal.md` (K-10…K-14).
+- **Sınırlar:** en çok 3 kanal (Buffer Free 3 kanal; API kotası kanal başı ~2.050 birim/gün; Actions ~420 dk/ay/kanal).
+- **Asıl risk:** kanal kümesi cezası (ortak şablon/takvim/altyapı). Önlem: kanallar konu, veri, şablon, kimlik, ses,
+  saat ve adla ayrışır; birer birer açılır.
+- **Faz 7 ile ilişki:** "14 gün kod müdahalesiz" Earth'ün üretim davranışı için geçerli. Çok kanal işi Earth'ün
+  çıktısını değiştirmemeli (test_kanal: eski yollar, kaynaklar, saat, ses; kanca istemine kanal tanımı eklendi, tek
+  bilinçli değişiklik). Earth'ün çıktısını değiştiren bir commit Faz 7 sayacını sıfırlar.
+- **Faz 10 durumu (2026-10-06):** `cok-kanal` dalı; 62 → 73 test; dal üzerinde iş akışı elle tetiklendi (matris,
+  "bugün üretildi mi" adımı kanal başına doğru çalıştı, yayına dokunmadı). Main'e birleşme: 10-07 Earth koşusu Faz 6
+  sayacını kapattıktan sonra.
+- **Faz 11 notları (2026-10-06):**
+  - JPL CAD çap vermiyor (24/24 kayıtta boş): çap H'den, p = 0,25–0,05 aralığıyla; videoda "estimated" ve aralık.
+  - Exoplanet Archive: yalnız transit + ölçülmüş yarıçap. İlk taslakta "en yakınlar" listesinin ilk ikisi aynı yıldızın
+    gezegenleriydi (sistem başına tek gezegen), "en kısa yıl" gün cinsinden eşitlendi (saat), "en büyük" listesinin
+    tepesi ~2,5 Jüpiter (şüpheli ölçüm, liste çıkarıldı). Sıralamalar kapsamını söyler: "planets seen crossing their star".
+  - Windows'ta Python sistem deposu JPL zincirini doğrulayamadı → `http.py` certifi ile.
+  - Şablon kare kontrolü üç tur: yollar başlığa taşıyordu (dış halkaya kırpıldı), boyut panelinde eksen oranı daireyi
+    yatay şeride çevirdi (piksel oranlı elips), küçük gövde adları üst üste biniyordu (piksel ofsetli etiket).
+
+- **Kanal açıldı (2026-10-06 gece):** Scryne K1+K2'yi aynı gün yaptı (eski hesap, risk düşük), K3 da aynı gece: Orbit Ruler
+  `UCbhRAMbzhwX7dqoBJhCcm2g` (`@orbitruler`), Buffer kanalı `6ac549856a5c39ccb634a0b1`, token kanal doğrulamasından geçti,
+  `YT_TOKEN_JSON_UZAY` + `OTOMAT_YAYIN_UZAY=buffer`. Dal üzerinde matris koşusu (iki iş yeşil, alarm yok): ilk video
+  `M1z_ITgDASs` Orbit Ruler'da private, publishAt 2026-10-07T20:00Z, 5 yerelleştirme, 5 altyazı izi (+ YouTube ASR).
+  Açık: 07.10 23:00 TR'de oturumsuz public kontrolü; dal main'e Earth'ün 10-07 koşusundan sonra.
+- **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
+  1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
+  Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

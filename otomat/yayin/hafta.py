@@ -12,7 +12,9 @@ import re
 import sys
 from pathlib import Path
 
-YAYIN_SAATI_UTC = 14  # ABD sabahı / Avrupa öğleden sonrası; API modu da bunu kullanır (gunluk.py)
+from otomat import kanal
+
+YAYIN_SAATI_UTC = kanal.aktif().yayin_saati_utc  # kanal profili (earth: 14 UTC = 17:00 TR)
 TR = dt.timezone(dt.timedelta(hours=3))
 GUNLER = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
 

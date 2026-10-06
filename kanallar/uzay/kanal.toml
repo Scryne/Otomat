@@ -1,0 +1,30 @@
+# Orbit Ruler — uzay kanalı (K-10…K-14, docs/arastirma/07). Earth'ten ayrışır: veri, şablon, kimlik, ses, saat.
+id = "uzay"
+ad = "Orbit Ruler"
+tanim = "short videos that explain space by scale: asteroids passing Earth and planets around other stars"
+kaynaklar = ["jpl", "otegezegen"]
+veri = "kanallar/uzay/veri.toml"
+tasarim = "kanallar/uzay/DESIGN.md"
+durum = "durum/uzay.db"
+raporlar = "raporlar/uzay"
+ses = "af_heart"
+yayin_saati_utc = 20  # 23:00 TR; ABD öğleden sonrası. Earth'le aynı saat değil (K-11)
+diller = ["es", "pt", "de", "fr"]
+kategori = "28"  # Science & Technology
+sir_eki = "_UZAY"  # YT_TOKEN_JSON_UZAY
+buffer_kanal_id = "6ac549856a5c39ccb634a0b1"  # Buffer GraphQL kanal kimliği (2026-10-06)
+# Uzay anlatısında korku çerçevesi yok: çarpma/tehlike dili politika kapısında
+yasak = ["hit (?:the )?earth", "impact\\w*", "collid\\w*", "collision", "danger\\w*", "threat\\w*", "hazard\\w*",
+         "close call", "near miss", "doomsday", "planet killer", "city killer", "wipe out"]
+ornekler = """
+- hook: "This rock just passed closer than the Moon." title: "Asteroid {name} Slipped Inside the Moon's Orbit"
+- hook: "How big is a planet you can't even see?" title: "{planet} Next to Earth and Jupiter"
+- hook: "Guess how long a year lasts here." title: "Planets Where a Year Lasts Only Hours"
+"""
+kaliplar = ["soru", "duygusal", "olcek", "kiyas"]
+
+[yedek_kancalar]
+soru = ["How close did this one come?", "How big is this world really?"]
+duygusal = ["Space is busier than it looks.", "Look how small we are here."]
+olcek = ["Watch the scale change.", "Size is everything here."]
+kiyas = ["Now compare it with Earth.", "See how it measures up to Earth."]

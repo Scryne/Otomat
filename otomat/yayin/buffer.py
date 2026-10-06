@@ -20,12 +20,14 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
+from otomat import kanal
 from otomat.ayarlar import KOK
 
 API = "https://api.buffer.com"
 SITE_REPO = "Scryne/otomat-site"
 SITE_URL = "https://scryne.github.io/otomat-site"
-KANAL = "Earth in Numbers"
+KANAL = kanal.aktif().ad
+YOKLAMA_SN = 45  # ücretsiz API 30 günde 3.000 istek (anahtar başına, tüm kanallar): gönderi başı en çok ~20 yoklama
 # public repo: kişisel e-posta girmez (gunluk.yml'deki bot kimliği)
 KIMLIK = ["-c", "user.name=otomat-bot", "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
 DENEME = 4
@@ -70,6 +72,8 @@ def sorgu(metin: str, degiskenler: dict | None = None, tekrar: bool = True) -> d
 
 
 def kanal_id() -> str:
+    if kid := kanal.aktif().buffer_kanal_id:  # profildeyse iki sorgu tasarrufu
+        return kid
     orglar = sorgu("query { account { organizations { id } } }")["account"]["organizations"]
     for org in orglar:
         q = "query($o: OrganizationId!) { channels(input: {organizationId: $o}) { id name service } }"
@@ -97,7 +101,7 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
             "youtube": {
                 "title": baslik[:100],
                 "privacy": "private",
-                "categoryId": "28",
+                "categoryId": kanal.aktif().kategori,
                 "madeForKids": False,
                 "isAiGenerated": False,  # youtube.py: containsSyntheticMedia False (gerçekçi değil)
                 "notifySubscribers": True,
@@ -119,7 +123,7 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
             raise BufferHatasi(f"Buffer yayını düştü: {(p.get('error') or {}).get('message')}")
         if time.monotonic() > son:
             raise BufferHatasi(f"Buffer gönderisi {bekle_sn} sn'de gitmedi (durum: {p['status']})")
-        time.sleep(15)
+        time.sleep(YOKLAMA_SN)
 
 
 def _git(*arg: str, cwd: Path | None = None, env: dict | None = None) -> None:

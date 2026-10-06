@@ -4,6 +4,8 @@ name: Günlük üretim
 # ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
 # GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05): ikinci cron yedektir, gün zaten
 # üretildiyse koşu "Bugün üretildi mi" adımında biter.
+# Çok kanal: her kanal ayrı matris işi (kanallar/<id>/kanal.toml); biri düşerse diğerleri sürer, alarm kanal başına.
+# Matristeki kanal yayına hazırdır (token + Buffer bağlantısı); hazırlıktaki kanal buraya eklenmez (test_kanal.py).
 on:
   schedule:
     - cron: "17 6 * * *"
@@ -14,18 +16,26 @@ permissions:
   contents: write
   issues: write
 
-concurrency:
-  group: gunluk
-  cancel-in-progress: false
-
 jobs:
   uret:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
+        include:
+          - { kanal: earth, sir: "", etiket: teslim }
+          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
+    concurrency:
+      group: gunluk-${{ matrix.kanal }}
+      cancel-in-progress: false
     env:
-      OTOMAT_YAYIN: ${{ vars.OTOMAT_YAYIN || 'teslim' }}
+      OTOMAT_KANAL: ${{ matrix.kanal }}
+      # kanal başına mod (OTOMAT_YAYIN_<id>); earth eski OTOMAT_YAYIN değişkenini de okur
+      OTOMAT_YAYIN: ${{ vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN) || 'teslim' }}
       YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
-      YT_TOKEN_JSON: ${{ secrets.YT_TOKEN_JSON }}
+      KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}
       # buffer modu (docs/arastirma/06): Buffer API + otomat-site deploy key (medya geçici olarak Pages'ta)
       BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
       OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
@@ -37,8 +47,8 @@ jobs:
       - name: Bugün üretildi mi
         id: kontrol
         run: |
-          if [ -f durum/otomat.db ] && python3 -c "import sqlite3, sys, datetime as d; sys.exit(0 if sqlite3.connect('durum/otomat.db').execute('SELECT 1 FROM secimler WHERE tarih = ?', (d.datetime.now(d.UTC).date().isoformat(),)).fetchone() else 1)"; then
-            echo "Bugün zaten üretildi, koşu atlanıyor."
+          if PYTHONPATH=. python3 -m otomat.durum; then
+            echo "$OTOMAT_KANAL: bugün zaten üretildi, koşu atlanıyor."
             echo "atla=1" >> "$GITHUB_OUTPUT"
           fi
       - uses: astral-sh/setup-uv@v7
@@ -65,14 +75,16 @@ jobs:
       - name: Üret
         id: uret
         if: steps.kontrol.outputs.atla != '1'
-        run: uv run python -m otomat.gunluk
+        run: |
+          export "YT_TOKEN_JSON${{ matrix.sir }}=$KANAL_TOKEN"
+          uv run python -m otomat.gunluk
       - name: Teslim paketi (Plan B) → haftanın Release'i
         if: hashFiles('teslim/**') != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="teslim-$(date -u +%G-H%V)"
-          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Teslim $(date -u +%G) / hafta $(date -u +%V)" \
+          TAG="${{ matrix.etiket }}-$(date -u +%G-H%V)"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "Teslim ${{ matrix.kanal }} $(date -u +%G) / hafta $(date -u +%V)" \
             --notes "Plan B: bu haftanın videoları."
           gh release upload "$TAG" teslim/* --clobber
           # haftanın tüm YUKLE.md'lerinden tek sayfa: sıra, TR yayın saati, kopyala-yapıştır blokları
@@ -87,8 +99,10 @@ jobs:
           git config user.name "otomat-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add durum/ raporlar/
-          git diff --cached --quiet || git commit -m "Günlük koşu: durum ve rapor ($(date -u +%F))"
-          git push
+          git diff --cached --quiet || git commit -m "Günlük koşu ($OTOMAT_KANAL): durum ve rapor ($(date -u +%F))"
+          # diğer kanalların işleri aynı dala yazıyor; dosyalar ayrı olduğu için rebase çakışmaz
+          for i in 1 2 3 4 5; do git push && break; git pull --rebase; sleep $((i * 5)); done
+          git push  # beş denemede de gitmediyse adım düşsün
       - name: Alarm (issue)
         if: always() && steps.kontrol.outputs.atla != '1'
         env:
@@ -101,11 +115,12 @@ jobs:
             printf 'Günlük koşu %s: iş adımı düştü (%s), Python alarm yazamadan.\n' "$(date -u +%F)" "$SONUC" > calisma/alarm.md
           fi
           gh label create alarm --color B60205 --description "Otomat günlük koşu alarmı" --force
-          ACIK=$(gh issue list --label alarm --state open --json number --jq '.[0].number // empty')
+          gh label create "kanal:$OTOMAT_KANAL" --color 1D76DB --description "Otomat kanalı" --force
+          ACIK=$(gh issue list --label alarm --label "kanal:$OTOMAT_KANAL" --state open --json number --jq '.[0].number // empty')
           if [ -f calisma/alarm.md ]; then
             printf '\n[Koşu kaydı](%s) · @Scryne\n' "$KOSU" >> calisma/alarm.md
             if [ -n "$ACIK" ]; then gh issue comment "$ACIK" --body-file calisma/alarm.md
-            else gh issue create --title "Otomat alarmı" --label alarm --body-file calisma/alarm.md; fi
+            else gh issue create --title "Otomat alarmı ($OTOMAT_KANAL)" --label alarm --label "kanal:$OTOMAT_KANAL" --body-file calisma/alarm.md; fi
           elif [ -n "$ACIK" ]; then
             gh issue close "$ACIK" --comment "Temiz koşu ($(date -u +%F)): alarm kapandı. $KOSU"
           fi

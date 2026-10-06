@@ -7,23 +7,27 @@ import yaml
 from matplotlib import font_manager
 from matplotlib.font_manager import FontProperties
 
-from otomat.ayarlar import KOK, VARLIKLAR
+from otomat import kanal
+from otomat.ayarlar import VARLIKLAR
 
 FONT_DOSYALARI = {
     ("Barlow Condensed", 700): "BarlowCondensed-Bold.ttf",
     ("Barlow Condensed", 600): "BarlowCondensed-SemiBold.ttf",
     ("Barlow", 500): "Barlow-Medium.ttf",
     ("Barlow", 400): "Barlow-Regular.ttf",
+    ("Space Grotesk", 700): "SpaceGrotesk-Bold.ttf",
+    ("Space Grotesk", 500): "SpaceGrotesk-Medium.ttf",
+    ("Space Grotesk", 400): "SpaceGrotesk-Regular.ttf",
 }
 GENISLIK, YUKSEKLIK = 1080, 1920  # token'ların piksel referansı
 
 
 @cache
 def tokenlar() -> dict:
-    metin = (KOK / "DESIGN.md").read_text(encoding="utf-8")
+    metin = kanal.aktif().tasarim.read_text(encoding="utf-8")
     eslesme = re.match(r"^---\n(.*?)\n---", metin, re.S)
     if not eslesme:
-        raise RuntimeError("DESIGN.md frontmatter yok")
+        raise RuntimeError(f"{kanal.aktif().tasarim.name} frontmatter yok")
     return yaml.safe_load(eslesme.group(1))
 
 
@@ -47,6 +51,17 @@ def font(rol: str, olcek: float = 1.0, boyut_carpani: float = 1.0) -> FontProper
     t = tokenlar()["typography"][rol]
     yol = _font_yolu(t["fontFamily"], int(t["fontWeight"]))
     return FontProperties(fname=yol, size=_px(t["fontSize"]) * 0.72 * olcek * boyut_carpani)
+
+
+def yerlesim() -> dict:
+    """Sahne yerleşimi (kanal kimliğinde `layout`; yoksa Earth'ün ilk düzeni)."""
+    return {
+        "title-align": "left",
+        "hook-y": 0.62,
+        "caption-y": 0.232,
+        "attribution-align": "left",
+        **tokenlar().get("layout", {}),
+    }
 
 
 def guvenli_alan() -> dict[str, float]:

@@ -11,13 +11,13 @@ import matplotlib.patheffects as pe  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib.patches import Rectangle  # noqa: E402
 
-from otomat.gorsel.kimlik import font, guvenli_alan, renk  # noqa: E402
+from otomat.gorsel.kimlik import font, guvenli_alan, renk, yerlesim  # noqa: E402
 from otomat.gorsel.video import VideoYazici  # noqa: E402
 
 KANCA_SURE = 1.5  # sn; DESIGN.md "Kanca kartı" (seslendirilen kanca daha uzunsa onun süresi, en çok 3 sn)
 KANCA_EN_COK = 3.0
 KANCA_SONUM = 0.3
-ALTYAZI_Y = 0.232  # alt güvenli sınırın hemen üstü (DESIGN.md Components)
+ALTYAZI_Y = 0.232  # Earth varsayılanı (kimlik.yerlesim); alt güvenli sınırın hemen üstü (DESIGN.md Components)
 
 
 def yumusat(x: float) -> float:
@@ -41,13 +41,17 @@ class Sahne:
         self.genislik, self.yukseklik, self.fps, self.saniye = genislik, yukseklik, fps, saniye
         self.olcek = genislik / 1080
         self.g = guvenli_alan()
+        self.y = yerlesim()  # kanal kimliğinin sahne yerleşimi (DESIGN `layout`)
         self.fig = plt.figure(figsize=(genislik / 100, yukseklik / 100), dpi=100, facecolor=renk("surface"))
         sol = self.g["sol"]
+        orta = (self.g["sol"] + self.g["sag"]) / 2
+        ortali = self.y["title-align"] == "center"
         self.baslik = self.fig.text(
-            sol,
+            orta if ortali else sol,
             self.g["ust"],
-            textwrap.fill(baslik, 30),
-            ha="left",
+            textwrap.fill(baslik, 26 if ortali else 30),
+            ha="center" if ortali else "left",
+            multialignment="center" if ortali else "left",
             va="top",
             color=renk("ink-primary"),
             fontproperties=font("title", self.olcek),
@@ -55,11 +59,12 @@ class Sahne:
         )
         kutu = self.baslik.get_window_extent(self.fig.canvas.get_renderer())
         self.icerik_ust = kutu.y0 / yukseklik - 0.02  # başlığın altı: içerik buradan aşağı
+        atif_orta = self.y["attribution-align"] == "center"
         self.fig.text(
-            sol,
+            0.5 if atif_orta else sol,
             self.g["alt"] + 0.004,
             f"Data: {kaynak}",
-            ha="left",
+            ha="center" if atif_orta else "left",
             va="bottom",
             color=renk("ink-muted"),
             fontproperties=font("caption", self.olcek),
@@ -71,7 +76,7 @@ class Sahne:
             self.fig.patches.append(perde)
             yazi = self.fig.text(
                 0.5,
-                0.62,
+                float(self.y["hook-y"]),
                 textwrap.fill(kanca, 24),
                 ha="center",
                 va="center",
@@ -84,7 +89,7 @@ class Sahne:
         self._altyazi = list(altyazi or [])
         self._altyazi_yazi = self.fig.text(
             0.5,
-            ALTYAZI_Y,
+            float(self.y["caption-y"]),
             "",
             ha="center",
             va="center",

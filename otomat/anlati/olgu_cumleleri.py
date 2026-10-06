@@ -7,6 +7,7 @@ Varyantlar cümle sırasını ve kuruluşunu değiştirir, olgu kümesini deği�
 import random
 from collections.abc import Callable
 
+from otomat.anlati import uzay_cumleleri
 from otomat.gorsel.kimlik import sayi
 from otomat.veri import OlguPaketi
 
@@ -215,6 +216,7 @@ HAVUZ: dict[str, list[Varyant]] = {
     "en_yuksek_10": _siralama("highest"),
     "en_dusuk_10": _siralama("lowest"),
     "en_cok_artan_10": _artis(),
+    **uzay_cumleleri.HAVUZ,
 }
 
 

@@ -4,16 +4,20 @@ import re
 import zlib
 from dataclasses import dataclass, field
 
+from otomat import kanal
 from otomat.anlati import kapilar, olgu_cumleleri, yedek
 from otomat.anlati.llm import LLMHatasi, json_uret
 from otomat.veri import OlguPaketi
 
-KALIPLAR = {
+TUM_KALIPLAR = {
     "soru": "a curiosity question the viewer wants answered (do not answer it)",
     "senin_ulken": "a personal angle that makes viewers look for their own country or region",
     "duygusal": "a vivid but calm emotional angle (wonder, surprise), no fear or sensational words",
     "olcek": "a scale angle: how big, how often or how uneven it is",
+    "kiyas": "compare the subject with something familiar that the facts name (the Moon, Earth, Jupiter)",
 }
+# Kanalın kanca kalıpları (haydudun kanca kolu): profilde `kaliplar`; yoksa Earth'ün dördü
+KALIPLAR = {k: TUM_KALIPLAR[k] for k in kanal.aktif().kaliplar}
 SEMA = {
     "type": "object",
     "properties": {"hook": {"type": "string"}, "title": {"type": "string"}},
@@ -21,12 +25,11 @@ SEMA = {
 }
 DENEME = 3
 GIZLI = {"days", "from_year", "to_year", "year", "scope", "countries_compared"}  # LLM'e doğal düşmeyen tutucular
-ORNEKLER = (
-    "Examples of the style (different topics, do not copy):\n"
-    '- hook: "Guess which country tops this list." title: "Where People Live the Longest"\n'
-    '- hook: "Is your country on this map?" title: "How Often the Ground Shakes in {region}"\n'
-    '- hook: "The leader is far ahead of everyone else." title: "{rank1_country} Leads the World in Forest Cover"\n'
-)
+
+
+def _ornekler() -> str:
+    """Üslup örnekleri kanal profilinden (kanallar/<id>/kanal.toml)."""
+    return f"Examples of the style (different topics, do not copy):\n{kanal.aktif().ornekler}\n"
 
 
 @dataclass
@@ -61,6 +64,8 @@ def seslendir(metin: str) -> str:
     for ad, okunus in OKUNUS.items():
         m = re.sub(rf"(?<!\w){re.escape(ad)}(?!\w)", okunus, m)
     m = m.replace("km²", "square kilometers").replace("per km2", "per square kilometer")
+    m = m.replace("°C", " degrees Celsius").replace("km/s", "kilometers per second")
+    m = re.sub(r"(?<![\w-])-(\d)", r"minus \1", m)  # "-20 degrees": eksi okunmadan düşmesin
     m = re.sub(r"\$(\d[\d,]*)", r"\1 dollars", m)
     m = re.sub(r"€(\d[\d,]*)", r"\1 euros", m)
     m = re.sub(r"(\d)\.(\d+)", r"\1 point \2", m)
@@ -77,7 +82,8 @@ def _istem(paket: OlguPaketi, kalip: str, gecmis: list[dict]) -> str:
     if gecmis:
         ret = "\nYour previous attempt was rejected: " + "; ".join(gecmis[-1]["hatalar"]) + ". Fix that.\n"
     return (
-        "You write the opening hook and the YouTube title for a 30-second vertical data video.\n"
+        "You write the opening hook and the YouTube title for a 30-second vertical video on a channel with "
+        f"{kanal.aktif().tanim}.\n"
         f"Video topic: {paket.konu}.\n"
         f"Angle for the hook: {KALIPLAR[kalip]}.\n"
         "Never write digits or number words (no 'one', 'ten', 'thousands'). Prefer names over numbers. To use a fact, "
@@ -86,8 +92,17 @@ def _istem(paket: OlguPaketi, kalip: str, gecmis: list[dict]) -> str:
         "Rules: the hook is one short sentence (max 12 words), spoken first; it may be a question. The title is max "
         "60 characters, Title Case, no hashtags, no emojis, no clickbait, no calls to subscribe or like, and it must "
         "describe the whole video topic, not a single detail. Make no claim beyond the facts.\n"
-        f"{ORNEKLER}{ret}\nReturn JSON with keys hook and title."
+        f"{_ornekler()}{ret}\nReturn JSON with keys hook and title."
     )
+
+
+def _tutucuya_cevir(metin: str, paket: OlguPaketi) -> str:
+    """Model rakam içeren bir adı (asteroit "2026 TP2", gezegen "TOI-700 d") tutucu yerine aynen yazdıysa tutucuya
+    çevir: değer olgunun kendisi, uydurma değil. Uzun ad önce (bir ad öbürünün parçası olabilir)."""
+    adlar = [(k, o.deger) for k, o in paket.olgular.items() if isinstance(o.deger, str) and re.search(r"\d", o.deger)]
+    for k, deger in sorted(adlar, key=lambda x: -len(x[1])):
+        metin = re.sub(rf"(?<![\w{{]){re.escape(deger)}(?![\w}}])", "{" + k + "}", metin)
+    return metin
 
 
 def _denetle(ad: str, metin: str, paket: OlguPaketi, hakem_kullan: bool) -> list[str]:
@@ -120,7 +135,7 @@ def olustur(paket: OlguPaketi, kalip: str, tohum: str, hakem_kullan: bool = True
             continue
         kayit: dict = {"deneme": deneme, "hatalar": []}
         for ad in ("hook", "title"):
-            metin = yanit.get(ad, "").strip().strip('"')
+            metin = _tutucuya_cevir(yanit.get(ad, "").strip().strip('"'), paket)
             kayit[ad] = metin
             if ad in kabul:
                 continue
@@ -138,7 +153,13 @@ def olustur(paket: OlguPaketi, kalip: str, tohum: str, hakem_kullan: bool = True
     return Anlatim(
         kanca=kanca,
         baslik=kapilar.baslik_duzeni(
-            kapilar.doldur(kabul["title"], paket) if "title" in kabul else yedek.baslik(paket)
+            kapilar.doldur(kabul["title"], paket) if "title" in kabul else yedek.baslik(paket),
+            # yalnız rakamlı özel adlar (gezegen/asteroit); Earth'ün gösterge adları eskisi gibi Title Case olur
+            tuple(
+                o.deger
+                for o in paket.olgular.values()
+                if isinstance(o.deger, str) and any(c.isdigit() for c in o.deger)
+            ),
         ),
         cumleler=cumleler,
         kalip=kalip,

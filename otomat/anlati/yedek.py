@@ -20,6 +20,18 @@ def _bas(metin: str) -> str:
 
 def baslik(paket: OlguPaketi) -> str:
     o = {k: v.deger for k, v in paket.olgular.items()}
+    if paket.tur == "yakin_gecis_liste":
+        return "The Closest Asteroid Flybys of the Week"
+    if paket.tur == "yakin_gecis_tekil":
+        return f"Asteroid {o['name']} Passes Earth"
+    if paket.tur == "gezegen_tekil":
+        return f"{o['planet']} Next to Earth and Jupiter"[:70]
+    if paket.tur == "en_yakin_8":
+        return "The Closest Stars With a Planet Crossing Them"
+    if paket.tur == "en_sicak_8":
+        return "The Hottest Planets We Have Measured"
+    if paket.tur == "en_kisa_yil_8":
+        return "Planets Where a Year Lasts Only Hours"
     if paket.tur == "dunya_30g":
         return "Every Strong Earthquake on Earth in 30 Days"
     if paket.tur == "bolge_yillik":
@@ -37,5 +49,7 @@ def baslik(paket: OlguPaketi) -> str:
 
 
 def kanca(kalip: str, tohum: str) -> str:
-    secenek = KANCALAR[kalip]
+    from otomat import kanal
+
+    secenek = (kanal.aktif().yedek_kancalar or KANCALAR)[kalip]
     return secenek[random.Random(tohum).randrange(len(secenek))]

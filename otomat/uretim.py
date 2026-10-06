@@ -27,10 +27,29 @@ KUYRUK = 1.2  # anlatım bittikten sonra son kare (sn)
 def kaynak_sayfasi(paket: OlguPaketi) -> str:
     if paket.kol == "usgs":
         return "https://earthquake.usgs.gov/earthquakes/search/"
+    if paket.kol == "jpl":
+        from otomat.veri.jpl import SAYFA
+
+        return SAYFA
+    if paket.kol == "otegezegen":
+        from otomat.veri.otegezegen import SAYFA
+
+        return SAYFA
     kod = paket.anahtar.split(":")[2]
     if paket.kol == "dunya_bankasi":
         return f"https://data.worldbank.org/indicator/{kod}"
     return f"https://ec.europa.eu/eurostat/databrowser/view/{kod}/default/table"
+
+
+def _atif(paket: OlguPaketi) -> str:
+    """Kaynağın istediği atıf metni (Exoplanet Archive zorunlu tutuyor); yoksa boş."""
+    if paket.kol == "otegezegen":
+        from otomat.veri.otegezegen import ATIF
+
+        return ATIF + "\n"
+    if paket.kol == "jpl":
+        return "Sizes are estimated from brightness; distances are nominal closest approach.\n"
+    return ""
 
 
 def aciklama(paket: OlguPaketi, a: anlatim.Anlatim) -> str:
@@ -42,6 +61,7 @@ def aciklama(paket: OlguPaketi, a: anlatim.Anlatim) -> str:
         f"{a.kanca}\n\n{' '.join(a.cumleler)}\n\n"
         f"Data: {paket.kaynak.ad} ({paket.kaynak.lisans}), retrieved {paket.kaynak.cekildi[:10]}.\n"
         f"Source: {kaynak_sayfasi(paket)}\n"
+        f"{_atif(paket)}"
         "Visuals generated from the data; narration is synthetic.\n\n"
         f"#Shorts {etiket}"
     )
