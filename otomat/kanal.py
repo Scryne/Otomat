@@ -37,6 +37,9 @@ class Kanal:
     sir_eki: str  # YT_TOKEN_JSON<sir_eki>: kanalın kendi OAuth token'ı (aynı istemci)
     ornekler: str  # LLM'e kanca/başlık üslup örnekleri
     buffer_kanal_id: str = ""  # boşsa Buffer'da adla aranır
+    yasak: tuple[str, ...] = ()  # kanala özel yasak ifade düzenli ifadeleri (politika kapısına eklenir)
+    kaliplar: tuple[str, ...] = ("soru", "senin_ulken", "duygusal", "olcek")  # kanca kalıpları (anlatim)
+    yedek_kancalar: dict | None = None  # kalıp → LLM kapıdan geçemezse kullanılacak kancalar
 
     @property
     def token_degiskeni(self) -> str:
@@ -71,6 +74,9 @@ def yukle(kimlik: str) -> Kanal:
         sir_eki=d.get("sir_eki", ""),
         ornekler=d["ornekler"].strip(),
         buffer_kanal_id=d.get("buffer_kanal_id", ""),
+        yasak=tuple(d.get("yasak", [])),
+        kaliplar=tuple(d.get("kaliplar", Kanal.kaliplar)),
+        yedek_kancalar=d.get("yedek_kancalar"),
     )
 
 

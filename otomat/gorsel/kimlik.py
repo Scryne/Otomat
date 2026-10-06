@@ -15,6 +15,9 @@ FONT_DOSYALARI = {
     ("Barlow Condensed", 600): "BarlowCondensed-SemiBold.ttf",
     ("Barlow", 500): "Barlow-Medium.ttf",
     ("Barlow", 400): "Barlow-Regular.ttf",
+    ("Space Grotesk", 700): "SpaceGrotesk-Bold.ttf",
+    ("Space Grotesk", 500): "SpaceGrotesk-Medium.ttf",
+    ("Space Grotesk", 400): "SpaceGrotesk-Regular.ttf",
 }
 GENISLIK, YUKSEKLIK = 1080, 1920  # token'ların piksel referansı
 
@@ -48,6 +51,17 @@ def font(rol: str, olcek: float = 1.0, boyut_carpani: float = 1.0) -> FontProper
     t = tokenlar()["typography"][rol]
     yol = _font_yolu(t["fontFamily"], int(t["fontWeight"]))
     return FontProperties(fname=yol, size=_px(t["fontSize"]) * 0.72 * olcek * boyut_carpani)
+
+
+def yerlesim() -> dict:
+    """Sahne yerleşimi (kanal kimliğinde `layout`; yoksa Earth'ün ilk düzeni)."""
+    return {
+        "title-align": "left",
+        "hook-y": 0.62,
+        "caption-y": 0.232,
+        "attribution-align": "left",
+        **tokenlar().get("layout", {}),
+    }
 
 
 def guvenli_alan() -> dict[str, float]:

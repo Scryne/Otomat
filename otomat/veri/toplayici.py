@@ -12,7 +12,7 @@ from collections.abc import Callable
 from pathlib import Path
 
 from otomat import kanal
-from otomat.veri import OlguPaketi, dunya_bankasi, eurostat, usgs
+from otomat.veri import OlguPaketi, dunya_bankasi, eurostat, jpl, otegezegen, usgs
 
 # (ayarlar, şimdi, çekildi, ham yazıcı) → (paketler, hatalar)
 Kaynak = Callable[[dict, dt.datetime, str, Callable[[str, object], None]], tuple[list[OlguPaketi], list[str]]]
@@ -58,10 +58,24 @@ def _eurostat(a: dict, simdi: dt.datetime, cekildi: str, yaz) -> tuple[list[Olgu
     return paketler, hatalar
 
 
+def _jpl(a: dict, simdi: dt.datetime, cekildi: str, yaz) -> tuple[list[OlguPaketi], list[str]]:
+    ham, url = jpl.indir(simdi.date())
+    yaz("jpl_cad", ham)
+    return jpl.paketler(ham, url, cekildi, simdi.date()), []
+
+
+def _otegezegen(a: dict, simdi: dt.datetime, cekildi: str, yaz) -> tuple[list[OlguPaketi], list[str]]:
+    satirlar, url = otegezegen.indir()
+    yaz("otegezegen", satirlar)
+    return otegezegen.paketler(satirlar, url, cekildi, simdi.date()), []
+
+
 KAYNAKLAR: dict[str, Kaynak] = {
     "usgs": _usgs,
     "dunya_bankasi": _dunya_bankasi,
     "eurostat": _eurostat,
+    "jpl": _jpl,
+    "otegezegen": _otegezegen,
 }
 
 

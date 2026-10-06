@@ -9,12 +9,15 @@ from otomat.anlati import kapilar, olgu_cumleleri, yedek
 from otomat.anlati.llm import LLMHatasi, json_uret
 from otomat.veri import OlguPaketi
 
-KALIPLAR = {
+TUM_KALIPLAR = {
     "soru": "a curiosity question the viewer wants answered (do not answer it)",
     "senin_ulken": "a personal angle that makes viewers look for their own country or region",
     "duygusal": "a vivid but calm emotional angle (wonder, surprise), no fear or sensational words",
     "olcek": "a scale angle: how big, how often or how uneven it is",
+    "kiyas": "compare the subject with something familiar that the facts name (the Moon, Earth, Jupiter)",
 }
+# Kanalın kanca kalıpları (haydudun kanca kolu): profilde `kaliplar`; yoksa Earth'ün dördü
+KALIPLAR = {k: TUM_KALIPLAR[k] for k in kanal.aktif().kaliplar}
 SEMA = {
     "type": "object",
     "properties": {"hook": {"type": "string"}, "title": {"type": "string"}},
@@ -61,6 +64,8 @@ def seslendir(metin: str) -> str:
     for ad, okunus in OKUNUS.items():
         m = re.sub(rf"(?<!\w){re.escape(ad)}(?!\w)", okunus, m)
     m = m.replace("km²", "square kilometers").replace("per km2", "per square kilometer")
+    m = m.replace("°C", " degrees Celsius").replace("km/s", "kilometers per second")
+    m = re.sub(r"(?<![\w-])-(\d)", r"minus \1", m)  # "-20 degrees": eksi okunmadan düşmesin
     m = re.sub(r"\$(\d[\d,]*)", r"\1 dollars", m)
     m = re.sub(r"€(\d[\d,]*)", r"\1 euros", m)
     m = re.sub(r"(\d)\.(\d+)", r"\1 point \2", m)

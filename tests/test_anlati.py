@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from otomat.anlati import kapilar, olgu_cumleleri, yedek
+from otomat.anlati import kapilar, olgu_cumleleri, uzay_cumleleri, yedek
 from otomat.anlati.anlatim import seslendir
 from otomat.ses import Parca, altyazi_parcalari
 from otomat.veri import dunya_bankasi, eurostat, usgs
@@ -42,7 +42,7 @@ def test_her_varyant_her_pakette_kurulur(paketler):
             cumleler = varyant(degerler, birimler)
             assert cumleler and all(c.strip() for c in cumleler)
             assert not any("{" in c or "None" in c for c in cumleler)
-    assert turler == set(olgu_cumleleri.HAVUZ)
+    assert turler == set(olgu_cumleleri.HAVUZ) - set(uzay_cumleleri.HAVUZ)  # uzay tipleri: test_uzay.py
     assert all(len(v) >= 5 for v in olgu_cumleleri.HAVUZ.values())
 
 

@@ -8,6 +8,7 @@
 import json
 import re
 
+from otomat import kanal
 from otomat.anlati.llm import json_uret
 from otomat.veri import OlguPaketi
 
@@ -27,7 +28,8 @@ TUTUCU = re.compile(r"\{(\w+)\}")
 
 def izinli_sayilar(paket: OlguPaketi) -> set[str]:
     """Paketin yapısından gelen, olgu olmayan sayılar ('Top 10' listesindeki 10 gibi)."""
-    return {"10"} if paket.tur.endswith("_10") else set()
+    m = re.search(r"_(\d+)$", paket.tur)
+    return {m.group(1)} if m else set()
 
 
 def olgusuz_soru(metin: str) -> bool:
@@ -46,7 +48,10 @@ def tutucu_kapisi(metin: str, paket: OlguPaketi) -> list[str]:
 
 
 def politika_kapisi(metin: str) -> list[str]:
-    return [f"yasak ifade: {m.lower()}" for m in sorted(set(YASAK.findall(metin)))]
+    bulunan = set(m.lower() for m in YASAK.findall(metin))
+    for desen in kanal.aktif().yasak:  # kanala özel (ör. uzay: çarpma/tehlike dili)
+        bulunan |= {m.group(0).lower() for m in re.finditer(rf"\b(?:{desen})\b", metin, re.I)}
+    return [f"yasak ifade: {m}" for m in sorted(bulunan)]
 
 
 def deger_yazisi(deger, birim: str, ondalik: int | None = None) -> str:

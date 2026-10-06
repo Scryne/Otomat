@@ -1,0 +1,7 @@
+# Uzay kanalı veri ayarları. Kaynakların kendi sabitleri adaptörde (otomat/veri/jpl.py, otegezegen.py);
+# burada yalnız kanalın değiştirebileceği seçimler durur.
+
+[jpl]
+# pencere ve eşikler jpl.py'de (ONCE_GUN, SONRA_GUN, MAKS_AU, TEKIL_LD)
+
+[otegezegen]
