@@ -239,6 +239,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Notlar:**
   - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design
     skill'i; şeritli dünya + taşan turuncu bant). Studio'ya yükleme Scryne'da; nereye ne gittiği `docs/marka/README.md`.
+  - **Kanal ayarları ✅ (2026-10-06, Scryne):** profil resmi, banner, filigran; açıklama EN + ES/PT/DE/FR; anahtar
+    kelimeler; düzen (Kısa videolar bölümü); yükleme varsayılanları (gizli, Bilim ve Teknoloji, EN); topluluk filtresi.
+    API'den doğrulandı: açıklama, 5 dil, anahtar kelimeler, banner, profil resmi. Ülke bilerek boş. Açık: oynatma
+    listeleri (Earthquakes / World Rankings / Europe by Country) ertelendi; kanalda yanlış adlı tek liste duruyor.
+    Kanal düzeyindeki ayarların Shorts önerisine etkisi zayıf; asıl risk YouTube'un "inauthentic content" politikası
+    (şablonla seri üretim) → Faz 8 değerlendirmesinde videoların birbirinden ne kadar farklı olduğuna bakılır.
   - **AgentTube karşılaştırması (2026-10-04, darkzOGx/youtube-automation-agent):** kod alınmadı (README'de memecoin
     adresi, Gemini'ye video ürettiriyor). İki fikri zaten bizde: "doğrulanmamış iddia yayını durdurur" = anlamsal hakem +
     politika kapısı (Faz 4); "yeniden seslendirmede sahne süresi sesten gelir" = cümle başına Kokoro, süre sesten (Faz 4).
