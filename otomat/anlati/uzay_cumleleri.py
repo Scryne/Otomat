@@ -1,7 +1,7 @@
 """Uzay kanalı olgu cümleleri (K-4): yakın geçen asteroitler ve ötegezegenler. Sayı ve ad yalnız olgu paketinden.
 
 Doğruluk çizgileri: çap her zaman "estimated" ve aralık; çarpma/tehlike dili yok; ötegezegen sıralamaları kapsamını
-söyler ("planets seen crossing their star"), "en yakın ötegezegen" gibi genel üstünlük iddiası kurmaz.
+söyler ("planets seen passing in front of their star"), "en yakın ötegezegen" gibi genel üstünlük iddiası kurmaz.
 Her tip 5 varyant; seçim olgu_cumleleri.cumleler'deki tohumla.
 """
 
@@ -215,7 +215,9 @@ HAVUZ: dict[str, list[Varyant]] = {
     "yakin_gecis_liste": YAKIN_GECIS_LISTE,
     "yakin_gecis_tekil": YAKIN_GECIS_TEKIL,
     "gezegen_tekil": GEZEGEN_TEKIL,
-    "en_yakin_8": _sira("These are the closest star systems with a planet seen crossing its star", _isik_yili),
-    "en_sicak_8": _sira("These are the hottest planets seen crossing their star, by estimated temperature", _derece),
-    "en_kisa_yil_8": _sira("These planets seen crossing their star have the shortest years", _saat),
+    "en_yakin_8": _sira("These are the closest star systems with a planet seen passing in front of it", _isik_yili),
+    "en_sicak_8": _sira(
+        "These are the hottest planets seen passing in front of their star, by estimated temperature", _derece
+    ),
+    "en_kisa_yil_8": _sira("These planets seen passing in front of their star have the shortest years", _saat),
 }

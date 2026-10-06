@@ -62,7 +62,7 @@ def test_otegezegen_paketleri_kapsamli_ve_ayrisik():
     for p in siralar.values():
         degerler = [o["deger"] for o in p.gorsel["ogeler"]]
         assert len(set(degerler[:4])) == 4, f"{p.tur}: ilk dört gösterimde ayrışmalı"
-        assert "crossing their star" in p.olgular["comparison_scope"].deger
+        assert "in front of their star" in p.olgular["comparison_scope"].deger
 
 
 @pytest.mark.parametrize("kaynak", ["jpl", "exo"])
@@ -132,3 +132,8 @@ def test_rakamli_ad_tutucuya_cevrilir():
     assert _tutucuya_cevir(f"Asteroid {ad} Slipped Past the Moon", p) == "Asteroid {name} Slipped Past the Moon"
     assert _tutucuya_cevir("Asteroid {name} again", p) == "Asteroid {name} again"
     assert kapilar.tutucu_kapisi(_tutucuya_cevir(f"{ad} passed by", p), p) == []
+
+
+def test_baslik_duzeni_ozel_adi_korur():
+    assert kapilar.baslik_duzeni("LTT 1445 A b next to earth", ("LTT 1445 A b",)) == "LTT 1445 A b Next to Earth"
+    assert kapilar.baslik_duzeni("the hottest of all") == "The Hottest of All"

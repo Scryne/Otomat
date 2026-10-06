@@ -94,7 +94,7 @@ def _gezegen(s: Sahne, g: dict, cikti: Path, kart: list[tuple[str, str]]) -> Pat
         geri = yumusat((u - 0.25) / 0.35)
         kutu(geri)
         for p in referans_parca:
-            p.set_alpha(0.9 * yumusat((u - 0.22) / 0.12))
+            p.set_alpha(0.9 * yumusat((geri - 0.55) / 0.35))  # kadraja girince; yarım daire görünmesin
         for i, yazi in enumerate(kart_yazilari):
             yazi.set_alpha(yumusat((u - 0.55 - 0.04 * (i // 2)) / 0.08))
 

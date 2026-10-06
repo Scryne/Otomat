@@ -153,7 +153,13 @@ def olustur(paket: OlguPaketi, kalip: str, tohum: str, hakem_kullan: bool = True
     return Anlatim(
         kanca=kanca,
         baslik=kapilar.baslik_duzeni(
-            kapilar.doldur(kabul["title"], paket) if "title" in kabul else yedek.baslik(paket)
+            kapilar.doldur(kabul["title"], paket) if "title" in kabul else yedek.baslik(paket),
+            # yalnız rakamlı özel adlar (gezegen/asteroit); Earth'ün gösterge adları eskisi gibi Title Case olur
+            tuple(
+                o.deger
+                for o in paket.olgular.values()
+                if isinstance(o.deger, str) and any(c.isdigit() for c in o.deger)
+            ),
         ),
         cumleler=cumleler,
         kalip=kalip,

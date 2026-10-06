@@ -86,8 +86,13 @@ def doldur(metin: str, paket: OlguPaketi) -> str:
 KUCUK_KELIME = {"a", "an", "the", "of", "in", "on", "at", "by", "for", "to", "with", "and", "or", "as", "per", "vs"}
 
 
-def baslik_duzeni(metin: str) -> str:
-    """Title Case: küçük bağlaçlar küçük (ilk kelime hariç); rakam ya da büyük harf içeren kelimeye dokunma."""
+def baslik_duzeni(metin: str, korunan: tuple[str, ...] = ()) -> str:
+    """Title Case: küçük bağlaçlar küçük (ilk kelime hariç); rakam ya da büyük harf içeren kelimeye dokunma.
+    `korunan` özel adlar olduğu gibi kalır ("LTT 1445 A b" → "LTT 1445 a B" olmasın)."""
+    yer = []
+    for ad in sorted((a for a in korunan if a and a in metin), key=len, reverse=True):
+        metin = metin.replace(ad, f"\x00{len(yer)}\x00")  # rakamlı işaret: aşağıda dokunulmaz
+        yer.append(ad)
     kelimeler = metin.split()
     sonuc = []
     for i, k in enumerate(kelimeler):
@@ -97,7 +102,10 @@ def baslik_duzeni(metin: str) -> str:
             sonuc.append(k.lower())
         else:
             sonuc.append(k[:1].upper() + k[1:])
-    return " ".join(sonuc)
+    sonuc_metin = " ".join(sonuc)
+    for i, ad in enumerate(yer):
+        sonuc_metin = sonuc_metin.replace(f"\x00{i}\x00", ad)
+    return sonuc_metin
 
 
 HAKEM_SEMA = {

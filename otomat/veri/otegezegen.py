@@ -133,7 +133,8 @@ def paketler(satirlar: list[dict], url: str, cekildi: str, bugun: dt.date) -> li
         olgular = {
             "planets_compared": Olgu(len(aday), "planets in this comparison"),
             "comparison_scope": Olgu(
-                "planets seen crossing their star, with a measured size", "which planets this ranking covers"
+                "planets that pass in front of their star as seen from Earth, with a measured size",
+                "which planets this ranking covers",
             ),
         }
         for i, g in enumerate(ilk[:3], 1):
@@ -165,7 +166,7 @@ def paketler(satirlar: list[dict], url: str, cekildi: str, bugun: dt.date) -> li
         "en_yakin_8",
         "sy_dist",
         False,
-        "the closest star systems with a planet seen crossing its star",
+        "the closest star systems with a planet seen passing in front of it",
         "light-years",
         lambda g: round(g["sy_dist"] * PC_ISIK_YILI, 1),
         sistem_basi=True,
@@ -174,7 +175,7 @@ def paketler(satirlar: list[dict], url: str, cekildi: str, bugun: dt.date) -> li
         "en_sicak_8",
         "pl_eqt",
         True,
-        "the hottest planets seen crossing their star (estimated temperature)",
+        "the hottest planets seen passing in front of their star (estimated temperature)",
         "°C",
         lambda g: _sicaklik_c(g["pl_eqt"]),
     )
@@ -182,7 +183,7 @@ def paketler(satirlar: list[dict], url: str, cekildi: str, bugun: dt.date) -> li
         "en_kisa_yil_8",
         "pl_orbper",
         False,
-        "the planets with the shortest years, among planets seen crossing their star",
+        "the planets with the shortest years, among planets seen passing in front of their star",
         "hours",
         lambda g: round(g["pl_orbper"] * 24, 1),
     )

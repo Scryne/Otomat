@@ -258,6 +258,10 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Şablon kare kontrolü üç tur: yollar başlığa taşıyordu (dış halkaya kırpıldı), boyut panelinde eksen oranı daireyi
     yatay şeride çevirdi (piksel oranlı elips), küçük gövde adları üst üste biniyordu (piksel ofsetli etiket).
 
+- **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
+  1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
+  Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
+
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
