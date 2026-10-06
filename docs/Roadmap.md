@@ -258,6 +258,11 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Şablon kare kontrolü üç tur: yollar başlığa taşıyordu (dış halkaya kırpıldı), boyut panelinde eksen oranı daireyi
     yatay şeride çevirdi (piksel oranlı elips), küçük gövde adları üst üste biniyordu (piksel ofsetli etiket).
 
+- **Kanal açıldı (2026-10-06 gece):** Scryne K1+K2'yi aynı gün yaptı (eski hesap, risk düşük), K3 da aynı gece: Orbit Ruler
+  `UCbhRAMbzhwX7dqoBJhCcm2g` (`@orbitruler`), Buffer kanalı `6ac549856a5c39ccb634a0b1`, token kanal doğrulamasından geçti,
+  `YT_TOKEN_JSON_UZAY` + `OTOMAT_YAYIN_UZAY=buffer`. Dal üzerinde matris koşusu (iki iş yeşil, alarm yok): ilk video
+  `M1z_ITgDASs` Orbit Ruler'da private, publishAt 2026-10-07T20:00Z, 5 yerelleştirme, 5 altyazı izi (+ YouTube ASR).
+  Açık: 07.10 23:00 TR'de oturumsuz public kontrolü; dal main'e Earth'ün 10-07 koşusundan sonra.
 - **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
   1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
   Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
