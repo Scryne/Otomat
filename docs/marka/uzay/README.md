@@ -10,7 +10,7 @@ Renkler `kanallar/uzay/DESIGN.md`'den: zemin `#04050b`, halka ve cetvel `#c9ccd8
 | Dosya | Kullanım |
 |---|---|
 | `youtube/profil-800.png` | Kanal profil resmi (daireye kırpılır; sembol dairenin içinde). **Studio'dan yüklenir** (API yok) |
-| `youtube/banner-2560x1440.png` | Kanal banner'ı; içerik ortadaki 1546×423 güvenli alanda. API ile yüklendi (2026-10-06) |
+| `youtube/banner-2560x1440.png` | Kanal banner'ı; içerik ortadaki 1546×423 güvenli alanda. API ile yüklendi; açıklama EN + ES/PT/DE/FR ve anahtar kelimeler de (2026-10-06) |
 | `youtube/filigran-150.png` | Video filigranı. API isteği gönderildi, yanıt kütüphane hatasıyla okunamadı: Studio'da kontrol |
 | `master/sembol-*.svg` | Sembol: siyah, koyu zemin, şeffaf; `-kucuk-` 32 px ve altı (çentiksiz, kalın) |
 | `master/gen.py` | Sembol üreticisi (parametrik); `youtube.py` YouTube PNG'leri; `kanal_ayarla.py` banner + açıklama + anahtar kelime |

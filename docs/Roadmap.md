@@ -248,7 +248,7 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   bilinçli değişiklik). Earth'ün çıktısını değiştiren bir commit Faz 7 sayacını sıfırlar.
 - **Faz 10 durumu (2026-10-06):** `cok-kanal` dalı; 62 → 73 test; dal üzerinde iş akışı elle tetiklendi (matris,
   "bugün üretildi mi" adımı kanal başına doğru çalıştı, yayına dokunmadı). Main'e birleşme: 10-07 Earth koşusu Faz 6
-  sayacını kapattıktan sonra.
+  sayacını kapattıktan sonra. (Güncelleme: Earth yerelde tam koşuyla doğrulanınca aynı gece birleşti.)
 - **Faz 11 notları (2026-10-06):**
   - JPL CAD çap vermiyor (24/24 kayıtta boş): çap H'den, p = 0,25–0,05 aralığıyla; videoda "estimated" ve aralık.
   - Exoplanet Archive: yalnız transit + ölçülmüş yarıçap. İlk taslakta "en yakınlar" listesinin ilk ikisi aynı yıldızın
@@ -262,7 +262,11 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   `UCbhRAMbzhwX7dqoBJhCcm2g` (`@orbitruler`), Buffer kanalı `6ac549856a5c39ccb634a0b1`, token kanal doğrulamasından geçti,
   `YT_TOKEN_JSON_UZAY` + `OTOMAT_YAYIN_UZAY=buffer`. Dal üzerinde matris koşusu (iki iş yeşil, alarm yok): ilk video
   `M1z_ITgDASs` Orbit Ruler'da private, publishAt 2026-10-07T20:00Z, 5 yerelleştirme, 5 altyazı izi (+ YouTube ASR).
-  Açık: 07.10 23:00 TR'de oturumsuz public kontrolü; dal main'e Earth'ün 10-07 koşusundan sonra.
+  Aynı gece: Earth için yerel tam koşu (gerçek DB kopyası, teslim modu) yeni kodla geçti (aynı seçim
+  `usgs:bolge_yillik:Japan`, 4 dil, alarm yok, yerleşim aynı) → dal main'e alındı (`cd0337b`, CI yeşil).
+  Marka kiti (`docs/marka/uzay/`): teğet cetvel sembolü; banner + açıklama (5 dil) + anahtar kelime API ile.
+  Açık: profil resmi Studio'da (API yok), filigran Studio'da kontrol; 07.10 23:00 TR oturumsuz public kontrolü;
+  Faz 10 ✅ için main'de iki kanallı ilk temiz günlük koşu (07.10).
 - **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
   1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
   Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
