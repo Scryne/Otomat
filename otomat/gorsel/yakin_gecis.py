@@ -9,6 +9,7 @@ eşit aralıklı açılara dağıtılır ve ekranda "distance to scale, directio
 import math
 from pathlib import Path
 
+import matplotlib.patheffects as pe
 import numpy as np
 from matplotlib.patches import Circle, Ellipse, Rectangle
 
@@ -46,6 +47,67 @@ def _yapilar(cap_max: float) -> list[tuple[str, int]]:
     return secim
 
 
+def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: float, bosluk_px: float) -> None:
+    """Etiketleri çakışmasız konuma koyar (2026-10-07: dokuz geçişte yazılar üst üste biniyordu).
+
+    Asteroit etiketi kendi yolundan en az yarı kutusu kadar uzakta, önce dışta sonra içte, yola paralel kaydırılarak
+    denenir; halka etiketleri en son boş açıya oturur. Hiçbir aday temiz değilse en az çakışan seçilir.
+    """
+    r = fig.canvas.get_renderer()
+    sinir = ax.get_window_extent(r).padded(-bosluk_px)
+    px = ax.transData.transform((1, 0))[0] - ax.transData.transform((0, 0))[0]  # 1 veri birimi = px (eşit oran)
+    dolu = [k.padded(bosluk_px) for k in engeller]
+    # yolların son hali ve halkalar: üstlerine binmek yazı çakışmasından ucuz ama boş yer varsa ondan kaçınılır
+    noktalar = [p + d * R * u for p, d, *_ in yollar for u in np.linspace(-1, 1, 160)]
+    noktalar += [_r(h) * np.array([math.cos(a), math.sin(a)]) for h, _ in halka_yazilari
+                 for a in np.linspace(0, 2 * math.pi, 240)]  # fmt: skip
+    cizgi_px = ax.transData.transform([n for n in noktalar if np.linalg.norm(n) <= R * 0.97])
+
+    def maliyet(t) -> float:
+        k = t.get_window_extent(r)
+        disari = 0.0 if (k.x0 >= sinir.x0 and k.x1 <= sinir.x1 and k.y0 >= sinir.y0 and k.y1 <= sinir.y1) else 1e9
+        ic = (cizgi_px[:, 0] > k.x0) & (cizgi_px[:, 0] < k.x1) & (cizgi_px[:, 1] > k.y0) & (cizgi_px[:, 1] < k.y1)
+        return (
+            disari
+            + 50 * float(ic.sum())
+            + sum(max(min(k.x1, d.x1) - max(k.x0, d.x0), 0) * max(min(k.y1, d.y1) - max(k.y0, d.y0), 0) for d in dolu)
+        )
+
+    def koy(t, cizgi_nokta, u, ek: float) -> None:
+        """Kutunun u'ya bakan köşesini/kenarını çizgi noktasından `ek` kadar u yönüne koyar: kutu çizgiye
+        bitişik durur, değmez (merkezden yerleştirmede çapraz yolda etiket çizgiden uzağa düşüyordu)."""
+        k = t.get_window_extent(r)
+        ha = "center" if abs(u[0]) < 0.35 else ("left" if u[0] > 0 else "right")
+        va = "center" if abs(u[1]) < 0.35 else ("bottom" if u[1] > 0 else "top")
+        pay = (abs(u[0]) * k.width / 2 if ha == "center" else 0) + (abs(u[1]) * k.height / 2 if va == "center" else 0)
+        t.set_ha(ha)
+        t.set_va(va)
+        t.set_position(cizgi_nokta + u * (pay / px + ek))
+
+    def sec(t, adaylar) -> None:
+        """adaylar: (çizgi noktası, yön, ek, uzaklık cezası px); en düşük maliyetli aday kalır."""
+        en_iyi = None
+        for aday in adaylar:
+            koy(t, *aday[:3])
+            m = maliyet(t) + 2 * aday[3]
+            if en_iyi is None or m < en_iyi[0]:
+                en_iyi = (m, aday)
+        koy(t, *en_iyi[1][:3])
+        dolu.append(t.get_window_extent(r).padded(bosluk_px))
+
+    aralik = bosluk_px / px
+    for p, d, _, _, t in yollar:
+        u = p / max(np.linalg.norm(p), 1e-9)
+        sec(t, [(p + d * kay * R, yon * u, aralik + ek * R, (ek + abs(kay)) * R * px + (yon < 0) * 20)
+                for yon in (1, -1) for ek in (0, 0.06) for kay in (0, 0.12, -0.12, 0.25, -0.25)])  # fmt: skip
+    for h, t in halka_yazilari:
+        adaylar = []
+        for j, aci in enumerate((62, 118, 40, 140, 80, 100, 20, 160, 0, 180, -30, 210)):
+            u = np.array([math.cos(math.radians(aci)), math.sin(math.radians(aci))])
+            adaylar.append((u * _r(h), u, aralik, j * 5))
+        sec(t, adaylar)
+
+
 def ciz(
     gecisler: list[dict],  # [{"ad", "ld", "tarih", "cap": [min, max], "hiz"}], en yakın önce
     baslik: str,
@@ -73,6 +135,8 @@ def ciz(
     ax.set_ylim(-R, R)
     ax.set_aspect("equal")
 
+    hale = [pe.withStroke(linewidth=5 * s.olcek, foreground=renk("surface"))]  # üstünden geçen yollar okunsun
+    halka_yazilari = []
     for h in halkalar:  # mesafe halkaları
         ay = h == 1
         ax.add_patch(
@@ -86,23 +150,25 @@ def ciz(
                 zorder=1,
             )
         )
-        ax.text(
-            _r(h) * math.cos(math.radians(62)),
-            _r(h) * math.sin(math.radians(62)),
+        yazi = ax.text(
+            0,
+            0,
             "Moon's orbit" if ay else f"{sayi(h)}× Moon",
             color=renk("moon") if ay else renk("ink-muted"),
             fontproperties=font("caption", s.olcek),
-            ha="left",
-            va="bottom",
-            zorder=2,
+            ha="center",
+            va="center",
+            zorder=5,
+            path_effects=hale,
         )
-    ax.add_patch(Circle((_r(1) * math.cos(math.radians(205)), _r(1) * math.sin(math.radians(205))), 0.035 * R,
-                        color=renk("moon"), zorder=3))  # fmt: skip
-    ax.add_patch(Circle((0, 0), 0.06 * R, color=renk("earth"), zorder=3))
-    ax.text(0, -0.09 * R, "Earth", color=renk("ink-secondary"), fontproperties=font("caption", s.olcek),
-            ha="center", va="top", zorder=3)  # fmt: skip
-    s.fig.text(0.5, alt - 0.004, "distances to scale (√), directions are not", ha="center", va="top",
-               color=renk("ink-muted"), fontproperties=font("caption", s.olcek, 0.9))  # fmt: skip
+        halka_yazilari.append((h, yazi))
+    ay_diski = ax.add_patch(Circle((_r(1) * math.cos(math.radians(205)), _r(1) * math.sin(math.radians(205))),
+                                   0.035 * R, color=renk("moon"), zorder=3))  # fmt: skip
+    dunya = ax.add_patch(Circle((0, 0), 0.06 * R, color=renk("earth"), zorder=3))
+    dunya_yazi = ax.text(0, -0.09 * R, "Earth", color=renk("ink-secondary"), fontproperties=font("caption", s.olcek),
+                         ha="center", va="top", zorder=3)  # fmt: skip
+    dipnot = s.fig.text(0.5, alt - 0.004, "distances to scale (√), directions are not", ha="center", va="top",
+                        color=renk("ink-muted"), fontproperties=font("caption", s.olcek, 0.9))  # fmt: skip
 
     # Geçiş yolları: en yakın nokta r(ld), yön eşit aralıklı açılarda; yol en yakın noktaya diktir.
     n = len(gecisler)
@@ -122,7 +188,7 @@ def ciz(
         cizgi.set_clip_path(kirp)
         nokta.set_clip_path(kirp)
         etiket = ax.text(
-            *(p + (0.06 * R) * p / max(np.linalg.norm(p), 1e-9)),
+            *p,
             f"{gecisler[i]['ad']}\n{sayi(gecisler[i]['ld'], 2 if gecisler[i]['ld'] < 1 else 1)}× Moon",
             color=renk("ink-primary") if vurgulu else renk("ink-secondary"),
             fontproperties=font("label" if vurgulu else "caption", s.olcek, 0.8 if vurgulu else 1.0),
@@ -130,8 +196,12 @@ def ciz(
             va="center",
             alpha=0,
             zorder=8,
+            path_effects=hale,
         )
         yollar.append((p, d, cizgi, nokta, etiket))
+    r_ = s.fig.canvas.get_renderer()
+    engeller = [a.get_window_extent(r_) for a in (ay_diski, dunya, dunya_yazi, dipnot)]
+    _yerlestir(s.fig, ax, yollar, halka_yazilari, engeller, R, 6 * s.olcek)
 
     # Tekil: son bölümde boyut karşılaştırması (aynı karede, diyagram solarken)
     boyut = None
@@ -171,7 +241,7 @@ def ciz(
 
     hiz_yazi = s.fig.text(0.5, alt - 0.03, "", ha="center", va="top", color=renk("ink-secondary"),
                           fontproperties=font("label", s.olcek))  # fmt: skip
-    diyagram = [*ax.patches, *ax.texts, *ax.lines, *ax.collections]
+    diyagram = [*ax.patches, *ax.texts, *ax.lines, *ax.collections, dipnot]  # dipnot mesafeyi anlatır, boyutta söner
     oynatma = max(saniye - s.baslangic - 1.5, 1.0)
     gecis_sure = oynatma * 0.55 if tekil else GECIS_SN
     aralik = 0 if tekil else max((oynatma - gecis_sure - 1.0) / max(n - 1, 1), 0.25)

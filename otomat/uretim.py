@@ -88,6 +88,10 @@ def birlestir(video: Path, wav: Path, cikti: Path) -> Path:
             "aac",
             "-b:a",
             "160k",
+            # ses KUYRUK kadar kısa: o kadar sessizlik eklenir (yalnız -shortest kapanışı kesiyordu); sınırsız
+            # apad -c:v copy ile ffmpeg'i hiç bitirmiyor
+            "-af",
+            f"apad=pad_dur={KUYRUK}",
             "-shortest",
             str(cikti),
         ],
