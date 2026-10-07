@@ -47,6 +47,9 @@ def _yapilar(cap_max: float) -> list[tuple[str, int]]:
     return secim
 
 
+KAYMALAR = (0, 0.06, -0.06, 0.12, -0.12, 0.18, -0.18, 0.25, -0.25)  # yol boyunca, R cinsinden
+
+
 def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: float, bosluk_px: float) -> None:
     """Etiketleri çakışmasız konuma koyar (2026-10-07: dokuz geçişte yazılar üst üste biniyordu).
 
@@ -71,7 +74,8 @@ def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: f
         ic = (cizgi_px[:, 0] > y.x0) & (cizgi_px[:, 0] < y.x1) & (cizgi_px[:, 1] > y.y0) & (cizgi_px[:, 1] < y.y1)
         return (
             disari
-            + 50 * float(ic.sum()) + 400 * bool(ic.any())
+            + 50 * float(ic.sum())
+            + 400 * bool(ic.any())
             + sum(max(min(k.x1, d.x1) - max(k.x0, d.x0), 0) * max(min(k.y1, d.y1) - max(k.y0, d.y0), 0) for d in dolu)
         )
 
@@ -101,7 +105,7 @@ def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: f
     for p, d, _, _, t in yollar:
         u = p / max(np.linalg.norm(p), 1e-9)
         sec(t, [(p + d * kay * R, yon * u, aralik + ek * R, (ek + abs(kay)) * R * px + (yon < 0) * 20)
-                for yon in (1, -1) for ek in (0, 0.03, 0.06) for kay in (0, 0.06, -0.06, 0.12, -0.12, 0.18, -0.18, 0.25, -0.25)])  # fmt: skip
+                for yon in (1, -1) for ek in (0, 0.03, 0.06) for kay in KAYMALAR])  # fmt: skip
     for h, t in halka_yazilari:
         adaylar = []
         for j, aci in enumerate((62, 118, 40, 140, 80, 100, 20, 160, 0, 180, -30, 210, -90, -60, -120)):
