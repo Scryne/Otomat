@@ -185,3 +185,20 @@ def test_yakin_gecis_son_karede_yazilar_cakismaz(monkeypatch, adet):
         orta, uc = noktalar[200], noktalar[0]  # yol p ± d·R: orta nokta en yakın geçiş
         uzaklik = np.hypot(max(kutu.x0 - orta[0], 0, orta[0] - kutu.x1), max(kutu.y0 - orta[1], 0, orta[1] - kutu.y1))
         assert uzaklik < 0.3 * np.hypot(*(orta - uc)), etiket.get_text()
+
+
+@pytest.mark.parametrize("adet", [9, 6, 3])
+def test_yakin_gecis_baska_yol_yaziya_degmez(monkeypatch, adet):
+    # 10-07: TQ1'in yolu kırpma çemberinde TX etiketinin kenarında bitiyordu (seyrek örnek, boşluksuz kutu)
+    s = _yakin_gecis_son_kare(monkeypatch, GECISLER_1007[:adet])
+    r = s.fig.canvas.get_renderer()
+    ax = next(a for a in s.fig.axes if a.lines)
+    yazilar = [t for t in [*ax.texts, *s.fig.texts] if t.get_text().strip() and t.get_alpha() != 0]
+    for cizgi in ax.lines:
+        (x0, x1), (y0, y1) = cizgi.get_xdata(), cizgi.get_ydata()
+        noktalar = ax.transData.transform([(x0 + (x1 - x0) * u, y0 + (y1 - y0) * u) for u in np.linspace(0, 1, 2000)])
+        yol, donusum = cizgi.get_clip_path().get_transformed_path_and_affine()
+        gorunen = noktalar[yol.contains_points(noktalar, transform=donusum)]
+        for t in yazilar:
+            kutu = t.get_window_extent(r).padded(2)
+            assert not any(kutu.contains(x, y) for x, y in gorunen), t.get_text()

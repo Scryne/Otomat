@@ -276,7 +276,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
   **Yapıldı (2026-10-07, `f080e42`):** `apad=pad_dur=KUYRUK` + gerçek ffmpeg testi; Faz 7 sayacı henüz başlamadığı için
   sayaç sıfırlanmadan main'e alındı. Aynı birleşmede `yakin_gecis` etiketleri çakışmasız yerleşiyor (9 geçişli kare
-  gözle kontrol edildi). Açık (yalnız uzay): başka bir yolun ucu komşu etikete değebiliyor (TX "2.2×"), Faz 11 içinde.
+  gözle kontrol edildi). Aynı akşam (yalnız uzay): kırpma çemberinde biten komşu yol ucu etikete değiyordu (TQ1 → TX,
+  sonra TA → TX): maliyet yolu sık örnekler, boşluklu kutuyla bakar, herhangi bir değme sabit ceza alır; ara kaydırma
+  adayları ve halka etiketine aşağı açılar eklendi. 9/6/3 geçişte her yazı her yoldan ≥ 6 px (`test_..._yaziya_degmez`).
 - **Faz 10 ✅ (2026-10-07):** main'de iki kanallı ilk planlı koşu (13:34 UTC) iki iş yeşil, alarmsız; Earth seçimi ve
   yerleşimi eski davranışla aynı (`usgs:bolge_yillik:Argentina`, `L2ar7ULV7Ic`), Orbit Ruler `rUEu2ssQwIg` planlı.
 

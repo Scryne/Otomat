@@ -58,7 +58,7 @@ def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: f
     px = ax.transData.transform((1, 0))[0] - ax.transData.transform((0, 0))[0]  # 1 veri birimi = px (eşit oran)
     dolu = [k.padded(bosluk_px) for k in engeller]
     # yolların son hali ve halkalar: üstlerine binmek yazı çakışmasından ucuz ama boş yer varsa ondan kaçınılır
-    noktalar = [p + d * R * u for p, d, *_ in yollar for u in np.linspace(-1, 1, 160)]
+    noktalar = [p + d * R * u for p, d, *_ in yollar for u in np.linspace(-1, 1, 600)]
     noktalar += [_r(h) * np.array([math.cos(a), math.sin(a)]) for h, _ in halka_yazilari
                  for a in np.linspace(0, 2 * math.pi, 240)]  # fmt: skip
     cizgi_px = ax.transData.transform([n for n in noktalar if np.linalg.norm(n) <= R * 0.97])
@@ -66,10 +66,12 @@ def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: f
     def maliyet(t) -> float:
         k = t.get_window_extent(r)
         disari = 0.0 if (k.x0 >= sinir.x0 and k.x1 <= sinir.x1 and k.y0 >= sinir.y0 and k.y1 <= sinir.y1) else 1e9
-        ic = (cizgi_px[:, 0] > k.x0) & (cizgi_px[:, 0] < k.x1) & (cizgi_px[:, 1] > k.y0) & (cizgi_px[:, 1] < k.y1)
+        # boşluklu kutu + sık örnek: kırpma çemberinde kutunun kenarında biten komşu yol yazıya değiyordu (TQ1 → TX)
+        y = k.padded(bosluk_px * 0.75)
+        ic = (cizgi_px[:, 0] > y.x0) & (cizgi_px[:, 0] < y.x1) & (cizgi_px[:, 1] > y.y0) & (cizgi_px[:, 1] < y.y1)
         return (
             disari
-            + 50 * float(ic.sum())
+            + 50 * float(ic.sum()) + 400 * bool(ic.any())
             + sum(max(min(k.x1, d.x1) - max(k.x0, d.x0), 0) * max(min(k.y1, d.y1) - max(k.y0, d.y0), 0) for d in dolu)
         )
 
@@ -99,10 +101,10 @@ def _yerlestir(fig, ax, yollar: list, halka_yazilari: list, engeller: list, R: f
     for p, d, _, _, t in yollar:
         u = p / max(np.linalg.norm(p), 1e-9)
         sec(t, [(p + d * kay * R, yon * u, aralik + ek * R, (ek + abs(kay)) * R * px + (yon < 0) * 20)
-                for yon in (1, -1) for ek in (0, 0.06) for kay in (0, 0.12, -0.12, 0.25, -0.25)])  # fmt: skip
+                for yon in (1, -1) for ek in (0, 0.03, 0.06) for kay in (0, 0.06, -0.06, 0.12, -0.12, 0.18, -0.18, 0.25, -0.25)])  # fmt: skip
     for h, t in halka_yazilari:
         adaylar = []
-        for j, aci in enumerate((62, 118, 40, 140, 80, 100, 20, 160, 0, 180, -30, 210)):
+        for j, aci in enumerate((62, 118, 40, 140, 80, 100, 20, 160, 0, 180, -30, 210, -90, -60, -120)):
             u = np.array([math.cos(math.radians(aci)), math.sin(math.radians(aci))])
             adaylar.append((u * _r(h), u, aralik, j * 5))
         sec(t, adaylar)
