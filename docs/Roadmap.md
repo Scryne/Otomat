@@ -265,7 +265,7 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   Aynı gece: Earth için yerel tam koşu (gerçek DB kopyası, teslim modu) yeni kodla geçti (aynı seçim
   `usgs:bolge_yillik:Japan`, 4 dil, alarm yok, yerleşim aynı) → dal main'e alındı (`cd0337b`, CI yeşil).
   Marka kiti (`docs/marka/uzay/`): teğet cetvel sembolü; banner + açıklama (5 dil) + anahtar kelime API ile.
-  Açık: profil resmi Studio'da (API yok), filigran Studio'da kontrol; 07.10 23:00 TR oturumsuz public kontrolü;
+  Açık: (profil resmi + filigran ✅ Scryne, 10-07) 07.10 23:00 TR oturumsuz public kontrolü;
   Faz 10 ✅ için main'de iki kanallı ilk temiz günlük koşu (07.10).
 - **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
   1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
