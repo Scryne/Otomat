@@ -21,7 +21,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
-| 11 | Kanal 2: Orbit Ruler (uzay) | 🔄 Devam Ediyor | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
+| 11 | Kanal 2: Orbit Ruler (uzay) | ✅ Tamamlandı | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
 | 12 | Kanal 3: iklim/okyanus (koşullu) | ⏳ Bekliyor | Koşul: kanal 2'nin ilk 7 günü alarmsız (K-13). ERA5 (ARCO/CDS) + OISST; Earth'ün "senin ülken" açısından ayrışan küresel/okyanus/yıllar içi sıra açısı; aynı bitti tanımı |
 | 13 | Portföy işletimi | ⏳ Bekliyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
 
@@ -271,6 +271,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   Marka kiti (`docs/marka/uzay/`): teğet cetvel sembolü; banner + açıklama (5 dil) + anahtar kelime API ile.
   Açık: (profil resmi + filigran ✅ Scryne, 10-07) 07.10 23:00 TR oturumsuz public kontrolü;
   Faz 10 ✅ için main'de iki kanallı ilk temiz günlük koşu (07.10).
+- **Faz 11 ✅ (2026-10-07 20:10 UTC):** ilk video `M1z_ITgDASs` ("The Closest Asteroid Flybys of the Week") oturumsuz
+  oEmbed ile public (200, yazar Orbit Ruler). Bu video etiket düzeltmelerinden önce üretildi; ikinci video `rUEu2ssQwIg`
+  (08.10 20:00 UTC) planlı, 403 beklenen. Faz 12'nin koşulu (K-13: kanal 2'nin ilk 7 günü alarmsız) 10-14'te dolar.
 - **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
   1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
   Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
