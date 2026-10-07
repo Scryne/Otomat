@@ -1,15 +1,17 @@
 """Uzay kanalı: JPL CAD ve Exoplanet Archive adaptörleri (kayıtlı gerçek yanıtlar, 2026-10-06), anlatı ve kapılar."""
 
 import datetime as dt
+import itertools
 import json
 import re
 from pathlib import Path
 
+import numpy as np
 import pytest
 
 from otomat import kanal
 from otomat.anlati import kapilar, olgu_cumleleri, yedek
-from otomat.gorsel import sablonlar
+from otomat.gorsel import kimlik, sablonlar
 from otomat.veri import jpl, otegezegen
 
 KAYIT = Path(__file__).parent / "veri" / "kayit"
@@ -20,8 +22,10 @@ GUN = dt.date(2026, 10, 6)
 def uzay(monkeypatch):
     monkeypatch.setenv("OTOMAT_KANAL", "uzay")
     kanal._aktif.cache_clear()
+    kimlik.tokenlar.cache_clear()  # renkler kanala bağlı; Earth'ünkiler kalmasın
     yield
     kanal._aktif.cache_clear()
+    kimlik.tokenlar.cache_clear()
 
 
 def _jpl():
@@ -137,3 +141,47 @@ def test_rakamli_ad_tutucuya_cevrilir():
 def test_baslik_duzeni_ozel_adi_korur():
     assert kapilar.baslik_duzeni("LTT 1445 A b next to earth", ("LTT 1445 A b",)) == "LTT 1445 A b Next to Earth"
     assert kapilar.baslik_duzeni("the hottest of all") == "The Hottest of All"
+
+
+# 2026-10-07 karesi: dokuz geçişte "Moon's orbit" TB3'e, TV2 dipnota biniyordu; çizgiler etiketlerin içinden geçiyordu.
+GECISLER_1007 = [("2026 TP2", 0.59), ("2026 TU3", 0.83), ("2026 TS2", 1.3), ("2026 TB3", 1.7), ("2026 TQ1", 2.2),
+                 ("2026 TX", 2.2), ("2026 TA", 2.3), ("2026 TV2", 2.7), ("2026 TC2", 2.8)]  # fmt: skip
+
+
+def _yakin_gecis_son_kare(monkeypatch, gecisler):
+    from otomat.gorsel import yakin_gecis
+
+    yakalanan = {}
+
+    def calistir(self, cikti, guncelle):
+        yakalanan["sahne"], yakalanan["guncelle"] = self, guncelle
+        return cikti
+
+    monkeypatch.setattr(yakin_gecis.Sahne, "calistir", calistir)
+    g = [{"ad": ad, "ld": ld, "an": f"{i:02d}", "cap": [10, 20], "hiz": 8.0} for i, (ad, ld) in enumerate(gecisler)]
+    yakin_gecis.ciz(g, "Test", "Test", Path("yok.mp4"), saniye=25)
+    yakalanan["guncelle"](25.0)
+    return yakalanan["sahne"]
+
+
+@pytest.mark.parametrize("adet", [9, 6, 3])
+def test_yakin_gecis_son_karede_yazilar_cakismaz(monkeypatch, adet):
+    s = _yakin_gecis_son_kare(monkeypatch, GECISLER_1007[:adet])
+    r = s.fig.canvas.get_renderer()
+    ax = next(a for a in s.fig.axes if a.lines)
+    gorunen = [t for t in [*ax.texts, *s.fig.texts] if t.get_text().strip() and t.get_alpha() != 0]
+    kutular = [(t.get_text(), t.get_window_extent(r)) for t in gorunen]
+    cakisan = [(a, b) for (a, ka), (b, kb) in itertools.combinations(kutular, 2) if ka.overlaps(kb)]
+    assert not cakisan
+    # her asteroit etiketi kendi yoluna değmez ama en yakın noktasından da uzağa düşmez (hangi yolun olduğu okunsun;
+    # çakışmadan kaçan ilk yerleştirici TP2'yi Dünya'nın yanına, TB3 ile TQ1'i birbirinin yerine koymuştu)
+    etiketler = [t for t in ax.texts if "\n" in t.get_text()]
+    assert len(etiketler) == len(ax.lines) == adet
+    for cizgi, etiket in zip(ax.lines, etiketler, strict=True):
+        (x0, x1), (y0, y1) = cizgi.get_xdata(), cizgi.get_ydata()
+        noktalar = ax.transData.transform([(x0 + (x1 - x0) * u, y0 + (y1 - y0) * u) for u in np.linspace(0, 1, 400)])
+        kutu = etiket.get_window_extent(r)
+        assert not any(kutu.contains(x, y) for x, y in noktalar), etiket.get_text()
+        orta, uc = noktalar[200], noktalar[0]  # yol p ± d·R: orta nokta en yakın geçiş
+        uzaklik = np.hypot(max(kutu.x0 - orta[0], 0, orta[0] - kutu.x1), max(kutu.y0 - orta[1], 0, orta[1] - kutu.y1))
+        assert uzaklik < 0.3 * np.hypot(*(orta - uc)), etiket.get_text()
