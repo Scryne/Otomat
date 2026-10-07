@@ -16,11 +16,11 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 3 | Görsel motor | ✅ Tamamlandı | Nokta harita, koroplet, sıralı çubuk şablonları; 1080×1920, bölgesel zoom, atıf köşesi; her şablondan 3 gerçek-veri videosu kare kare kontrol edildi; görsel kimlik `DESIGN.md`'de |
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
-| 6 | Geri besleme ve işletim | 🔄 Devam Ediyor | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
+| 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
-| 10 | Çok kanal temeli | 🔄 Devam Ediyor | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
+| 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
 | 11 | Kanal 2: Orbit Ruler (uzay) | 🔄 Devam Ediyor | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
 | 12 | Kanal 3: iklim/okyanus (koşullu) | ⏳ Bekliyor | Koşul: kanal 2'nin ilk 7 günü alarmsız (K-13). ERA5 (ARCO/CDS) + OISST; Earth'ün "senin ülken" açısından ayrışan küresel/okyanus/yıllar içi sıra açısı; aynı bitti tanımı |
 | 13 | Portföy işletimi | ⏳ Bekliyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
@@ -202,6 +202,10 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     üretildi. Bozuk refresh token ile analitik adımı `invalid_grant` alarmını çözüm komutuyla yazdı, üretim sürdü.
   - Açık: haydut audit gelene ya da Plan B videoları elle yüklenene kadar veri görmez; o zamana dek seçim prior'dan
     rastgeledir. Analitik toplayıcının gerçek bir videoyla ilk ölçümü ilk public videodan ~5 gün sonra.
+  - **✅ (2026-10-07):** 3 gün kesintisiz: 10-05 (elle tetik, sayılır), 10-06 ve 10-07 planlı koşular `durum: tamam`;
+    10-05'teki tek alarm (YouTube 500) yeniden denemeyle kapandı, sonrası alarmsız. Pazartesi raporu (H40) üretildi.
+    `eslesen: 0` beklenen: eşleştirme yalnız Plan B'nin elle yüklenen videoları için, Buffer modunda kimlik koşuda yazılır.
+    İzlenecek: ilk gerçek ödül ölçümü 10-11 koşusunda (`W8-h8hWh5Pc`, yayın 10-06 + 3 gün pencere + 2 gün gecikme).
 - **Notlar:**
   - `gh issue list --label alarm` etiket yokken 1 ile çıkıyor; Actions `bash -e` ile koştuğu için etiket önce `--force`
     ile oluşturulur (yerelde sınandı).
@@ -270,9 +274,15 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Bulgu (2026-10-06, tüm kanallar):** `uretim.birlestir` `-shortest` ile sesin bittiği yerde kesiyor; tasarlanan
   1,2 sn kapanış karesi (`KUYRUK`) hiçbir videoda yok (Earth dahil). Düzeltme (`apad`) Earth'ün çıktısını değiştirir:
   Faz 7 bitince ya da bilinçli bir Earth değişikliğiyle birlikte yapılacak.
+  **Yapıldı (2026-10-07, `f080e42`):** `apad=pad_dur=KUYRUK` + gerçek ffmpeg testi; Faz 7 sayacı henüz başlamadığı için
+  sayaç sıfırlanmadan main'e alındı. Aynı birleşmede `yakin_gecis` etiketleri çakışmasız yerleşiyor (9 geçişli kare
+  gözle kontrol edildi). Açık (yalnız uzay): başka bir yolun ucu komşu etikete değebiliyor (TX "2.2×"), Faz 11 içinde.
+- **Faz 10 ✅ (2026-10-07):** main'de iki kanallı ilk planlı koşu (13:34 UTC) iki iş yeşil, alarmsız; Earth seçimi ve
+  yerleşimi eski davranışla aynı (`usgs:bolge_yillik:Argentina`, `L2ar7ULV7Ic`), Orbit Ruler `rUEu2ssQwIg` planlı.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
+- **Sayaç:** 2026-10-08 Earth koşusuyla başlar (son bilinçli Earth değişikliği: kapanış karesi, `f080e42`, 10-07).
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
 - **Notlar:**
   - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design
