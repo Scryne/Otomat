@@ -25,4 +25,4 @@ jobs:
       - run: uv run ruff format --check .
       - run: uv run pytest -q
       - name: Duman koşusu (yüklemesiz tek video)
-        run: uv run python -m otomat.kosu duman
+        run: OTOMAT_KANAL=veri-earth uv run python -m otomat.kosu duman

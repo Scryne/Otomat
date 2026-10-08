@@ -7,20 +7,30 @@ import yaml
 
 from otomat import kanal
 from otomat.ayarlar import KOK
+from otomat.hikaye import kaynaklar as hikaye_kaynaklari
+from otomat.hikaye.senaryo import KALIPLAR as HIKAYE_KALIPLARI
 from otomat.veri.toplayici import KAYNAKLAR
 from otomat.yayin.ceviri import DILLER
+
+PASIF = {"veri-earth", "veri-uzay"}  # veri motorunun arşiv profilleri (testler bunlarla koşar)
 
 
 @pytest.mark.parametrize("kimlik", kanal.hepsi())
 def test_profil_gecerli(kimlik):
     k = kanal.yukle(kimlik)
-    assert set(k.kaynaklar) <= set(KAYNAKLAR), "bilinmeyen veri kaynağı"
     assert set(k.diller) <= set(DILLER), "çevirmenin bilmediği dil"
     assert k.veri.exists() and k.tasarim.exists()
     on = re.match(r"^---\n(.*?)\n---", k.tasarim.read_text(encoding="utf-8"), re.S)
     assert on and {"colors", "typography"} <= set(yaml.safe_load(on.group(1)))
     assert 0 <= k.yayin_saati_utc < 24
-    assert k.ornekler.startswith("- hook:")
+    if k.tur == "hikaye":
+        assert set(k.kaynaklar) <= set(hikaye_kaynaklari.KAYNAKLAR), "bilinmeyen hikâye kaynağı"
+        assert set(k.kaliplar) <= set(HIKAYE_KALIPLARI), "senaryonun bilmediği açılış kalıbı"
+        assert k.stil and k.muzik and (KOK / k.font).exists()
+    else:
+        assert k.tur == "veri"
+        assert set(k.kaynaklar) <= set(KAYNAKLAR), "bilinmeyen veri kaynağı"
+        assert k.ornekler.startswith("- hook:")
 
 
 def test_kanallar_birbirine_karismaz():
@@ -31,15 +41,19 @@ def test_kanallar_birbirine_karismaz():
 
 
 def test_earth_eski_duzeni_korur():
+    # Hikâyeye döndü ama durum, rapor ve token yolları aynı: geçmiş, analitik eşleşmesi ve secret bozulmaz
     k = kanal.yukle("earth")
-    assert k.ad == "Earth in Numbers"
     assert k.durum == KOK / "durum" / "otomat.db"
     assert k.raporlar == KOK / "raporlar"
-    assert k.tasarim == KOK / "DESIGN.md"
     assert k.token_degiskeni == "YT_TOKEN_JSON" and k.token_dosyasi == KOK / "sirlar" / "token.json"
-    assert k.kaynaklar == ("usgs", "dunya_bankasi", "eurostat")
-    assert (k.yayin_saati_utc, k.ses, k.kategori) == (14, "am_michael", "28")
+    assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("tuhaf",), False)
     assert k.diller == ("es", "pt", "de", "fr")
+
+
+def test_cocuk_kanali_mfk():
+    k = kanal.yukle("uzay")
+    assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("ezop",), True)
+    assert k.token_degiskeni == "YT_TOKEN_JSON_UZAY" and k.durum == KOK / "durum" / "uzay.db"
 
 
 def test_bilinmeyen_kanal():
@@ -52,6 +66,7 @@ def test_is_akisi_matrisi_profillerle_uyumlu():
     matris = is_akisi["jobs"]["uret"]["strategy"]["matrix"]["include"]
     assert matris, "matriste kanal yok"
     for satir in matris:
+        assert satir["kanal"] not in PASIF, "arşiv profili yayına çıkamaz"
         k = kanal.yukle(satir["kanal"])  # profili olmayan kanal koşamaz
         assert satir["sir"] == k.sir_eki, f"{k.id}: matristeki token eki profille aynı olmalı"
     assert len({s["etiket"] for s in matris}) == len(matris), "iki kanal aynı Release önekini paylaşıyor"
@@ -71,8 +86,10 @@ class _SahteYT:
         return {"items": [{"snippet": {"title": self.ad}}]}
 
 
-def test_yanlis_kanalin_tokeni_reddedilir():
+def test_yanlis_kanalin_tokeni_reddedilir(monkeypatch):
     from otomat.yayin import youtube
+
+    monkeypatch.setenv("OTOMAT_KANAL", "earth")
 
     youtube._DOGRULANDI.clear()
     with pytest.raises(youtube.YetkiHatasi, match="beklenen 'Earth in Numbers'"):

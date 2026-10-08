@@ -16,8 +16,9 @@ TUM_KALIPLAR = {
     "olcek": "a scale angle: how big, how often or how uneven it is",
     "kiyas": "compare the subject with something familiar that the facts name (the Moon, Earth, Jupiter)",
 }
-# Kanalın kanca kalıpları (haydudun kanca kolu): profilde `kaliplar`; yoksa Earth'ün dördü
-KALIPLAR = {k: TUM_KALIPLAR[k] for k in kanal.aktif().kaliplar}
+# Kanalın kanca kalıpları (haydudun kanca kolu): profilde `kaliplar`; yoksa Earth'ün dördü. Hikâye kanallarının
+# kalıpları otomat/hikaye/senaryo.py'de; o kanallarda bu sözlük boş kalır.
+KALIPLAR = {k: TUM_KALIPLAR[k] for k in kanal.aktif().kaliplar if k in TUM_KALIPLAR}
 SEMA = {
     "type": "object",
     "properties": {"hook": {"type": "string"}, "title": {"type": "string"}},

@@ -40,6 +40,16 @@ class Kanal:
     yasak: tuple[str, ...] = ()  # kanala özel yasak ifade düzenli ifadeleri (politika kapısına eklenir)
     kaliplar: tuple[str, ...] = ("soru", "senin_ulken", "duygusal", "olcek")  # kanca kalıpları (anlatim)
     yedek_kancalar: dict | None = None  # kalıp → LLM kapıdan geçemezse kullanılacak kancalar
+    # Hikâye motoru (tur = "hikaye", otomat/hikaye): veri kanallarında kullanılmaz
+    tur: str = "veri"  # veri | hikaye
+    mfk: bool = False  # made for kids (YouTube selfDeclaredMadeForKids)
+    stil: str = ""  # her sahne görseline eklenen sabit çizim stili
+    muzik: dict | None = None  # mood → Incompetech parça adları
+    muzik_ses: float = 0.13
+    hiz: float = 1.0  # Kokoro konuşma hızı
+    font: str = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"  # altyazı
+    font_boyu: int = 104
+    vurgu: str = "#FFD84D"  # o an söylenen kelimenin rengi
 
     @property
     def token_degiskeni(self) -> str:
@@ -77,6 +87,15 @@ def yukle(kimlik: str) -> Kanal:
         yasak=tuple(d.get("yasak", [])),
         kaliplar=tuple(d.get("kaliplar", Kanal.kaliplar)),
         yedek_kancalar=d.get("yedek_kancalar"),
+        tur=d.get("tur", "veri"),
+        mfk=bool(d.get("mfk", False)),
+        stil=d.get("stil", "").strip(),
+        muzik=d.get("muzik"),
+        muzik_ses=float(d.get("muzik_ses", Kanal.muzik_ses)),
+        hiz=float(d.get("hiz", Kanal.hiz)),
+        font=d.get("font", Kanal.font),
+        font_boyu=int(d.get("font_boyu", Kanal.font_boyu)),
+        vurgu=d.get("vurgu", Kanal.vurgu),
     )
 
 

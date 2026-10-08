@@ -118,8 +118,10 @@ def _govde(
         },
         "status": {
             "privacyStatus": "private",
-            "selfDeclaredMadeForKids": False,
-            "containsSyntheticMedia": False,  # gerçekçi değil: veri animasyonu (YouTube yardım 14328491)
+            # çocuk kanalı (uzay, K-19): içerik çocuklara yönelikse işaret zorunlu, seçmeli değil
+            "selfDeclaredMadeForKids": kanal.aktif().mfk,
+            # gerçekçi değil: veri animasyonu ya da açıkça illüstrasyon (YouTube yardım 14328491)
+            "containsSyntheticMedia": False,
         },
     }
     if yayin_ani:
