@@ -259,7 +259,12 @@ def main() -> None:
         raise SystemExit(f"havuzda (ya da süzgeçten geçen) yok: {a.anahtar}")
     kalip = a.kalip or kanal.aktif().kaliplar[0]
     dizin = a.dizin / kanal.aktif().id / "".join(c if c.isalnum() else "_" for c in a.anahtar)[:60]
-    meta = uret(paket, kalip, "illustrasyon", dizin, "deneme")
+    try:
+        meta = uret(paket, kalip, "illustrasyon", dizin, "deneme")
+    except senaryo.SenaryoHatasi as e:
+        for i, tur in enumerate(e.sorunlar):
+            print(f"tur {i}:", *(f"\n   {n}: {r}" for n, r in tur))
+        raise SystemExit(f"senaryo düştü: {a.anahtar}") from e
     print(json.dumps({k: meta[k] for k in ("baslik", "cumleler", "sure_sn", "neuron", "zaman_sn", "muzik")},
                      ensure_ascii=False, indent=1))  # fmt: skip
     print(dizin / "video.mp4")
