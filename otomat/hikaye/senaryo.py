@@ -99,9 +99,14 @@ TITLE: {baslik}
 SCRIPT LINES:
 {satirlar}
 
-Flag a line (title = line 0) if it: changes what happens in the fable beyond softening harm or contradicts it;
-contains anything scary, violent, cruel, distressing, rude, or unsafe for a child to copy; uses a word a 5-year-old
-would not know; or, for the last line, does not state the fable's lesson simply. Return only real problems.""",
+Flag a line (title = line 0) only if it:
+- contradicts the fable or changes its outcome or lesson (softening harm is expected and fine: a threat becoming a
+  grumble, hunters becoming "a net", someone leaving instead of being punished);
+- contains something scary, violent, cruel, distressing, rude, or unsafe for a child to copy;
+- uses a word most 5-year-olds would not understand (like "gnawed", "unconcern", "trellis");
+- is the last line and does not state the fable's lesson in a simple sentence.
+Do not flag playful sound words, an opening question to the child, small added details that fit the fable, or
+style choices. Return only real problems.""",
 }
 
 ONARIM_ISTEM = """SOURCE:

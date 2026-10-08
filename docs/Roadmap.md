@@ -17,12 +17,13 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
-| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi gerçekleşti (14 gün, kod müdahalesiz); bulgular roadmap'e işlendi |
-| 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | İlk public videodan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
+| 14 | Hikâye motoru (format değişimi) | 🔄 Devam Ediyor | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, MFK) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
+| 15 | Kanal kimliği dönüşümü | ⏳ Bekliyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK; `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
+| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 14'ün main'deki ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
+| 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
 | 11 | Kanal 2: Orbit Ruler (uzay) | ✅ Tamamlandı | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
-| 12 | Kanal 3: iklim/okyanus (koşullu) | ⏳ Bekliyor | Koşul: kanal 2'nin ilk 7 günü alarmsız (K-13). ERA5 (ARCO/CDS) + OISST; Earth'ün "senin ülken" açısından ayrışan küresel/okyanus/yıllar içi sıra açısı; aynı bitti tanımı |
 | 13 | Portföy işletimi | ⏳ Bekliyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
 
 ## Faz Detayları
@@ -240,6 +241,24 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - (2026-10-05) Sıralı çubukta 10 satırda etiketin inen harfleri ("j", "g") çubuğa değiyordu: etiketin alt kenarı artık
     çubuğun 6 px üstünde. Etkilenen iki teslim videosu (H40 10-04, H41 10-05) yalnız görsel yeniden çizilerek Release'te
     değiştirildi: aynı paket (hash kontrolü), aynı ses izi, altyazı zamanları SRT'den.
+
+### Faz 14–15: Format değişimi — hikâye kanalları (2026-10-08)
+- **Neden:** Veri videoları izlenmedi (Earth 4 public video: 63/3/3/8; Orbit 60). Scryne: "yapılan videolar izlenebilir
+  bir türden değil… çocuk içerikleri, bir şeyi konu alan kısa hikâye daha çok tutuyor." Araştırma, spike'lar (S10, S11)
+  ve kararlar: `docs/arastirma/08-format-hikaye.md` (K-15…K-19).
+- **Kararlar:** Earth → gerçek tuhaf hikâyeler (Wikipedia:Unusual articles, genel kitle). Orbit → çocuklar için Ezop
+  masalları, made for kids (Scryne riskleri gördükten sonra seçti, K-19). Yeni kanal açılmaz (Faz 12 iptal). Metin ve
+  görsel Cloudflare Workers AI bedava kotasıyla (gpt-oss-120b, flux-2-klein-4b); havuzlar TypeSafe ile süzüldü (K-18).
+- **Faz 7 ile ilişki:** iki kanalın çıktısı baştan değişti; 10-08'de başlayan sayaç geçersiz. Eski veri videoları
+  private'a çekildi, planlı yayınları kaldırıldı, günlük workflow geçici olarak durduruldu (10-08 17:10 UTC).
+- **Faz 14 durumu (2026-10-08):** `hikaye` dalı; motor + testler (92) yeşil. Earth uçtan uca: "Great Molasses Flood"
+  37,7 sn, 1.697 neuron, ~3,5 dk (görseller 4'lü paralel). Bulgular ve düzeltmeler: suluboya kâğıt kenarı (otomatik
+  kenar kırpma), "the tank" → askeri tank çizimi (görsel tarifi tek anlamlı olmalı), "40°F" (sembol kodda reddedilir),
+  iki panelli görsel (istemde "tek kare"), havuzda iki bölümde listeli makale (tekilleştirme). Orbit ilk denemede 4
+  turda hakemden geçemedi; aynı gün spike'larla 10.000 neuron günlük kota doldu (4006) → kota hatası artık
+  yeniden denenmeden alarm olur; çocuk hakemi örneklerle netleştirildi, kota sıfırlanınca yeniden denenecek.
+- **Faz 15 için Scryne'dan:** iki kanalın adı ve tanıtıcısı (Studio → Özelleştirme → Temel bilgiler) ve profil resmi
+  (API ile yüklenemiyor). Gerisi API ile.
 
 ### Faz 10–13: Çok kanal (2026-10-06)
 - **Neden:** Scryne: "farklı kanallarda farklı konulu kanallar… projeyi en üst seviyeye çıkaracak her şey, tamamen sana

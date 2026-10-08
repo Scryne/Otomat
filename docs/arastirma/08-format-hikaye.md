@@ -84,3 +84,25 @@ Bulgular:
 
 Açık iyileştirmeler: kanca (ilk satır) adayları üret + seç; başlığı kapıya sok; görsel isteklerini paralelleştir;
 kırpmayı artır.
+
+## Kararlar (2026-10-08 akşam, Scryne: "hazır olan Earth ve Orbit Ruler kanallarını direkt değiştirelim, yeni kanal açmayalım; biri hikâye anlatsın, diğeri çocuk içerikleri üretsin")
+- **K-17 (değişti):** Yeni kanal açılmaz. Earth → gerçek tuhaf hikâyeler; Orbit → çocuk masalları. Faz 12 iptal. Kimlikler
+  (`earth`, `uzay`), token secret'ları, durum veritabanları ve Buffer kanalları aynı kalır; ad, görsel kimlik, içerik değişir.
+  Veri profilleri pasif arşiv (`kanallar/veri-earth`, `veri-uzay`): veri motoru silinmedi, testleri bunlarla koşar.
+- **K-18:** Hikâye havuzları bir kez çıkarılıp TypeSafe (jev-1.13.0) ile süzüldü; puanlar havuz dosyasında, eşikler
+  kodda (`otomat/hikaye/kaynaklar.py`).
+  - Tuhaf (2.073 → 713): `hikaye` ≥ 0,5 (olay/kişi anlatıyor, yer/kavram/liste değil), `hassas` < 0,5 (toplu ölüm,
+    cinayet, intihar, cinsellik, istismar…), `siyaset` < 0,5 (1990 sonrası siyaset, 42 makale). Örnek elenenler: Panty tree
+    (hikâye değil), Pitchcapping (hassas).
+  - Ezop (283 → 144): `olum` < 0,5, `yetiskin` < 0,5, `anlasilir` (Score 0-2) ≥ 1,0. `siddet` tek başına eleme nedeni
+    değil (Aslan ile Fare); anlatım yumuşatır, çocuk hakemi denetler. Örnek: Kurt ile Kuzu (ölüm 0,99) elendi.
+  - Neden TypeSafe: metnin ne dediğine dair atomik sınıflandırma (Jev'in güçlü olduğu iş), tek seferlik, 2.400 çağrı.
+    Üretim anındaki hakem LLM'dir (gpt-oss-120b), çünkü kaynakla satır satır karşılaştırma ve onarım metni gerekiyor.
+- **K-19:** Orbit made for kids. Scryne riskleri gördükten sonra açıkça seçti (AskUserQuestion, 2026-10-08): yorumlar,
+  kişiselleştirilmiş reklam, bildirim kapalı; 2026'da otomatik çocuk içeriğine sıkı denetim. Önlemler: günde 1 video,
+  her bölüm ayrı masal, kamu malı kaynak, çocuk güvenliği hakemi, korkutucu görsel yasağı (istem + hakem), abone/beğeni
+  çağrısı yok. YouTube'a `selfDeclaredMadeForKids` profilden gider.
+- **Kanal adları (öneri, YouTube araması 2026-10-08):** Earth → **Inkwell Oddities** (aramada eş yok; mürekkep-suluboya
+  stiline uyar), Orbit → **Lanternbug Tales** (eş yok; ateş böceği maskotu). Elenenler: Strange But True Tales, Oddly
+  True, The Odd Ledger, Little Fable Tales, Fable Garden, Tiny Fables, Acorn Fables, Pocket Fables, Puddlejump Tales
+  (hepsinin eşi var).
