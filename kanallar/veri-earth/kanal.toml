@@ -1,0 +1,21 @@
+# PASİF ARŞİV (2026-10-08): earth kanalının veri formatı profili. Kanal hikâyeye döndü (K-15…K-19); veri motoru
+# ileride yeniden kullanılabilsin diye testler bu profille koşar. Matriste yok, token'ı yok, yayın yapmaz.
+# Earth in Numbers — ilk kanal (2026-10-02). Yollar çok kanal öncesi düzeni korur (taşıma yok).
+id = "veri-earth"
+ad = "Earth in Numbers (veri arşivi)"
+tanim = "short data videos about countries and the planet: earthquakes, rankings and how places compare"
+kaynaklar = ["usgs", "dunya_bankasi", "eurostat"]
+veri = "config/veri.toml"
+tasarim = "DESIGN.md"
+durum = "durum/arsiv/veri-earth.db"
+raporlar = "raporlar/arsiv/veri-earth"
+ses = "am_michael"
+yayin_saati_utc = 14  # 17:00 TR; ABD sabahı / Avrupa öğleden sonrası
+diller = ["es", "pt", "de", "fr"]
+kategori = "28"  # Science & Technology
+sir_eki = "_VERI_EARTH"  # YT_TOKEN_JSON
+ornekler = """
+- hook: "Guess which country tops this list." title: "Where People Live the Longest"
+- hook: "Is your country on this map?" title: "How Often the Ground Shakes in {region}"
+- hook: "The leader is far ahead of everyone else." title: "{rank1_country} Leads the World in Forest Cover"
+"""

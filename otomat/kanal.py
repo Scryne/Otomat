@@ -40,6 +40,22 @@ class Kanal:
     yasak: tuple[str, ...] = ()  # kanala özel yasak ifade düzenli ifadeleri (politika kapısına eklenir)
     kaliplar: tuple[str, ...] = ("soru", "senin_ulken", "duygusal", "olcek")  # kanca kalıpları (anlatim)
     yedek_kancalar: dict | None = None  # kalıp → LLM kapıdan geçemezse kullanılacak kancalar
+    # Hikâye motoru (tur = "hikaye", otomat/hikaye): veri kanallarında kullanılmaz
+    tur: str = "veri"  # veri | hikaye
+    mfk: bool = False  # made for kids (YouTube selfDeclaredMadeForKids)
+    stil: str = ""  # her sahne görseline eklenen sabit çizim stili
+    muzik: dict | None = None  # mood → Incompetech parça adları
+    muzik_lufs: float = -30.0  # müzik yatağının loudness hedefi (anlatıcı -14)
+    hiz: float = 1.0  # Kokoro konuşma hızı
+    font: str = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"  # altyazı
+    font_boyu: int = 104
+    vurgu: str = "#FFD84D"  # o an söylenen kelimenin rengi
+    eski_adlar: tuple[str, ...] = ()  # yeniden adlandırma sürerken token doğrulamasının kabul ettiği eski adlar
+    yedek_adlar: tuple[str, ...] = ()  # YouTube `ad`ı reddederse seçilebilecek adlar (kimlik bunlarla da uygulanır)
+
+    @property
+    def yeni_adlar(self) -> tuple[str, ...]:
+        return (self.ad, *self.yedek_adlar)
 
     @property
     def token_degiskeni(self) -> str:
@@ -77,6 +93,17 @@ def yukle(kimlik: str) -> Kanal:
         yasak=tuple(d.get("yasak", [])),
         kaliplar=tuple(d.get("kaliplar", Kanal.kaliplar)),
         yedek_kancalar=d.get("yedek_kancalar"),
+        tur=d.get("tur", "veri"),
+        mfk=bool(d.get("mfk", False)),
+        stil=d.get("stil", "").strip(),
+        muzik=d.get("muzik"),
+        muzik_lufs=float(d.get("muzik_lufs", Kanal.muzik_lufs)),
+        hiz=float(d.get("hiz", Kanal.hiz)),
+        font=d.get("font", Kanal.font),
+        font_boyu=int(d.get("font_boyu", Kanal.font_boyu)),
+        vurgu=d.get("vurgu", Kanal.vurgu),
+        eski_adlar=tuple(d.get("eski_adlar", [])),
+        yedek_adlar=tuple(d.get("yedek_adlar", [])),
     )
 
 

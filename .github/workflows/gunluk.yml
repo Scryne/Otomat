@@ -1,6 +1,7 @@
 name: Günlük üretim
 
-# Her gün bir video: analitik → veri → haydut seçimi → anlatım (kapılar) → ses → görsel → çeviri → yayın (buffer/api)
+# Her gün bir video: analitik → hikâye havuzu → haydut seçimi → senaryo + hakem (Cloudflare) → sahne görselleri → ses →
+# render → çeviri (Ollama) → yayın (buffer/api)
 # ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
 # GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05): ikinci cron yedektir, gün zaten
 # üretildiyse koşu "Bugün üretildi mi" adımında biter.
@@ -23,10 +24,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
+        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki; ollama: yerel LLM gerekir mi
+        # (veri motoru evet; hikâye motoru metni ve çeviriyi Cloudflare'de yapar)
         include:
-          - { kanal: earth, sir: "", etiket: teslim }
-          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
+          - { kanal: earth, sir: "", etiket: teslim, ollama: false }
+          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay, ollama: false }
     concurrency:
       group: gunluk-${{ matrix.kanal }}
       cancel-in-progress: false
@@ -39,6 +41,9 @@ jobs:
       # buffer modu (docs/arastirma/06): Buffer API + otomat-site deploy key (medya geçici olarak Pages'ta)
       BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
       OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
+      # hikâye motoru (K-16): senaryo + sahne görselleri Cloudflare Workers AI bedava kotasıyla
+      CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
     steps:
       # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
       - uses: actions/checkout@v7
@@ -65,8 +70,15 @@ jobs:
             ~/.ollama/models
             modeller
           key: modeller-${{ hashFiles('config/modeller.toml') }}
-      - name: Ollama
+      - name: Müzik önbelleği
         if: steps.kontrol.outputs.atla != '1'
+        uses: actions/cache@v6
+        with:
+          path: modeller/muzik
+          key: muzik-${{ hashFiles('kanallar/*/kanal.toml') }}
+          restore-keys: muzik-
+      - name: Ollama
+        if: steps.kontrol.outputs.atla != '1' && matrix.ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           (ollama serve > /tmp/ollama.log 2>&1 &)

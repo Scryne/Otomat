@@ -1,0 +1,26 @@
+# Inkwell Oddities — kanal ayarları (Faz 15). otomat/yayin/marka.py kanal bu adı alınca bir kez uygular.
+banner = "docs/marka/inkwell/banner-2560x1440.png"
+filigran = "docs/marka/inkwell/filigran-150.png"
+anahtar = "\"true stories\" \"weird history\" \"strange history\" \"history shorts\" \"unusual facts\" \"illustrated stories\" storytime \"bizarre history\""
+
+[aciklama]
+en = """True stories so strange they sound made up. Every day, one real event, person or animal from history (a beer flood in London, a town that could not stop dancing, a cat that survived three shipwrecks) told in under a minute with storybook illustrations.
+
+Every story comes from Wikipedia's list of unusual articles and is checked line by line against the source, which is linked in each video. Illustrations are AI-generated; narration is computer-generated. New Short every day.
+"""
+es = """Historias reales tan extrañas que parecen inventadas. Cada día, un hecho, una persona o un animal real de la historia (una inundación de cerveza en Londres, un pueblo que no podía dejar de bailar, un gato que sobrevivió a tres naufragios) contado en menos de un minuto con ilustraciones de cuento.
+
+Cada historia proviene de la lista de artículos inusuales de Wikipedia y se verifica línea por línea con la fuente, enlazada en cada video. Las ilustraciones están generadas con IA y la narración por computadora. Un Short nuevo cada día.
+"""
+pt = """Histórias reais tão estranhas que parecem inventadas. Todos os dias, um fato, uma pessoa ou um animal real da história (uma enchente de cerveja em Londres, uma cidade que não conseguia parar de dançar, um gato que sobreviveu a três naufrágios) contado em menos de um minuto com ilustrações de livro de histórias.
+
+Cada história vem da lista de artigos incomuns da Wikipédia e é conferida linha por linha com a fonte, indicada em cada vídeo. As ilustrações são geradas por IA e a narração por computador. Um Short novo todos os dias.
+"""
+de = """Wahre Geschichten, so seltsam, dass sie erfunden klingen. Jeden Tag ein echtes Ereignis, ein Mensch oder ein Tier aus der Geschichte (eine Bierflut in London, eine Stadt, die nicht aufhören konnte zu tanzen, eine Katze, die drei Schiffsuntergänge überlebte), in unter einer Minute erzählt, mit Bilderbuch-Illustrationen.
+
+Jede Geschichte stammt aus der Wikipedia-Liste ungewöhnlicher Artikel und wird Zeile für Zeile mit der Quelle abgeglichen, die in jedem Video verlinkt ist. Die Illustrationen sind KI-generiert, die Sprecherstimme computergeneriert. Jeden Tag ein neuer Short.
+"""
+fr = """Des histoires vraies si étranges qu'elles semblent inventées. Chaque jour, un fait, une personne ou un animal réel de l'histoire (une inondation de bière à Londres, une ville qui ne pouvait plus s'arrêter de danser, un chat qui a survécu à trois naufrages) raconté en moins d'une minute avec des illustrations de livre de contes.
+
+Chaque histoire vient de la liste des articles insolites de Wikipédia et est vérifiée ligne par ligne avec la source, citée dans chaque vidéo. Les illustrations sont générées par IA et la narration par ordinateur. Un nouveau Short chaque jour.
+"""

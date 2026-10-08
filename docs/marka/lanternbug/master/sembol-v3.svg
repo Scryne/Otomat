@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Lanternbug Tales</title>
+  <path fill="#000" d="M118 44 C112 33 103 26 92 23 A5 5 0 0 1 94 13 C109 17 120 26 127 40 Z"/>
+  <path fill="#000" d="M138 44 C144 33 153 26 164 23 A5 5 0 0 0 162 13 C147 17 136 26 129 40 Z"/>
+  <ellipse cx="82" cy="106" rx="44" ry="16" transform="rotate(-28 82 106)" fill="#000"/>
+  <ellipse cx="174" cy="106" rx="44" ry="16" transform="rotate(28 174 106)" fill="#000"/>
+  <circle cx="128" cy="58" r="17" fill="#000"/>
+  <ellipse cx="128" cy="96" rx="19" ry="22" fill="#000"/>
+  <circle cx="128" cy="174" r="66" fill="#fff"/>
+  <path fill="#000" fill-rule="evenodd" d="
+    M128 116 A58 58 0 1 1 127.99 116 Z
+    M88 164 C102 156 116 156 124 164 V202 C116 195 102 195 88 202 Z
+    M168 164 C154 156 140 156 132 164 V202 C140 195 154 195 168 202 Z"/>
+</svg>

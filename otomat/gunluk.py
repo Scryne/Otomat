@@ -40,15 +40,49 @@ YETKI_COZUMU = (
 )
 
 
-def sec(paketler: list[OlguPaketi], db, bugun: dt.date) -> tuple[OlguPaketi, str, str, dict]:
+HIKAYE = _K.tur == "hikaye"  # Earth ve Orbit 2026-10-08'den beri hikâye motorunda (otomat/hikaye)
+HIKAYE_TEKRAR_GUN = 3650  # bir hikâye kanalda bir kez anlatılır
+HIKAYE_DENEME = 3  # senaryo hakemden geçmezse o hikâye düşer, sıradaki denenir
+
+
+def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tuple[OlguPaketi, str, str, dict]:
     """Konu (kol) ve kanca kalıbını haydut seçer; paket ve görsel şablon kol içinde tohumlu rastgele."""
-    taze = [p for p in paketler if durum.taze_mi(db, p, bugun)]
+    gun = HIKAYE_TEKRAR_GUN if HIKAYE else durum.TEKRAR_GUN
+    taze = [p for p in paketler if durum.taze_mi(db, p, bugun, gun)]
     if not taze:
-        raise RuntimeError("taze paket kalmadı (tekrar engeli 60 gün)")
-    r = random.Random(bugun.isoformat())
-    kol, kalip, log = haydut.sec(db, bugun, sorted({p.kol for p in taze}), list(anlatim.KALIPLAR), r)
+        raise RuntimeError(f"taze paket kalmadı (tekrar engeli {gun} gün)")
+    r = random.Random(bugun.isoformat() + (f":{deneme}" if deneme else ""))
+    kaliplar = list(_K.kaliplar) if HIKAYE else list(anlatim.KALIPLAR)
+    kol, kalip, log = haydut.sec(db, bugun, sorted({p.kol for p in taze}), kaliplar, r)
     paket = r.choice([p for p in taze if p.kol == kol])
     return paket, kalip, r.choice(sablonlar.secenekler(paket)), log
+
+
+def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
+    """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
+    seçilmesin diye kaydedilir (video yok)."""
+    from otomat.hikaye import kabul
+    from otomat.hikaye.senaryo import SenaryoHatasi
+    from otomat.hikaye.uretim import uret as h_uret
+
+    dusen = []
+    for deneme in range(HIKAYE_DENEME):
+        paket, kalip, sablon, secim_logu = sec(paketler, db, bugun, deneme)
+        dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
+        try:
+            meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
+        except SenaryoHatasi as e:
+            sorunlar = e.sorunlar[-1][:5]
+        else:
+            if not (sorunlar := kabul.denetle(dizin / "meta.json")):
+                return paket, kalip, sablon, secim_logu, dizin, meta
+        durum.kaydet(db, paket, bugun, None)
+        dusen.append({"anahtar": paket.anahtar, "sorunlar": sorunlar})
+        kayit["dusen_hikayeler"] = dusen
+    raise RuntimeError(
+        f"{HIKAYE_DENEME} hikâye de hakemden ya da yayın kabulünden geçmedi: "
+        + "; ".join(f"{d['anahtar']}: {d['sorunlar']}" for d in dusen)[:800]
+    )
 
 
 def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
@@ -70,7 +104,10 @@ def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
     aday = simdi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0)
     if aday < simdi + dt.timedelta(hours=1):
         aday += dt.timedelta(days=1)
-    son = db.execute("SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL").fetchone()[0]
+    son = db.execute(
+        "SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
+        " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+    ).fetchone()[0]
     if son:
         ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
         aday = max(aday, ertesi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0))
@@ -142,6 +179,17 @@ def analitik_adimi(db, bugun: dt.date, kayit: dict, alarmlar: list[str]):
         return None, None
 
 
+def marka_adimi(yt, kayit: dict, alarmlar: list[str]) -> None:
+    """Kanal yeni adını aldıysa kimliği bir kez uygular (Faz 15); düşerse üretim sürer."""
+    from otomat.yayin import marka
+
+    try:
+        kayit["marka"] = marka.kontrol(yt)
+    except Exception as e:  # noqa: BLE001
+        kayit["marka"] = f"hata: {type(e).__name__}"
+        alarmlar.append("**Kanal kimliği uygulanamadı** (üretim sürdü):\n\n" + _hata(e))
+
+
 def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) -> None:
     """Pazartesi: geçen haftanın raporu (yoksa)."""
     if bugun.isoweekday() != 1:
@@ -174,16 +222,26 @@ def main() -> None:
         print(f"{bugun.isoformat()} zaten üretildi; koşu atlandı.")
         return
     yt, ya = analitik_adimi(db, bugun, kayit, alarmlar)
+    if HIKAYE and yt is not None:
+        marka_adimi(yt, kayit, alarmlar)
     try:
-        paketler, hatalar = topla()
+        if HIKAYE:
+            from otomat.hikaye import kaynaklar as hikaye_kaynaklari
+
+            paketler, hatalar = hikaye_kaynaklari.topla()
+        else:
+            paketler, hatalar = topla()
         kayit.update(paket_sayisi=len(paketler), kaynak_hatalari=hatalar)
         if hatalar:
             alarmlar.append(
                 "**Veri kaynağı hatası** (o kol bugün dışarıda kaldı):\n\n" + "\n".join(f"- {h}" for h in hatalar)
             )
-        paket, kalip, sablon, secim_logu = sec(paketler, db, bugun)
-        dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
-        meta = uret(paket, kalip, sablon, dizin, bugun.isoformat())
+        if HIKAYE:
+            paket, kalip, sablon, secim_logu, dizin, meta = hikaye_uret(paketler, db, bugun, kayit)
+        else:
+            paket, kalip, sablon, secim_logu = sec(paketler, db, bugun)
+            dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
+            meta = uret(paket, kalip, sablon, dizin, bugun.isoformat())
         diller = hazirla(dizin)
         if mod in ("api", "buffer"):
             yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
@@ -213,6 +271,7 @@ def main() -> None:
             video_id=video_id,
             yayin_ani=yayin_ani.isoformat(),
             sure_sn=meta["sure_sn"],
+            **({"neuron": meta["neuron"], "zaman_sn": meta["zaman_sn"]} if HIKAYE else {}),
             haydut={"degisti": secim_logu["degisti"], "odul_sayisi": secim_logu["odul_sayisi"]},
         )
     except Exception as e:

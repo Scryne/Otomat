@@ -20,7 +20,7 @@ GUN = dt.date(2026, 10, 6)
 
 @pytest.fixture(autouse=True)
 def uzay(monkeypatch):
-    monkeypatch.setenv("OTOMAT_KANAL", "uzay")
+    monkeypatch.setenv("OTOMAT_KANAL", "veri-uzay")
     kanal._aktif.cache_clear()
     kimlik.tokenlar.cache_clear()  # renkler kanala bağlı; Earth'ünkiler kalmasın
     yield

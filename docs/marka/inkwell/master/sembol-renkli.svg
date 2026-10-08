@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Inkwell Oddities</title>
+  <!-- Ağızdan yay çizerek yukarı fırlayan damla: eğik, arkasında küçülen iz damlaları -->
+  <g transform="rotate(18 166 54)">
+    <path d="M166 16 C175 32 191 46 191 62 C191 76 180 86 166 86 C152 86 141 76 141 62 C141 46 157 32 166 16 Z" fill="#1C2B45"/>
+  </g>
+  <circle cx="140" cy="96" r="7" fill="#1C2B45"/>
+  <circle cx="129" cy="108" r="4.5" fill="#1C2B45"/>
+  <path fill="#1C2B45" fill-rule="evenodd" d="
+    M94 120 H162 A6 6 0 0 1 168 126 V134 A6 6 0 0 1 162 140 H156 V146
+    C190 148 212 162 214 186 V202 C214 218 202 230 186 230 H70 C54 230 42 218 42 202 V186 C44 162 66 148 100 146 V140 H94 A6 6 0 0 1 88 134 V126 A6 6 0 0 1 94 120 Z
+    M56 190 C74 178 92 178 110 188 C128 198 146 198 164 188 C178 180 190 178 200 182 V193 C190 189 178 191 166 199 C146 211 126 211 106 201 C90 193 74 193 56 203 Z"/>
+</svg>

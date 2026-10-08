@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Inkwell Oddities</title>
+  <!-- Yükselen damla: sivri uç yukarıda, altında iz damlası (hokkadan yukarı çıkıyor) -->
+  <path d="M128 18 C136 34 150 48 150 64 C150 77 140 86 128 86 C116 86 106 77 106 64 C106 48 120 34 128 18 Z" fill="#000"/>
+  <circle cx="128" cy="100" r="6" fill="#000"/>
+  <path fill="#000" fill-rule="evenodd" d="
+    M94 114 H162 A6 6 0 0 1 168 120 V128 A6 6 0 0 1 162 134 H156 V142
+    C190 144 212 158 214 182 V200 C214 216 202 228 186 228 H70 C54 228 42 216 42 200 V182 C44 158 66 144 100 142 V134 H94 A6 6 0 0 1 88 128 V120 A6 6 0 0 1 94 114 Z
+    M56 186 C74 174 92 174 110 184 C128 194 146 194 164 184 C178 176 190 174 200 178 V189 C190 185 178 187 166 195 C146 207 126 207 106 197 C90 189 74 189 56 199 Z"/>
+</svg>

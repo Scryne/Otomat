@@ -1,20 +1,37 @@
-# Earth in Numbers — ilk kanal (2026-10-02). Yollar çok kanal öncesi düzeni korur (taşıma yok).
+# Earth kanalı → gerçek tuhaf hikâyeler (2026-10-08, K-15…K-19; docs/arastirma/08). Veri formatı izlenmedi (3-63 izlenme).
+# Yollar çok kanal öncesi düzeni korur (durum/otomat.db, raporlar/): geçmiş ve analitik eşleşmesi bozulmaz.
+# `ad` YouTube'daki kanal adıyla birebir aynı olmalı (youtube.kanal_dogrula); kanal yeniden adlandırılınca burası da değişir.
 id = "earth"
-ad = "Earth in Numbers"
-tanim = "short data videos about countries and the planet: earthquakes, rankings and how places compare"
-kaynaklar = ["usgs", "dunya_bankasi", "eurostat"]
-veri = "config/veri.toml"
-tasarim = "DESIGN.md"
+ad = "Inkwell Oddities"
+eski_adlar = ["Earth in Numbers"]  # Scryne Studio'da yeniden adlandırana kadar (Faz 15); sonra silinebilir
+yedek_adlar = ["The Inkwell Oddities", "Inkwell Oddities Stories", "Inkwell Oddities TV"]  # YouTube `ad`ı reddederse (10-08: "Bu adı kullanamazsınız")
+tanim = "illustrated short true stories: the strangest real events, people and animals from history"
+tur = "hikaye"
+kaynaklar = ["tuhaf"]
+veri = "kanallar/earth/havuz.json"
+tasarim = "kanallar/earth/DESIGN.md"
 durum = "durum/otomat.db"
 raporlar = "raporlar"
-ses = "am_michael"
+ses = "bm_george"
+hiz = 1.08
 yayin_saati_utc = 14  # 17:00 TR; ABD sabahı / Avrupa öğleden sonrası
 diller = ["es", "pt", "de", "fr"]
-kategori = "28"  # Science & Technology
+kategori = "27"  # Education
 sir_eki = ""  # YT_TOKEN_JSON
 buffer_kanal_id = "6ac3c3346a5c39ccb620b6af"  # Buffer GraphQL kanal kimliği (2026-10-06)
-ornekler = """
-- hook: "Guess which country tops this list." title: "Where People Live the Longest"
-- hook: "Is your country on this map?" title: "How Often the Ground Shakes in {region}"
-- hook: "The leader is far ahead of everyone else." title: "{rank1_country} Leads the World in Forest Cover"
-"""
+mfk = false
+ornekler = ""
+kaliplar = ["sonuc_once", "detay", "zitlik", "kisi"]
+stil = """Hand-drawn storybook illustration, confident ink lines, muted watercolor, warm paper texture, cinematic
+composition, expressive faces, full-bleed edge-to-edge artwork with no border or frame, no text, no letters, no signs,
+no captions"""
+font = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"
+font_boyu = 104
+vurgu = "#FFD84D"
+muzik_lufs = -30  # müzik yatağı (anlatıcı -14 LUFS, karışım ≈ -14)
+
+[muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
+mysterious = ["Investigations", "Curse of the Scarab", "Spellbound", "Darkling"]
+tragic = ["Heartbreaking", "Lightless Dawn", "Gymnopedie No 1"]
+epic = ["Volatile Reaction", "Sovereign"]
+funny = ["Sneaky Snitch", "Fluffing a Duck", "Merry Go"]

@@ -1,0 +1,108 @@
+---
+proje: Otomat
+created: 2026-10-08
+type: arastirma
+---
+# Format değişimi: veri videosundan gerçek hikâyeye
+
+Tetik (2026-10-08, Scryne): "yapılan videolar izlenebilir bir türden değil… çocuk içerikleri, bir şeyi konu alan kısa
+hikâye daha çok tutuyor… tamamen sana bırakıyorum."
+
+## Ölçüm (API, 2026-10-08)
+- Earth: 4 public video, izlenme 63 / 3 / 3 / 8; 1 abone. Orbit Ruler: ilk video 60 izlenme.
+- 10-04 Earth videosunun kare incelemesi: zoom sonrası harita tabanı kayboluyor (siyah zeminde birkaç nokta), alt üçte
+  bir boş, ilk saniyede kaydırmayı durduracak görüntü yok, konu ("Kuzey Mariana Adaları depremleri") izleyicinin
+  derdine dokunmuyor, sona doğru gerilim/sürpriz yok.
+
+## Pazar ve platform (arastirmaci, kaynaklı; özet)
+- Shorts feed'inde küçük resim yok; ilk gösterimler "izlendi / kaydırıldı" oranıyla tartılır (YouTube blog, 2024).
+  Jenny Hoyos: "bir saniyen var" — şok, merak, tatmin.
+- Inauthentic content (support.google.com/youtube/answer/1311392, 2025-07-15): şablonlu hikâye, anlatısız slayt,
+  "seri üretim izlenimi veren generic AI" parasallaştırılamaz. İzinli: aynı karakter/format serisi, **her videoda ayrı
+  hikâye/konsept**; kendi anlatını AI ile görselleştirmek. Ocak 2026'da 16 AI-slop kanalı silindi; karar kanal düzeyinde.
+- Made for kids: yorum, kişiselleştirilmiş reklam, bildirim vb. kapanır; 2026'da en sert denetim otomatik çocuk
+  içeriğinde (NYT Şubat 2026, The 74 Mart 2026: kanallar YPP'den çıkarıldı/kapatıldı). **Çocuk kanalı açılmaz (K-15).**
+- AI etiketi: yalnız gerçekçi sentetik içerikte zorunlu; açıkça illüstrasyon/animasyon muaf (27 Mayıs 2026'dan beri
+  fotogerçekçi AI otomatik etiketleniyor).
+- YPP (blog.youtube, 2026-08-10): 1 Şubat 2027'den itibaren yeni başvuruda 20M nitelikli Shorts izlenmesi/90 gün ya da
+  8.000 saat. Günde 1 Short ile Shorts geliri hedef olamaz; ölçüt izlenme/abone (Faz 8) kalır.
+
+## Araçlar (arastirmaci, 2026-10-08)
+- GitHub Models 2026-07-30'da kapandı. Gemini görüntü modelleri free tier'da yok. Pixabay'in müzik API'si yok.
+- Cloudflare Workers AI: günde 10.000 neuron bedava (aşınca hata, fatura yok); Llama 3.3 70B (~49K çıktı token/gün) ve
+  flux-1-schnell (tahmin ~57-170 görsel/gün) aynı havuzdan. Gemini Flash-Lite free (forumda 500 RPD, resmî sayı yok;
+  free içerik ürün geliştirmede kullanılır) yedek metin yolu.
+- CPU'da yerel FLUX 16 GB'a sığmaz; SD-Turbo 512² olur ama kalite sınırlı.
+
+## Spike S10 (`spikes/s10_hikaye.py`, 2026-10-08)
+Kaynak: Wikipedia:Unusual articles alt sayfaları → 2.073 makale + editörün tek satırlık tanımı (günde 1 ile ~5,5 yıl).
+Görsel: makalenin Commons görselleri (PD/CC), Ken Burns. Ses: Kokoro. Kapı: senaryodaki her sayı ve özel ad kaynakta.
+
+| Makale | Uygun görsel | Kapı | Not |
+| --- | --- | --- | --- |
+| Unsinkable Sam | 1 | geçti | 4b: "lost two of his nine lives" uydurması (ad/sayı değil, kapı göremez) |
+| London Beer Flood | 4 | 2. denemede | 300,000 galon uydurması yakalandı |
+| Dancing plague of 1518 | 1 | 3 denemede düştü | "30 others" uydurması yakalandı |
+
+Bulgular:
+- **Arşiv görseli yetmez:** makale başına 1-4 uygun görsel → aynı resim döner; sonuç "anlatılı slayt", politikanın
+  saydığı kalıba yakın. Sahne başına ayrı görsel gerekiyor.
+- **Yazı:** qwen3:4b hikâyeyi kurabiliyor ama anlamsal uydurma yapıyor; qwen3:8b belirgin daha iyi (Dancing plague
+  temiz) ama tutarlılık hatası sürüyor (Bal des Ardents: "five nobles died" / "killing four"). Sayı/ad kapısı gerekli
+  ama yeterli değil; satır başına kaynak-destek hakemi (D-8 hattı) ve daha büyük model gerekli.
+
+## Kararlar
+- **K-15:** Yeni format genel kitleye (made for kids değil) **gerçek tuhaf hikâyeler**; kaynak Wikipedia:Unusual articles.
+  Her video ayrı hikâye (politika), olgular kaynaktan (K-4'ün hikâye karşılığı: sayı/ad kapısı + satır hakemi).
+- **K-16:** Görsel sahne başına üretilen 2D illüstrasyon (Cloudflare flux-1-schnell, sabit stil; gerçekçi değil →
+  AI etiketi gerekmez) + varsa arşiv görseli. Metin Cloudflare Llama 3.3 70B; yedek Gemini Flash-Lite, sonra qwen3:8b.
+  Tek dokunuş: Scryne'ın Cloudflare hesabı + Workers AI token'ı.
+- **K-17:** Yeni format 3. kanal olarak açılır (Buffer'da 3. yer boş); Earth ve Orbit Ruler Faz 7 sayacı için
+  dokunulmadan sürer. Kod `hikaye` dalında; main'e 10-21'den (Faz 7 sonu) sonra. Faz 12 (iklim kanalı) bunun yerine geçer.
+
+## Spike S11 (`spikes/s11_hikaye_cf.py`, 2026-10-08) — Cloudflare ile
+Senaryo + hakem + satır onarımı: gpt-oss-120b (`/ai/v1/chat/completions`, JSON şeması, `reasoning_effort: medium`,
+yanıtta `usage.neurons` dönüyor). Sahne görseli: flux-2-klein-4b 768×1344 (multipart; ~21 sn, ~156 neuron). Ses: Kokoro
+`bm_george` 1,08×. Müzik: Freesound CC0 (Openverse aramasıyla), hikâyenin `mood`'una göre, −18 dB.
+
+| Makale | Süre | Neuron | Hakem | Not |
+| --- | --- | --- | --- | --- |
+| London Beer Flood | 39,6 sn | ~1.775 | 2. turda geçti | başlıkta "300,000" kaynakta yok → başlık da kapıdan geçmeli |
+| Dancing plague of 1518 | 35,6 sn | ~2.325 | 4 turda 1 sorun kaldı | açık sorun gerçek ("günde 15 ölü" kaynakta tartışmalı) |
+
+Bulgular:
+- Sahne başına illüstrasyon formatı tamamen değiştirdi: her cümlenin kendi görüntüsü, tutarlı stil ve dönem.
+- Hakem sıkı ve isabetli ("moments later" ↔ "an hour later", "four mourners" ↔ beş). Bütün senaryoyu yeniden
+  yazdırmak yakınsamıyor (her turda yeni hata); yalnız işaretli satırları onarmak yakınsıyor. Kalan sorun varsa video
+  düşer, havuzdan sonraki makale denenir (2.073 makale).
+- Güvenlik filtresi (3030 "output flagged") ölüm sahnelerinde tetikleniyor; tohum değiştirip istemi yumuşatmak çözüyor.
+  Senaryo istemi ceset/yara göstermeyi yasaklıyor.
+- Klein "no text" talimatına rağmen ara sıra anlamsız tabela yazısı çiziyor; suluboya kâğıt kenarı kırpma ile çoğunlukla
+  gizleniyor.
+- Video başına ~1.800-2.300 neuron → günlük 10.000 kotayla günde 1 video rahat, 3-4'e kadar mümkün.
+- Yerel süre ~7-9 dk (senaryo 1,5-3 dk, görsel ~5 dk sıralı); görseller paralel istenirse kısalır.
+
+Açık iyileştirmeler: kanca (ilk satır) adayları üret + seç; başlığı kapıya sok; görsel isteklerini paralelleştir;
+kırpmayı artır.
+
+## Kararlar (2026-10-08 akşam, Scryne: "hazır olan Earth ve Orbit Ruler kanallarını direkt değiştirelim, yeni kanal açmayalım; biri hikâye anlatsın, diğeri çocuk içerikleri üretsin")
+- **K-17 (değişti):** Yeni kanal açılmaz. Earth → gerçek tuhaf hikâyeler; Orbit → çocuk masalları. Faz 12 iptal. Kimlikler
+  (`earth`, `uzay`), token secret'ları, durum veritabanları ve Buffer kanalları aynı kalır; ad, görsel kimlik, içerik değişir.
+  Veri profilleri pasif arşiv (`kanallar/veri-earth`, `veri-uzay`): veri motoru silinmedi, testleri bunlarla koşar.
+- **K-18:** Hikâye havuzları bir kez çıkarılıp TypeSafe (jev-1.13.0) ile süzüldü; puanlar havuz dosyasında, eşikler
+  kodda (`otomat/hikaye/kaynaklar.py`).
+  - Tuhaf (2.073 → 713): `hikaye` ≥ 0,5 (olay/kişi anlatıyor, yer/kavram/liste değil), `hassas` < 0,5 (toplu ölüm,
+    cinayet, intihar, cinsellik, istismar…), `siyaset` < 0,5 (1990 sonrası siyaset, 42 makale). Örnek elenenler: Panty tree
+    (hikâye değil), Pitchcapping (hassas).
+  - Ezop (283 → 144): `olum` < 0,5, `yetiskin` < 0,5, `anlasilir` (Score 0-2) ≥ 1,0. `siddet` tek başına eleme nedeni
+    değil (Aslan ile Fare); anlatım yumuşatır, çocuk hakemi denetler. Örnek: Kurt ile Kuzu (ölüm 0,99) elendi.
+  - Neden TypeSafe: metnin ne dediğine dair atomik sınıflandırma (Jev'in güçlü olduğu iş), tek seferlik, 2.400 çağrı.
+    Üretim anındaki hakem LLM'dir (gpt-oss-120b), çünkü kaynakla satır satır karşılaştırma ve onarım metni gerekiyor.
+- **K-19:** Orbit made for kids. Scryne riskleri gördükten sonra açıkça seçti (AskUserQuestion, 2026-10-08): yorumlar,
+  kişiselleştirilmiş reklam, bildirim kapalı; 2026'da otomatik çocuk içeriğine sıkı denetim. Önlemler: günde 1 video,
+  her bölüm ayrı masal, kamu malı kaynak, çocuk güvenliği hakemi, korkutucu görsel yasağı (istem + hakem), abone/beğeni
+  çağrısı yok. YouTube'a `selfDeclaredMadeForKids` profilden gider.
+- **Kanal adları (öneri, YouTube araması 2026-10-08):** Earth → **Inkwell Oddities** (aramada eş yok; mürekkep-suluboya
+  stiline uyar), Orbit → **Lanternbug Tales** (eş yok; ateş böceği maskotu). Elenenler: Strange But True Tales, Oddly
+  True, The Odd Ledger, Little Fable Tales, Fable Garden, Tiny Fables, Acorn Fables, Pocket Fables, Puddlejump Tales
+  (hepsinin eşi var).

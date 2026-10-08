@@ -36,6 +36,13 @@ CREATE TABLE IF NOT EXISTS secimler (
     video_id TEXT,
     gunluk TEXT
 );
+-- Kanaldan geri çekilen (private'a alınıp planı kaldırılan) videolar: yayın slotu ve analitik bunları yok sayar
+-- (2026-10-08 format değişimi: eski veri videoları).
+CREATE TABLE IF NOT EXISTS geri_cekilen (
+    video_id TEXT PRIMARY KEY,
+    tarih TEXT NOT NULL,
+    neden TEXT NOT NULL
+);
 -- Ödül penceresi ölçümü: yayın günü + 2 gün (Analytics), bir kez yazılır.
 CREATE TABLE IF NOT EXISTS olcumler (
     video_id TEXT PRIMARY KEY,
@@ -71,6 +78,14 @@ def kaydet(db: sqlite3.Connection, paket: OlguPaketi, bugun: dt.date, video_id: 
     db.execute(
         "INSERT OR REPLACE INTO uretilen (hash, kol, tur, anahtar, tarih, video_id) VALUES (?, ?, ?, ?, ?, ?)",
         (paket.hash, paket.kol, paket.tur, paket.anahtar, bugun.isoformat(), video_id),
+    )
+    db.commit()
+
+
+def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, neden: str) -> None:
+    db.executemany(
+        "INSERT OR REPLACE INTO geri_cekilen (video_id, tarih, neden) VALUES (?, ?, ?)",
+        [(v, bugun.isoformat(), neden) for v in video_idler],
     )
     db.commit()
 

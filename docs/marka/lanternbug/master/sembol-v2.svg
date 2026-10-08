@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
+  <title>Lanternbug Tales</title>
+  <!-- Antenler (dolgu) -->
+  <path fill="#000" d="M116 52 C110 40 100 32 88 29 A5 5 0 0 1 90 19 C106 23 118 33 125 48 Z"/>
+  <path fill="#000" d="M140 52 C146 40 156 32 168 29 A5 5 0 0 0 166 19 C150 23 138 33 131 48 Z"/>
+  <!-- Kanatlar: ince, çapraz yukarı -->
+  <ellipse cx="78" cy="92" rx="54" ry="19" transform="rotate(-38 78 92)" fill="#000"/>
+  <ellipse cx="178" cy="92" rx="54" ry="19" transform="rotate(38 178 92)" fill="#000"/>
+  <!-- Baş + gövde -->
+  <circle cx="128" cy="66" r="18" fill="#000"/>
+  <ellipse cx="128" cy="104" rx="20" ry="24" fill="#000"/>
+  <!-- Karın: beyaz boşlukla ayrılır, içinde açık kitap -->
+  <circle cx="128" cy="172" r="66" fill="#fff"/>
+  <path fill="#000" fill-rule="evenodd" d="
+    M128 114 A58 58 0 1 1 127.99 114 Z
+    M88 162 C102 154 116 154 124 162 V200 C116 193 102 193 88 200 Z
+    M168 162 C154 154 140 154 132 162 V200 C140 193 154 193 168 200 Z"/>
+</svg>
