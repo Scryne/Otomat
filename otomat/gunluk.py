@@ -59,7 +59,9 @@ def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tupl
 
 
 def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
-    """Senaryosu hakemden geçen ilk hikâye; geçmeyen bir daha seçilmesin diye kaydedilir (video yok)."""
+    """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
+    seçilmesin diye kaydedilir (video yok)."""
+    from otomat.hikaye import kabul
     from otomat.hikaye.senaryo import SenaryoHatasi
     from otomat.hikaye.uretim import uret as h_uret
 
@@ -68,12 +70,19 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
         paket, kalip, sablon, secim_logu = sec(paketler, db, bugun, deneme)
         dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
         try:
-            return paket, kalip, sablon, secim_logu, dizin, h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
+            meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except SenaryoHatasi as e:
-            durum.kaydet(db, paket, bugun, None)
-            dusen.append({"anahtar": paket.anahtar, "sorunlar": e.sorunlar[-1][:5]})
-            kayit["dusen_hikayeler"] = dusen
-    raise RuntimeError(f"{HIKAYE_DENEME} hikâyenin senaryosu da hakemden geçmedi: {[d['anahtar'] for d in dusen]}")
+            sorunlar = e.sorunlar[-1][:5]
+        else:
+            if not (sorunlar := kabul.denetle(dizin / "meta.json")):
+                return paket, kalip, sablon, secim_logu, dizin, meta
+        durum.kaydet(db, paket, bugun, None)
+        dusen.append({"anahtar": paket.anahtar, "sorunlar": sorunlar})
+        kayit["dusen_hikayeler"] = dusen
+    raise RuntimeError(
+        f"{HIKAYE_DENEME} hikâye de hakemden ya da yayın kabulünden geçmedi: "
+        + "; ".join(f"{d['anahtar']}: {d['sorunlar']}" for d in dusen)[:800]
+    )
 
 
 def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
@@ -95,7 +104,10 @@ def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
     aday = simdi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0)
     if aday < simdi + dt.timedelta(hours=1):
         aday += dt.timedelta(days=1)
-    son = db.execute("SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL").fetchone()[0]
+    son = db.execute(
+        "SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
+        " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+    ).fetchone()[0]
     if son:
         ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
         aday = max(aday, ertesi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0))

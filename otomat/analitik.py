@@ -105,6 +105,7 @@ def olc(db: sqlite3.Connection, yt, ya, bugun: dt.date) -> list[str]:
         for (v,) in db.execute(
             "SELECT s.video_id FROM secimler s LEFT JOIN olcumler o ON o.video_id = s.video_id "
             "WHERE s.video_id IS NOT NULL AND o.video_id IS NULL"
+            " AND s.video_id NOT IN (SELECT video_id FROM geri_cekilen)"
         )
     ]
     olculen = []

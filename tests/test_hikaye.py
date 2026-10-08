@@ -124,3 +124,41 @@ def test_marka_yedek_adla_da_uygulanir(kanal_sec, monkeypatch):
     assert marka.kontrol(_SahteKanal("Inkwell Oddities Stories")) == "uygulandı"  # YouTube asıl adı reddetti
     assert marka.kontrol(_SahteKanal("Earth in Numbers")) == "ad bekleniyor"
     assert uygulanan == ["Inkwell Oddities Stories"]
+
+
+def _sahte_video(genislik=1080, yukseklik=1920, ses=True, sure=37.71):
+    akislar = [{"codec_type": "video", "codec_name": "h264", "width": genislik, "height": yukseklik}]
+    if ses:
+        akislar.append({"codec_type": "audio", "codec_name": "aac"})
+    return lambda _yol: {"streams": akislar, "format": {"duration": str(sure)}}
+
+
+def test_kabul_referansi_kabul_eder_kusurlari_reddeder(kanal_sec, tmp_path):
+    import json
+    import shutil
+    from pathlib import Path
+
+    from otomat.hikaye import kabul
+
+    kanal_sec("earth")
+    ref = Path(__file__).parent / "veri" / "hikaye_ref" / "meta.json"
+    meta = json.loads(ref.read_text(encoding="utf-8"))
+    shutil.copy(ref, tmp_path / "meta.json")
+    (tmp_path / "video.mp4").write_bytes(b"\0" * 300_000)
+    for i in range(len(meta["cumleler"])):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"x")
+    assert kabul.denetle(tmp_path / "meta.json", _sahte_video()) == []
+    assert any("sessiz" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video(ses=False)))
+    assert any("1080x1920" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video(1920, 1080)))
+
+    def bozuk(**degisim):
+        (tmp_path / "meta.json").write_text(json.dumps({**meta, **degisim}), encoding="utf-8")
+        return kabul.denetle(tmp_path / "meta.json", _sahte_video())
+
+    assert bozuk(mfk=True)  # Earth MFK değil
+    assert bozuk(aciklama=meta["aciklama"].replace("Kevin MacLeod", "someone"))
+    assert bozuk(senaryo={**meta["senaryo"], "hakem_turlari": [[[3, "wrong date"]]]})
+    assert bozuk(cumleler=[*meta["cumleler"][:-1], "Please subscribe for more stories."])
+    kanal_sec("uzay")
+    (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    assert any("MFK" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video()))

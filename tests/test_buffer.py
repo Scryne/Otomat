@@ -26,6 +26,9 @@ def test_yayin_slotu_gunde_bir_ve_kuyruk(tmp_path):
     _secim(db, "2026-10-05", "2026-10-08T14:00:00+00:00", "abcdefghijk")
     _secim(db, "2026-10-06", "2026-10-20T14:00:00+00:00", None)
     assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 9, 14, tzinfo=UTC)
+    # geri çekilen (private'a alınıp planı kaldırılan) video slot tutmaz (2026-10-08 format değişimi)
+    durum.geri_cek(db, ["abcdefghijk"], sabah.date(), "format değişimi")
+    assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 6, 14, tzinfo=UTC)
 
 
 def test_gonder_private_yukler_video_id_doner(monkeypatch):
