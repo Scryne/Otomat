@@ -113,3 +113,14 @@ def test_marka_ad_degisene_kadar_bekler(kanal_sec):
     yt = _SahteKanal("Lanternbug Tales", m["aciklama"]["en"], mfk=True)
     assert marka.kontrol(yt) == "tamam" and yt.guncellemeler == []
     assert (marka.KOK / m["banner"]).exists() and (marka.KOK / m["filigran"]).exists()
+
+
+def test_marka_yedek_adla_da_uygulanir(kanal_sec, monkeypatch):
+    from otomat.yayin import marka
+
+    kanal_sec("earth")
+    uygulanan = []
+    monkeypatch.setattr(marka, "uygula", lambda yt, oge, m: uygulanan.append(oge["snippet"]["title"]))
+    assert marka.kontrol(_SahteKanal("Inkwell Oddities Stories")) == "uygulandı"  # YouTube asıl adı reddetti
+    assert marka.kontrol(_SahteKanal("Earth in Numbers")) == "ad bekleniyor"
+    assert uygulanan == ["Inkwell Oddities Stories"]

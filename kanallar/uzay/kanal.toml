@@ -4,6 +4,7 @@
 id = "uzay"
 ad = "Lanternbug Tales"
 eski_adlar = ["Orbit Ruler"]  # Scryne Studio'da yeniden adlandırana kadar (Faz 15); sonra silinebilir
+yedek_adlar = ["The Lanternbug Tales", "Lanternbug Tales Kids", "Lanternbug Tales TV"]  # YouTube `ad`ı reddederse (10-08: "Bu adı kullanamazsınız")
 tanim = "gentle illustrated fables for children aged 3 to 7, each with a simple lesson"
 tur = "hikaye"
 kaynaklar = ["ezop"]

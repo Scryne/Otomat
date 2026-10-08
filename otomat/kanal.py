@@ -51,6 +51,11 @@ class Kanal:
     font_boyu: int = 104
     vurgu: str = "#FFD84D"  # o an söylenen kelimenin rengi
     eski_adlar: tuple[str, ...] = ()  # yeniden adlandırma sürerken token doğrulamasının kabul ettiği eski adlar
+    yedek_adlar: tuple[str, ...] = ()  # YouTube `ad`ı reddederse seçilebilecek adlar (kimlik bunlarla da uygulanır)
+
+    @property
+    def yeni_adlar(self) -> tuple[str, ...]:
+        return (self.ad, *self.yedek_adlar)
 
     @property
     def token_degiskeni(self) -> str:
@@ -98,6 +103,7 @@ def yukle(kimlik: str) -> Kanal:
         font_boyu=int(d.get("font_boyu", Kanal.font_boyu)),
         vurgu=d.get("vurgu", Kanal.vurgu),
         eski_adlar=tuple(d.get("eski_adlar", [])),
+        yedek_adlar=tuple(d.get("yedek_adlar", [])),
     )
 
 

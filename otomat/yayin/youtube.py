@@ -98,7 +98,7 @@ def kanal_dogrula(yt) -> None:
     ogeler = yt.channels().list(part="snippet", mine=True).execute(num_retries=DENEME).get("items", [])
     ad = ogeler[0]["snippet"]["title"] if ogeler else None
     # eski ad: kanal Studio'da yeniden adlandırılana kadar (Faz 15) yükleme sürsün
-    if ad not in (beklenen, *k.eski_adlar):
+    if ad not in (*k.yeni_adlar, *k.eski_adlar):
         raise YetkiHatasi(f"token '{ad}' kanalına ait, beklenen '{beklenen}' (OTOMAT_KANAL={k.id})")
     GERCEK_AD[k.id] = ad
     _DOGRULANDI.add(beklenen)

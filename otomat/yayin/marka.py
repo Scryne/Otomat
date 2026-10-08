@@ -33,8 +33,9 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
     )
     marka.setdefault("image", {})["bannerExternalUrl"] = banner.execute()["url"]
     yt.channels().update(part="brandingSettings", body={"id": kimlik, "brandingSettings": marka}).execute()
-    yerel = {"en_US": {"title": k.ad, "description": m["aciklama"]["en"]}}
-    yerel |= {YEREL[d]: {"title": k.ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
+    ad = kanal_ogesi["snippet"]["title"]  # Scryne'ın Studio'da seçebildiği ad (`ad` ya da bir yedek)
+    yerel = {"en_US": {"title": ad, "description": m["aciklama"]["en"]}}
+    yerel |= {YEREL[d]: {"title": ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
     yt.channels().update(part="localizations", body={"id": kimlik, "localizations": yerel}).execute()
     yt.channels().update(part="status", body={"id": kimlik, "status": {"selfDeclaredMadeForKids": k.mfk}}).execute()
     try:
@@ -57,7 +58,7 @@ def kontrol(yt) -> str:
         return "profil yok"
     k = kanal.aktif()
     oge = yt.channels().list(part="id,snippet,brandingSettings,status", mine=True).execute()["items"][0]
-    if oge["snippet"]["title"] != k.ad:
+    if oge["snippet"]["title"] not in k.yeni_adlar:
         return "ad bekleniyor"
     kanal_ayari = oge["brandingSettings"].get("channel", {})
     if kanal_ayari.get("description") == m["aciklama"]["en"] and oge["status"].get("selfDeclaredMadeForKids") == k.mfk:
