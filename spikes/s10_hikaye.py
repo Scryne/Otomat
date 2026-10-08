@@ -19,7 +19,6 @@ from io import BytesIO
 from pathlib import Path
 
 import imageio_ffmpeg
-import numpy as np
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 from otomat.anlati.llm import json_uret
@@ -142,7 +141,8 @@ Source (Wikipedia article "{baslik}"):
 Why editors call it unusual: {tanim}
 
 Write 7 or 8 spoken lines (about 90 words total) that tell this as a STORY, not a list of facts:
-- Line 1 is the hook: the single most surprising thing, in under 10 words, said as if mid-story. No question about "did you know".
+- Line 1 is the hook: the single most surprising thing, in under 10 words, said as if mid-story.
+  No question about "did you know".
 - Then: who, where, when; what went wrong or what was strange; the turn; the payoff.
 - The last line lands the punchline or the consequence, short and memorable.
 - Plain spoken English, short sentences, past tense, concrete details (names, places, objects).
@@ -263,7 +263,7 @@ def video(baslik: str, tanim: str, cikti: Path, tohum: int) -> None:
         stdin=subprocess.PIPE,
     )
     kare_no = 0
-    for i, p in enumerate(parcalar):
+    for i in range(len(parcalar)):
         son = parcalar[i + 1].bas if i + 1 < len(parcalar) else sure
         n = round(son * FPS) - kare_no
         for kare in sahne_kareleri(resimler[i % len(resimler)], n, 1 if i % 2 else -1):
