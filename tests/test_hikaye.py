@@ -74,3 +74,42 @@ def test_kenar_kirp_kagidi_atar():
     assert b.size == (260 - 12, 340 - 12)
     tam = Image.fromarray(np.full((400, 300, 3), 90, np.uint8))
     assert uretim.kenar_kirp(tam).size == (300 - 12, 400 - 12)  # kâğıt yoksa yalnız güvenlik payı
+
+
+class _SahteKanal:
+    """channels().list/update zinciri; update gövdelerini kaydeder."""
+
+    def __init__(self, ad, aciklama="", mfk=False):
+        self.oge = {"id": "UC1", "snippet": {"title": ad}, "brandingSettings": {"channel": {"description": aciklama}},
+                    "status": {"selfDeclaredMadeForKids": mfk}}  # fmt: skip
+        self.guncellemeler = []
+
+    def channels(self):
+        return self
+
+    def list(self, **_):
+        return _Calistir({"items": [self.oge]})
+
+    def update(self, part, body):
+        self.guncellemeler.append(part)
+        return _Calistir({})
+
+
+class _Calistir:
+    def __init__(self, sonuc):
+        self.sonuc = sonuc
+
+    def execute(self, **_):
+        return self.sonuc
+
+
+def test_marka_ad_degisene_kadar_bekler(kanal_sec):
+    from otomat.yayin import marka
+
+    kanal_sec("uzay")
+    yt = _SahteKanal("Orbit Ruler")
+    assert marka.kontrol(yt) == "ad bekleniyor" and yt.guncellemeler == []
+    m = marka.ayarlar()
+    yt = _SahteKanal("Lanternbug Tales", m["aciklama"]["en"], mfk=True)
+    assert marka.kontrol(yt) == "tamam" and yt.guncellemeler == []
+    assert (marka.KOK / m["banner"]).exists() and (marka.KOK / m["filigran"]).exists()

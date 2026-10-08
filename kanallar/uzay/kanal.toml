@@ -2,7 +2,8 @@
 # Scryne riskleri görüp seçti (yorum/kişiselleştirilmiş reklam kapalı, denetim sıkı). Kimlik `uzay` kalır (token
 # secret'ı YT_TOKEN_JSON_UZAY, durum/uzay.db); `ad` YouTube'daki kanal adıyla birebir aynı olmalı.
 id = "uzay"
-ad = "Orbit Ruler"
+ad = "Lanternbug Tales"
+eski_adlar = ["Orbit Ruler"]  # Scryne Studio'da yeniden adlandırana kadar (Faz 15); sonra silinebilir
 tanim = "gentle illustrated fables for children aged 3 to 7, each with a simple lesson"
 tur = "hikaye"
 kaynaklar = ["ezop"]

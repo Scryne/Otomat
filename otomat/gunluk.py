@@ -167,6 +167,17 @@ def analitik_adimi(db, bugun: dt.date, kayit: dict, alarmlar: list[str]):
         return None, None
 
 
+def marka_adimi(yt, kayit: dict, alarmlar: list[str]) -> None:
+    """Kanal yeni adını aldıysa kimliği bir kez uygular (Faz 15); düşerse üretim sürer."""
+    from otomat.yayin import marka
+
+    try:
+        kayit["marka"] = marka.kontrol(yt)
+    except Exception as e:  # noqa: BLE001
+        kayit["marka"] = f"hata: {type(e).__name__}"
+        alarmlar.append("**Kanal kimliği uygulanamadı** (üretim sürdü):\n\n" + _hata(e))
+
+
 def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) -> None:
     """Pazartesi: geçen haftanın raporu (yoksa)."""
     if bugun.isoweekday() != 1:
@@ -199,6 +210,8 @@ def main() -> None:
         print(f"{bugun.isoformat()} zaten üretildi; koşu atlandı.")
         return
     yt, ya = analitik_adimi(db, bugun, kayit, alarmlar)
+    if HIKAYE and yt is not None:
+        marka_adimi(yt, kayit, alarmlar)
     try:
         if HIKAYE:
             from otomat.hikaye import kaynaklar as hikaye_kaynaklari

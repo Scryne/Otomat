@@ -11,11 +11,11 @@ eşsiz, 2026-10-08). Eski kitler (`master/`, `uzay/`, `youtube/` …) veri forma
 | Dosya | Kullanım |
 |---|---|
 | `<kanal>/profil-800.png` | Kanal profil resmi (daireye kırpılır, sembol %72). **Studio'dan yüklenir** (API yok) |
-| `<kanal>/banner-2560x1440.png` | Banner; içerik ortadaki 1546×423 güvenli alanda. `hikaye_kanallari.py` yükler |
-| `<kanal>/filigran-150.png` | Video filigranı. `hikaye_kanallari.py` yükler |
+| `<kanal>/banner-2560x1440.png` | Banner; içerik ortadaki 1546×423 güvenli alanda. `otomat/yayin/marka.py` yükler |
+| `<kanal>/filigran-150.png` | Video filigranı. `otomat/yayin/marka.py` yükler |
 | `<kanal>/master/sembol.svg` | Siyah master (logo-design skill'i); `sembol-v*.svg` iterasyonlar; `sembol-renkli.png` 1024 |
 | `hikaye_gorselleri.py` | Renkli PNG'leri masterlardan üretir |
-| `hikaye_kanallari.py` | Açıklama (5 dil), anahtar kelime, banner, filigran, kanal düzeyinde MFK (API) |
+| `otomat/yayin/marka.py` + `kanallar/<id>/marka.toml` | Açıklama (5 dil), anahtar kelime, banner, filigran, kanal düzeyinde MFK: günlük koşu kanal yeni adını alınca bir kez kendisi uygular |
 
 **İterasyon notları:** Inkwell v1'de ters damla harita iğnesi okunuyordu; v2'de ortadaki damla mum alevi; v3'te eğik damla
 yaprak/saksı; v4 (seçilen) daha dik ve yuvarlak damla + iz kabarcıkları, parşömen üstünde mürekkep okunuyor. Lanternbug

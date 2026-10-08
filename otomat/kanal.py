@@ -50,6 +50,7 @@ class Kanal:
     font: str = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"  # altyazı
     font_boyu: int = 104
     vurgu: str = "#FFD84D"  # o an söylenen kelimenin rengi
+    eski_adlar: tuple[str, ...] = ()  # yeniden adlandırma sürerken token doğrulamasının kabul ettiği eski adlar
 
     @property
     def token_degiskeni(self) -> str:
@@ -96,6 +97,7 @@ def yukle(kimlik: str) -> Kanal:
         font=d.get("font", Kanal.font),
         font_boyu=int(d.get("font_boyu", Kanal.font_boyu)),
         vurgu=d.get("vurgu", Kanal.vurgu),
+        eski_adlar=tuple(d.get("eski_adlar", [])),
     )
 
 

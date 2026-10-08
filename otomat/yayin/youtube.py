@@ -85,18 +85,22 @@ def servis(k=None):
 
 
 _DOGRULANDI: set[str] = set()
+GERCEK_AD: dict[str, str] = {}  # kanal id → YouTube'daki şimdiki adı (marka.py yeniden adlandırmayı buradan görür)
 
 
 def kanal_dogrula(yt) -> None:
     """Token gerçekten etkin kanala mı ait? Çok kanalda yanlış token, videoyu öbür kanalda düzenlemeye ve analitiği
     yanlış kanaldan okumaya götürür. Süreç başına bir kez (1 kota birimi)."""
-    beklenen = kanal.aktif().ad
+    k = kanal.aktif()
+    beklenen = k.ad
     if beklenen in _DOGRULANDI:
         return
     ogeler = yt.channels().list(part="snippet", mine=True).execute(num_retries=DENEME).get("items", [])
     ad = ogeler[0]["snippet"]["title"] if ogeler else None
-    if ad != beklenen:
-        raise YetkiHatasi(f"token '{ad}' kanalına ait, beklenen '{beklenen}' (OTOMAT_KANAL={kanal.aktif().id})")
+    # eski ad: kanal Studio'da yeniden adlandırılana kadar (Faz 15) yükleme sürsün
+    if ad not in (beklenen, *k.eski_adlar):
+        raise YetkiHatasi(f"token '{ad}' kanalına ait, beklenen '{beklenen}' (OTOMAT_KANAL={k.id})")
+    GERCEK_AD[k.id] = ad
     _DOGRULANDI.add(beklenen)
 
 

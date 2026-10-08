@@ -92,8 +92,11 @@ def test_yanlis_kanalin_tokeni_reddedilir(monkeypatch):
     monkeypatch.setenv("OTOMAT_KANAL", "earth")
 
     youtube._DOGRULANDI.clear()
-    with pytest.raises(youtube.YetkiHatasi, match="beklenen 'Earth in Numbers'"):
+    with pytest.raises(youtube.YetkiHatasi, match="beklenen 'Inkwell Oddities'"):
         youtube.kanal_dogrula(_SahteYT("Orbit Ruler"))
-    youtube.kanal_dogrula(_SahteYT("Earth in Numbers"))
+    youtube.kanal_dogrula(_SahteYT("Earth in Numbers"))  # yeniden adlandırma bitene kadar eski ad geçer
+    assert youtube.GERCEK_AD["earth"] == "Earth in Numbers"
+    youtube._DOGRULANDI.clear()
+    youtube.kanal_dogrula(_SahteYT("Inkwell Oddities"))
     youtube.kanal_dogrula(_SahteYT("başka"))  # süreçte bir kez doğrulanır
     youtube._DOGRULANDI.clear()
