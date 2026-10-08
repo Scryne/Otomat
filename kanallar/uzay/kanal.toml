@@ -28,7 +28,7 @@ no text, no letters"""
 font = "otomat/varliklar/fontlar/LuckiestGuy-Regular.ttf"
 font_boyu = 100
 vurgu = "#FFB703"
-muzik_ses = 0.15
+muzik_lufs = -27  # müzik yatağı (anlatıcı -14 LUFS, karışım ≈ -14)
 
 [muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
 playful = ["Monkeys Spinning Monkeys", "Carefree", "Pippin the Hunchback", "Fluffing a Duck"]

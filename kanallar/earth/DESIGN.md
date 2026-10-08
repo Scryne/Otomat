@@ -31,4 +31,4 @@ kelime, o an söylenen kelime sarı (`highlight`). İlk karede ilk kelime ekrand
 ve ilk cümle.
 
 **Ses:** Kokoro `bm_george` (İngiliz anlatıcı), 1,08×. Müzik hikâyenin ruh hâline göre Kevin MacLeod (CC BY 4.0), sesin
-altında (0,13), sonda 1,5 sn sönüş.
+altında (-30 LUFS; anlatıcı -14, karışım limiter sonrası ≈ -14 LUFS), sonda 1,5 sn sönüş.

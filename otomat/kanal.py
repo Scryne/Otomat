@@ -45,7 +45,7 @@ class Kanal:
     mfk: bool = False  # made for kids (YouTube selfDeclaredMadeForKids)
     stil: str = ""  # her sahne görseline eklenen sabit çizim stili
     muzik: dict | None = None  # mood → Incompetech parça adları
-    muzik_ses: float = 0.13
+    muzik_lufs: float = -30.0  # müzik yatağının loudness hedefi (anlatıcı -14)
     hiz: float = 1.0  # Kokoro konuşma hızı
     font: str = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"  # altyazı
     font_boyu: int = 104
@@ -97,7 +97,7 @@ def yukle(kimlik: str) -> Kanal:
         mfk=bool(d.get("mfk", False)),
         stil=d.get("stil", "").strip(),
         muzik=d.get("muzik"),
-        muzik_ses=float(d.get("muzik_ses", Kanal.muzik_ses)),
+        muzik_lufs=float(d.get("muzik_lufs", Kanal.muzik_lufs)),
         hiz=float(d.get("hiz", Kanal.hiz)),
         font=d.get("font", Kanal.font),
         font_boyu=int(d.get("font_boyu", Kanal.font_boyu)),

@@ -21,7 +21,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from otomat import kanal
 from otomat.ayarlar import KOK
-from otomat.hikaye import cf, kaynaklar, senaryo
+from otomat.hikaye import cf, hizala, kaynaklar, senaryo
 from otomat.ses import Parca, _kokoro
 from otomat.veri import OlguPaketi
 
@@ -60,19 +60,19 @@ def seslendir(satirlar: list[str], cikti: Path) -> tuple[float, list[Parca]]:
     return len(tum) / sr, parcalar
 
 
-def kelime_zamanlari(parcalar: list[Parca]) -> list[tuple[float, float, list[str], int]]:
-    """(baş, son, grup kelimeleri, vurgulu kelime sırası): satır içinde süre harf sayısıyla orantılı dağılır."""
+def kelime_zamanlari(
+    parcalar: list[Parca], gercek: list[tuple[float, str]] | None = None
+) -> list[tuple[float, float, list[str], int]]:
+    """(baş, son, grup kelimeleri, vurgulu kelime sırası). `gercek`: Whisper kelimeleri (hizala.py); yoksa satır içinde
+    harf sayısıyla orantılı."""
     sonuc = []
-    for p in parcalar:
+    for p, bas in zip(parcalar, hizala.baslangiclar(parcalar, gercek), strict=True):
         kelimeler = p.metin.split()
-        toplam = sum(len(w) + 1 for w in kelimeler) or 1
-        an = p.bas
+        bit = [*bas[1:], p.son]
         for g in range(0, len(kelimeler), GRUP):
             grup = kelimeler[g : g + GRUP]
-            for j, w in enumerate(grup):
-                sure = (p.son - p.bas) * (len(w) + 1) / toplam
-                sonuc.append((an, an + sure, grup, j))
-                an += sure
+            for j in range(len(grup)):
+                sonuc.append((bas[g + j], bit[g + j], grup, j))
     return sonuc
 
 
@@ -124,9 +124,15 @@ def sahne_kareleri(img: Image.Image, n: int, yakinlas: bool):
         yield buyuk.crop((x0, y0, x0 + w, y0 + h)).resize((G, Y), Image.BILINEAR)
 
 
-def render(gorseller: list[Path], parcalar: list[Parca], sure: float, cikti: Path) -> Path:
+def render(
+    gorseller: list[Path],
+    parcalar: list[Parca],
+    sure: float,
+    cikti: Path,
+    gercek: list[tuple[float, str]] | None = None,
+) -> Path:
     k = kanal.aktif()
-    kelimeler = kelime_zamanlari(parcalar)
+    kelimeler = kelime_zamanlari(parcalar, gercek)
     font = _font(k.font_boyu)
     proc = subprocess.Popen(
         [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-v", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s",
@@ -163,13 +169,20 @@ def muzik_sec(mood: str, tohum: str) -> tuple[Path, str]:
     return yol, ad
 
 
+SES_LUFS = -14.0  # anlatıcı; limiter sonrası karışım ≈ -14 LUFS (YouTube'un oynatma hedefi; sessiz video yükseltilmez)
+
+
 def birlestir(sessiz: Path, wav: Path, muzik: Path, sure: float, cikti: Path) -> Path:
-    ses = kanal.aktif().muzik_ses
+    """Anlatıcı ve müzik ayrı ayrı loudness hedefine çekilir: parçaların kendi seviyeleri çok farklı (sabit çarpanla
+    "Heartbreaking" -47,5 LUFS'ta kalıp duyulmuyordu, video da -21,6 LUFS'tu; 2026-10-08 ölçümü)."""
+    hedef = kanal.aktif().muzik_lufs
     subprocess.run(
         [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-v", "error", "-i", str(sessiz), "-i", str(wav), "-stream_loop", "-1",
          "-i", str(muzik), "-filter_complex",
-         f"[2:a]volume={ses},afade=t=in:d=0.4,afade=t=out:st={max(sure - 1.6, 0):.2f}:d=1.5[m];"
-         "[1:a][m]amix=inputs=2:duration=first:normalize=0[a]",
+         f"[1:a]loudnorm=I={SES_LUFS}:TP=-2:LRA=7[v];"
+         f"[2:a]atrim=0:{sure + 1:.2f},loudnorm=I={hedef}:TP=-8:LRA=11,afade=t=in:d=0.4,"
+         f"afade=t=out:st={max(sure - 1.6, 0):.2f}:d=1.5[m];"
+         "[v][m]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.89:level=false,aresample=48000[a]",
          "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-t", f"{sure:.2f}",
          str(cikti)],
         check=True,
@@ -207,7 +220,11 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
         )
     t_gorsel = time.time()
     sure, parcalar = seslendir(sc.satirlar, dizin / "ses.wav")
-    sessiz = render(gorseller, parcalar, sure, dizin / "sessiz.mp4")
+    try:
+        gercek = hizala.whisper_kelimeleri(dizin / "ses.wav")
+    except Exception:  # noqa: BLE001 — vurgu orantılı tahmine döner, video yine çıkar
+        gercek = None
+    sessiz = render(gorseller, parcalar, sure, dizin / "sessiz.mp4", gercek)
     muzik, muzik_adi = muzik_sec(sc.mood, tohum + paket.anahtar)
     video = birlestir(sessiz, dizin / "ses.wav", muzik, sure, dizin / "video.mp4")
     sessiz.unlink()
@@ -228,6 +245,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
             "hakem_turlari": sc.turlar,
         },  # fmt: skip
         "muzik": muzik_adi,
+        "vurgu": "whisper" if gercek else "orantili",
         "altyazi": [asdict(p) for p in parcalar],
         "sure_sn": round(sure, 2),
         "neuron": round(cf.NEURON["toplam"]),

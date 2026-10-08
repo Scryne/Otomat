@@ -29,4 +29,4 @@ denetler. Hayvanların tarifi (`cast`) her sahnede aynen tekrarlanır, karakter 
 (`highlight`). Okumayı yeni öğrenen çocuk kelimeyi sesle eşleştirebilsin: aynı anda en çok 3 kelime.
 
 **Ses:** Kokoro `af_heart` (sıcak kadın anlatıcı), 0,95×. Müzik Kevin MacLeod (CC BY 4.0), `playful` ya da `gentle`,
-sesin altında (0,15).
+sesin altında (-27 LUFS; anlatıcı -14, karışım ≈ -14 LUFS).

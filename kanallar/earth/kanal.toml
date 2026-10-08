@@ -28,7 +28,7 @@ no captions"""
 font = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"
 font_boyu = 104
 vurgu = "#FFD84D"
-muzik_ses = 0.13
+muzik_lufs = -30  # müzik yatağı (anlatıcı -14 LUFS, karışım ≈ -14)
 
 [muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
 mysterious = ["Investigations", "Curse of the Scarab", "Spellbound", "Darkling"]

@@ -162,3 +162,20 @@ def test_kabul_referansi_kabul_eder_kusurlari_reddeder(kanal_sec, tmp_path):
     kanal_sec("uzay")
     (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
     assert any("MFK" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video()))
+
+
+def test_hizalama_whisper_zamanini_kullanir_eksigi_doldurur():
+    from otomat.hikaye import hizala
+
+    p = [Parca(0.0, 2.0, "It held 2.3 million gallons."), Parca(2.3, 3.5, "Then it burst.")]
+    # Whisper "2.3"ü "2" + "3" diye böler: o kelime eşleşmez, komşu eşleşmeler arasına yerleşir
+    gercek = [(0.0, "it"), (0.2, "held"), (0.5, "2"), (0.7, "3"), (1.2, "million"), (1.6, "gallons"),
+              (2.3, "then"), (2.6, "it"), (3.0, "burst")]  # fmt: skip
+    b = hizala.baslangiclar(p, gercek)
+    assert b[0][1] == 0.2 and b[0][3] == 1.2 and b[0][4] == 1.6 and b[1] == [2.3, 2.6, 3.0]
+    assert 0.2 < b[0][2] < 1.2  # eşleşmeyen "2.3"
+    assert all(x < y for x, y in itertools.pairwise(b[0]))
+    assert hizala.baslangiclar(p, None)[0][0] == 0.0  # Whisper yoksa orantılı
+    # başka satıra düşen eşleşmeye güvenilmez, satır sınırı korunur
+    kayik = hizala.baslangiclar(p, [(t + 5, w) for t, w in gercek])
+    assert all(p[i].bas <= x < p[i].son for i in range(2) for x in kayik[i])
