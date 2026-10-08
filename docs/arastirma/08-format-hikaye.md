@@ -59,3 +59,28 @@ Bulgular:
   Tek dokunuş: Scryne'ın Cloudflare hesabı + Workers AI token'ı.
 - **K-17:** Yeni format 3. kanal olarak açılır (Buffer'da 3. yer boş); Earth ve Orbit Ruler Faz 7 sayacı için
   dokunulmadan sürer. Kod `hikaye` dalında; main'e 10-21'den (Faz 7 sonu) sonra. Faz 12 (iklim kanalı) bunun yerine geçer.
+
+## Spike S11 (`spikes/s11_hikaye_cf.py`, 2026-10-08) — Cloudflare ile
+Senaryo + hakem + satır onarımı: gpt-oss-120b (`/ai/v1/chat/completions`, JSON şeması, `reasoning_effort: medium`,
+yanıtta `usage.neurons` dönüyor). Sahne görseli: flux-2-klein-4b 768×1344 (multipart; ~21 sn, ~156 neuron). Ses: Kokoro
+`bm_george` 1,08×. Müzik: Freesound CC0 (Openverse aramasıyla), hikâyenin `mood`'una göre, −18 dB.
+
+| Makale | Süre | Neuron | Hakem | Not |
+| --- | --- | --- | --- | --- |
+| London Beer Flood | 39,6 sn | ~1.775 | 2. turda geçti | başlıkta "300,000" kaynakta yok → başlık da kapıdan geçmeli |
+| Dancing plague of 1518 | 35,6 sn | ~2.325 | 4 turda 1 sorun kaldı | açık sorun gerçek ("günde 15 ölü" kaynakta tartışmalı) |
+
+Bulgular:
+- Sahne başına illüstrasyon formatı tamamen değiştirdi: her cümlenin kendi görüntüsü, tutarlı stil ve dönem.
+- Hakem sıkı ve isabetli ("moments later" ↔ "an hour later", "four mourners" ↔ beş). Bütün senaryoyu yeniden
+  yazdırmak yakınsamıyor (her turda yeni hata); yalnız işaretli satırları onarmak yakınsıyor. Kalan sorun varsa video
+  düşer, havuzdan sonraki makale denenir (2.073 makale).
+- Güvenlik filtresi (3030 "output flagged") ölüm sahnelerinde tetikleniyor; tohum değiştirip istemi yumuşatmak çözüyor.
+  Senaryo istemi ceset/yara göstermeyi yasaklıyor.
+- Klein "no text" talimatına rağmen ara sıra anlamsız tabela yazısı çiziyor; suluboya kâğıt kenarı kırpma ile çoğunlukla
+  gizleniyor.
+- Video başına ~1.800-2.300 neuron → günlük 10.000 kotayla günde 1 video rahat, 3-4'e kadar mümkün.
+- Yerel süre ~7-9 dk (senaryo 1,5-3 dk, görsel ~5 dk sıralı); görseller paralel istenirse kısalır.
+
+Açık iyileştirmeler: kanca (ilk satır) adayları üret + seç; başlığı kapıya sok; görsel isteklerini paralelleştir;
+kırpmayı artır.

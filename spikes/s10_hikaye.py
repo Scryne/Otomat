@@ -165,7 +165,7 @@ def kapi(satirlar: list[str], metin: str) -> list[str]:
             if n.strip(".,").replace(",", "") not in kaynak.replace(",", ""):
                 hata.append(f"sayı yok: {n} ({s})")
         for ad in re.findall(r"(?<![.!?]\s)(?<!^)\b[A-Z][a-z]{2,}\b", s):
-            if ad.lower() not in kaynak:
+            if ad.lower()[: max(4, len(ad) - 3)] not in kaynak:  # Londoners -> london
                 hata.append(f"ad yok: {ad} ({s})")
     return hata
 
