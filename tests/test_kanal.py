@@ -48,6 +48,16 @@ def test_earth_eski_duzeni_korur():
     assert k.token_degiskeni == "YT_TOKEN_JSON" and k.token_dosyasi == KOK / "sirlar" / "token.json"
     assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("tuhaf",), False)
     assert k.diller == ("es", "pt", "de", "fr")
+    assert k.yayin_saati_utc == 14 and kanal.yukle("uzay").yayin_saati_utc == 20  # yayın saatleri değişmedi (K-11)
+    assert "Earth in Numbers" in k.eski_adlar  # Studio'da yeniden adlandırma bitene kadar yükleme sürer
+
+
+def test_veri_arsivi_eski_degerleri_korur():
+    # Earth'ün veri formatı profili arşivde birebir: veri motoru ileride aynı davranışla geri açılabilsin
+    k = kanal.yukle("veri-earth")
+    assert k.tasarim == KOK / "DESIGN.md" and k.veri == KOK / "config" / "veri.toml"
+    assert k.kaynaklar == ("usgs", "dunya_bankasi", "eurostat")
+    assert (k.yayin_saati_utc, k.ses, k.kategori, k.tur) == (14, "am_michael", "28", "veri")
 
 
 def test_cocuk_kanali_mfk():
