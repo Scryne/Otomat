@@ -24,10 +24,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
+        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki; ollama: yerel LLM gerekir mi
+        # (veri motoru evet; hikâye motoru metni ve çeviriyi Cloudflare'de yapar)
         include:
-          - { kanal: earth, sir: "", etiket: teslim }
-          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
+          - { kanal: earth, sir: "", etiket: teslim, ollama: false }
+          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay, ollama: false }
     concurrency:
       group: gunluk-${{ matrix.kanal }}
       cancel-in-progress: false
@@ -77,7 +78,7 @@ jobs:
           key: muzik-${{ hashFiles('kanallar/*/kanal.toml') }}
           restore-keys: muzik-
       - name: Ollama
-        if: steps.kontrol.outputs.atla != '1'
+        if: steps.kontrol.outputs.atla != '1' && matrix.ollama
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
           (ollama serve > /tmp/ollama.log 2>&1 &)
