@@ -1,0 +1,113 @@
+{
+ "baslik": "Boston's 25-Foot Molasses Wave of 1919",
+ "aciklama": "A 25-foot molasses wave smashed Boston's streets.\n\nSource: Wikipedia, \"Great Molasses Flood\" (CC BY-SA 4.0) https://en.wikipedia.org/wiki/Great_Molasses_Flood\nIllustrations made with AI. Narration: Kokoro TTS.\nMusic: \"Heartbreaking\" Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0\nhttps://creativecommons.org/licenses/by/4.0/\n\n#History #TrueStory #History",
+ "etiketler": [
+  "history",
+  "true story",
+  "history"
+ ],
+ "mfk": false,
+ "paket": {
+  "anahtar": "wiki:Great Molasses Flood",
+  "hash": "e4b590e6252b1c21",
+  "kol": "history",
+  "tur": "tuhaf"
+ },
+ "secim": {
+  "kalip": "sonuc_once",
+  "sablon": "illustrasyon",
+  "kaynak": {
+   "senaryo": "@cf/openai/gpt-oss-120b",
+   "gorsel": "@cf/black-forest-labs/flux-2-klein-4b"
+  }
+ },
+ "kanca": "A 25-foot molasses wave smashed Boston's streets.",
+ "cumleler": [
+  "A 25-foot molasses wave smashed Boston's streets.",
+  "On January 15, 1919, the Purity tank burst.",
+  "The 50-foot, 90-foot tank held 2.3 million gallons.",
+  "Temperatures rose above 40 degrees Fahrenheit, possibly expanding the molasses.",
+  "At 12:30 p.m., the tank collapsed, unleashing a 35 mph surge.",
+  "The wave knocked a streetcar off its tracks.",
+  "Cadets from USS Nantucket waded in, rescuing trapped victims.",
+  "Even summer days still smelled of molasses in Boston."
+ ],
+ "senaryo": {
+  "mood": "tragic",
+  "dunya": "1919 Boston North End, brick sidewalks, horse-drawn carts, workers in wool coats and flat caps, muted browns, grays, and winter blues.",
+  "oyuncular": [
+   "Cadet - Young male cadet, navy blue uniform, cap, white shirt."
+  ],
+  "gorseller": [
+   "Street view down Commercial Street, towering dark brown wave about 25 ft high, brick buildings lining both sides, pedestrians frozen mid-step, camera low angle looking up at the wave.",
+   "Front of the Purity Distilling Company tank at 529 Commercial Street, winter sky, steam rising, a few workers in wool coats watching, camera centered on the massive steel cylinder.",
+   "Side profile of the cylindrical tank, height markers showing 50 ft, diameter markers showing 90 ft, a man with a clipboard standing beside it, camera eye-level.",
+   "Thermometer on a fence reading 40°F, sun low on horizon, faint heat ripples above the tank, workers wiping sweat from foreheads, camera wide shot.",
+   "Tank bursting, rivets flying, a dark wave bursting forth at high speed, camera from street level looking toward the explosion, a Cadet in navy uniform just entering frame.",
+   "Streetcar tipped onto its side, tracks bending, molasses swirling around, a horse-drawn cart nearby, camera angled from the side of the street.",
+   "Group of three navy-uniformed Cadets waist-deep in sticky molasses, pulling a small child out, other rescued people clinging to a brick wall, camera over the shoulder of a Cadet.",
+   "Modern summer street in Boston's North End, golden light, faint golden haze drifting over the sidewalk, a lone woman pausing with a hand near her nose, camera at eye level."
+  ],
+  "hakem_turlari": [
+   [
+    [
+     4,
+     "The source states that temperatures rose **above** 40 °F (4 °C) and that thermal expansion was only a possible cause of the tank failure. The script says temperatures rose **to** 40 °F and asserts that this **caused** the molasses to expand, presenting a definitive cause that the source does not con"
+    ]
+   ],
+   []
+  ]
+ },
+ "muzik": "Heartbreaking",
+ "altyazi": [
+  {
+   "bas": 0.0,
+   "son": 3.797,
+   "metin": "A 25-foot molasses wave smashed Boston's streets."
+  },
+  {
+   "bas": 4.097,
+   "son": 8.983,
+   "metin": "On January 15, 1919, the Purity tank burst."
+  },
+  {
+   "bas": 9.283,
+   "son": 13.421,
+   "metin": "The 50-foot, 90-foot tank held 2.3 million gallons."
+  },
+  {
+   "bas": 13.721,
+   "son": 18.735,
+   "metin": "Temperatures rose above 40 degrees Fahrenheit, possibly expanding the molasses."
+  },
+  {
+   "bas": 19.035,
+   "son": 24.773,
+   "metin": "At 12:30 p.m., the tank collapsed, unleashing a 35 mph surge."
+  },
+  {
+   "bas": 25.073,
+   "son": 27.825,
+   "metin": "The wave knocked a streetcar off its tracks."
+  },
+  {
+   "bas": 28.125,
+   "son": 32.52,
+   "metin": "Cadets from USS Nantucket waded in, rescuing trapped victims."
+  },
+  {
+   "bas": 32.82,
+   "son": 36.511,
+   "metin": "Even summer days still smelled of molasses in Boston."
+  }
+ ],
+ "sure_sn": 37.71,
+ "neuron": 1697,
+ "zaman_sn": {
+  "senaryo": 57.7,
+  "gorsel": 75.5,
+  "ses_render": 78.8
+ },
+ "uretildi": "2026-10-08T17:31:10+00:00",
+ "video": "calisma\\hikaye_deneme\\earth\\wiki_Great_Molasses_Flood\\video.mp4"
+}
