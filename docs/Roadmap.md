@@ -257,6 +257,21 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   iki panelli görsel (istemde "tek kare"), havuzda iki bölümde listeli makale (tekilleştirme). Orbit ilk denemede 4
   turda hakemden geçemedi; aynı gün spike'larla 10.000 neuron günlük kota doldu (4006) → kota hatası artık
   yeniden denenmeden alarm olur; çocuk hakemi örneklerle netleştirildi, kota sıfırlanınca yeniden denenecek.
+- **Doğrulama turu (2026-10-08 akşam, `urun-dogrulama`):** yayın kabul kapısı (`otomat/hikaye/kabul.py`, önce yazıldı,
+  `07d2488`; elle düzeltilmiş referans + 5 kusurlu varyantın hepsi reddedildi) üretim hattına bağlandı: kabulden geçmeyen
+  video yayına çıkmaz, hikâye düşer. Bulunan ve düzeltilen hatalar: (1) private'a çekilen 10 eski video yayın slotunu
+  tutuyordu (Earth'ün ilk hikâyesi 10-12'ye kayacaktı) → `geri_cekilen` tablosu; (2) ses -21,6 LUFS (YouTube sessizi
+  yükseltmez) ve müzik -47,5 LUFS'ta duyulmuyordu → anlatıcı -14, müzik -30/-27 LUFS'a ayrı normalize, karışım -15,4 LUFS,
+  tepe -1,6 dBFS; (3) kelime vurgusu orantılı tahminde p90 0,58 sn kayıyordu → Whisper (base.en) hizalaması, p90 0,16 sn,
+  en kötü 0,20 sn (bağımsız referans: Whisper small). Molasses senaryosunun 8 satırı kaynakla tek tek karşılaştırıldı (8/8).
+  Testler 97, CI yeşil (PR #3), test gevşetme bulgularının gerekçesi test_kanal'da (arşiv profili eski değerleri kilitler),
+  izolasyon: test koşusu durum/, sirlar/, kanallar/, raporlar/ dosyalarına dokunmadı.
+- **Kademeli açılış (2026-10-08 19:38 UTC):** `hikaye` main'e (`95eff03`), günlük workflow yeniden açık. Earth buffer
+  modunda (ilk hikâye 10-09 06:17 UTC koşusunda, yayın 14:00 UTC); Orbit `OTOMAT_YAYIN_UZAY=teslim`: çocuk masalı uçtan uca
+  henüz üretilmedi (10-08'de kota doldu, ilk deneme 4 turda hakemden geçmedi, hakem netleştirildi). 10-09 koşusunun teslim
+  paketindeki video kare + ses + senaryo kontrolünden geçince `buffer`'a alınır. Faz 7 sayacı Earth'ün 10-09 koşusuyla başlar.
+- **Kanal adları:** YouTube "Inkwell Oddities"i gerekçesiz reddetti; ardından çok deneme kilidi (24 saat). Yedek adlar
+  profilde (`yedek_adlar`); hangisi tutarsa kimlik o adla uygulanır.
 - **Faz 15 için Scryne'dan:** iki kanalın adı ve tanıtıcısı (Studio → Özelleştirme → Temel bilgiler) ve profil resmi
   (API ile yüklenemiyor). Gerisi API ile.
 
