@@ -91,6 +91,18 @@ jobs:
         run: |
           export "YT_TOKEN_JSON${{ matrix.sir }}=$KANAL_TOKEN"
           uv run python -m otomat.gunluk
+      # yayından önce/sonra inceleme için (video, sahneler, meta, altyazı); kanala çıkan video da 7 gün durur
+      - name: Üretim klasörü (inceleme)
+        if: always() && hashFiles('calisma/gunluk/**/meta.json') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: uretim-${{ matrix.kanal }}-${{ github.run_id }}
+          path: |
+            calisma/gunluk/**/video.mp4
+            calisma/gunluk/**/sahne_*.jpg
+            calisma/gunluk/**/meta.json
+            calisma/gunluk/**/*.srt
+          retention-days: 7
       - name: Teslim paketi (Plan B) → haftanın Release'i
         if: hashFiles('teslim/**') != ''
         env:
