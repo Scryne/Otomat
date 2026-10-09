@@ -72,12 +72,19 @@ GORSEL_KURALI = {
     "nobody hurt.",
 }
 
+# İlk kare kaydırmayı durdurmalı (Shorts feed'inde küçük resim yok; ilk saniye izlendi/kaydırıldı oranını belirler)
+ILK_KARE = {
+    "tuhaf": "The first scene's image must stop a scrolling viewer: a close, bold, dramatic composition with one clear "
+    "subject that shows what the opening line says.",
+    "masal": "The first scene's image is a close, cheerful portrait of the main character, big and centered.",
+}
+
 SAHNE_ISTEMI = """
 world: one sentence describing era, place, clothing and palette for the illustrator (same in every scene).
 cast: 0-3 recurring characters, each a fixed visual description (species or age, clothes, colors) reused verbatim.
 scenes[].image: a concrete visual description of that scene for an illustrator who knows nothing about the story
   (who, doing what, where, camera angle). Name every object unambiguously ("a huge steel storage tank", never just
-  "the tank"). Copy cast descriptions verbatim when a character appears. {gorsel_kurali}
+  "the tank"). Copy cast descriptions verbatim when a character appears. {ilk_kare} {gorsel_kurali}
 mood: the music mood that fits the story."""
 
 HAKEM_ISTEM = {
@@ -244,7 +251,7 @@ def _numarali(satirlar: list[str]) -> str:
 def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> Senaryo:
     kisa = kaynak[:6000]
     istem = ISTEM[tur].format(baslik=baslik, metin=kisa, konu=konu, kalip=KALIPLAR[kalip]) + SAHNE_ISTEMI.format(
-        gorsel_kurali=GORSEL_KURALI[tur]
+        gorsel_kurali=GORSEL_KURALI[tur], ilk_kare=ILK_KARE[tur]
     )
     s = cf.sohbet(istem, sema(tur, moodlar))
     sc = Senaryo(
