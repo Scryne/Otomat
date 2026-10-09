@@ -104,9 +104,11 @@ def test_kamera_hareketi_resmin_icinde_kalir(ad):
 class _SahteKanal:
     """channels().list/update zinciri; update gövdelerini kaydeder."""
 
-    def __init__(self, ad, aciklama="", mfk=False):
+    def __init__(self, ad, aciklama="", mfk=False, yerel_ad=None):
         self.oge = {"id": "UC1", "snippet": {"title": ad}, "brandingSettings": {"channel": {"description": aciklama}},
                     "status": {"selfDeclaredMadeForKids": mfk}}  # fmt: skip
+        if yerel_ad:
+            self.oge["localizations"] = {"en_US": {"title": yerel_ad}}
         self.guncellemeler = []
 
     def channels(self):
@@ -128,15 +130,21 @@ class _Calistir:
         return self.sonuc
 
 
-def test_marka_ad_degisene_kadar_bekler(kanal_sec):
+def test_marka_adi_beklemez_ad_degisince_yerel_adi_gunceller(kanal_sec, monkeypatch):
+    """Ad 14 günde 2 değişiklik sınırına takıldı (2026-10-09): kimlik (banner, açıklama, MFK) adı beklemeden uygulanır;
+    Studio'da ad değişince çevirili kanal adları bir kez daha güncellenir."""
     from otomat.yayin import marka
 
     kanal_sec("uzay")
-    yt = _SahteKanal("Orbit Ruler")
-    assert marka.kontrol(yt) == "ad bekleniyor" and yt.guncellemeler == []
     m = marka.ayarlar()
-    yt = _SahteKanal("Lanternbug Tales", m["aciklama"]["en"], mfk=True)
-    assert marka.kontrol(yt) == "tamam" and yt.guncellemeler == []
+    uygulanan = []
+    monkeypatch.setattr(marka, "uygula", lambda yt, oge, m: uygulanan.append(oge["snippet"]["title"]))
+    assert marka.kontrol(_SahteKanal("Orbit Ruler")) == "uygulandı (ad bekleniyor)"
+    tamam = _SahteKanal("Orbit Ruler", m["aciklama"]["en"], mfk=True, yerel_ad="Orbit Ruler")
+    assert marka.kontrol(tamam) == "tamam (ad bekleniyor)"
+    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], True, "Orbit Ruler")) == "uygulandı"
+    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], True, "Lanternbug Tales")) == "tamam"
+    assert uygulanan == ["Orbit Ruler", "Lanternbug Tales"]
     assert (marka.KOK / m["banner"]).exists() and (marka.KOK / m["filigran"]).exists()
 
 
@@ -147,8 +155,6 @@ def test_marka_yedek_adla_da_uygulanir(kanal_sec, monkeypatch):
     uygulanan = []
     monkeypatch.setattr(marka, "uygula", lambda yt, oge, m: uygulanan.append(oge["snippet"]["title"]))
     assert marka.kontrol(_SahteKanal("Inkwell Oddities Stories")) == "uygulandı"  # YouTube asıl adı reddetti
-    assert marka.kontrol(_SahteKanal("Earth in Numbers")) == "ad bekleniyor"
-    assert uygulanan == ["Inkwell Oddities Stories"]
 
 
 def _sahte_video(genislik=1080, yukseklik=1920, ses=True, sure=37.71):

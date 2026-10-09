@@ -1,5 +1,6 @@
-"""Kanal kimliği (Faz 15): kanal Studio'da yeni adını alınca banner, filigran, açıklama (EN + 4 dil), anahtar kelime ve
-kanal düzeyinde made for kids bir kez API ile uygulanır. Günlük koşu her gün `kontrol` eder (1 kota birimi; uygulama
+"""Kanal kimliği (Faz 15): banner, filigran, açıklama (EN + 4 dil), anahtar kelime ve kanal düzeyinde made for kids
+API ile uygulanır; adı beklemez, ad değişince çevirili adlar için bir kez daha.
+Günlük koşu her gün `kontrol` eder (1 kota birimi; uygulama
 günü ~100 birim + banner yüklemesi). Ad, @tanıtıcı ve profil resmi API ile değişmez, Scryne Studio'dan yapar.
 
 Metinler `kanallar/<id>/marka.toml`'da. Elle: `OTOMAT_KANAL=earth uv run python -m otomat.yayin.marka`.
@@ -67,19 +68,28 @@ def eski_videolari_ayir(yt) -> list[str]:
 
 
 def kontrol(yt) -> str:
-    """'ad bekleniyor' (Scryne henüz yeniden adlandırmadı) | 'tamam' | 'uygulandı' | 'profil yok'."""
+    """'tamam' | 'uygulandı' (+ ' (ad bekleniyor)') | 'profil yok'.
+
+    Kimlik adı beklemez: Studio'daki ad 14 günde 2 değişiklik sınırına takıldı (2026-10-09, 12 gün), videolar eski adla
+    çıkarken banner, açıklama ve MFK yeni içeriğe uysun. Çevirili kanal adı o anki adla yazılır; ad değişince fark
+    görülür ve kimlik bir kez daha uygulanır."""
     m = ayarlar()
     if m is None:
         return "profil yok"
     k = kanal.aktif()
-    oge = yt.channels().list(part="id,snippet,brandingSettings,status", mine=True).execute()["items"][0]
-    if oge["snippet"]["title"] not in k.yeni_adlar:
-        return "ad bekleniyor"
+    oge = yt.channels().list(part="id,snippet,brandingSettings,status,localizations", mine=True).execute()["items"][0]
+    ad = oge["snippet"]["title"]
+    ek = "" if ad in k.yeni_adlar else " (ad bekleniyor)"
     kanal_ayari = oge["brandingSettings"].get("channel", {})
-    if kanal_ayari.get("description") == m["aciklama"]["en"] and oge["status"].get("selfDeclaredMadeForKids") == k.mfk:
-        return "tamam"
+    yerel_ad = (oge.get("localizations") or {}).get("en_US", {}).get("title")
+    if (
+        kanal_ayari.get("description") == m["aciklama"]["en"]
+        and oge["status"].get("selfDeclaredMadeForKids") == k.mfk
+        and yerel_ad == ad
+    ):
+        return "tamam" + ek
     uygula(yt, oge, m)
-    return "uygulandı"
+    return "uygulandı" + ek
 
 
 def main() -> None:
