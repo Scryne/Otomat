@@ -87,7 +87,7 @@ def test_yayinla_buffer_medyayi_her_durumda_kaldirir(tmp_path, monkeypatch):
     monkeypatch.setattr(buffer, "gonder", dus)
     with pytest.raises(buffer.BufferHatasi):
         gunluk.yayinla_buffer(_dizin(tmp_path), None, "2026-10-06", [])
-    assert kaldirilan == ["2026-10-06.mp4"]
+    assert kaldirilan == [f"{gunluk._K.id}-2026-10-06.mp4"]
 
 
 def test_yayinla_buffer_planlama_duserse_alarm_ve_id(tmp_path, monkeypatch):

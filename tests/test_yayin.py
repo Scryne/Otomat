@@ -50,3 +50,4 @@ def test_hafta_sayfasi_teslim_dosyalarindan(tmp_path, monkeypatch):
     assert "## 3. `2026-10-04_video.mp4` → Çarşamba 07.10.2026 17:00 (TR)" in sayfa
     assert "```\nFirst: Video\n```" in sayfa and "```\nLine one\n\n#Shorts #Data\n```" in sayfa
     assert hafta.takvim("teslim-2026-H53", 1)[0].date().isoformat() == "2027-01-04"
+    assert hafta.takvim("teslim-uzay-2026-H41", 1) == hafta.takvim("teslim-2026-H41", 1)  # kanal önekli Release

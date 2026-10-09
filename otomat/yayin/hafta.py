@@ -36,8 +36,8 @@ def oku(metin: str) -> dict:
 
 
 def takvim(etiket: str, adet: int) -> list[dt.datetime]:
-    """teslim-YYYY-HWW → bir sonraki ISO haftasının pazartesisinden başlayarak günde bir yayın anı (UTC)."""
-    m = re.fullmatch(r"teslim-(\d{4})-H(\d{2})", etiket)
+    """teslim[-<kanal>]-YYYY-HWW → bir sonraki ISO haftasının pazartesisinden başlayarak günde bir yayın anı (UTC)."""
+    m = re.fullmatch(r"teslim(?:-[a-z]+)?-(\d{4})-H(\d{2})", etiket)
     if not m:
         raise ValueError(f"etiket tanınmadı: {etiket}")
     pazartesi = dt.date.fromisocalendar(int(m[1]), int(m[2]), 1) + dt.timedelta(days=7)

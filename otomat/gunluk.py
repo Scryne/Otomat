@@ -144,7 +144,7 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
     yerel_yol = dizin / "yerel.json"
     yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))["yerel"] if yerel_yol.exists() else None
-    dosya = f"{ad}.mp4"
+    dosya = f"{_K.id}-{ad}.mp4"  # iki kanal aynı site reposunu ve aynı slot gününü paylaşıyor (10-09 çakıştı)
     url = buffer.medya_koy(dizin / "video.mp4", dosya)
     try:
         video_id = buffer.gonder(url, meta["baslik"], meta["aciklama"])
