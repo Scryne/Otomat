@@ -98,7 +98,9 @@ SCRIPT LINES:
 
 Check the title (as line 0) and every line: numbers, names, dates, places, causes, sequence, who did what.
 Flag a line if it states something the source does not say, contradicts it, attaches a fact to the wrong person or
-event, or exaggerates. Dramatic wording is fine when the facts underneath are correct. Return only real problems.""",
+event, or exaggerates. Also flag a line that breaks the telling: it gives away the ending before the story gets
+there, jumps in time without saying when, or repeats an event an earlier line already told. Dramatic wording is fine
+when the facts underneath are correct. Return only real problems.""",
     "masal": """You review a children's story script (ages 3-7) against the original fable.
 FABLE:
 <<<
@@ -113,7 +115,9 @@ Flag a line (title = line 0) only if it:
   grumble, hunters becoming "a net", someone leaving instead of being punished);
 - contains something scary, violent, cruel, distressing, rude, or unsafe for a child to copy;
 - uses a word most 5-year-olds would not understand (like "gnawed", "unconcern", "trellis");
-- is the last line and does not state the fable's lesson in a simple sentence.
+- is the last line and does not state the fable's lesson in a simple sentence;
+- cannot be followed from the lines before it: unclear who speaks or acts, a line of dialogue that makes no sense
+  in the story, or events out of order.
 Do not flag playful sound words, an opening question to the child, small added details that fit the fable, or
 style choices. Return only real problems.""",
 }
