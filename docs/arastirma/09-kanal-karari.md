@@ -50,5 +50,8 @@ Araştırma: arastirmaci, kaynaklı. Etiket: [B] birincil (YouTube/Google), [İ]
 - 10-09 12:53 UTC'de API hâlâ 4006 dönüyordu. Panel ise "Neurons used today: 0/10k" gösteriyordu ve 00:00 UTC'den
   beri kullanım yoktu.
 - Yani sayaç 00:00 UTC'de sıfırlanıyor ama engel en az ~19 saat sürdü.
+- 15 dakikalık yoklama: 16:45 UTC'de hâlâ 4006, 17:00 UTC'de açık. Kota dolduktan ~23,5 saat sonra açıldı. Bu,
+  günlük sıfırlamayla değil kayan 24 saatlik pencereyle uyumlu. Kotayı dolduran gün ertesi güne yalnız 24 saat
+  geçince açılır diye planlanır.
 - Pist bu belirsizliğe karşı tampon. Geliştirme denemeleri üretimle aynı kotayı paylaşıyor: yerel spike'lar günlük
   koşudan sonra yapılır ve 4.000 neuron'u geçmez.
