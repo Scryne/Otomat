@@ -25,6 +25,16 @@ def dosya(yil: int, hafta: int) -> Path:
     return RAPORLAR / f"{yil}-H{hafta:02d}.md"
 
 
+def bekleyen(bugun: dt.date) -> tuple[int, int] | None:
+    """Biten son haftanın raporu henüz yazılmadıysa (yıl, hafta). Pazartesi koşusu pist dolu diye atlanırsa rapor
+    ertesi koşuda yazılır (önceden yalnız pazartesi deneniyordu, o gün koşu yoksa hafta raporsuz kalıyordu). O hafta
+    hiç koşu kaydı olmayan kanal (henüz açılmamış) için rapor beklenmez."""
+    yil, hafta, _ = (bugun - dt.timedelta(days=7)).isocalendar()
+    if dosya(yil, hafta).exists():
+        return None
+    return (yil, hafta) if _jsonl(RAPORLAR / "gunluk.jsonl", *hafta_araligi(yil, hafta)) else None
+
+
 def _sayi(n: float) -> str:
     return f"{n:,.0f}".replace(",", ".")
 
@@ -67,12 +77,27 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
             konu, kalip = k.get("anahtar", ":").split(":")[0], k.get("kalip", "")
             _, _, s_baslik, s_vid, _ = secim.get(k["tarih"], ("", "", "", None, None))
             vid = k.get("video_id") or (s_vid if baslik and s_baslik == baslik else None)
-            durum = "✅" if k["durum"] == "tamam" else "❌ " + k.get("hata", "")[:80]
+            durum = {"tamam": "✅", "kota": "⏸ kota"}.get(k["durum"], "❌ " + k.get("hata", "")[:80])
             s.append(f"| {k['tarih']} | {durum} | {konu} | {kalip} | {baslik} | {vid or '—'} |")
         s.append("")
     neuron = [k["neuron"] for k in tamam if "neuron" in k]
-    if neuron:  # hikâye motoru: Cloudflare bedava kotası günde 10.000, iki kanal paylaşır
-        s += [f"Cloudflare: {_sayi(sum(neuron))} neuron, video başına ort. {_sayi(sum(neuron) / len(neuron))}.", ""]
+    dusen_hikaye = [d for k in kosular for d in k.get("dusen_hikayeler", [])]
+    dusen_neuron = sum(d.get("neuron", 0) for d in dusen_hikaye)
+    if neuron or dusen_neuron:  # hikâye motoru: Cloudflare bedava kotası günde 10.000, iki kanal paylaşır
+        ort = f", video başına ort. {_sayi(sum(neuron) / len(neuron))}" if neuron else ""
+        s += [
+            f"Cloudflare: {_sayi(sum(neuron) + dusen_neuron)} neuron (yayına giden videolar {_sayi(sum(neuron))}{ort}; "
+            f"düşen hikâyeler {_sayi(dusen_neuron)}).",
+            "",
+        ]
+    if dusen_hikaye:
+        s += [f"Hakemden ya da yayın kabulünden düşen hikâye: {len(dusen_hikaye)}.", ""]
+    istek = sum(k.get("buffer_istek", 0) for k in kosular)
+    if istek:
+        s += [f"Buffer API: {istek} istek (sınır 30 günde 3.000, anahtar başına; tüm kanallar paylaşır).", ""]
+    havuz = [k["havuz_kalan"] for k in kosular if "havuz_kalan" in k]
+    if havuz:
+        s += [f"Hikâye havuzu: {havuz[-1]} anlatılmamış hikâye kaldı.", ""]
     kota = [k for k in kosular if k["durum"] == "kota"]
     if kota:
         s += [f"Kotaya takılan üretim: {len(kota)} (pist tampon oldu, yayın kaçmadıysa alarm yok).", ""]
@@ -152,6 +177,9 @@ def yaz(db: sqlite3.Connection, yil: int, hafta: int, yt=None, ya=None, analitik
     yol = dosya(yil, hafta)
     yol.parent.mkdir(parents=True, exist_ok=True)
     yol.write_text(olustur(db, yil, hafta, kanal_bu, kanal_56, analitik_hatasi), encoding="utf-8")
+    # portföy raporu (portfoy.py) kanalları yan yana koyar; analitik yalnız kanalın kendi token'ıyla okunur
+    sayilar = {"kanal": kanal.aktif().id, "hafta": kanal_bu, "son_56_gun": kanal_56, "analitik_hatasi": analitik_hatasi}
+    yol.with_suffix(".json").write_text(json.dumps(sayilar, ensure_ascii=False, indent=1), encoding="utf-8")
     return yol
 
 

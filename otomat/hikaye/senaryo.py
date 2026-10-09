@@ -213,13 +213,17 @@ def sema(tur: str, moodlar: list[str]) -> dict:
     }
 
 
-def sayi_ad_kapisi(metin: str, kaynak: str) -> list[str]:
-    """Metindeki her sayı ve cümle ortasındaki her özel ad kaynakta geçmeli (K-4'ün hikâye karşılığı)."""
+def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
+    """Metindeki her sayı ve cümle ortasındaki her özel ad kaynakta geçmeli (K-4'ün hikâye karşılığı). `adlar=False`:
+    başlık "Title Case" yazılır, her kelimesi büyük harfle başlar ("…Curse Haunts the Tigers"); ad sanılıp onarıma
+    gidiyordu (10-09, bir hakem turu boşa). Başlıktaki adları hakem denetler."""
     hata = []
     k = kaynak.lower().replace(",", "")
     for n in re.findall(r"\d[\d,.]*", metin):
         if n.strip(".,").replace(",", "") not in k:
             hata.append(f"number not in source: {n}")
+    if not adlar:
+        return hata
     for ad in re.findall(r"(?<![.!?:\"]\s)(?<!^)\b[A-Z][a-z]{2,}\b", metin):
         if ad.lower()[: max(4, len(ad) - 3)] not in k:  # Londoners → london
             hata.append(f"name not in source: {ad}")
@@ -229,7 +233,7 @@ def sayi_ad_kapisi(metin: str, kaynak: str) -> list[str]:
 def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> list[tuple[int, str]]:
     sorun = []
     if tur == "tuhaf":
-        sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak)]
+        sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak, adlar=i > 0)]
         # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons")
         sayili = [i for i, s in enumerate(satirlar, 1) for _ in re.findall(r"\d[\d,.]*", s)]
         if len(sayili) > SAYI_SINIRI:
@@ -243,6 +247,8 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
     for i, s in enumerate(satirlar, 1):
         if len(s.split()) > SATIR_KELIME:
             sorun.append((i, f"too long ({len(s.split())} words); keep it under {SATIR_KELIME}"))
+        elif len(s.split()) < 3:  # onarım satırı boşaltabiliyor; yayın kabulü 3 kelimeden kısa satırı reddeder
+            sorun.append((i, "too short; write a full spoken line of 4-12 words"))
     if not en_az <= toplam <= en_cok:
         sorun.append((len(satirlar), f"script has {toplam} words in total; it must be {en_az}-{en_cok}"))
     return sorun

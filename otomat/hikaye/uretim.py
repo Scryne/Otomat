@@ -9,6 +9,7 @@ import json
 import re
 import subprocess
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
 import wave
@@ -180,14 +181,27 @@ def render(
 
 
 def muzik_sec(mood: str, tohum: str) -> tuple[Path, str]:
+    """Tohumun seçtiği parça; indirilemezse (incompetech kapalı) aynı mood'un sıradaki parçası. Video müziksiz çıkmaz:
+    açıklamadaki atıf hangi parça çaldıysa onu yazar."""
     parcalar = kanal.aktif().muzik[mood]
-    ad = parcalar[sum(map(ord, tohum)) % len(parcalar)]
-    yol = MUZIK_DIZIN / f"{ad}.mp3"
-    if not yol.exists():
+    bas = sum(map(ord, tohum)) % len(parcalar)
+    son = None
+    for ad in parcalar[bas:] + parcalar[:bas]:
+        yol = MUZIK_DIZIN / f"{ad}.mp3"
+        if yol.exists():
+            return yol, ad
         yol.parent.mkdir(parents=True, exist_ok=True)
         istek = urllib.request.Request(MUZIK_URL.format(urllib.parse.quote(ad)), headers={"User-Agent": "Mozilla/5.0"})
-        yol.write_bytes(urllib.request.urlopen(istek, timeout=60).read())
-    return yol, ad
+        try:
+            veri = urllib.request.urlopen(istek, timeout=60).read()
+        except (urllib.error.URLError, TimeoutError) as e:
+            son = e
+            continue
+        gecici = yol.with_suffix(".tmp")
+        gecici.write_bytes(veri)
+        gecici.replace(yol)
+        return yol, ad
+    raise RuntimeError(f"'{mood}' müziklerinin hiçbiri indirilemedi: {son}")
 
 
 SES_LUFS = -14.0  # anlatıcı; limiter sonrası karışım ≈ -14 LUFS (YouTube'un oynatma hedefi; sessiz video yükseltilmez)
@@ -236,15 +250,46 @@ def gorsel_istemi(stil: str, dunya: str, oyuncular: list[str], sahne: str) -> st
     return " ".join([f"{stil}. A single full-frame scene, not a comic, no panels. {dunya}", *tarifler, sahne])
 
 
+SENARYO = "senaryo.json"
+ESKI_CIKTILAR = ("sahne_*.jpg", "sahne_*.tmp", "*.srt", "yerel.json", "meta.json", "video.mp4", "ses.wav")
+
+
+def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Senaryo, str, list[str]]:
+    """(senaryo, kalıp, görsel istemleri). Hakemden geçmiş senaryo klasörde duruyorsa (kota kesintisi; gunluk önceki
+    koşunun artifact'ından getirir) yeniden kullanılır ve aynı istemle çizilmiş sahne görselleri kalır: kota ikinci kez
+    harcanmaz. Yoksa yeni senaryo yazılır ve klasördeki eski çıktılar silinir: önceki senaryonun görselleri yeni
+    senaryonun sahnelerine karışmasın (aynı slot aynı hikâyeyi yeniden seçince öyle olacaktı)."""
+    k = kanal.aktif()
+    yol = dizin / SENARYO
+    try:
+        d = json.loads(yol.read_text(encoding="utf-8"))
+        if (d["anahtar"], d["hash"]) == (paket.anahtar, paket.hash):
+            sc = senaryo.Senaryo(**d["senaryo"])
+            istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
+            for i, eski in enumerate(d.get("istemler", [])):
+                if i >= len(istemler) or eski != istemler[i]:  # kanal stili değişmiş: o sahne yeniden çizilir
+                    (dizin / f"sahne_{i}.jpg").unlink(missing_ok=True)
+            return sc, d.get("kalip", kalip), istemler
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    for desen in ESKI_CIKTILAR:
+        for eski in dizin.glob(desen):
+            eski.unlink()
+    kaynak = kaynaklar.metin(paket)
+    sc = senaryo.yaz(paket.tur, paket.gorsel["baslik"], kaynak, paket.konu, kalip, list(k.muzik))
+    istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
+    kayit = {"anahtar": paket.anahtar, "hash": paket.hash, "kalip": kalip, "senaryo": asdict(sc), "istemler": istemler}
+    yol.write_text(json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8")
+    return sc, kalip, istemler
+
+
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
     k = kanal.aktif()
     dizin.mkdir(parents=True, exist_ok=True)
     cf.NEURON["toplam"] = 0.0
     t0 = time.time()
-    kaynak = kaynaklar.metin(paket)
-    sc = senaryo.yaz(paket.tur, paket.gorsel["baslik"], kaynak, paket.konu, kalip, list(k.muzik))
+    sc, kalip, istemler = senaryo_al(paket, kalip, dizin)
     t_senaryo = time.time()
-    istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
     taban = sum(map(ord, paket.anahtar)) % 100_000
     with ThreadPoolExecutor(PARALEL) as ex:
         gorseller = list(

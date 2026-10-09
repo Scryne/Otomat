@@ -23,6 +23,11 @@ from otomat.veri import Kaynak, OlguPaketi
 UA = {"User-Agent": "Otomat/0.1 (https://github.com/Scryne; daily educational shorts)"}
 WIKI_API = "https://en.wikipedia.org/w/api.php"
 EZOP_URL = "https://www.gutenberg.org/ebooks/11339"
+EN_AZ_METIN = 400  # karakter; daha kısa kaynaktan 75-90 kelimelik hikâye uydurmadan yazılamaz, hakem turları boşa gider
+
+
+class KaynakHatasi(RuntimeError):
+    """Hikâyenin kaynağı kullanılamıyor (makale silinmiş/taşınmış ya da çok kısa): yalnız bu hikâye düşer."""
 
 
 def _kol(bolum: str) -> str:
@@ -114,6 +119,9 @@ def metin(paket: OlguPaketi) -> str:
              format="json", formatversion=2, redirects=1)
     )["query"]["pages"][0]  # fmt: skip
     if "extract" not in d:
-        raise RuntimeError(f"makale bulunamadı: {paket.gorsel['baslik']}")
+        raise KaynakHatasi(f"makale bulunamadı: {paket.gorsel['baslik']}")
     # Kaynakça ve dış bağlantılar hikâyeye girmesin
-    return re.split(r"\n(?:See also|References|External links|Notes|Further reading)\n", d["extract"])[0]
+    govde = re.split(r"\n(?:See also|References|External links|Notes|Further reading)\n", d["extract"])[0].strip()
+    if len(govde) < EN_AZ_METIN:
+        raise KaynakHatasi(f"makale çok kısa ({len(govde)} karakter): {paket.gorsel['baslik']}")
+    return govde

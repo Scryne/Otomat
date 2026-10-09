@@ -1,7 +1,8 @@
 """Cloudflare Workers AI istemcisi: metin (gpt-oss-120b, JSON şeması) ve görsel (flux-2-klein-4b).
 
-Bedava kota günde 10.000 neuron (00:00 UTC'de sıfırlanır, aşınca istek hata verir, fatura yok). Video başına
-~2.000 neuron harcanır (S11 ölçümü). Harcanan miktar `NEURON`'da birikir ve meta.json'a yazılır.
+Bedava kota günde 10.000 neuron (aşınca istek hata verir, fatura yok). Panel sayacı 00:00 UTC'de sıfırlanıyor ama
+engel kayan 24 saat sürdü (10-09 ölçümü, docs/arastirma/09). Video başına ~1.250-2.100 neuron harcanır. Harcanan
+miktar `NEURON`'da birikir ve meta.json'a yazılır.
 Sırlar: CF_ACCOUNT_ID / CF_API_TOKEN (Actions secret) ya da yerelde sirlar/cloudflare.json.
 """
 
@@ -31,7 +32,7 @@ class CFHatasi(RuntimeError):
 
 
 class KotaHatasi(CFHatasi):
-    """Günlük bedava kota bitti (4006): yeniden denemek boşuna, 00:00 UTC'de sıfırlanır."""
+    """Günlük bedava kota bitti (4006): yeniden denemek boşuna, kota dolduktan ~24 saat sonra açılır."""
 
 
 class FiltreHatasi(CFHatasi):
@@ -45,8 +46,8 @@ def _kota_mi(e: urllib.error.HTTPError) -> bytes:
     govde = e.read()
     if e.code == 429 and KOTA_KODU in govde:
         raise KotaHatasi(
-            "Cloudflare Workers AI günlük bedava kotası (10.000 neuron) bitti; 00:00 UTC'de sıfırlanır. "
-            "Bugünkü video üretilmedi, yarınki koşu normal devam eder."
+            "Cloudflare Workers AI günlük bedava kotası (10.000 neuron) bitti; dolduktan ~24 saat sonra açılır "
+            "(kayan pencere). Bu slotun videosu üretilmedi; sonraki koşu kaldığı yerden devam eder."
         ) from e
     return govde
 
@@ -106,8 +107,8 @@ def sohbet(istem: str, sema: dict, deneme: int = 3) -> dict:
         except urllib.error.HTTPError as e:
             son = f"HTTP {e.code}: {_kota_mi(e)[:200]!r}"
             time.sleep(4 * (i + 1))
-        except (urllib.error.URLError, CFHatasi, json.JSONDecodeError, TimeoutError) as e:
-            son = e
+        except (urllib.error.URLError, CFHatasi, json.JSONDecodeError, TimeoutError, KeyError, IndexError) as e:
+            son = f"{type(e).__name__}: {e}"  # KeyError/IndexError: beklenmeyen yanıt biçimi (choices yok)
             time.sleep(4 * (i + 1))
     raise CFHatasi(f"metin modeli {deneme} denemede yanıt vermedi: {son}")
 
@@ -127,7 +128,13 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4) -> Path:
         try:
             y = _istek(f"run/{GORSEL_MODELI}", govde, f"multipart/form-data; boundary={sinir}")
             NEURON["toplam"] += GORSEL_NEURON
-            yol.write_bytes(base64.b64decode(y["result"]["image"]))
+            resim = (y.get("result") or {}).get("image")
+            if not resim:
+                raise ValueError(f"yanıtta görsel yok: {str(y)[:200]}")
+            # önce geçici dosya: yarım yazılmış görsel sonraki koşuda "var" sayılıp yeniden kullanılmasın
+            gecici = yol.with_suffix(".tmp")
+            gecici.write_bytes(base64.b64decode(resim))
+            gecici.replace(yol)
             return yol
         except urllib.error.HTTPError as e:
             hata = _kota_mi(e)
@@ -137,7 +144,7 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4) -> Path:
             if FILTRE_KODU in hata:
                 istem += ". Calm, gentle, non-graphic, nobody hurt."
             time.sleep(3)
-        except (urllib.error.URLError, TimeoutError) as e:
+        except (urllib.error.URLError, TimeoutError, ValueError) as e:  # ValueError: bozuk base64 ya da görselsiz yanıt
             if i == deneme - 1:
                 raise CFHatasi(f"görsel üretilemedi: {e}") from e
             time.sleep(5)

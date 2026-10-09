@@ -2,6 +2,7 @@
 
 import datetime as dt
 import itertools
+import json
 
 import numpy as np
 import pytest
@@ -326,3 +327,148 @@ def test_gorsel_istemi_karakter_tarifini_her_sahnede_tasir():
     assert "Cocktail" not in uretim.gorsel_istemi("S", "W.", ["Cock: x"], "A cocktail glass.") and "is x" not in (
         uretim.gorsel_istemi("S", "W.", ["Cock: x"], "A cocktail glass.")
     )
+
+
+def _hikaye_paketi(anahtar="wiki:Tank", hash_="h1"):
+    P = type("P", (), {})
+    p = P()
+    p.anahtar, p.hash, p.tur, p.konu, p.kol = anahtar, hash_, "tuhaf", "konu", "k"
+    p.gorsel = {"baslik": "Tank"}
+    return p
+
+
+def _sahte_senaryo(satir="Old line here"):
+    return senaryo.Senaryo("Başlık", "mysterious", "Boston, 1919.", ["Ann: a girl in red"],
+                           [satir] * 7, [f"scene {i}" for i in range(7)])  # fmt: skip
+
+
+def test_senaryo_kota_kesintisinden_sonra_surer_eski_gorseller_karismaz(kanal_sec, tmp_path, monkeypatch):
+    """Kotaya takılan üretim aynı slotta yeniden seçilince yeni senaryo yazılıyor, önceki senaryonun sahne görselleri
+    `cf.gorsel`in "varsa üretme" kuralıyla yeni sahnelere karışıyordu. Hakemden geçmiş senaryo artık sürer."""
+    kanal_sec("earth")
+    yazilan = []
+    monkeypatch.setattr(uretim.kaynaklar, "metin", lambda p: "kaynak")
+
+    def yaz(*a):
+        yazilan.append(a)
+        return _sahte_senaryo(f"Line {len(yazilan)} here")
+
+    monkeypatch.setattr(uretim.senaryo, "yaz", yaz)
+    p = _hikaye_paketi()
+    sc, kalip, istemler = uretim.senaryo_al(p, "kisi", tmp_path)
+    assert len(yazilan) == 1 and len(istemler) == 7 and (tmp_path / uretim.SENARYO).exists()
+    for i in range(3):  # kota üç görselden sonra bitti
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"x")
+    sc2, kalip2, istemler2 = uretim.senaryo_al(p, "detay", tmp_path)  # yeniden deneme: aynı senaryo, aynı görseller
+    assert len(yazilan) == 1 and sc2.satirlar == sc.satirlar and istemler2 == istemler and kalip2 == "kisi"
+    assert len(list(tmp_path.glob("sahne_*.jpg"))) == 3
+    # kanal stili değişti (sahne 1'in kayıtlı istemi farklı): o görsel yeniden çizilir, senaryo kalır
+    d = json.loads((tmp_path / uretim.SENARYO).read_text(encoding="utf-8"))
+    d["istemler"][1] = "eski stil"
+    (tmp_path / uretim.SENARYO).write_text(json.dumps(d), encoding="utf-8")
+    uretim.senaryo_al(p, "kisi", tmp_path)
+    assert sorted(x.name for x in tmp_path.glob("sahne_*.jpg")) == ["sahne_0.jpg", "sahne_2.jpg"]
+    # başka paket (hash değişti): yeni senaryo, eski çıktılar silinir
+    (tmp_path / "yerel.json").write_text("{}", encoding="utf-8")
+    uretim.senaryo_al(_hikaye_paketi(hash_="h2"), "kisi", tmp_path)
+    assert len(yazilan) == 2 and not list(tmp_path.glob("sahne_*.jpg")) and not (tmp_path / "yerel.json").exists()
+
+
+def test_yarim_uretim_onceki_kosudan_getirilir(kanal_sec, tmp_path, monkeypatch):
+    import json
+
+    from otomat import gunluk
+
+    kanal_sec("earth")
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    p = _hikaye_paketi()
+    for kosu, satir in (("100", "eski"), ("200", "yeni")):
+        d = tmp_path / "calisma" / "onceki" / kosu / "2026-10-11" / "wiki_Tank"
+        d.mkdir(parents=True)
+        (d / "senaryo.json").write_text(json.dumps({"anahtar": p.anahtar, "hash": p.hash, "s": satir}), "utf-8")
+        (d / "sahne_0.jpg").write_bytes(satir.encode())
+    baska = tmp_path / "calisma" / "onceki" / "300" / "2026-10-11" / "wiki_Baska"
+    baska.mkdir(parents=True)
+    (baska / "senaryo.json").write_text(json.dumps({"anahtar": "wiki:Baska", "hash": "x"}), "utf-8")
+    hedef = tmp_path / "calisma" / "gunluk" / "2026-10-12" / "wiki_Tank"
+    assert gunluk.yarim_uretimi_getir(p, hedef).endswith("onceki/200/2026-10-11/wiki_Tank")  # en yeni koşu
+    assert (hedef / "sahne_0.jpg").read_bytes() == b"yeni" and (hedef / "senaryo.json").exists()
+    assert gunluk.yarim_uretimi_getir(p, hedef) is None  # klasörde senaryo zaten var
+
+
+def test_kaynagi_kullanilamayan_hikaye_duser_siradaki_denenir(tmp_path, monkeypatch):
+    """Silinmiş/taşınmış Wikipedia makalesi tüm koşuyu düşürüyordu; artık yalnız o hikâye düşer."""
+    from otomat import durum, gunluk
+    from otomat.hikaye import kabul
+    from otomat.hikaye import uretim as h_uretim
+
+    db = durum.baglan(tmp_path / "d.db")
+    sira = iter([_hikaye_paketi("wiki:Yok"), _hikaye_paketi("wiki:Var", "h2")])
+    monkeypatch.setattr(gunluk, "sec", lambda *a: (next(sira), "kisi", "sablon", {}))
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    monkeypatch.setattr(kabul, "denetle", lambda *a: [])
+
+    def uret(paket, *a):
+        if paket.anahtar == "wiki:Yok":
+            raise kaynaklar.KaynakHatasi("makale bulunamadı: Yok")
+        return {"baslik": "ok", "secim": {"kalip": "zitlik"}}
+
+    monkeypatch.setattr(h_uretim, "uret", uret)
+    kayit = {}
+    paket, kalip, *_ = gunluk.hikaye_uret([], db, dt.date(2026, 10, 9), kayit)
+    assert paket.anahtar == "wiki:Var" and kalip == "zitlik"  # kalıp üretilen senaryonunki
+    assert kayit["dusen_hikayeler"][0]["anahtar"] == "wiki:Yok" and "neuron" in kayit["dusen_hikayeler"][0]
+
+
+def test_kisa_makale_kaynak_hatasi(monkeypatch):
+    monkeypatch.setattr(kaynaklar, "_wiki", lambda params: {"query": {"pages": [{"extract": "Too short."}]}})
+    with pytest.raises(kaynaklar.KaynakHatasi, match="kısa"):
+        kaynaklar.metin(_hikaye_paketi())
+    monkeypatch.setattr(kaynaklar, "_wiki", lambda params: {"query": {"pages": [{"missing": True}]}})
+    with pytest.raises(kaynaklar.KaynakHatasi, match="bulunamadı"):
+        kaynaklar.metin(_hikaye_paketi())
+
+
+def test_baslikta_buyuk_harfli_kelime_ad_sayilmaz_bos_satir_onarima_gider():
+    kaynak = "In 1986 Hanshin Tigers fans threw a statue of Colonel Sanders into a river."
+    satirlar = ["Fans threw a statue into the river."] * 6 + ["The Tigers won."] + ["Then"]
+    sorun = senaryo.kod_kontrolu("tuhaf", "Colonel Sanders' Curse Haunts the Tigers", satirlar, kaynak)
+    assert not [s for s in sorun if s[0] == 0]  # 10-09: "name not in source: Haunts" boş tur harcatıyordu
+    assert (8, "too short; write a full spoken line of 4-12 words") in sorun
+    assert senaryo.kod_kontrolu("tuhaf", "1987 Curse", satirlar[:7], kaynak)[0] == (0, "number not in source: 1987")
+
+
+def test_muzik_indirilemezse_ayni_moodun_siradaki_parcasi(kanal_sec, tmp_path, monkeypatch):
+    import urllib.error
+
+    kanal_sec("uzay")
+    monkeypatch.setattr(uretim, "MUZIK_DIZIN", tmp_path)
+    parcalar = kanal.aktif().muzik["gentle"]
+    istenen = []
+
+    def urlopen(istek, timeout):
+        istenen.append(istek.full_url)
+        if len(istenen) == 1:
+            raise urllib.error.URLError("incompetech kapalı")
+        return type("Y", (), {"read": lambda self: b"mp3"})()
+
+    monkeypatch.setattr(uretim.urllib.request, "urlopen", urlopen)
+    tohum = "x"
+    bas = sum(map(ord, tohum)) % len(parcalar)
+    yol, ad = uretim.muzik_sec("gentle", tohum)
+    assert ad == parcalar[(bas + 1) % len(parcalar)] and yol.read_bytes() == b"mp3" and len(istenen) == 2
+    assert not list(tmp_path.glob("*.tmp"))
+    # tohumun parçası önbellekteyse indirilmeden o kullanılır
+    monkeypatch.setattr(uretim.urllib.request, "urlopen", lambda *a, **k: pytest.fail("önbellek varken indirme"))
+    (tmp_path / f"{parcalar[bas]}.mp3").write_bytes(b"ilk")
+    assert uretim.muzik_sec("gentle", tohum) == (tmp_path / f"{parcalar[bas]}.mp3", parcalar[bas])
+
+
+def test_gorsel_yanitsiz_donerse_dosya_yazilmaz(tmp_path, monkeypatch):
+    from otomat.hikaye import cf
+
+    monkeypatch.setattr(cf, "_istek", lambda *a, **k: {"result": {}, "success": True})
+    monkeypatch.setattr(cf.time, "sleep", lambda _: None)
+    with pytest.raises(cf.CFHatasi, match="görsel"):
+        cf.gorsel("a cat", tmp_path / "sahne_0.jpg", 1)
+    assert not list(tmp_path.iterdir())  # yarım/boş dosya sonraki koşuda "var" sayılmasın

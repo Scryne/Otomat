@@ -31,6 +31,7 @@ YOKLAMA_SN = 45  # ücretsiz API 30 günde 3.000 istek (anahtar başına, tüm k
 # public repo: kişisel e-posta girmez (gunluk.yml'deki bot kimliği)
 KIMLIK = ["-c", "user.name=otomat-bot", "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
 DENEME = 4
+ISTEK = {"sayi": 0}  # bu süreçte Buffer'a giden istek (günlük rapor; 30 günde 3.000 sınırının takibi)
 
 
 class BufferHatasi(RuntimeError):
@@ -57,6 +58,7 @@ def sorgu(metin: str, degiskenler: dict | None = None, tekrar: bool = True) -> d
         headers={"Content-Type": "application/json", "Authorization": f"Bearer {anahtar()}", "User-Agent": "otomat"},
     )
     for i in range(DENEME if tekrar else 1):
+        ISTEK["sayi"] += 1
         try:
             with urllib.request.urlopen(istek, timeout=120) as y:
                 yanit = json.load(y)
@@ -102,7 +104,8 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
                 "title": baslik[:100],
                 "privacy": "private",
                 "categoryId": kanal.aktif().kategori,
-                "madeForKids": False,
+                # çocuk kanalı (Orbit, K-19): yükleme anından itibaren doğru kitle; duzenle aynısını yazar
+                "madeForKids": kanal.aktif().mfk,
                 "isAiGenerated": False,  # youtube.py: containsSyntheticMedia False (gerçekçi değil)
                 "notifySubscribers": True,
             }

@@ -116,6 +116,7 @@ def _pist_ortami(tmp_path, monkeypatch, db, uretim):
     monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
     monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
     monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
+    monkeypatch.setattr(gunluk.rapor, "RAPORLAR", tmp_path)  # haftalık rapor da test klasörüne
     monkeypatch.setattr(gunluk, "HIKAYE", False)
     monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (None, None))
     monkeypatch.setattr(gunluk, "topla", lambda: ([], []))
@@ -177,3 +178,43 @@ def test_pist_plan_b_ye_dusen_video_ikinciyi_uretmez(tmp_path, monkeypatch):
     _pist_ortami(tmp_path, monkeypatch, db, teslim)
     gunluk.main()
     assert len(cagri) == 1
+
+
+def test_gonder_cocuk_kanalinda_mfk_yukler(monkeypatch):
+    """Orbit (MFK) videoları Buffer'dan "çocuklara özel değil" yükleniyordu; duzenle sonra düzeltiyordu."""
+    from otomat import kanal
+
+    girdiler = []
+
+    def sahte(metin, degiskenler=None, tekrar=True):
+        if "createPost" in metin:
+            girdiler.append(degiskenler["i"])
+            return {"createPost": {"post": {"id": "p1"}}}
+        return {"post": {"status": "sent", "externalLink": "https://youtube.com/shorts/JXSEMofyS3k"}}
+
+    monkeypatch.setattr(buffer, "kanal_id", lambda: "c1")
+    monkeypatch.setattr(buffer, "sorgu", sahte)
+    for kimlik, mfk in (("uzay", True), ("earth", False)):
+        monkeypatch.setenv("OTOMAT_KANAL", kimlik)
+        kanal._aktif.cache_clear()
+        buffer.gonder("https://x/v.mp4", "Başlık", "Açıklama")
+        assert girdiler[-1]["metadata"]["youtube"]["madeForKids"] is mfk
+    kanal._aktif.cache_clear()
+
+
+def test_sorgu_istek_sayar(monkeypatch):
+    class Yanit:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return b'{"data": {"ok": 1}}'
+
+    monkeypatch.setattr(buffer, "anahtar", lambda: "k")
+    monkeypatch.setattr(buffer.urllib.request, "urlopen", lambda *a, **k: Yanit())
+    once = buffer.ISTEK["sayi"]
+    assert buffer.sorgu("query { ok }") == {"ok": 1}
+    assert buffer.ISTEK["sayi"] == once + 1

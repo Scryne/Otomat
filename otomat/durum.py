@@ -182,7 +182,14 @@ def gecmisi_doldur(db: sqlite3.Connection, rapor: Path) -> int:
 
 
 if __name__ == "__main__":
-    # Actions "Üretilecek iş var mı" adımı (uv kurulmadan, sistem python3'üyle): pist doluysa 0 (koşu atlanır).
+    # Actions "Üretilecek iş var mı" adımı (uv kurulmadan, sistem python3'üyle): pist dolu ve bekleyen haftalık rapor
+    # yoksa 0 (koşu atlanır).
     import sys
 
-    sys.exit(0 if pist_dolu(baglan(), dt.datetime.now(dt.UTC), os.environ.get("OTOMAT_YAYIN", "teslim")) else 1)
+    from otomat import rapor
+
+    simdi = dt.datetime.now(dt.UTC)
+    is_yok = (
+        pist_dolu(baglan(), simdi, os.environ.get("OTOMAT_YAYIN", "teslim")) and rapor.bekleyen(simdi.date()) is None
+    )
+    sys.exit(0 if is_yok else 1)

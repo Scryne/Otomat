@@ -49,12 +49,16 @@ def takvim(etiket: str, adet: int) -> list[dt.datetime]:
 def olustur(yukleler: list[dict], etiket: str) -> str:
     videolar = sorted(yukleler, key=lambda y: y["tarih"])
     anlar = takvim(etiket, len(videolar))
+    k = kanal.aktif()
+    # kitle kanaldan: çocuk kanalında (Orbit, K-19) "çocuklara özel" işaretlemek zorunlu, seçmeli değil
+    kitle = "**Evet, çocuklara özel**" if k.mfk else "**Hayır, çocuklara özel değil**"
+    yapay = "illüstrasyon, gerçekçi değil" if k.tur == "hikaye" else "veri animasyonu, gerçekçi değil"
     s = [
         f"# Bu haftanın yüklemesi ({etiket}): {len(videolar)} video",
         "",
         "Her video için: Studio → **Oluştur → Video yükle** → `<tarih>_video.mp4`. **Başlığı birebir yapıştır** (bot "
-        "videoyu başlıktan tanır), açıklamayı yapıştır. Kitle: **Hayır, çocuklara özel değil**. Değiştirilmiş/yapay "
-        "içerik: **Hayır** (veri animasyonu, gerçekçi değil). **Görünürlük → Planla** ile aşağıdaki TR saatini gir. "
+        f"videoyu başlıktan tanır), açıklamayı yapıştır. Kitle: {kitle}. Değiştirilmiş/yapay "
+        f"içerik: **Hayır** ({yapay}). **Görünürlük → Planla** ile aşağıdaki TR saatini gir. "
         "Altyazı isteğe bağlı: Altyazılar → Dosya yükle → `<tarih>_<dil>.srt`.",
         "",
         "Planlanan saat geçmişse o videoyu **Herkese açık** yap (hemen yayınla); sıradakiler kendi saatinde kalır.",

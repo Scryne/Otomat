@@ -51,3 +51,44 @@ def test_hafta_sayfasi_teslim_dosyalarindan(tmp_path, monkeypatch):
     assert "```\nFirst: Video\n```" in sayfa and "```\nLine one\n\n#Shorts #Data\n```" in sayfa
     assert hafta.takvim("teslim-2026-H53", 1)[0].date().isoformat() == "2027-01-04"
     assert hafta.takvim("teslim-uzay-2026-H41", 1) == hafta.takvim("teslim-2026-H41", 1)  # kanal önekli Release
+
+
+def test_hafta_sayfasi_kitleyi_kanaldan_yazar(monkeypatch):
+    """Plan B sayfası Orbit (MFK) için de "Hayır, çocuklara özel değil" diyordu."""
+    from otomat import kanal
+    from otomat.yayin import hafta
+
+    v = [{"tarih": "2026-10-10", "baslik": "B", "aciklama": "A", "etiketler": ""}]
+    for kimlik, beklenen in (("uzay", "Evet, çocuklara özel"), ("earth", "Hayır, çocuklara özel değil")):
+        monkeypatch.setenv("OTOMAT_KANAL", kimlik)
+        kanal._aktif.cache_clear()
+        sayfa = hafta.olustur(v, "teslim-2026-H41")
+        assert beklenen in sayfa and "veri animasyonu" not in sayfa
+    kanal._aktif.cache_clear()
+
+
+def test_hazirla_ayni_metnin_cevirisini_yeniden_kullanir(tmp_path, monkeypatch):
+    """Hazır üretim yayına ikinci kez geldiğinde çeviriler yeniden yapılıp Cloudflare kotası harcanıyordu."""
+    import json
+
+    from otomat.yayin import ceviri, hazirla
+
+    meta = {"baslik": "T", "aciklama": "D", "altyazi": [{"bas": 0.0, "son": 1.0, "metin": "One two three"}]}
+    (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    cagri = []
+
+    def cevir(dil, *a, **k):
+        cagri.append(dil)
+        return None if dil == "de" else {"title": f"T-{dil}", "description": "D", "captions": [f"x-{dil}"]}
+
+    monkeypatch.setattr(ceviri, "cevir", cevir)
+    s = hazirla.hazirla(tmp_path)
+    assert set(s["yerel"]) == {"es", "pt", "fr"} and s["atlanan"] == ["de"] and not (tmp_path / "de.srt").exists()
+    cagri.clear()
+    s = hazirla.hazirla(tmp_path)  # aynı metin: yalnız atlanan dil yeniden denenir
+    assert cagri == ["de"] * 3 and s["yerel"]["es"]["title"] == "T-es"
+    meta["baslik"] = "Başka"
+    (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    cagri.clear()
+    hazirla.hazirla(tmp_path)  # metin değişti: hepsi yeniden
+    assert sorted(set(cagri)) == ["de", "es", "fr", "pt"]

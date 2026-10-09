@@ -192,18 +192,27 @@ def test_haftalik_rapor(db, tmp_path, monkeypatch):
     assert "1.500 / 1.200.000 görüntüleme" in metin
     assert "2026-10-05 (kalip)" in metin
     assert "Toplam 3 dk" in metin
-    assert "Cloudflare: 1.800 neuron, video başına ort. 1.800." in metin
+    assert "Cloudflare: 1.800 neuron (yayına giden videolar 1.800, video başına ort. 1.800; düşen hikâyeler 0)" in metin
     assert "Analitik alınamadı: YetkiHatasi" in rapor.olustur(db, 2026, 41, None, None, "YetkiHatasi: x")
 
 
-def test_rapor_yalniz_pazartesi_gecen_hafta(db, monkeypatch, tmp_path):
+def test_rapor_biten_haftanin_eksigini_yazar(db, monkeypatch, tmp_path):
+    """Pazartesi koşusu pist dolu diye atlanırsa hafta raporsuz kalıyordu: eksik rapor sonraki koşuda, bir kez."""
     yazilan = []
-    monkeypatch.setattr(rapor, "dosya", lambda y, h: tmp_path / f"{y}-{h}.md")
-    monkeypatch.setattr(rapor, "yaz", lambda db, y, h, *a: yazilan.append((y, h)) or tmp_path / "x")
+    monkeypatch.setattr(rapor, "RAPORLAR", tmp_path)
+    (tmp_path / "gunluk.jsonl").write_text('{"tarih": "2026-10-02", "durum": "tamam"}\n', encoding="utf-8")
+
+    def yaz(db, y, h, *a):
+        yazilan.append((y, h))
+        return rapor.dosya(y, h).write_text("rapor", encoding="utf-8") or rapor.dosya(y, h)
+
+    monkeypatch.setattr(rapor, "yaz", yaz)
     monkeypatch.setattr(gunluk, "KOK", tmp_path)
-    gunluk.rapor_adimi(db, dt.date(2026, 10, 6), None, None, {}, [])  # salı
-    gunluk.rapor_adimi(db, dt.date(2026, 10, 5), None, None, {}, [])  # pazartesi → hafta 40
+    gunluk.rapor_adimi(db, dt.date(2026, 10, 2), None, None, {}, [])  # hafta 40 bitmedi: hafta 39'da koşu yok
+    gunluk.rapor_adimi(db, dt.date(2026, 10, 6), None, None, {}, [])  # salı (pazartesi atlandı) → hafta 40
+    gunluk.rapor_adimi(db, dt.date(2026, 10, 7), None, None, {}, [])  # yazıldı, tekrar yok
     assert yazilan == [(2026, 40)]
+    assert rapor.bekleyen(dt.date(2026, 10, 7)) is None
 
 
 def test_alarm(tmp_path, monkeypatch):
@@ -226,3 +235,51 @@ def test_gun_zaten_uretildiyse_kosu_atlanir(db, tmp_path, monkeypatch):
     assert durum.bugun_secildi_mi(db, bugun)
     gunluk.main()
     assert not (tmp_path / "gunluk.jsonl").exists()
+
+
+def test_rapor_dusen_hikaye_kotasi_buffer_ve_havuz(db, tmp_path, monkeypatch):
+    """Düşen hikâyelerin harcadığı neuron da raporda (önceki sürüm yalnız yayına gideni sayıyordu)."""
+    monkeypatch.setattr(rapor, "RAPORLAR", tmp_path)
+    satirlar = [
+        {"tarih": "2026-10-06", "mod": "buffer", "durum": "tamam", "neuron": 1500, "buffer_istek": 9,
+         "havuz_kalan": 140, "dusen_hikayeler": [{"anahtar": "ezop:A", "sorunlar": ["x"], "neuron": 700}]},
+        {"tarih": "2026-10-07", "mod": "buffer", "durum": "kota", "hata": "kota bitti", "havuz_kalan": 139},
+    ]  # fmt: skip
+    (tmp_path / "gunluk.jsonl").write_text("".join(json.dumps(s) + "\n" for s in satirlar), encoding="utf-8")
+    metin = rapor.olustur(db, 2026, 41, None, None, "x")
+    assert "Cloudflare: 2.200 neuron (yayına giden videolar 1.500" in metin and "düşen hikâyeler 700)" in metin
+    assert "düşen hikâye: 1." in metin and "Buffer API: 9 istek" in metin
+    assert "139 anlatılmamış hikâye" in metin and "⏸ kota" in metin
+
+
+def test_pist_doluyken_yalniz_bekleyen_rapor_yazilir(db, tmp_path, monkeypatch):
+    """Pist dolu günde de geçen haftanın raporu yazılır; üretim kaydı (gunluk.jsonl) yazılmaz, üretim yapılmaz."""
+    monkeypatch.setenv("OTOMAT_YAYIN", "buffer")
+    monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
+    monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
+    monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
+    monkeypatch.setattr(gunluk.durum, "pist_dolu", lambda *a: True)
+    monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (None, None))
+    monkeypatch.setattr(gunluk, "bir_video", lambda *a: pytest.fail("pist doluyken üretim"))
+    yazilan = []
+    monkeypatch.setattr(rapor, "bekleyen", lambda bugun: (2026, 40))
+    monkeypatch.setattr(rapor, "yaz", lambda db, y, h, *a: yazilan.append((y, h)) or tmp_path / "r.md")
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    gunluk.main()
+    assert yazilan == [(2026, 40)] and not (tmp_path / "gunluk.jsonl").exists()
+    yazilan.clear()
+    monkeypatch.setattr(rapor, "bekleyen", lambda bugun: None)
+    monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: pytest.fail("iş yokken analitik"))
+    gunluk.main()
+    assert yazilan == []
+
+
+def test_havuz_azalinca_alarm(db, monkeypatch):
+    paketler = [paket(anahtar=f"ezop:{i}") for i in range(gunluk.HAVUZ_ESIK + 1)]
+    kayit, alarmlar = {}, []
+    gunluk.havuz_adimi(paketler, db, GUN, kayit, alarmlar)
+    assert kayit["havuz_kalan"] == gunluk.HAVUZ_ESIK + 1 and alarmlar == []
+    for p in paketler[:2]:
+        durum.kaydet(db, p, GUN, "v")
+    gunluk.havuz_adimi(paketler, db, GUN, kayit, alarmlar)
+    assert kayit["havuz_kalan"] == gunluk.HAVUZ_ESIK - 1 and "havuzu azalıyor" in alarmlar[0]

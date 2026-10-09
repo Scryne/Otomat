@@ -43,6 +43,7 @@ YETKI_COZUMU = (
 HIKAYE = _K.tur == "hikaye"  # Earth ve Orbit 2026-10-08'den beri hikâye motorunda (otomat/hikaye)
 HIKAYE_TEKRAR_GUN = 3650  # bir hikâye kanalda bir kez anlatılır
 HIKAYE_DENEME = 3  # senaryo hakemden geçmezse o hikâye düşer, sıradaki denenir
+HAVUZ_ESIK = 21  # anlatılmamış hikâye bunun altına inince alarm (havuz genişletme işi ~3 hafta önceden görünsün)
 EN_COK = 2  # buffer/api: bir koşuda en çok video (~2.000 neuron/video; iki kanal günlük 10.000'lik kotayı paylaşır)
 
 
@@ -63,14 +64,23 @@ def _klasor(bugun: dt.date, anahtar: str) -> Path:
     return KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", anahtar)[:60]
 
 
+def uretim_dosyalari(ad: str) -> list[Path]:
+    """Bu koşunun (calisma/gunluk/<gün>/<anahtar>/) ve önceki koşuların (calisma/onceki/<koşu>/<gün>/<anahtar>/;
+    gunluk.yml son koşuların artifact'ını koşu başına ayrı klasöre indirir) üretim klasörlerindeki `ad` dosyaları,
+    önce bu koşu, sonra en yeni koşu. Önceki koşular artifact'a yeniden yüklenmez (artifact'lar her koşuda öncekileri
+    de taşıyıp 44 → 73 MB büyüyordu, 2026-10-09)."""
+    calisma = KOK / "calisma"
+    bu = sorted((calisma / "gunluk").glob(f"*/*/{ad}"))
+    return bu + sorted((calisma / "onceki").glob(f"*/*/*/{ad}"), reverse=True)
+
+
 def hazir_uretim(paketler: list[OlguPaketi], db, bugun: dt.date):
-    """Önceki koşudan kalan, yayın kabulünden geçmiş ama kanala çıkmamış üretim (workflow son koşuların artifact'ını
-    calisma/gunluk'a indirir). Kota harcamadan kullanılır: 10-09'da ffprobe hatası 5 hazır videoyu ve günün kotasını
-    yaktı. Yoksa None."""
+    """Önceki koşudan kalan, yayın kabulünden geçmiş ama kanala çıkmamış üretim. Kota harcamadan kullanılır: 10-09'da
+    ffprobe hatası 5 hazır videoyu ve günün kotasını yaktı. Yoksa None."""
     from otomat.hikaye import kabul
 
     taze = {p.anahtar: p for p in paketler if durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN)}
-    for meta_yolu in sorted((KOK / "calisma" / "gunluk").glob("*/*/meta.json")):
+    for meta_yolu in uretim_dosyalari("meta.json"):
         try:
             meta = json.loads(meta_yolu.read_text(encoding="utf-8"))
             paket = taze.get(meta["paket"]["anahtar"])
@@ -86,10 +96,32 @@ def hazir_uretim(paketler: list[OlguPaketi], db, bugun: dt.date):
     return None
 
 
+def yarim_uretimi_getir(paket: OlguPaketi, dizin: Path) -> str | None:
+    """Kotaya takılıp yarım kalmış üretimin hakemden geçmiş senaryosu ve biten sahne görselleri `dizin`e kopyalanır
+    (hikaye/uretim.senaryo_al kullanır, kota ikinci kez harcanmaz). Kopyalanan klasör ya da None."""
+    from otomat.hikaye.uretim import SENARYO
+
+    if (dizin / SENARYO).exists():
+        return None
+    for yol in uretim_dosyalari(SENARYO):
+        try:
+            d = json.loads(yol.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if yol.parent == dizin or (d.get("anahtar"), d.get("hash")) != (paket.anahtar, paket.hash):
+            continue
+        dizin.mkdir(parents=True, exist_ok=True)
+        for dosya in [yol, *yol.parent.glob("sahne_*.jpg")]:
+            shutil.copy2(dosya, dizin / dosya.name)
+        return str(yol.parent.relative_to(KOK).as_posix())
+    return None
+
+
 def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
-    seçilmesin diye kaydedilir (video yok). Önce hazır üretim aranır."""
+    seçilmesin diye kaydedilir (video yok). Önce hazır üretim aranır, sonra yarım kalmış üretim sürdürülür."""
     from otomat.hikaye import cf, kabul
+    from otomat.hikaye.kaynaklar import KaynakHatasi
     from otomat.hikaye.senaryo import SenaryoHatasi
     from otomat.hikaye.uretim import uret as h_uret
 
@@ -100,17 +132,21 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     for deneme in range(HIKAYE_DENEME):
         paket, kalip, sablon, secim_logu = sec(paketler, db, bugun, deneme)
         dizin = _klasor(bugun, paket.anahtar)
+        if yarim := yarim_uretimi_getir(paket, dizin):
+            kayit["devam"] = yarim
         try:
             meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except SenaryoHatasi as e:
             sorunlar = e.sorunlar[-1][:5]
-        except cf.FiltreHatasi as e:  # sahne görseli güvenlik filtresinde (Earth, 2026-10-09)
+        except (cf.FiltreHatasi, KaynakHatasi) as e:  # sahne görseli güvenlik filtresinde (Earth, 10-09); makale yok
             sorunlar = [str(e)[:200]]
         else:
             if not (sorunlar := kabul.denetle(dizin / "meta.json")):
-                return paket, kalip, sablon, secim_logu, dizin, meta
+                # senaryo önceki koşudan sürdüyse kalıp onunki (haydut doğru kalıbı öğrensin)
+                return paket, (meta.get("secim") or {}).get("kalip", kalip), sablon, secim_logu, dizin, meta
         durum.kaydet(db, paket, bugun, None)
-        dusen.append({"anahtar": paket.anahtar, "sorunlar": sorunlar})
+        # düşen hikâyenin harcadığı kota da raporda görünsün (uret sayacı her hikâyede sıfırlar)
+        dusen.append({"anahtar": paket.anahtar, "sorunlar": sorunlar, "neuron": round(cf.NEURON["toplam"])})
         kayit["dusen_hikayeler"] = dusen
     raise RuntimeError(
         f"{HIKAYE_DENEME} hikâye de hakemden ya da yayın kabulünden geçmedi: "
@@ -213,17 +249,25 @@ def marka_adimi(yt, kayit: dict, alarmlar: list[str]) -> None:
 
 
 def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) -> None:
-    """Pazartesi: geçen haftanın raporu (yoksa)."""
-    if bugun.isoweekday() != 1:
-        return
-    yil, hafta, _ = (bugun - dt.timedelta(days=7)).isocalendar()
-    if rapor.dosya(yil, hafta).exists():
+    """Biten son haftanın raporu yoksa yazılır (pazartesi koşusu pist dolu diye atlanırsa ertesi koşuda)."""
+    if (bekleyen := rapor.bekleyen(bugun)) is None:
         return
     try:
         hata = None if yt else kayit.get("analitik", {}).get("hata")
-        kayit["rapor"] = str(rapor.yaz(db, yil, hafta, yt, ya, hata).relative_to(KOK))
+        kayit["rapor"] = str(rapor.yaz(db, *bekleyen, yt, ya, hata).relative_to(KOK))
     except Exception as e:  # noqa: BLE001
         alarmlar.append("**Haftalık rapor yazılamadı:**\n\n" + _hata(e))
+
+
+def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:
+    """Hikâye havuzunda anlatılmamış kaç hikâye kaldı; azalınca alarm (havuz sessizce bitip kanal durmasın)."""
+    kalan = sum(durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN) for p in paketler)
+    kayit["havuz_kalan"] = kalan
+    if kalan < HAVUZ_ESIK:
+        alarmlar.append(
+            f"**Hikâye havuzu azalıyor:** {kalan} anlatılmamış hikâye kaldı (günde 1 videoyla ~{kalan} gün). "
+            f"Havuz genişletilmeli (`{_K.veri.relative_to(KOK).as_posix()}`, süzgeç: otomat/hikaye/kaynaklar.py)."
+        )
 
 
 def alarm_yaz(bugun: dt.date, alarmlar: list[str]) -> None:
@@ -241,6 +285,10 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         paket, kalip, sablon, secim_logu = sec(paketler, db, gun)
         dizin = _klasor(gun, paket.anahtar)
         meta = uret(paket, kalip, sablon, dizin, gun.isoformat())
+    if HIKAYE:
+        from otomat.hikaye import cf
+
+        cf.NEURON["toplam"] = 0.0
     diller = hazirla(dizin)
     video_id = None
     if mod == "api":
@@ -266,14 +314,24 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         video_id=video_id,
         yayin_ani=yayin_ani.isoformat(),
         sure_sn=meta["sure_sn"],
-        **({"neuron": meta["neuron"], "zaman_sn": meta["zaman_sn"]} if HIKAYE else {}),
+        # neuron: bu koşunun harcaması; hazır üretimin kotası onu üreten koşunun kaydında (çift sayılmasın)
+        **(
+            {
+                "neuron": (0 if "hazir" in kayit else meta["neuron"]) + round(cf.NEURON["toplam"]),
+                "ceviri_neuron": round(cf.NEURON["toplam"]),
+                "zaman_sn": meta["zaman_sn"],
+            }
+            if HIKAYE
+            else {}
+        ),
         haydut={"degisti": secim_logu["degisti"], "odul_sayisi": secim_logu["odul_sayisi"]},
     )
 
 
 def main() -> None:
     """buffer/api: pistte boş slot oldukça (en çok EN_COK) video üretir; teslim: günde bir. Her video günlük rapora
-    ayrı satır yazar (`tarih` = videonun slot günü, `kosu` = koşu günü)."""
+    ayrı satır yazar (`tarih` = videonun slot günü, `kosu` = koşu günü). Pist doluysa yalnız bekleyen haftalık rapor
+    yazılır (o da yoksa koşu hiçbir şey yapmadan biter)."""
     from otomat.hikaye.cf import KotaHatasi
 
     simdi = dt.datetime.now(dt.UTC)
@@ -286,7 +344,12 @@ def main() -> None:
     db = durum.baglan()
     durum.gecmisi_doldur(db, RAPOR)
     if durum.pist_dolu(db, simdi, mod):
-        print(f"{bugun.isoformat()}: " + ("pist dolu" if pist else "bugün zaten üretildi") + "; koşu atlandı.")
+        print(f"{bugun.isoformat()}: " + ("pist dolu" if pist else "bugün zaten üretildi") + "; üretim yok.")
+        if rapor.bekleyen(bugun) is not None:  # yalnız rapor: üretim kaydı (gunluk.jsonl) yazılmaz
+            yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
+            rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
+            alarm_yaz(bugun, alarmlar)
+            print(json.dumps(genel, ensure_ascii=False, indent=1))
         return
     yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
     if HIKAYE and yt is not None:
@@ -296,6 +359,7 @@ def main() -> None:
             from otomat.hikaye import kaynaklar as hikaye_kaynaklari
 
             paketler, hatalar = hikaye_kaynaklari.topla()
+            havuz_adimi(paketler, db, bugun, genel, alarmlar)
         else:
             paketler, hatalar = topla()
         genel.update(paket_sayisi=len(paketler), kaynak_hatalari=hatalar)
@@ -323,10 +387,16 @@ def main() -> None:
             if kayit["video_id"] is None:
                 break  # kanala çıkmadı (Plan B): slot boş kalır, aynı slota ikinci video üretilmez
     except Exception as e:
-        (kayitlar[-1] if kayitlar else genel).update(durum="hata", hata=f"{type(e).__name__}: {e}"[:500])
+        son = kayitlar[-1] if kayitlar else genel
+        if son.get("durum") != "kota":  # kota raporda ayrı sayılır (alarm yine yazılır: yarının slotu boş)
+            son.update(durum="hata", hata=f"{type(e).__name__}: {e}"[:500])
         alarmlar.append("**Günün videosu üretilemedi:**\n\n" + _hata(e))
         raise
     finally:
+        if mod == "buffer":
+            from otomat.yayin import buffer
+
+            (kayitlar[-1] if kayitlar else genel)["buffer_istek"] = buffer.ISTEK["sayi"]
         rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
         alarm_yaz(bugun, alarmlar)
         RAPOR.parent.mkdir(parents=True, exist_ok=True)
