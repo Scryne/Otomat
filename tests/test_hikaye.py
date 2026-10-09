@@ -76,6 +76,20 @@ def test_kenar_kirp_kagidi_atar():
     assert uretim.kenar_kirp(tam).size == (300 - 12, 400 - 12)  # kâğıt yoksa yalnız güvenlik payı
 
 
+@pytest.mark.parametrize("ad", list(uretim.HAREKETLER))
+def test_kamera_hareketi_resmin_icinde_kalir(ad):
+    """Kadraj resmin dışına taşarsa PIL siyah doldurur: kenarda siyah şerit yok, kadraj gerçekten hareket eder."""
+    img = Image.fromarray(np.full((1344, 768, 3), 200, np.uint8))
+    kareler = list(uretim.sahne_kareleri(img, 12, ad))
+    for k in kareler:
+        a = np.asarray(k)
+        assert k.size == (1080, 1920) and min(a[0].mean(), a[-1].mean(), a[:, 0].mean(), a[:, -1].mean()) > 150
+    desen = Image.fromarray(np.random.default_rng(0).integers(0, 255, (1344, 768, 3), dtype=np.uint8))
+    ilk, son = (np.asarray(k, dtype=np.int16) for k in list(uretim.sahne_kareleri(desen, 12, ad))[::11])
+    assert np.abs(ilk - son).mean() > 5
+    assert uretim.hareket(0) == "iceri"  # kanca sahnesi hep içeri girer
+
+
 class _SahteKanal:
     """channels().list/update zinciri; update gövdelerini kaydeder."""
 

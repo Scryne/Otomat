@@ -111,17 +111,37 @@ def kenar_kirp(img: Image.Image, esik: int = 228, pay: int = 6) -> Image.Image:
     return img.crop((x0 + pay, y0 + pay, x1 - pay, y1 - pay))
 
 
-def sahne_kareleri(img: Image.Image, n: int, yakinlas: bool):
+# Kamera hareketi: (zoom başı, zoom sonu, yatay kayma başı→sonu, dikey kayma başı→sonu); kayma, kadraj dışında kalan
+# payın oranı (-1 sol/üst kenar, +1 sağ/alt kenar). Hep aynı merkez zoom'u tekdüze görünüyordu; ilk sahne hep içeri
+# girer (kanca), gerisi sahne sırasıyla döner.
+HAREKETLER = {
+    "iceri": (0.0, 1.0, (0, 0), (0, 0)),
+    "disari": (1.0, 0.0, (0, 0), (0, 0)),
+    "saga": (0.5, 0.5, (-0.9, 0.9), (0, 0)),
+    "sola": (0.5, 0.5, (0.9, -0.9), (0, 0)),
+    "asagi": (0.3, 0.7, (0, 0), (-0.9, 0.6)),
+}
+SIRA = ["iceri", "saga", "disari", "asagi", "sola"]
+
+
+def hareket(i: int) -> str:
+    return SIRA[i % len(SIRA)]
+
+
+def sahne_kareleri(img: Image.Image, n: int, ad: str = "iceri"):
+    z0, z1, (x0, x1), (y0, y1) = HAREKETLER[ad]
     img = kenar_kirp(img.convert("RGB"))
     o = max(G / img.width, Y / img.height) * KIRPMA
     buyuk = img.resize((round(img.width * o), round(img.height * o)), Image.LANCZOS)
     for k in range(n):
         t = k / max(n - 1, 1)
         t = t * t * (3 - 2 * t)
-        z = 1.0 + ZOOM * (t if yakinlas else 1 - t)
+        z = 1.0 + ZOOM * (z0 + (z1 - z0) * t)
         w, h = round(G * KIRPMA / z), round(Y * KIRPMA / z)
-        x0, y0 = (buyuk.width - w) // 2, (buyuk.height - h) // 2
-        yield buyuk.crop((x0, y0, x0 + w, y0 + h)).resize((G, Y), Image.BILINEAR)
+        px, py = (buyuk.width - w) / 2, (buyuk.height - h) / 2
+        sx, sy = x0 + (x1 - x0) * t, y0 + (y1 - y0) * t
+        cx, cy = round(px * (1 + sx)), round(py * (1 + sy))
+        yield buyuk.crop((cx, cy, cx + w, cy + h)).resize((G, Y), Image.BILINEAR)
 
 
 def render(
@@ -143,7 +163,7 @@ def render(
     for i in range(len(parcalar)):
         son = parcalar[i + 1].bas if i + 1 < len(parcalar) else sure
         with Image.open(gorseller[i]) as img:
-            for kare in sahne_kareleri(img, round(son * FPS) - kare_no, i % 2 == 0):
+            for kare in sahne_kareleri(img, round(son * FPS) - kare_no, hareket(i)):
                 an = kare_no / FPS
                 while ki < len(kelimeler) - 1 and kelimeler[ki][1] <= an:
                     ki += 1
