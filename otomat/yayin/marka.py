@@ -8,6 +8,7 @@ Metinler `kanallar/<id>/marka.toml`'da. Elle: `OTOMAT_KANAL=earth uv run python 
 
 import tomllib
 
+from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
 from otomat import kanal
@@ -37,7 +38,13 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
     ad = kanal_ogesi["snippet"]["title"]  # Scryne'ın Studio'da seçebildiği ad (`ad` ya da bir yedek)
     yerel = {"en_US": {"title": ad, "description": m["aciklama"]["en"]}}
     yerel |= {YEREL[d]: {"title": ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
-    yt.channels().update(part="localizations", body={"id": kimlik, "localizations": yerel}).execute()
+    try:
+        yt.channels().update(part="localizations", body={"id": kimlik, "localizations": yerel}).execute()
+    except HttpError as e:
+        # çevirili ad da kanal adı sayılıyor: ad değiştirme kilidinde 429 rateLimitExceeded (Earth, 2026-10-09);
+        # kimliğin geri kalanı sürer, ad değişince kontrol farkı görüp yeniden dener
+        if e.resp.status != 429:
+            raise
     yt.channels().update(part="status", body={"id": kimlik, "status": {"selfDeclaredMadeForKids": k.mfk}}).execute()
     if k.mfk:
         eski_videolari_ayir(yt)
