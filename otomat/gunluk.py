@@ -62,7 +62,7 @@ def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tupl
 def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
     seçilmesin diye kaydedilir (video yok)."""
-    from otomat.hikaye import kabul
+    from otomat.hikaye import cf, kabul
     from otomat.hikaye.senaryo import SenaryoHatasi
     from otomat.hikaye.uretim import uret as h_uret
 
@@ -74,6 +74,8 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
             meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except SenaryoHatasi as e:
             sorunlar = e.sorunlar[-1][:5]
+        except cf.FiltreHatasi as e:  # sahne görseli güvenlik filtresinde (Earth, 2026-10-09)
+            sorunlar = [str(e)[:200]]
         else:
             if not (sorunlar := kabul.denetle(dizin / "meta.json")):
                 return paket, kalip, sablon, secim_logu, dizin, meta

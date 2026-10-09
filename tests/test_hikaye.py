@@ -234,3 +234,50 @@ def test_mfk_kanalinda_eski_videolar_cocuk_icerigi_sayilmaz(kanal_sec, monkeypat
     assert marka.eski_videolari_ayir(_Video()) == ["eski1", "eski2"]
     assert all(p == "status" and b["status"] == {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
                for p, b in guncellenen)  # fmt: skip
+
+
+def test_kabul_videoyu_ffprobesuz_okur(tmp_path):
+    """2026-10-09: Actions'ta ffprobe yok, kabul her videoyu reddetti. Gerçek ffmpeg ile küçük video üretip okunur."""
+    import subprocess
+
+    import imageio_ffmpeg
+
+    from otomat.hikaye import kabul
+
+    video = tmp_path / "v.mp4"
+    subprocess.run(
+        [imageio_ffmpeg.get_ffmpeg_exe(), "-v", "error", "-f", "lavfi", "-i", "color=c=black:s=108x192:d=1",
+         "-f", "lavfi", "-i", "sine=d=1", "-shortest", "-c:v", "libx264", "-c:a", "aac", str(video)],
+        check=True,
+    )  # fmt: skip
+    b = kabul._ffprobe(video)
+    akislar = {s["codec_type"]: s for s in b["streams"]}
+    assert (akislar["video"]["width"], akislar["video"]["height"]) == (108, 192) and "audio" in akislar
+    assert 0.9 < float(b["format"]["duration"]) < 1.2
+    with pytest.raises(FileNotFoundError):
+        kabul._ffprobe(tmp_path / "yok.mp4")
+
+
+def test_filtreye_takilan_hikaye_duser_siradaki_denenir(tmp_path, monkeypatch):
+    """2026-10-09: bir sahne görseli güvenlik filtresine takıldı (3030), tüm koşu düştü. Artık hikâye düşer."""
+    from otomat import durum, gunluk
+    from otomat.hikaye import cf, kabul
+    from otomat.hikaye import uretim as h_uretim
+
+    db = durum.baglan(tmp_path / "d.db")
+    paketler = [type("P", (), {"anahtar": f"wiki:{i}", "hash": f"h{i}", "kol": "k", "tur": "t"})() for i in range(2)]
+    sira = iter(paketler)
+    monkeypatch.setattr(gunluk, "sec", lambda *a: (next(sira), "kalip", "sablon", {}))
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    monkeypatch.setattr(kabul, "denetle", lambda *a: [])
+
+    def uret(paket, *a):
+        if paket.anahtar == "wiki:0":
+            raise cf.FiltreHatasi("görsel üretilemedi (400): 3030")
+        return {"baslik": "ok"}
+
+    monkeypatch.setattr(h_uretim, "uret", uret)
+    kayit = {}
+    paket, *_, meta = gunluk.hikaye_uret([], db, dt.date(2026, 10, 9), kayit)
+    assert paket.anahtar == "wiki:1" and meta == {"baslik": "ok"}
+    assert kayit["dusen_hikayeler"][0]["anahtar"] == "wiki:0" and "3030" in kayit["dusen_hikayeler"][0]["sorunlar"][0]

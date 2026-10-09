@@ -25,17 +25,30 @@ class Red(Exception):
     pass
 
 
+def bilgi_ayikla(cikti: str) -> dict:
+    """`ffmpeg -i` dökümünden ffprobe biçiminde özet: akışlar (tür, codec, boyut) ve süre."""
+    akislar = []
+    for tur, codec, kalan in re.findall(r"Stream #\S+: (Video|Audio): (\w+)(.*)", cikti):
+        akis = {"codec_type": tur.lower(), "codec_name": codec}
+        if tur == "Video" and (b := re.search(r", (\d{2,5})x(\d{2,5})\b", kalan)):
+            akis |= {"width": int(b[1]), "height": int(b[2])}
+        akislar.append(akis)
+    s = re.search(r"Duration: (\d+):(\d+):([\d.]+)", cikti)
+    sure = int(s[1]) * 3600 + int(s[2]) * 60 + float(s[3]) if s else 0.0
+    return {"streams": akislar, "format": {"duration": str(sure)}}
+
+
 def _ffprobe(video: Path) -> dict:
+    """imageio-ffmpeg'in ffmpeg'iyle okunur: Actions sunucusunda ffprobe yok (2026-10-09'da 5 hikâye bu yüzden
+    reddedildi)."""
     import imageio_ffmpeg
 
-    ffprobe = Path(imageio_ffmpeg.get_ffmpeg_exe()).with_name("ffprobe")
-    komut = [str(ffprobe) if ffprobe.exists() or ffprobe.with_suffix(".exe").exists() else "ffprobe"]
+    if not video.exists():
+        raise FileNotFoundError(video)
     cikti = subprocess.run(
-        [*komut, "-v", "error", "-show_entries", "stream=codec_type,codec_name,width,height:format=duration",
-         "-of", "json", str(video)],
-        capture_output=True, text=True, check=True,
-    ).stdout  # fmt: skip
-    return json.loads(cikti)
+        [imageio_ffmpeg.get_ffmpeg_exe(), "-hide_banner", "-i", str(video)], capture_output=True, text=True
+    ).stderr  # çıktı dosyası verilmediği için çıkış kodu 1, döküm yine de tam
+    return bilgi_ayikla(cikti)
 
 
 def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) -> list[str]:

@@ -34,6 +34,10 @@ class KotaHatasi(CFHatasi):
     """Günlük bedava kota bitti (4006): yeniden denemek boşuna, 00:00 UTC'de sıfırlanır."""
 
 
+class FiltreHatasi(CFHatasi):
+    """Sahne görseli her denemede güvenlik filtresine takıldı (3030): hikâye düşer, sıradaki denenir."""
+
+
 KOTA_KODU = b"4006"
 
 
@@ -128,7 +132,8 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4) -> Path:
         except urllib.error.HTTPError as e:
             hata = _kota_mi(e)
             if i == deneme - 1:
-                raise CFHatasi(f"görsel üretilemedi ({e.code}): {hata[:200]!r}") from e
+                tur = FiltreHatasi if FILTRE_KODU in hata else CFHatasi
+                raise tur(f"görsel üretilemedi ({e.code}): {hata[:200]!r}") from e
             if FILTRE_KODU in hata:
                 istem += ". Calm, gentle, non-graphic, nobody hurt."
             time.sleep(3)
