@@ -59,17 +59,47 @@ def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tupl
     return paket, kalip, r.choice(sablonlar.secenekler(paket)), log
 
 
+def _klasor(bugun: dt.date, anahtar: str) -> Path:
+    return KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", anahtar)[:60]
+
+
+def hazir_uretim(paketler: list[OlguPaketi], db, bugun: dt.date):
+    """Önceki koşudan kalan, yayın kabulünden geçmiş ama kanala çıkmamış üretim (workflow son koşuların artifact'ını
+    calisma/gunluk'a indirir). Kota harcamadan kullanılır: 10-09'da ffprobe hatası 5 hazır videoyu ve günün kotasını
+    yaktı. Yoksa None."""
+    from otomat.hikaye import kabul
+
+    taze = {p.anahtar: p for p in paketler if durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN)}
+    for meta_yolu in sorted((KOK / "calisma" / "gunluk").glob("*/*/meta.json")):
+        try:
+            meta = json.loads(meta_yolu.read_text(encoding="utf-8"))
+            paket = taze.get(meta["paket"]["anahtar"])
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+        if paket is None or meta["paket"].get("hash") != paket.hash or kabul.denetle(meta_yolu):
+            continue
+        dizin = _klasor(bugun, paket.anahtar)
+        if dizin != meta_yolu.parent:
+            shutil.copytree(meta_yolu.parent, dizin, dirs_exist_ok=True)
+        secim_logu = {"hazir": str(meta_yolu.parent.relative_to(KOK).as_posix()), "degisti": [], "odul_sayisi": 0}
+        return paket, meta["secim"]["kalip"], meta["secim"]["sablon"], secim_logu, dizin, meta
+    return None
+
+
 def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
-    seçilmesin diye kaydedilir (video yok)."""
+    seçilmesin diye kaydedilir (video yok). Önce hazır üretim aranır."""
     from otomat.hikaye import cf, kabul
     from otomat.hikaye.senaryo import SenaryoHatasi
     from otomat.hikaye.uretim import uret as h_uret
 
+    if hazir := hazir_uretim(paketler, db, bugun):
+        kayit["hazir"] = hazir[3]["hazir"]
+        return hazir
     dusen = []
     for deneme in range(HIKAYE_DENEME):
         paket, kalip, sablon, secim_logu = sec(paketler, db, bugun, deneme)
-        dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
+        dizin = _klasor(bugun, paket.anahtar)
         try:
             meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except SenaryoHatasi as e:
@@ -209,7 +239,7 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         paket, kalip, sablon, secim_logu, dizin, meta = hikaye_uret(paketler, db, gun, kayit)
     else:
         paket, kalip, sablon, secim_logu = sec(paketler, db, gun)
-        dizin = KOK / "calisma" / "gunluk" / gun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
+        dizin = _klasor(gun, paket.anahtar)
         meta = uret(paket, kalip, sablon, dizin, gun.isoformat())
     diller = hazirla(dizin)
     video_id = None

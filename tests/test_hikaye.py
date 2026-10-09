@@ -281,3 +281,35 @@ def test_filtreye_takilan_hikaye_duser_siradaki_denenir(tmp_path, monkeypatch):
     paket, *_, meta = gunluk.hikaye_uret([], db, dt.date(2026, 10, 9), kayit)
     assert paket.anahtar == "wiki:1" and meta == {"baslik": "ok"}
     assert kayit["dusen_hikayeler"][0]["anahtar"] == "wiki:0" and "3030" in kayit["dusen_hikayeler"][0]["sorunlar"][0]
+
+
+def test_hazir_uretim_kotasiz_kullanilir_yayinlanan_ve_kusurlu_atlanir(kanal_sec, tmp_path, monkeypatch):
+    """10-09: ffprobe hatası kabulden geçecek 5 videoyu attı, kota boşa gitti. Artifact'tan dönen üretim kullanılır."""
+    import json
+
+    from otomat import durum, gunluk
+    from otomat.hikaye import kabul
+    from otomat.hikaye import uretim as h_uretim
+
+    kanal_sec("earth")
+    db = durum.baglan(tmp_path / "d.db")
+    P = type("P", (), {})
+    paketler = []
+    for i, ad in enumerate(["wiki:Kusurlu", "wiki:Hazir", "wiki:Yayinda"]):
+        p = P()
+        p.anahtar, p.hash, p.kol, p.tur, p.gorsel = ad, f"h{i}", "k", "tuhaf", {}
+        paketler.append(p)
+        d = tmp_path / "calisma" / "gunluk" / "2026-10-10" / ad.replace(":", "_")
+        d.mkdir(parents=True)
+        meta = {"paket": {"anahtar": ad, "hash": f"h{i}"}, "secim": {"kalip": "kisi", "sablon": "s"}, "baslik": ad}
+        (d / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    durum.kaydet(db, paketler[2], dt.date(2026, 10, 9), "vid")
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    monkeypatch.setattr(durum, "taze_mi", lambda db, p, *a: p.anahtar != "wiki:Yayinda")
+    monkeypatch.setattr(kabul, "denetle", lambda m, *a, **k: ["kusur"] if "Kusurlu" in str(m) else [])
+    monkeypatch.setattr(h_uretim, "uret", lambda *a: pytest.fail("hazır varken üretim (kota) harcandı"))
+    kayit = {}
+    paket, kalip, _, log, dizin, meta = gunluk.hikaye_uret(paketler, db, dt.date(2026, 10, 11), kayit)
+    assert paket.anahtar == "wiki:Hazir" and kalip == "kisi" and meta["baslik"] == "wiki:Hazir"
+    assert dizin == tmp_path / "calisma" / "gunluk" / "2026-10-11" / "wiki_Hazir" and (dizin / "meta.json").exists()
+    assert kayit["hazir"].endswith("2026-10-10/wiki_Hazir") and log["degisti"] == []

@@ -15,6 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
+  actions: read
   contents: write
   issues: write
 
@@ -85,6 +86,17 @@ jobs:
           (ollama serve > /tmp/ollama.log 2>&1 &)
           sleep 5
           ollama pull "$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)"
+      # kabulden geçip kanala çıkamamış üretimler (kota, ffprobe, Buffer) kota harcamadan yeniden kullanılır
+      # (gunluk.hazir_uretim); yayınlanmış ya da reddedilmiş olanları taze süzgeci eler
+      - name: Önceki üretimler
+        if: steps.kontrol.outputs.atla != '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for id in $(gh run list --workflow gunluk.yml -L 6 --json databaseId --jq '.[].databaseId'); do
+            gh run download "$id" -n "uretim-$OTOMAT_KANAL-$id" -D calisma/gunluk 2>/dev/null || true
+          done
+          ls calisma/gunluk 2>/dev/null || echo "önceki üretim yok"
       - name: Üret
         id: uret
         if: steps.kontrol.outputs.atla != '1'
