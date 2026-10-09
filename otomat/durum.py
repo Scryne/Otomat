@@ -11,6 +11,10 @@ from otomat.veri import OlguPaketi
 
 VARSAYILAN = Path(os.environ.get("OTOMAT_DURUM", kanal.aktif().durum))
 TEKRAR_GUN = 60
+# Pist (stok): buffer/api modunda kanalda bugünden sonraki PIST_GUN günün yayını da planlı durur. Kota, GitHub'ın
+# geciktirdiği/atladığı cron ya da hakemden düşen bir hikâye o günün yayınını kaçırtmaz; açık slot oldukça üretilir
+# (2026-10-09: 06:17 koşusu hiç başlamadı, elle tetiklenen koşu Cloudflare kotasına takıldı → o gün video yoktu).
+PIST_GUN = 2
 
 SEMA = """
 CREATE TABLE IF NOT EXISTS uretilen (
@@ -90,6 +94,31 @@ def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, ned
     db.commit()
 
 
+def yayin_slotu(db: sqlite3.Connection, simdi: dt.datetime, saat: int | None = None) -> dt.datetime:
+    """Günde tek yayın, kanalın yayın saatinde: en erken bir saat sonrası, kanala yüklenmiş son videonun ertesi günü.
+    Video kimliği olmayan (Plan B / teslim) ve geri çekilen satırlar slot tutmaz."""
+    saat = kanal.aktif().yayin_saati_utc if saat is None else saat
+    aday = simdi.replace(hour=saat, minute=0, second=0, microsecond=0)
+    if aday < simdi + dt.timedelta(hours=1):
+        aday += dt.timedelta(days=1)
+    son = db.execute(
+        "SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
+        " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+    ).fetchone()[0]
+    if son:
+        ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
+        aday = max(aday, ertesi.replace(hour=saat, minute=0, second=0, microsecond=0))
+    return aday
+
+
+def pist_dolu(db: sqlite3.Connection, simdi: dt.datetime, mod: str) -> bool:
+    """Üretecek iş yok mu? buffer/api: sıradaki boş slot pistin ötesinde. teslim: bugün zaten üretildi (Scryne'ın
+    haftalık elle yüklemesi için günde bir paket yeter)."""
+    if mod not in ("api", "buffer"):
+        return bugun_secildi_mi(db, simdi.date())
+    return yayin_slotu(db, simdi).date() > simdi.date() + dt.timedelta(days=PIST_GUN)
+
+
 def bugun_secildi_mi(db: sqlite3.Connection, bugun: dt.date) -> bool:
     """Günde bir video: yedek cron ya da elle tetikleme aynı günü ikinci kez üretmesin."""
     return db.execute("SELECT 1 FROM secimler WHERE tarih = ?", (bugun.isoformat(),)).fetchone() is not None
@@ -153,7 +182,7 @@ def gecmisi_doldur(db: sqlite3.Connection, rapor: Path) -> int:
 
 
 if __name__ == "__main__":
-    # Actions "Bugün üretildi mi" adımı (uv kurulmadan, sistem python3'üyle): kanalın bugünkü seçimi varsa 0.
+    # Actions "Üretilecek iş var mı" adımı (uv kurulmadan, sistem python3'üyle): pist doluysa 0 (koşu atlanır).
     import sys
 
-    sys.exit(0 if bugun_secildi_mi(baglan(), dt.datetime.now(dt.UTC).date()) else 1)
+    sys.exit(0 if pist_dolu(baglan(), dt.datetime.now(dt.UTC), os.environ.get("OTOMAT_YAYIN", "teslim")) else 1)

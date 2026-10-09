@@ -43,6 +43,7 @@ YETKI_COZUMU = (
 HIKAYE = _K.tur == "hikaye"  # Earth ve Orbit 2026-10-08'den beri hikâye motorunda (otomat/hikaye)
 HIKAYE_TEKRAR_GUN = 3650  # bir hikâye kanalda bir kez anlatılır
 HIKAYE_DENEME = 3  # senaryo hakemden geçmezse o hikâye düşer, sıradaki denenir
+EN_COK = 2  # buffer/api: bir koşuda en çok video (~2.000 neuron/video; iki kanal günlük 10.000'lik kotayı paylaşır)
 
 
 def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tuple[OlguPaketi, str, str, dict]:
@@ -100,18 +101,7 @@ def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
 
 
 def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
-    """Günde tek yayın, YAYIN_SAATI_UTC'de: en erken bir saat sonrası, kanala yüklenmiş son videonun ertesi günü."""
-    aday = simdi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0)
-    if aday < simdi + dt.timedelta(hours=1):
-        aday += dt.timedelta(days=1)
-    son = db.execute(
-        "SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
-        " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
-    ).fetchone()[0]
-    if son:
-        ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
-        aday = max(aday, ertesi.replace(hour=YAYIN_SAATI_UTC, minute=0, second=0, microsecond=0))
-    return aday
+    return durum.yayin_slotu(db, simdi, YAYIN_SAATI_UTC)
 
 
 def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str]) -> str:
@@ -211,19 +201,64 @@ def alarm_yaz(bugun: dt.date, alarmlar: list[str]) -> None:
         ALARM.write_text(f"Günlük koşu {bugun.isoformat()}:\n\n" + "\n\n---\n\n".join(alarmlar) + "\n", "utf-8")
 
 
+def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayit: dict, alarmlar: list[str]):
+    """`gun` slotunun videosu: seç → üret → çevir → yayınla (ya da teslim paketi) → kaydet."""
+    if HIKAYE:
+        paket, kalip, sablon, secim_logu, dizin, meta = hikaye_uret(paketler, db, gun, kayit)
+    else:
+        paket, kalip, sablon, secim_logu = sec(paketler, db, gun)
+        dizin = KOK / "calisma" / "gunluk" / gun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
+        meta = uret(paket, kalip, sablon, dizin, gun.isoformat())
+    diller = hazirla(dizin)
+    video_id = None
+    if mod == "api":
+        video_id = yayinla_api(dizin, yayin_ani)
+    elif mod == "buffer":
+        try:
+            video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar)
+        except Exception as e:  # noqa: BLE001
+            alarmlar.append("**Buffer yayını düştü**, video Plan B paketine kondu:\n\n" + _hata(e))
+    if video_id is None:
+        kayit["teslim"] = str(teslime_koy(dizin, gun).relative_to(KOK))
+    durum.kaydet(db, paket, gun, video_id)
+    durum.secim_kaydet(db, gun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)
+    kayit.update(
+        durum="tamam",
+        anahtar=paket.anahtar,
+        hash=paket.hash,
+        kalip=kalip,
+        sablon=sablon,
+        baslik=meta["baslik"],
+        kaynak=meta["secim"]["kaynak"],
+        diller=list(diller["yerel"]),
+        video_id=video_id,
+        yayin_ani=yayin_ani.isoformat(),
+        sure_sn=meta["sure_sn"],
+        **({"neuron": meta["neuron"], "zaman_sn": meta["zaman_sn"]} if HIKAYE else {}),
+        haydut={"degisti": secim_logu["degisti"], "odul_sayisi": secim_logu["odul_sayisi"]},
+    )
+
+
 def main() -> None:
-    bugun = dt.datetime.now(dt.UTC).date()
+    """buffer/api: pistte boş slot oldukça (en çok EN_COK) video üretir; teslim: günde bir. Her video günlük rapora
+    ayrı satır yazar (`tarih` = videonun slot günü, `kosu` = koşu günü)."""
+    from otomat.hikaye.cf import KotaHatasi
+
+    simdi = dt.datetime.now(dt.UTC)
+    bugun = simdi.date()
     mod = os.environ.get("OTOMAT_YAYIN", "teslim")
-    kayit: dict = {"tarih": bugun.isoformat(), "mod": mod}
+    pist = mod in ("api", "buffer")
+    genel: dict = {"tarih": bugun.isoformat(), "mod": mod}
+    kayitlar: list[dict] = []
     alarmlar: list[str] = []
     db = durum.baglan()
     durum.gecmisi_doldur(db, RAPOR)
-    if durum.bugun_secildi_mi(db, bugun):
-        print(f"{bugun.isoformat()} zaten üretildi; koşu atlandı.")
+    if durum.pist_dolu(db, simdi, mod):
+        print(f"{bugun.isoformat()}: " + ("pist dolu" if pist else "bugün zaten üretildi") + "; koşu atlandı.")
         return
-    yt, ya = analitik_adimi(db, bugun, kayit, alarmlar)
+    yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
     if HIKAYE and yt is not None:
-        marka_adimi(yt, kayit, alarmlar)
+        marka_adimi(yt, genel, alarmlar)
     try:
         if HIKAYE:
             from otomat.hikaye import kaynaklar as hikaye_kaynaklari
@@ -231,60 +266,42 @@ def main() -> None:
             paketler, hatalar = hikaye_kaynaklari.topla()
         else:
             paketler, hatalar = topla()
-        kayit.update(paket_sayisi=len(paketler), kaynak_hatalari=hatalar)
+        genel.update(paket_sayisi=len(paketler), kaynak_hatalari=hatalar)
         if hatalar:
             alarmlar.append(
                 "**Veri kaynağı hatası** (o kol bugün dışarıda kaldı):\n\n" + "\n".join(f"- {h}" for h in hatalar)
             )
-        if HIKAYE:
-            paket, kalip, sablon, secim_logu, dizin, meta = hikaye_uret(paketler, db, bugun, kayit)
-        else:
-            paket, kalip, sablon, secim_logu = sec(paketler, db, bugun)
-            dizin = KOK / "calisma" / "gunluk" / bugun.isoformat() / re.sub(r"[^A-Za-z0-9]+", "_", paket.anahtar)[:60]
-            meta = uret(paket, kalip, sablon, dizin, bugun.isoformat())
-        diller = hazirla(dizin)
-        if mod in ("api", "buffer"):
-            yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
-        else:
-            yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
-        video_id = None
-        if mod == "api":
-            video_id = yayinla_api(dizin, yayin_ani)
-        elif mod == "buffer":
+        for _ in range(EN_COK if pist else 1):
+            if pist:
+                yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
+                if yayin_ani.date() > bugun + dt.timedelta(days=durum.PIST_GUN):
+                    break
+            else:
+                yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
+            gun = yayin_ani.date() if pist else bugun
+            kayit = {**genel, "tarih": gun.isoformat(), "kosu": bugun.isoformat()}
+            kayitlar.append(kayit)
             try:
-                video_id = yayinla_buffer(dizin, yayin_ani, bugun.isoformat(), alarmlar)
-            except Exception as e:  # noqa: BLE001
-                alarmlar.append("**Buffer yayını düştü**, video Plan B paketine kondu:\n\n" + _hata(e))
-        if video_id is None:
-            kayit["teslim"] = str(teslime_koy(dizin, bugun).relative_to(KOK))
-        durum.kaydet(db, paket, bugun, video_id)
-        durum.secim_kaydet(db, bugun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)
-        kayit.update(
-            durum="tamam",
-            anahtar=paket.anahtar,
-            hash=paket.hash,
-            kalip=kalip,
-            sablon=sablon,
-            baslik=meta["baslik"],
-            kaynak=meta["secim"]["kaynak"],
-            diller=list(diller["yerel"]),
-            video_id=video_id,
-            yayin_ani=yayin_ani.isoformat(),
-            sure_sn=meta["sure_sn"],
-            **({"neuron": meta["neuron"], "zaman_sn": meta["zaman_sn"]} if HIKAYE else {}),
-            haydut={"degisti": secim_logu["degisti"], "odul_sayisi": secim_logu["odul_sayisi"]},
-        )
+                bir_video(paketler, db, gun, yayin_ani, mod, kayit, alarmlar)
+            except KotaHatasi as e:
+                kayit.update(durum="kota", hata=str(e)[:300])
+                if pist and gun > bugun + dt.timedelta(days=1):
+                    break  # yarının videosu kanalda planlı: kota yarın açılır, alarm gerekmez
+                raise
+            if kayit["video_id"] is None:
+                break  # kanala çıkmadı (Plan B): slot boş kalır, aynı slota ikinci video üretilmez
     except Exception as e:
-        kayit.update(durum="hata", hata=f"{type(e).__name__}: {e}"[:500])
+        (kayitlar[-1] if kayitlar else genel).update(durum="hata", hata=f"{type(e).__name__}: {e}"[:500])
         alarmlar.append("**Günün videosu üretilemedi:**\n\n" + _hata(e))
         raise
     finally:
-        rapor_adimi(db, bugun, yt, ya, kayit, alarmlar)
+        rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
         alarm_yaz(bugun, alarmlar)
         RAPOR.parent.mkdir(parents=True, exist_ok=True)
         with open(RAPOR, "a", encoding="utf-8") as f:
-            f.write(json.dumps(kayit, ensure_ascii=False) + "\n")
-        print(json.dumps(kayit, ensure_ascii=False, indent=1))
+            for k in kayitlar or [genel]:
+                f.write(json.dumps(k, ensure_ascii=False) + "\n")
+        print(json.dumps(kayitlar or [genel], ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":

@@ -3,8 +3,9 @@ name: Günlük üretim
 # Her gün bir video: analitik → hikâye havuzu → haydut seçimi → senaryo + hakem (Cloudflare) → sahne görselleri → ses →
 # render → çeviri (Ollama) → yayın (buffer/api)
 # ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
-# GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05): ikinci cron yedektir, gün zaten
-# üretildiyse koşu "Bugün üretildi mi" adımında biter.
+# GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05, 2026-10-09): ikinci cron yedektir.
+# buffer/api modunda kanal birkaç günlük planlı video stoğu (pist, durum.PIST_GUN) tutar; pist doluysa koşu
+# "Üretilecek iş var mı" adımında biter (teslim modunda: gün zaten üretildiyse).
 # Çok kanal: her kanal ayrı matris işi (kanallar/<id>/kanal.toml); biri düşerse diğerleri sürer, alarm kanal başına.
 # Matristeki kanal yayına hazırdır (token + Buffer bağlantısı); hazırlıktaki kanal buraya eklenmez (test_kanal.py).
 on:
@@ -49,11 +50,11 @@ jobs:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.ref_name }}
-      - name: Bugün üretildi mi
+      - name: Üretilecek iş var mı
         id: kontrol
         run: |
           if PYTHONPATH=. python3 -m otomat.durum; then
-            echo "$OTOMAT_KANAL: bugün zaten üretildi, koşu atlanıyor."
+            echo "$OTOMAT_KANAL: pist dolu (ya da bugün zaten üretildi), koşu atlanıyor."
             echo "atla=1" >> "$GITHUB_OUTPUT"
           fi
       - uses: astral-sh/setup-uv@v7

@@ -109,3 +109,71 @@ def test_yayinla_buffer_planlama_duserse_alarm_ve_id(tmp_path, monkeypatch):
     monkeypatch.setattr(youtube, "duzenle", lambda *_, **__: None)
     assert gunluk.yayinla_buffer(_dizin(tmp_path / "b"), an, "2026-10-06", []) == "abcdefghijk"
     assert altyazi == ["en"]
+
+
+def _pist_ortami(tmp_path, monkeypatch, db, uretim):
+    monkeypatch.setenv("OTOMAT_YAYIN", "buffer")
+    monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
+    monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
+    monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
+    monkeypatch.setattr(gunluk, "HIKAYE", False)
+    monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (None, None))
+    monkeypatch.setattr(gunluk, "topla", lambda: ([], []))
+    monkeypatch.setattr(gunluk, "bir_video", uretim)
+
+
+def _yayinlanan(db, gun, yayin_ani, kayit):
+    _secim(db, gun.isoformat(), yayin_ani.isoformat(), f"v{gun.isoformat()}")
+    t = gun.isoformat()
+    kayit.update(durum="tamam", video_id=f"v{t}", anahtar=f"k:{t}", hash=f"h{t}", kalip="kalip", sablon="sablon",
+                 baslik=f"B {t}", yayin_ani=yayin_ani.isoformat())  # fmt: skip
+
+
+def test_pist_bos_slotlari_doldurur_dolunca_atlar(tmp_path, monkeypatch):
+    """2026-10-09: tek cron kaçınca o günün yayını da kaçıyordu. Pist: bugün + PIST_GUN gün planlı durur."""
+    db = durum.baglan(tmp_path / "d.db")
+    _pist_ortami(tmp_path, monkeypatch, db, lambda p, db, gun, an, mod, kayit, al: _yayinlanan(db, gun, an, kayit))
+    bugun = dt.datetime.now(UTC).date()
+    sinir = bugun + dt.timedelta(days=durum.PIST_GUN)
+    for _ in range(4):
+        gunluk.main()
+    slotlar = sorted(dt.date.fromisoformat(t) for (t,) in db.execute("SELECT tarih FROM secimler"))
+    assert slotlar == [slotlar[0] + dt.timedelta(days=i) for i in range(len(slotlar))]  # boşluksuz, günde bir
+    assert slotlar[-1] == sinir and slotlar[0] <= bugun + dt.timedelta(days=1)
+    assert durum.pist_dolu(db, dt.datetime.now(UTC), "buffer")
+    satirlar = [json.loads(s) for s in (tmp_path / "gunluk.jsonl").read_text(encoding="utf-8").splitlines()]
+    assert len(satirlar) == len(slotlar) and all(s["kosu"] == bugun.isoformat() for s in satirlar)
+    assert not (tmp_path / "alarm.md").exists()
+
+
+def test_pist_kota_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path, monkeypatch):
+    from otomat.hikaye.cf import KotaHatasi
+
+    def kota(*a):
+        raise KotaHatasi("kota bitti")
+
+    db = durum.baglan(tmp_path / "d.db")
+    bugun = dt.datetime.now(UTC).date()
+    yarin = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
+    _secim(db, yarin.date().isoformat(), yarin.isoformat(), "vyarin")
+    _pist_ortami(tmp_path, monkeypatch, db, kota)
+    gunluk.main()  # sıradaki slot yarından sonra: alarm yok
+    assert not (tmp_path / "alarm.md").exists()
+    assert json.loads((tmp_path / "gunluk.jsonl").read_text(encoding="utf-8"))["durum"] == "kota"
+    db.execute("DELETE FROM secimler")
+    with pytest.raises(KotaHatasi):
+        gunluk.main()  # yarının videosu yok: alarm
+    assert "kota bitti" in (tmp_path / "alarm.md").read_text(encoding="utf-8")
+
+
+def test_pist_plan_b_ye_dusen_video_ikinciyi_uretmez(tmp_path, monkeypatch):
+    db = durum.baglan(tmp_path / "d.db")
+    cagri = []
+
+    def teslim(p, db, gun, an, mod, kayit, al):
+        cagri.append(gun)
+        kayit.update(durum="tamam", video_id=None)
+
+    _pist_ortami(tmp_path, monkeypatch, db, teslim)
+    gunluk.main()
+    assert len(cagri) == 1
