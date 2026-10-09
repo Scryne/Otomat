@@ -24,7 +24,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
 | 11 | Kanal 2: Orbit Ruler (uzay) | ✅ Tamamlandı | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
-| 13 | Portföy işletimi | ⏳ Bekliyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
+| 13 | Portföy işletimi | 🔄 Devam Ediyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
 
 ## Faz Detayları
 
@@ -302,6 +302,35 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     - Earth "Prester John" (10-10 14:00 UTC).
   - Bu videolar çevirisiz çıktı (kota boştu).
   - Earth'ün adı Studio kilidinde (~10-21). Orbit adı tamam, tanıtıcısı bekliyor.
+- **Denetim (2026-10-09 gece, uçtan uca kod + Actions + artifact incelemesi):** bulunan ve düzeltilen hatalar:
+  1. Artifact kartopu: her koşu önceki 6 koşunun artifact'ını `calisma/gunluk`'a indirip yeniden yüklüyordu (uzay
+     44 → 60 → 73 MB, toplam ~380 MB; private repo kotası 500 MB). Önceki üretimler artık `calisma/onceki/<koşu>/`'ya
+     iner, yalnız bu koşunun klasörü yüklenir. Kapsanan eski artifact'lar silindi.
+  2. Kotaya takılan üretim aynı slotta yeniden seçilince yeni senaryo yazılıyor, eski senaryonun sahne görselleri
+     (`cf.gorsel` "varsa üretme") yeni sahnelere karışıyordu. Hakemden geçen senaryo `senaryo.json`'a yazılır, sonraki
+     koşu senaryoyu ve biten görselleri sürdürür (kota ikinci kez harcanmaz); senaryo yoksa eski çıktılar silinir.
+     Uçtan uca denendi (Cloudflare'siz): 7 sahnenin yalnız eksik 2'si çizildi, video kabulden geçti.
+  3. Buffer Orbit videolarını `madeForKids: false` yüklüyordu (sonra `duzenle` düzeltiyordu); Plan B `HAFTA.md`
+     Orbit için de "çocuklara özel değil" diyordu. İkisi de kanalın MFK ayarından.
+  4. Haftalık rapor yalnız pazartesi deneniyordu: pazartesi koşusu pist dolu diye atlanırsa hafta raporsuz kalırdı.
+     Biten haftanın eksik raporu sonraki koşuda yazılır ("Üretilecek iş var mı" adımı bunu da sorar).
+  5. Silinmiş/çok kısa Wikipedia makalesi tüm koşuyu düşürüyordu: artık yalnız o hikâye düşer.
+  6. Başlık "Title Case" yazıldığı için her kelimesi ad sanılıp onarıma gidiyordu ("name not in source: Haunts");
+     başlıkta yalnız sayı kapısı, adları hakem denetler. Onarımın boşalttığı satır onarıma döner.
+  7. Kotaya takılan koşu raporda "hata" görünüyordu (alarm yine yazılır); "kota" olarak kalır.
+  8. Dayanıklılık: müzik indirilemezse aynı mood'un sıradaki parçası; görselsiz/bozuk Cloudflare yanıtı yeniden
+     denenir, yarım dosya yazılmaz; çeviri aynı metin için yeniden yapılmaz (hazır üretim kotayı ikinci kez yakıyordu).
+  - Eklenen: düşen hikâyelerin neuron'u, Buffer istek sayısı ve hikâye havuzunun kalanı günlük kayıtta ve haftalık
+    raporda; havuz 21 hikâyenin altına inince alarm. Faz 13 portföy raporu (aşağıda).
+  - Açık (kod dışı): 10-09/10-10 videolarında görsel kalite sorunları: karakter kareden kareye değişiyor (0c9d283'ten
+    önce üretildi), Cock and Jewel'de iki başlı tavuk ve hikâyede olmayan iki ayı, Prester John'da anlamsız yazılar
+    (flux "no text" kuralını her zaman tutmuyor). Bir görsel kalite kapısı (vision model) neuron harcar; ölçülmeden eklenmedi.
+- **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
+  koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
+  isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri
+  kanal başına (ilk public + 56 gün; Earth 12-05, Orbit 12-04) ve paylaşılan kotaların en yoğun günü. Kanal raporları
+  sayılarını `YYYY-HWW.json`'a yazar (token yalnız kanalın kendi işinde). H41 verisiyle yerelde üretildi. Bitti: ilk
+  portföy raporu (H41) repoda.
 
 ### Faz 10–13: Çok kanal (2026-10-06)
 - **Neden:** Scryne: "farklı kanallarda farklı konulu kanallar… projeyi en üst seviyeye çıkaracak her şey, tamamen sana
