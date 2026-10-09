@@ -18,7 +18,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 14 | Hikâye motoru (format değişimi) | 🔄 Devam Ediyor | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, MFK) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
-| 15 | Kanal kimliği dönüşümü | ⏳ Bekliyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK; `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
+| 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK; `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 14'ün main'deki ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
@@ -286,6 +286,22 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   profilde (`yedek_adlar`); hangisi tutarsa kimlik o adla uygulanır.
 - **Faz 15 için Scryne'dan:** iki kanalın adı ve tanıtıcısı (Studio → Özelleştirme → Temel bilgiler) ve profil resmi
   (API ile yüklenemiyor). Gerisi API ile.
+- **İlk hikâye yayınları (2026-10-09 akşam):**
+  - Kota 17:00 UTC'de açıldı (kayan 24 saat). İlk koşuda 5 hikâye üretildi ama hepsi reddedildi: Actions'ta
+    ffprobe yok. Earth'te bir sahne görseli 3030 filtresine takılıp koşuyu düşürdü. Günün kotası gitti.
+  - Düzeltmeler:
+    - Kabul ffmpeg ile okuyor.
+    - Filtreye takılan görsel yalnız o hikâyeyi düşürüyor.
+    - Hazır üretim: kabulden geçmiş ama kanala çıkmamış video, artifact'tan dönüp kota harcamadan kullanılıyor.
+    - Buffer medya adı kanal önekli (iki kanal `2026-10-10.mp4`'te çakıştı).
+    - Hakem anlatım tutarlılığını da denetliyor.
+  - Elle inceleme: kareler iki kanalda temiz. Curse of the Colonel (sırası karışık) ve The Ass And The Dog (diyalog
+    kopuk) reddedildi.
+  - Kanala çıkanlar:
+    - Orbit "The Proud Lamp Learns Humility" (10-09 20:00 UTC, MFK). Orbit `OTOMAT_YAYIN_UZAY=buffer`.
+    - Earth "Prester John" (10-10 14:00 UTC).
+  - Bu videolar çevirisiz çıktı (kota boştu).
+  - Earth'ün adı Studio kilidinde (~10-21). Orbit adı tamam, tanıtıcısı bekliyor.
 
 ### Faz 10–13: Çok kanal (2026-10-06)
 - **Neden:** Scryne: "farklı kanallarda farklı konulu kanallar… projeyi en üst seviyeye çıkaracak her şey, tamamen sana
