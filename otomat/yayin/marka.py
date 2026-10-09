@@ -38,6 +38,8 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
     yerel |= {YEREL[d]: {"title": ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
     yt.channels().update(part="localizations", body={"id": kimlik, "localizations": yerel}).execute()
     yt.channels().update(part="status", body={"id": kimlik, "status": {"selfDeclaredMadeForKids": k.mfk}}).execute()
+    if k.mfk:
+        eski_videolari_ayir(yt)
     try:
         yt.watermarks().set(
             channelId=kimlik,
@@ -49,6 +51,19 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
         ).execute()
     except Exception:  # noqa: BLE001 — 10-06'da yanıt kütüphane hatasıyla okunamadı ama ayar uygulanmıştı
         pass
+
+
+def eski_videolari_ayir(yt) -> list[str]:
+    """Kanal düzeyi MFK var olan videolara da uygulanır (support.google.com/youtube/answer/9527654). Geri çekilen eski
+    videolar çocuk içeriği değil (Orbit'in uzay videoları): video düzeyinde "çocuklara özel değil" ve private kalır;
+    video ayarı kanalınkini ezer. Silmek yerine bu (geri alınabilir, docs/arastirma/09)."""
+    from otomat import durum
+
+    idler = [v for (v,) in durum.baglan().execute("SELECT video_id FROM geri_cekilen ORDER BY video_id")]
+    for vid in idler:
+        govde = {"id": vid, "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
+        yt.videos().update(part="status", body=govde).execute()
+    return idler
 
 
 def kontrol(yt) -> str:

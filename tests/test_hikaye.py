@@ -1,5 +1,6 @@
 """Hikâye motoru: havuz süzgeçleri, kod kapıları, kelime zamanlaması, kenar kırpma (Cloudflare'e gitmeden)."""
 
+import datetime as dt
 import itertools
 
 import numpy as np
@@ -193,3 +194,27 @@ def test_hizalama_whisper_zamanini_kullanir_eksigi_doldurur():
     # başka satıra düşen eşleşmeye güvenilmez, satır sınırı korunur
     kayik = hizala.baslangiclar(p, [(t + 5, w) for t, w in gercek])
     assert all(p[i].bas <= x < p[i].son for i in range(2) for x in kayik[i])
+
+
+def test_mfk_kanalinda_eski_videolar_cocuk_icerigi_sayilmaz(kanal_sec, monkeypatch, tmp_path):
+    """Kanal düzeyi MFK eski videolara da işler; geri çekilen uzay videoları video düzeyinde MFK değil kalmalı."""
+    from otomat import durum
+    from otomat.yayin import marka
+
+    kanal_sec("uzay")
+    db = durum.baglan(tmp_path / "d.db")
+    durum.geri_cek(db, ["eski1", "eski2"], dt.date(2026, 10, 8), "format değişimi")
+    monkeypatch.setattr(durum, "baglan", lambda: db)
+    guncellenen = []
+
+    class _Video:
+        def videos(self):
+            return self
+
+        def update(self, part, body):
+            guncellenen.append((part, body))
+            return _Calistir({})
+
+    assert marka.eski_videolari_ayir(_Video()) == ["eski1", "eski2"]
+    assert all(p == "status" and b["status"] == {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
+               for p, b in guncellenen)  # fmt: skip
