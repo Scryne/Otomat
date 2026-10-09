@@ -6,6 +6,7 @@
 
 import datetime as dt
 import json
+import re
 import subprocess
 import time
 import urllib.parse
@@ -223,6 +224,18 @@ def aciklama(paket: OlguPaketi, sc: senaryo.Senaryo, muzik_adi: str) -> str:
     )
 
 
+def gorsel_istemi(stil: str, dunya: str, oyuncular: list[str], sahne: str) -> str:
+    """Sahnede adı geçen her karakterin sabit tarifi istemde durur: model tarifi sahneye kopyalamayı unutunca horoz her
+    karede başka renk çıkıyordu (Orbit, 10-09)."""
+    tarifler = []
+    for o in oyuncular:
+        ad, _, tarif = o.partition(":")
+        if tarif.strip() and re.search(rf"\b{re.escape(ad.strip())}\b", sahne, re.I) and tarif.strip() not in sahne:
+            tarifler.append(f"{ad.strip()} is {tarif.strip().rstrip('.')}.")
+    # klein ara sıra iki panelli (çizgi roman) görsel çiziyordu: tek kare olduğu açıkça söylenir
+    return " ".join([f"{stil}. A single full-frame scene, not a comic, no panels. {dunya}", *tarifler, sahne])
+
+
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
     k = kanal.aktif()
     dizin.mkdir(parents=True, exist_ok=True)
@@ -231,8 +244,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     kaynak = kaynaklar.metin(paket)
     sc = senaryo.yaz(paket.tur, paket.gorsel["baslik"], kaynak, paket.konu, kalip, list(k.muzik))
     t_senaryo = time.time()
-    # klein ara sıra iki panelli (çizgi roman) görsel çiziyordu: tek kare olduğu açıkça söylenir
-    istemler = [f"{k.stil}. A single full-frame scene, not a comic, no panels. {sc.dunya} {g}" for g in sc.gorseller]
+    istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
     taban = sum(map(ord, paket.anahtar)) % 100_000
     with ThreadPoolExecutor(PARALEL) as ex:
         gorseller = list(

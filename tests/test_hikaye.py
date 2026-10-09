@@ -313,3 +313,16 @@ def test_hazir_uretim_kotasiz_kullanilir_yayinlanan_ve_kusurlu_atlanir(kanal_sec
     assert paket.anahtar == "wiki:Hazir" and kalip == "kisi" and meta["baslik"] == "wiki:Hazir"
     assert dizin == tmp_path / "calisma" / "gunluk" / "2026-10-11" / "wiki_Hazir" and (dizin / "meta.json").exists()
     assert kayit["hazir"].endswith("2026-10-10/wiki_Hazir") and log["degisti"] == []
+
+
+def test_gorsel_istemi_karakter_tarifini_her_sahnede_tasir():
+    """Orbit 10-09: tarif yalnız ilk sahnede vardı, horoz her karede başka renkti."""
+    oyuncular = ["Cock: a bright yellow rooster with orange comb", "Farmer: an old man in a straw hat"]
+    i = uretim.gorsel_istemi("Soft crayon", "A farmyard.", oyuncular, "Cock pecking at corn by the fence.")
+    assert "Cock is a bright yellow rooster with orange comb." in i and "straw hat" not in i
+    assert i.startswith("Soft crayon. A single full-frame scene") and i.endswith("Cock pecking at corn by the fence.")
+    tam = "Close-up of Cock, a bright yellow rooster with orange comb, smiling."
+    assert uretim.gorsel_istemi("S", "W.", oyuncular, tam).count("bright yellow") == 1  # tarif zaten varsa tekrar yok
+    assert "Cocktail" not in uretim.gorsel_istemi("S", "W.", ["Cock: x"], "A cocktail glass.") and "is x" not in (
+        uretim.gorsel_istemi("S", "W.", ["Cock: x"], "A cocktail glass.")
+    )
