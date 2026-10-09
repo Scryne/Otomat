@@ -14,10 +14,11 @@ import sys
 from pathlib import Path
 
 from otomat import kanal
+from otomat.hikaye.senaryo import ORAN
 
 SURE = (20.0, 60.0)  # Shorts: 60 sn altı; 20 sn altı hikâye olamaz
 SATIR = (6, 9)
-SEMBOL = re.compile(r"[°%&$€£#@/+=<>~^*|]")
+SEMBOL = re.compile(rf"[°%&$€£#@/+=<>~^*|]|{ORAN}")  # oran: anlatıcı "1:4" için "1, 4" diyor; saat okunuyor
 CAGRI = re.compile(r"\b(subscribe|like (?:and|&) subscribe|comment below|link in (?:the )?bio)\b", re.I)
 
 

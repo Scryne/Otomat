@@ -197,6 +197,7 @@ jobs:
         run: |
           git config user.name "otomat-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          [ -d raporlar/portfoy ] || exit 0  # rapor yazılmadı (ILK_HAFTA öncesi ya da kanal raporları eksik)
           git add raporlar/portfoy/
           git diff --cached --quiet && exit 0
           git commit -m "Portföy raporu ($(date -u -d '7 days ago' +%G-H%V))"

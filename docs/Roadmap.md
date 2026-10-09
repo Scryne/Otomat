@@ -320,6 +320,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   7. Kotaya takılan koşu raporda "hata" görünüyordu (alarm yine yazılır); "kota" olarak kalır.
   8. Dayanıklılık: müzik indirilemezse aynı mood'un sıradaki parçası; görselsiz/bozuk Cloudflare yanıtı yeniden
      denenir, yarım dosya yazılmaz; çeviri aynı metin için yeniden yapılmaz (hazır üretim kotayı ikinci kez yakıyordu).
+  9. Oran yazımı ("1:4-million") sembol kapısından geçiyordu, anlatıcı "1, 4 million" okudu (Tree of Ténéré,
+     10-11 planlı; Whisper small dökümüyle bulundu). Oran onarıma gider; saat ("12:30") okunduğu için serbest.
+  - Runner doğrulaması (elle tetik, 10-09 20:19 UTC): yeni indirme düzeni ve artifact (24,5 MB, yalnız bu koşu,
+    senaryo + çeviri dahil), Earth 10-11 videosu `StbOqiF1sT0` planlı (4 dil, `ceviri_neuron` 317, `buffer_istek` 2,
+    `havuz_kalan` 710). Portföy işi rapor klasörü yokken `git add`'de düştü, düzeltildi. Açık: "Niamey" "Naomi's"
+    okunuyor (nadir yer adı telaffuzu; genel çözüm yok).
   - Eklenen: düşen hikâyelerin neuron'u, Buffer istek sayısı ve hikâye havuzunun kalanı günlük kayıtta ve haftalık
     raporda; havuz 21 hikâyenin altına inince alarm. Faz 13 portföy raporu (aşağıda).
   - Açık (kod dışı): 10-09/10-10 videolarında görsel kalite sorunları: karakter kareden kareye değişiyor (0c9d283'ten

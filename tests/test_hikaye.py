@@ -58,6 +58,11 @@ def test_kod_kontrolu_sembol_ve_uzunluk():
     satirlar = ["It was 40°F that day."] + ["A short line with exactly eight words here."] * 7
     sorun = senaryo.kod_kontrolu("masal", "Baslik", satirlar, "")
     assert any("symbols" in s for _, s in sorun)
+    oran = ["Mapped at a 1:4-million scale on maps."] + ["A short line with exactly eight words here."] * 6
+    assert (1, "spell out symbols as words for the narrator: 1:4") in senaryo.kod_kontrolu("masal", "B", oran, "")
+    assert not senaryo.SEMBOL.search("In 1973, at dawn: the tree fell.")
+    assert not senaryo.SEMBOL.search("At 12:30 p.m., the tank collapsed.")  # saat doğru okunuyor
+    assert senaryo.SEMBOL.search("a 1:50,000 map") and senaryo.SEMBOL.search("odds of 3:1")
     uzun = ["word " * 16] + ["A short line with exactly eight words here."] * 6
     assert any("too long" in s for _, s in senaryo.kod_kontrolu("masal", "B", uzun, ""))
 

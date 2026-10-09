@@ -168,7 +168,9 @@ SAHNE_SAYISI = {"tuhaf": (7, 8), "masal": (7, 7)}
 KELIME = {"tuhaf": (60, 100), "masal": (50, 95)}  # toplam kelime; dışı onarıma girer
 SATIR_KELIME = 14
 SAYI_SINIRI = 3  # istem 2 der; bir pay bırakılır
-SEMBOL = re.compile(r"[°%&$€£#@/+=<>~^*|]|\b(?:mph|km/h|ft|lbs?|approx|etc)\b\.?", re.I)
+# Oran ("1:4-million" anlatıcıda "1, 4 million" oldu, Tree of Ténéré 10-09). Saat ("12:30") doğru okunuyor.
+ORAN = r"\b\d+:(?!\d{2}(?![\d,-]))\d"
+SEMBOL = re.compile(rf"[°%&$€£#@/+=<>~^*|]|{ORAN}|\b(?:mph|km/h|ft|lbs?|approx|etc)\b\.?", re.I)
 TUR_SAYISI = 4
 
 
