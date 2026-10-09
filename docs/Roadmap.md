@@ -270,6 +270,18 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   modunda (ilk hikâye 10-09 06:17 UTC koşusunda, yayın 14:00 UTC); Orbit `OTOMAT_YAYIN_UZAY=teslim`: çocuk masalı uçtan uca
   henüz üretilmedi (10-08'de kota doldu, ilk deneme 4 turda hakemden geçmedi, hakem netleştirildi). 10-09 koşusunun teslim
   paketindeki video kare + ses + senaryo kontrolünden geçince `buffer`'a alınır. Faz 7 sayacı Earth'ün 10-09 koşusuyla başlar.
+- **2026-10-09 — pist ve kanal kararı:**
+  - 06:17 cron'u hiç başlamadı. 12:53'te elle tetiklenen koşu iki kanalda Cloudflare 4006'ya takıldı (issue #4, #5).
+  - Panelde "0/10k used today" görünüyordu ama engel 10-08 17:33'ten beri sürüyordu. Bu yüzden üretim yayından
+    ayrıldı (K-22, `9dfe127`): buffer/api modunda kanal bugün + 2 günü planlı tutar, koşu başına en çok 2 video
+    üretir. Yarının videosu planlıysa kota alarm değildir.
+  - Araştırma `docs/arastirma/09-kanal-karari.md` (K-20…K-23): yeni kanal açılmaz. Orbit kanal düzeyinde MFK olur, eski
+    uzay videoları video düzeyinde MFK değil kalır (silinmez).
+  - İçerik:
+    - Sahne başına 5 kamera hareketi.
+    - Senaryo anlatıcı yayına çekildi, en çok 2 sayı (kod 3'ü aşanı onarıma yollar).
+    - İlk sahnenin görseli kaydırmayı durduracak yakın kompozisyon.
+    - Haftalık raporda neuron satırı; günlük koşunun üretim klasörü 7 günlük artifact.
 - **Kanal adları:** YouTube "Inkwell Oddities"i gerekçesiz reddetti; ardından çok deneme kilidi (24 saat). Yedek adlar
   profilde (`yedek_adlar`); hangisi tutarsa kimlik o adla uygulanır.
 - **Faz 15 için Scryne'dan:** iki kanalın adı ve tanıtıcısı (Studio → Özelleştirme → Temel bilgiler) ve profil resmi
