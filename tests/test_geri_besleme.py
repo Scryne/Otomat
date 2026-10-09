@@ -165,7 +165,15 @@ def test_gecmis_tasima_tekrarsiz(db, tmp_path):
 def test_haftalik_rapor(db, tmp_path, monkeypatch):
     monkeypatch.setattr(rapor, "RAPORLAR", tmp_path)
     (tmp_path / "gunluk.jsonl").write_text(
-        json.dumps({"tarih": "2026-10-05", "mod": "teslim", "durum": "tamam", "kaynak_hatalari": ["usgs: zaman aşımı"]})
+        json.dumps(
+            {
+                "tarih": "2026-10-05",
+                "mod": "teslim",
+                "durum": "tamam",
+                "kaynak_hatalari": ["usgs: zaman aşımı"],
+                "neuron": 1800,
+            }
+        )
         + "\n"
         + json.dumps({"tarih": "2026-10-06", "mod": "teslim", "durum": "hata", "hata": "RuntimeError: x"})
         + "\n",
@@ -184,6 +192,7 @@ def test_haftalik_rapor(db, tmp_path, monkeypatch):
     assert "1.500 / 1.200.000 görüntüleme" in metin
     assert "2026-10-05 (kalip)" in metin
     assert "Toplam 3 dk" in metin
+    assert "Cloudflare: 1.800 neuron, video başına ort. 1.800." in metin
     assert "Analitik alınamadı: YetkiHatasi" in rapor.olustur(db, 2026, 41, None, None, "YetkiHatasi: x")
 
 

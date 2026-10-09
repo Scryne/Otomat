@@ -70,6 +70,12 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
             durum = "✅" if k["durum"] == "tamam" else "❌ " + k.get("hata", "")[:80]
             s.append(f"| {k['tarih']} | {durum} | {konu} | {kalip} | {baslik} | {vid or '—'} |")
         s.append("")
+    neuron = [k["neuron"] for k in tamam if "neuron" in k]
+    if neuron:  # hikâye motoru: Cloudflare bedava kotası günde 10.000, iki kanal paylaşır
+        s += [f"Cloudflare: {_sayi(sum(neuron))} neuron, video başına ort. {_sayi(sum(neuron) / len(neuron))}.", ""]
+    kota = [k for k in kosular if k["durum"] == "kota"]
+    if kota:
+        s += [f"Kotaya takılan üretim: {len(kota)} (pist tampon oldu, yayın kaçmadıysa alarm yok).", ""]
     hatalar = sorted({h for k in kosular for h in k.get("kaynak_hatalari", [])})
     if hatalar:
         s += ["Kaynak hataları: " + "; ".join(hatalar), ""]
