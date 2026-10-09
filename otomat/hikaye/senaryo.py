@@ -35,7 +35,9 @@ Why Wikipedia editors list it as unusual: {konu}
 
 Write 7-8 scenes, 75-90 words in total. Each scene = one spoken line (5-12 words) + one illustration.
 Opening line: {kalip}
-Then: who, where, when, in concrete detail; what went wrong or what was strange, building tension; the turn.
+Then tell it like a storyteller, not an encyclopedia: a person (or animal) we can picture, what they expected, the
+strange thing that happened, how it got worse or weirder, the turn. Every line must move the story forward; a line
+that only lists measurements is a wasted line. Use at most two numbers in the whole script: the most striking ones.
 Last line: the payoff or the absurd consequence, short and memorable, so the viewer wants to watch again.
 Rules:
 - Spoken, plain English that reads naturally aloud. Past tense. No "did you know", no questions to the viewer, no
@@ -154,6 +156,7 @@ ONARIM_SEMA = {
 SAHNE_SAYISI = {"tuhaf": (7, 8), "masal": (7, 7)}
 KELIME = {"tuhaf": (60, 100), "masal": (50, 95)}  # toplam kelime; dışı onarıma girer
 SATIR_KELIME = 14
+SAYI_SINIRI = 3  # istem 2 der; bir pay bırakılır
 SEMBOL = re.compile(r"[°%&$€£#@/+=<>~^*|]|\b(?:mph|km/h|ft|lbs?|approx|etc)\b\.?", re.I)
 TUR_SAYISI = 4
 
@@ -216,6 +219,11 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
     sorun = []
     if tur == "tuhaf":
         sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak)]
+        # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons")
+        sayili = [i for i, s in enumerate(satirlar, 1) for _ in re.findall(r"\d[\d,.]*", s)]
+        if len(sayili) > SAYI_SINIRI:
+            sorun.append((sayili[-1], f"too many numbers in the script ({len(sayili)}); keep the 2 most striking, "
+                                      "tell the rest as story"))  # fmt: skip
     for i, s in enumerate(satirlar, 1):  # anlatıcı sembolü okuyamıyor ("40°F")
         if sembol := SEMBOL.findall(s):
             sorun.append((i, f"spell out symbols as words for the narrator: {' '.join(sembol)}"))

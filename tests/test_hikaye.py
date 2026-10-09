@@ -61,6 +61,16 @@ def test_kod_kontrolu_sembol_ve_uzunluk():
     assert any("too long" in s for _, s in senaryo.kod_kontrolu("masal", "B", uzun, ""))
 
 
+def test_kod_kontrolu_sayi_yigini():
+    kaynak = "In 1919 a 50 foot tank of 2.3 million gallons burst at 12:30 and 21 died."
+    dolu = ["In 1919 the tank burst open.", "It was 50 feet tall, holding 2.3 million gallons.", "At 12:30 it went."]
+    dolu += ["Then the dark wave rolled down the street."] * 5
+    sorun = senaryo.kod_kontrolu("tuhaf", "Baslik", dolu, kaynak)
+    assert [n for n, s in sorun if "too many numbers" in s] == [3]  # sorunlu sayı son sayılı satıra yazılır
+    seyrek = ["In 1919 the tank burst open."] + ["Then the dark wave rolled down the street."] * 7
+    assert not [s for _, s in senaryo.kod_kontrolu("tuhaf", "Baslik", seyrek, kaynak) if "numbers" in s]
+
+
 def test_kelime_zamanlari_satiri_doldurur():
     z = uretim.kelime_zamanlari([Parca(0.0, 2.0, "one two three four five")])
     assert [len(g) for _, _, g, _ in z] == [3, 3, 3, 2, 2]  # 3'lük gruplar, grup başına vurgu sırası
