@@ -218,3 +218,56 @@ def test_sorgu_istek_sayar(monkeypatch):
     once = buffer.ISTEK["sayi"]
     assert buffer.sorgu("query { ok }") == {"ok": 1}
     assert buffer.ISTEK["sayi"] == once + 1
+
+
+def test_pist_hikayeler_duserse_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path, monkeypatch):
+    """10-11: pistin 3. gününün 3 hikâyesi de düştü, yarının videosu planlı olduğu hâlde alarm çaldı (#6)."""
+
+    def dustu(*a):
+        raise gunluk.HikayeDustu("3 hikâye de hakemden ya da yayın kabulünden geçmedi")
+
+    db = durum.baglan(tmp_path / "d.db")
+    bugun = dt.datetime.now(UTC).date()
+    yarin = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
+    _secim(db, yarin.date().isoformat(), yarin.isoformat(), "vyarin")
+    _pist_ortami(tmp_path, monkeypatch, db, dustu)
+    gunluk.main()
+    assert not (tmp_path / "alarm.md").exists()
+    satir = json.loads((tmp_path / "gunluk.jsonl").read_text(encoding="utf-8"))
+    assert satir["durum"] == "hata" and "HikayeDustu" in satir["hata"]
+    db.execute("DELETE FROM secimler")
+    with pytest.raises(gunluk.HikayeDustu):
+        gunluk.main()  # yarının videosu yok: alarm
+    assert "geçmedi" in (tmp_path / "alarm.md").read_text(encoding="utf-8")
+
+
+def test_geri_cek_private_yapar_slotu_bosaltir(tmp_path, monkeypatch):
+    """10-12: kusurlu video (Orbit'te masalda olmayan ayılar, Earth'te başlıkta hakaret) elle geri çekildi."""
+    from otomat import kanal
+
+    monkeypatch.setenv("OTOMAT_KANAL", "uzay")
+    kanal._aktif.cache_clear()
+    db = durum.baglan(tmp_path / "d.db")
+    monkeypatch.setattr(durum, "baglan", lambda *a: db)
+    _secim(db, "2026-10-12", "2026-10-12T20:00:00+00:00", "vkusurlu")
+    govdeler = []
+
+    class _Yt:
+        def videos(self):
+            return self
+
+        def update(self, part, body):
+            govdeler.append((part, body))
+            return self
+
+        def execute(self, **_):
+            return {}
+
+    youtube.geri_cek("vkusurlu", "kalite", yt=_Yt())
+    kanal._aktif.cache_clear()
+    part, govde = govdeler[0]
+    assert part == "status" and "publishAt" not in govde["status"]
+    assert govde["status"]["privacyStatus"] == "private" and govde["status"]["selfDeclaredMadeForKids"] is True
+    assert govde["status"]["publicStatsViewable"] is True  # verilmeyen alan varsayılana dönmesin
+    sabah = dt.datetime(2026, 10, 12, 6, tzinfo=UTC)
+    assert durum.yayin_slotu(db, sabah, 20).date() == dt.date(2026, 10, 12)

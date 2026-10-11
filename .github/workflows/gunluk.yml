@@ -62,7 +62,7 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         with:
           enable-cache: true
-      - run: uv sync --locked --extra ses
+      - run: uv sync --locked --extra ses --extra gorsel
         if: steps.kontrol.outputs.atla != '1'
       - name: Model önbelleği
         if: steps.kontrol.outputs.atla != '1'

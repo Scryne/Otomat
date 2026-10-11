@@ -66,8 +66,11 @@ title: a friendly title under 50 characters with the main characters, e.g. "The 
 }
 
 GORSEL_KURALI = {
-    "tuhaf": "No text, signs or letters in the image. Never show dead bodies, injuries or blood; show the moment "
-    "before, or the aftermath through objects and faces.",
+    "tuhaf": "The illustrator cannot draw writing: never describe anything that carries words or numbers (signs, "
+    "neon signs, shop names, banners, placards, posters, slogans, newspapers, documents, maps, plaques, labels, "
+    "scoreboards, numbered jerseys, license plates, graffiti) and never quote words. Show a protest through faces and "
+    "raised fists, a shop as a lit window full of goods, a court through robes and a gavel. Never show dead bodies, "
+    "injuries or blood; show the moment before, or the aftermath through objects and faces.",
     "masal": "No text or letters in the image. Cute, friendly, safe and cozy; nothing scary, no sharp teeth shown, "
     "nobody hurt.",
 }
@@ -136,6 +139,51 @@ PROBLEMS:
 Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less. Keep each line
 4-12 words, spoken, and keep the story flowing with the lines around it. Return the fixed lines."""
 
+# Yazı taşıyan nesne: flux "no text"i tutmuyor, tarifte tabela/pankart/gazete varsa anlamsız harflerle çiziyor
+# (Sister Boom Boom, Wog Rolo, Prester John; 10-12). Olumsuz kalıp ("no signs") sayılmaz.
+YAZI_TASIYAN = re.compile(
+    r"\b(?:neon|signs?|signboards?|signage|banners?|placards?|posters?|slogans?|newspapers?|headlines?|billboards?|"
+    r"graffiti|labels?|plaques?|scoreboards?|menus?|ballots?|documents?|maps?|charts?|inscri\w+|storefronts?|"
+    r"shopfronts?|(?:license|number) plates?|jerseys?|captions?|written|lettering|handwritten|text)\b"
+    r"|\"[^\"]{2,}\"",
+    re.I,
+)
+GORSEL_TUR = 2
+TARIF_KELIME = 8  # onarımdan dönen tarif bundan kısaysa özgün tarif kalır
+OLUMSUZ = re.compile(r"\b(?:no|without|never|not any)\b[^.;:]*", re.I)
+
+GORSEL_ONARIM_ISTEM = """These are illustration descriptions for a short video. The illustrator cannot draw writing:
+anything that carries words or numbers comes out as garbled letters.
+WORLD: {dunya}
+SCENES:
+{sahneler}
+
+FLAGGED (object that would carry writing):
+{sorun}
+
+Rewrite the world and ONLY the flagged scenes so the same moment is shown without the flagged objects. Do not mention
+them at all, not even as blank, plain, unmarked or wordless versions: the illustrator writes on any sign, banner or
+paper it is given. Show the moment through people, faces, gestures, clothing, light and setting instead (a protest =
+a crowd with raised fists; a vote = a hand dropping a folded slip into a wooden box; a shop = a lit window full of
+goods; colored light instead of neon signs). Do not quote words. Keep every character description and everything
+else unchanged. For each flagged scene return its complete new description (who, doing what, where, camera angle),
+never a reference like "same as before" or "SCENE 2"."""
+GORSEL_ONARIM_SEMA = {
+    "type": "object",
+    "properties": {
+        "world": {"type": "string"},
+        "scenes": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {"scene": {"type": "integer"}, "image": {"type": "string"}},
+                "required": ["scene", "image"],
+            },
+        },
+    },
+    "required": ["world", "scenes"],
+}
+
 SORUN_SEMA = {
     "type": "object",
     "properties": {
@@ -189,6 +237,7 @@ class Senaryo:
     satirlar: list[str]
     gorseller: list[str]
     turlar: list[list] = field(default_factory=list)  # her turda bulunan sorunlar (meta.json'a)
+    gorsel_onarim: list[list] = field(default_factory=list)  # yazı taşıyan nesne: [onarımdan önce, sonra]
 
 
 def sema(tur: str, moodlar: list[str]) -> dict:
@@ -256,6 +305,41 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
     return sorun
 
 
+def yazi_tasiyanlar(dunya: str, gorseller: list[str]) -> list[tuple[int, str]]:
+    """(sahne no, bulunan nesneler); 0 = dünya cümlesi (her sahneye girer)."""
+    sorun = []
+    for i, metin in enumerate([dunya, *gorseller]):
+        if bulunan := YAZI_TASIYAN.findall(OLUMSUZ.sub("", metin)):
+            sorun.append((i, ", ".join(dict.fromkeys(b.lower() for b in bulunan))))
+    return sorun
+
+
+def gorsel_temizle(sc: Senaryo) -> None:
+    """Tarifte yazı taşıyan nesne varsa en çok GORSEL_TUR onarım turu; ikinci tur yalnız hâlâ işaretli kalanları
+    gönderir. Kalan yazıyı üretimde OCR yakalar (yazi.py)."""
+    if not (ilk := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
+        return
+    sorun = ilk
+    for _ in range(GORSEL_TUR):
+        f = cf.sohbet(
+            GORSEL_ONARIM_ISTEM.format(
+                dunya=sc.dunya,
+                sahneler="\n".join(f"scene {i}: {g}" for i, g in enumerate(sc.gorseller, 1)),
+                sorun="\n".join(f"{'world' if n == 0 else f'scene {n}'}: {r}" for n, r in sorun),
+            ),
+            GORSEL_ONARIM_SEMA,
+        )
+        if len(f["world"].split()) >= TARIF_KELIME:
+            sc.dunya = f["world"].strip()
+        for d in f["scenes"]:
+            # S12 (10-12): model sahnelere tarif yerine "SCENE 2" yazdı, kare ana karaktersiz boş sokak çıktı
+            if 1 <= d["scene"] <= len(sc.gorseller) and len(d["image"].split()) >= TARIF_KELIME:
+                sc.gorseller[d["scene"] - 1] = d["image"].strip()
+        if not (sorun := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
+            break
+    sc.gorsel_onarim = [[[n, r] for n, r in ilk], [[n, r] for n, r in sorun]]
+
+
 def _numarali(satirlar: list[str]) -> str:
     return "\n".join(f"{i}. {s}" for i, s in enumerate(satirlar, 1))
 
@@ -282,6 +366,7 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         sorun += [(p["line"], p["reason"]) for p in h["problems"]]
         sc.turlar.append([[n, r[:300]] for n, r in sorun])
         if not sorun:
+            gorsel_temizle(sc)
             return sc
         if tur_no == TUR_SAYISI - 1:
             break

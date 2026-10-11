@@ -331,6 +331,36 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Açık (kod dışı): 10-09/10-10 videolarında görsel kalite sorunları: karakter kareden kareye değişiyor (0c9d283'ten
     önce üretildi), Cock and Jewel'de iki başlı tavuk ve hikâyede olmayan iki ayı, Prester John'da anlamsız yazılar
     (flux "no text" kuralını her zaman tutmuyor). Bir görsel kalite kapısı (vision model) neuron harcar; ölçülmeden eklenmedi.
+- **Görsel kalite ve politika (2026-10-12):**
+  - Planlı ve yayındaki 5 videonun sahneleri kare kare incelendi. İki video geri çekildi, yeni komutla:
+    `python -m otomat.yayin.youtube geri <id> "<neden>"`. Komut videoyu private yapar, `publishAt`'i düşürür,
+    `geri_cekilen` tablosuna yazar.
+    - Orbit "The Cock Who Chose a Grain" (`iOvy5ikUJiY`): public'ti, 0 izlenmeyle çekildi. Masalda olmayan iki
+      insansı ayı vardı, tavuk her karede başkaydı.
+    - Earth "Lord Bloody Wog Rolo" (`aEXgalmgZfA`, 10-13 planlı): başlıkta etnik hakaret ("wog") vardı.
+  - Earth "Drag Nun" (10-12) yayında kaldı. Karelerinde anlamsız yazılar var, ama çekilirse slot boş kalırdı.
+  - Hakaret kapısı (`kaynaklar.HAKARET`): havuzdaki makale adında ve yayın kabulünde (başlık, satırlar, kaynak
+    adı) çalışır. Havuzdaki 713 uygun makalede başka eşleşme yok.
+  - `marka.eski_videolari_ayir` artık yalnız format değişiminin veri videolarını "çocuklara özel değil" yapar.
+    Kalite yüzünden çekilen masal çocuk içeriği olarak kalır.
+  - **Kare içi yazı** (Prester John, LaRouche, Sister Boom Boom, Wog Rolo):
+    - Kök neden: senaryo modelinin sahne tarifleri yazı taşıyan nesnelerle dolu ("neon signs", "sandwich board
+      covered with slogans", "'For Sale' sign"). flux, "no text" demesine rağmen bunları harfle çiziyor.
+    - Önleme 1: senaryo isteminde bu nesneler yasak.
+    - Önleme 2: `senaryo.gorsel_temizle`. Tarifte yazı taşıyan nesne kalırsa en çok 2 onarım turu yapılır.
+      Onarımdan dönen tarif 8 kelimeden kısaysa alınmaz, çünkü S12'de model iki sahneye tarif yerine "SCENE 2"
+      yazdı ve kare ana karaktersiz çıktı.
+    - Yakalama: `hikaye/yazi.py`. RapidOCR karede yazı bulursa sahne yeni tohumla yeniden çizilir (video başına
+      en çok 3 kare). Yeni kare daha yazılıysa eskisi kalır. Kayıt `meta.json`'da (`yazi`, `gorsel_onarim`).
+    - Eşik ölçümü (87 sahne, gözle etiketli): en az 3 Latin harf ve güven ≥ 0,7. Masal karelerinde yanlış
+      alarm 0. Gözle yazı görülen Earth karelerinin çoğu yakalanıyor (Sister 7/8, Wog 8/8).
+    - S12 spike (~2.300 neuron): Sister'ın en yazılı 4 sahnesi onarımdan sonra 4/4 yazısız çizildi. Wog'un iki
+      sahnesinde OCR bulgusu 6'dan 1'e ve 5'ten 0'a indi. Onarım turu metin kotasından ~200 neuron yer.
+  - Alarm: pistin 3. gününün bütün hikâyeleri düşünce (10-11, #6) alarm çalıyordu. Yarının videosu planlıysa
+    artık çalmıyor (`HikayeDustu`, K-22'nin kota kuralıyla aynı). Sonraki koşu aynı slotu yeniden dener.
+  - Testler 138 (yeni ve değişen 9 test eski kodda düşüyor). CI OCR'ı Linux'ta `--extra gorsel` ile kurar.
+  - Açık: karakter tutarlılığı ve hikâyede olmayan nesne (ayılar). Bunlar için vision modeli gerekir, neuron
+    harcar; ölçülmeden eklenmedi.
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri

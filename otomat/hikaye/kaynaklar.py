@@ -26,6 +26,16 @@ EZOP_URL = "https://www.gutenberg.org/ebooks/11339"
 EN_AZ_METIN = 400  # karakter; daha kısa kaynaktan 75-90 kelimelik hikâye uydurmadan yazılamaz, hakem turları boşa gider
 
 
+# Başlıkta/anlatımda hakaret ya da ağır küfür: reklam uygunluğu ve nefret söylemi politikası. TypeSafe süzgecinden
+# "Lord Bloody Wog Rolo" geçti, video 10-13'e planlanmıştı (10-12'de geri çekildi). Kelime sınırıyla: Fagan,
+# raccoon geçer.
+HAKARET = re.compile(
+    r"\b(?:wogs?|nigg(?:er|a)s?|coons?|chinks?|gooks?|japs?|kikes?|spics?|wetbacks?|pakis?|ragheads?|redskins?|"
+    r"squaws?|trann(?:y|ies)|retards?|fags?|faggots?|dykes?|cunts?|fuck\w*|shit\w*)\b",
+    re.I,
+)
+
+
 class KaynakHatasi(RuntimeError):
     """Hikâyenin kaynağı kullanılamıyor (makale silinmiş/taşınmış ya da çok kısa): yalnız bu hikâye düşer."""
 
@@ -49,7 +59,8 @@ def ezop_uygun(ts: dict) -> bool:
 def _tuhaf(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
     sonuc, gorulen = [], set()
     for h in havuz:
-        if not tuhaf_uygun(h["ts"]) or h["baslik"] in gorulen:  # bazı makaleler iki bölümde listeli
+        # bazı makaleler iki bölümde listeli
+        if not tuhaf_uygun(h["ts"]) or h["baslik"] in gorulen or HAKARET.search(h["baslik"]):
             continue
         gorulen.add(h["baslik"])
         url = "https://en.wikipedia.org/wiki/" + urllib.parse.quote(h["baslik"].replace(" ", "_"))

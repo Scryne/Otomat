@@ -117,6 +117,10 @@ def yarim_uretimi_getir(paket: OlguPaketi, dizin: Path) -> str | None:
     return None
 
 
+class HikayeDustu(RuntimeError):
+    """Denenen hikâyelerin hiçbiri hakemden ya da yayın kabulünden geçmedi."""
+
+
 def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
     seçilmesin diye kaydedilir (video yok). Önce hazır üretim aranır, sonra yarım kalmış üretim sürdürülür."""
@@ -148,7 +152,7 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
         # düşen hikâyenin harcadığı kota da raporda görünsün (uret sayacı her hikâyede sıfırlar)
         dusen.append({"anahtar": paket.anahtar, "sorunlar": sorunlar, "neuron": round(cf.NEURON["toplam"])})
         kayit["dusen_hikayeler"] = dusen
-    raise RuntimeError(
+    raise HikayeDustu(
         f"{HIKAYE_DENEME} hikâye de hakemden ya da yayın kabulünden geçmedi: "
         + "; ".join(f"{d['anahtar']}: {d['sorunlar']}" for d in dusen)[:800]
     )
@@ -379,10 +383,15 @@ def main() -> None:
             kayitlar.append(kayit)
             try:
                 bir_video(paketler, db, gun, yayin_ani, mod, kayit, alarmlar)
-            except KotaHatasi as e:
-                kayit.update(durum="kota", hata=str(e)[:300])
+            except (KotaHatasi, HikayeDustu) as e:
+                kota = isinstance(e, KotaHatasi)
+                kayit.update(
+                    durum="kota" if kota else "hata", hata=f"{'' if kota else type(e).__name__ + ': '}{e}"[:500]
+                )
                 if pist and gun > bugun + dt.timedelta(days=1):
-                    break  # yarının videosu kanalda planlı: kota yarın açılır, alarm gerekmez
+                    # yarının videosu kanalda planlı: sonraki koşu bu slotu yeniden dener, alarm gerekmez (10-11'de
+                    # 3. pist gününün hikâyeleri düştü, alarm çaldı, akşam koşusu slotu doldurdu)
+                    break
                 raise
             if kayit["video_id"] is None:
                 break  # kanala çıkmadı (Plan B): slot boş kalır, aynı slota ikinci video üretilmez

@@ -67,7 +67,9 @@ def eski_videolari_ayir(yt) -> list[str]:
     video ayarı kanalınkini ezer. Silmek yerine bu (geri alınabilir, docs/arastirma/09)."""
     from otomat import durum
 
-    idler = [v for (v,) in durum.baglan().execute("SELECT video_id FROM geri_cekilen ORDER BY video_id")]
+    # yalnız format değişiminin veri videoları; kalite yüzünden geri çekilen masal çocuk içeriği kalır (10-12)
+    sorgu = "SELECT video_id FROM geri_cekilen WHERE neden LIKE 'format değişimi%' ORDER BY video_id"
+    idler = [v for (v,) in durum.baglan().execute(sorgu)]
     for vid in idler:
         govde = {"id": vid, "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
         yt.videos().update(part="status", body=govde).execute()

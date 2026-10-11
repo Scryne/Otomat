@@ -23,7 +23,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from otomat import kanal
 from otomat.ayarlar import KOK
-from otomat.hikaye import cf, hizala, kaynaklar, senaryo
+from otomat.hikaye import cf, hizala, kaynaklar, senaryo, yazi
 from otomat.ses import Parca, _kokoro
 from otomat.veri import OlguPaketi
 
@@ -251,7 +251,16 @@ def gorsel_istemi(stil: str, dunya: str, oyuncular: list[str], sahne: str) -> st
 
 
 SENARYO = "senaryo.json"
-ESKI_CIKTILAR = ("sahne_*.jpg", "sahne_*.tmp", "*.srt", "yerel.json", "meta.json", "video.mp4", "ses.wav")
+ESKI_CIKTILAR = (
+    "sahne_*.jpg",
+    "sahne_*.tmp",
+    "yazili_*.jpg",
+    "*.srt",
+    "yerel.json",
+    "meta.json",
+    "video.mp4",
+    "ses.wav",
+)
 
 
 def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Senaryo, str, list[str]]:
@@ -283,6 +292,48 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
     return sc, kalip, istemler
 
 
+YAZI_YENIDEN = 3  # video başına en çok yeniden çizim (kare ~156 neuron)
+YAZISIZ = "Every surface in the picture is blank and wordless."
+
+
+def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
+    """OCR'da yazı çıkan sahne yeni tohumla yeniden çizilir (hak sahne sırasıyla). Yeniden çizim de yazılıysa daha az
+    yazılı olan kalır. Kayıt meta.json'a: `ilk` (çizimde yazı çıkanlar), `son` (videoda kalanlar), `yeniden`."""
+    kayit: dict = {"ilk": {}, "son": {}, "yeniden": 0}
+    for i, istem in enumerate(istemler):
+        yol = dizin / f"sahne_{i}.jpg"
+        bulgu = yazi.oku(yol)
+        if bulgu is None:
+            return {"ocr": "yok"}
+        if not bulgu:
+            continue
+        kayit["ilk"][i] = bulgu
+        if kayit["yeniden"] >= YAZI_YENIDEN:
+            kayit["son"][i] = bulgu
+            continue
+        kayit["yeniden"] += 1
+        eski = dizin / f"yazili_{i}.jpg"  # sahne_* değil: kabul ve yarım üretim sahne dosyalarını sayıyor
+        yol.replace(eski)
+        try:
+            cf.gorsel(f"{istem} {YAZISIZ}", yol, taban + 10 * i + 5)
+        except cf.KotaHatasi:
+            eski.replace(yol)  # sonraki koşu senaryoyu sürdürür, bu sahneyi yeniden dener
+            raise
+        except cf.CFHatasi:
+            eski.replace(yol)
+            kayit["son"][i] = bulgu
+            continue
+        yeni = yazi.oku(yol) or []
+        if yeni and len("".join(yeni)) >= len("".join(bulgu)):
+            eski.replace(yol)
+            yeni = bulgu
+        else:
+            eski.unlink()
+        if yeni:
+            kayit["son"][i] = yeni
+    return kayit
+
+
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
     k = kanal.aktif()
     dizin.mkdir(parents=True, exist_ok=True)
@@ -295,6 +346,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
         gorseller = list(
             ex.map(lambda a: cf.gorsel(a[1], dizin / f"sahne_{a[0]}.jpg", taban + 10 * a[0]), enumerate(istemler))
         )
+    yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
     t_gorsel = time.time()
     sure, parcalar = seslendir(sc.satirlar, dizin / "ses.wav")
     try:
@@ -320,8 +372,10 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
             "oyuncular": sc.oyuncular,
             "gorseller": sc.gorseller,
             "hakem_turlari": sc.turlar,
+            "gorsel_onarim": sc.gorsel_onarim,
         },  # fmt: skip
         "muzik": muzik_adi,
+        "yazi": yazi_kaydi,
         "vurgu": "whisper" if gercek else "orantili",
         "altyazi": [asdict(p) for p in parcalar],
         "sure_sn": round(sure, 2),

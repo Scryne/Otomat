@@ -182,6 +182,27 @@ def duzenle(
     yt.videos().update(part=parcalar, body=govde).execute(num_retries=DENEME)
 
 
+def geri_cek(video_id: str, neden: str, yt=None) -> None:
+    """Planlı ya da yayındaki videoyu private'a çeker (publishAt düşer), slotu boşaltır (`durum.geri_cekilen`).
+    Silmez: geri alınabilir. Elle: `OTOMAT_KANAL=uzay uv run python -m otomat.yayin.youtube geri <id> "<neden>"`."""
+    from otomat import durum
+
+    yt = yt or servis()
+    govde = {
+        "id": video_id,
+        "status": {
+            "privacyStatus": "private",
+            "selfDeclaredMadeForKids": kanal.aktif().mfk,
+            "containsSyntheticMedia": False,
+            "embeddable": True,
+            "publicStatsViewable": True,
+            "license": "youtube",
+        },
+    }
+    yt.videos().update(part="status", body=govde).execute(num_retries=DENEME)
+    durum.geri_cek(durum.baglan(), [video_id], dt.datetime.now(dt.UTC).date(), neden)
+
+
 def altyazi_ekle(video_id: str, dil: str, srt_metni: str, yt=None) -> None:
     from googleapiclient.http import MediaIoBaseUpload
 
@@ -200,9 +221,15 @@ def main() -> None:
     alt = p.add_subparsers(dest="komut", required=True)
     alt.add_parser("yetki", help="tarayıcıda izin ver, token'ı kanalın sirlar/ dosyasına yaz")
     alt.add_parser("kontrol", help="token geçerli mi, kanal adı ne")
+    g = alt.add_parser("geri", help="videoyu private'a çek, slotunu boşalt")
+    g.add_argument("video_id")
+    g.add_argument("neden")
     a = p.parse_args()
     if a.komut == "yetki":
         print("token yazıldı:", yetki_al())
+    elif a.komut == "geri":
+        geri_cek(a.video_id, a.neden)
+        print("geri çekildi:", a.video_id)
     else:
         kanal = (
             servis()

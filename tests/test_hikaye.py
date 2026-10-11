@@ -196,6 +196,10 @@ def test_kabul_referansi_kabul_eder_kusurlari_reddeder(kanal_sec, tmp_path):
     assert bozuk(aciklama=meta["aciklama"].replace("Kevin MacLeod", "someone"))
     assert bozuk(senaryo={**meta["senaryo"], "hakem_turlari": [[[3, "wrong date"]]]})
     assert bozuk(cumleler=[*meta["cumleler"][:-1], "Please subscribe for more stories."])
+    # 10-12: "Lord Bloody Wog Rolo" (etnik hakaret) TypeSafe süzgecinden geçip 10-13'e planlanmıştı
+    assert any("hakaret" in h for h in bozuk(baslik="Lord Bloody Wog Rolo: Guest of Her Majesty"))
+    assert any("hakaret" in h for h in bozuk(paket={**meta.get("paket", {}), "anahtar": "wiki:Lord Bloody Wog Rolo"}))
+    assert not any("hakaret" in h for h in bozuk(baslik="The Boy Who Outran Michael Fagan"))
     kanal_sec("uzay")
     (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
     assert any("MFK" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video()))
@@ -226,6 +230,8 @@ def test_mfk_kanalinda_eski_videolar_cocuk_icerigi_sayilmaz(kanal_sec, monkeypat
     kanal_sec("uzay")
     db = durum.baglan(tmp_path / "d.db")
     durum.geri_cek(db, ["eski1", "eski2"], dt.date(2026, 10, 8), "format değişimi")
+    # kalite yüzünden geri çekilen masal çocuk içeriğidir: "çocuklara özel değil"e çevrilmez (10-12)
+    durum.geri_cek(db, ["masal"], dt.date(2026, 10, 12), "kalite: masalda olmayan iki ayı")
     monkeypatch.setattr(durum, "baglan", lambda: db)
     guncellenen = []
 
@@ -477,3 +483,127 @@ def test_gorsel_yanitsiz_donerse_dosya_yazilmaz(tmp_path, monkeypatch):
     with pytest.raises(cf.CFHatasi, match="görsel"):
         cf.gorsel("a cat", tmp_path / "sahne_0.jpg", 1)
     assert not list(tmp_path.iterdir())  # yarım/boş dosya sonraki koşuda "var" sayılmasın
+
+
+def test_hakaretli_makale_havuza_girmez():
+    havuz = [
+        {"baslik": b, "bolum": "People", "tanim": "t", "ts": {"hikaye": 0.9, "hassas": 0.1, "siyaset": 0.1}}
+        for b in ["Lord Bloody Wog Rolo", "The boy Jones", "Raccoon wedding"]
+    ]
+    assert [p.anahtar for p in kaynaklar._tuhaf(havuz, "2026-10-12")] == ["wiki:The boy Jones", "wiki:Raccoon wedding"]
+
+
+def test_yazi_ocr_esigi():
+    """S12 ölçümü (87 sahne): masal karelerinde OCR Çince karakter, tek harf, rakam uyduruyor; sayılmaz."""
+    from otomat.hikaye import yazi
+
+    assert yazi.sayilir("ABOLISHA FoR", 0.94) and yazi.sayilir("BWRE", 0.74)
+    assert not yazi.sayilir("米火粥", 0.9) and not yazi.sayilir("C", 0.81) and not yazi.sayilir("1832", 0.9)
+    assert not yazi.sayilir("lade", 0.56)
+
+
+def test_yazi_tasiyan_nesne_tarifte_bulunur_olumsuz_sayilmaz():
+    """Sister Boom Boom / Wog Rolo tarifleri (10-12): tabela, pankart, tırnaklı söz anlamsız harf olarak çizildi."""
+    s = senaryo.yazi_tasiyanlar(
+        "Sydney streets of the late twentieth century, neon signs, denim and leather.",
+        [
+            "Rolo marching with a large sandwich board covered with anti-monarchy slogans.",
+            'A car with a "For Sale" card on the windshield.',
+            "A small fox sits by a bush, no signs or letters anywhere.",
+            "Close-up of a metal jail cell door slightly ajar.",
+        ],
+    )
+    assert [n for n, _ in s] == [0, 1, 2]
+    assert "neon" in s[0][1] and "slogans" in s[1][1] and '"for sale"' in s[2][1]
+
+
+def test_gorsel_temizle_atif_donen_tarifi_almaz_ikinci_tur_kalani_onarir(monkeypatch):
+    """S12: model iki sahneye tarif yerine "SCENE 2" yazdı; kare ana karaktersiz boş sokak çıktı."""
+    sc = senaryo.Senaryo(
+        "B", "m", "A city at night with neon signs everywhere.", [], ["l"] * 3,
+        ["A nun holds a placard in the rain.", "A nun at a ballot box.", "A nun on marble steps at dusk."],
+    )  # fmt: skip
+    cevaplar = iter([
+        {"world": "A rainy city at night bathed in pink and turquoise light from street lamps.",
+         "scenes": [{"scene": 1, "image": "SCENE 1"},
+                    {"scene": 2, "image": "A nun in white robes drops a folded slip into a wooden box."}]},
+        {"world": "", "scenes": [{"scene": 1, "image": "A nun in white robes raises her fist in the rain, a crowd."}]},
+    ])  # fmt: skip
+    istemler = []
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: istemler.append(istem) or next(cevaplar))
+    senaryo.gorsel_temizle(sc)
+    assert sc.gorseller[0].startswith("A nun in white robes raises") and "wooden box" in sc.gorseller[1]
+    assert sc.gorseller[2] == "A nun on marble steps at dusk." and "neon" not in sc.dunya
+    isaretli = istemler[1].split("FLAGGED")[1].split("Rewrite")[0]
+    assert "scene 1: placard" in isaretli and "scene 2" not in isaretli and "world" not in isaretli
+    assert sc.gorsel_onarim[1] == [] and len(sc.gorsel_onarim[0]) == 3
+
+
+def test_yazili_sahne_yeniden_cizilir_az_yazili_kalir_hak_sinirli(tmp_path, monkeypatch):
+    from otomat.hikaye import cf, yazi
+
+    for i in range(5):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"eski")
+    ilk = {0: [], 1: ["SITER BOOM"], 2: ["BATER"], 3: ["NUN OF THE"], 4: ["ABVE"]}
+    sonra = {1: [], 2: ["BATERRRR"], 3: ["NUN"]}  # 1 temizlendi, 2 daha yazılı (eskisi kalır), 3 daha az yazılı
+    cizilen = set()
+
+    def oku(yol):
+        i = int(yol.stem.split("_")[1])
+        return sonra[i] if i in cizilen else ilk[i]
+
+    tohumlar = []
+
+    def gorsel(istem, yol, tohum):
+        assert istem.endswith(uretim.YAZISIZ)
+        tohumlar.append(tohum)
+        cizilen.add(int(yol.stem.split("_")[1]))
+        yol.write_bytes(b"yeni")
+        return yol
+
+    monkeypatch.setattr(yazi, "oku", oku)
+    monkeypatch.setattr(cf, "gorsel", gorsel)
+    k = uretim.yazilari_ayikla([f"istem {i}" for i in range(5)], tmp_path, 100)
+    assert k["yeniden"] == uretim.YAZI_YENIDEN == 3 and tohumlar == [115, 125, 135]
+    assert [(tmp_path / f"sahne_{i}.jpg").read_bytes() for i in range(5)] == [
+        b"eski",
+        b"yeni",
+        b"eski",
+        b"yeni",
+        b"eski",
+    ]
+    assert k["son"] == {2: ["BATER"], 3: ["NUN"], 4: ["ABVE"]}  # 4: hak bitti
+    assert set(k["ilk"]) == {1, 2, 3, 4} and not list(tmp_path.glob("yazili_*"))
+
+
+def test_yazili_sahne_kotaya_takilirsa_eski_kare_yerinde_kalir(tmp_path, monkeypatch):
+    from otomat.hikaye import cf, yazi
+
+    (tmp_path / "sahne_0.jpg").write_bytes(b"eski")
+    monkeypatch.setattr(yazi, "oku", lambda yol: ["SALE"])
+
+    def kota(*a):
+        raise cf.KotaHatasi("kota")
+
+    monkeypatch.setattr(cf, "gorsel", kota)
+    with pytest.raises(cf.KotaHatasi):
+        uretim.yazilari_ayikla(["istem"], tmp_path, 0)
+    assert (tmp_path / "sahne_0.jpg").read_bytes() == b"eski" and not list(tmp_path.glob("yazili_*"))
+    monkeypatch.setattr(yazi, "oku", lambda yol: None)  # OCR kurulu değil: denetim atlanır, video yine çıkar
+    assert uretim.yazilari_ayikla(["istem"], tmp_path, 0) == {"ocr": "yok"}
+
+
+def test_yazi_ocr_gercek_karede_yaziyi_bulur_bos_karede_bulmaz(tmp_path):
+    """CI `--extra gorsel` ile kurar: Linux runner'da OCR gerçekten yükleniyor mu (opencv libGL ister)."""
+    pytest.importorskip("rapidocr_onnxruntime")
+    from PIL import ImageDraw, ImageFont
+
+    from otomat.hikaye import yazi
+
+    font = ImageFont.truetype("otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf", 90)
+    dolu, bos = Image.new("RGB", (768, 400), "#e8dcc0"), Image.new("RGB", (768, 400), "#e8dcc0")
+    ImageDraw.Draw(dolu).text((60, 140), "NUN OF THE ABOVE", font=font, fill="#202020")
+    dolu.save(tmp_path / "dolu.jpg")
+    bos.save(tmp_path / "bos.jpg")
+    assert any("ABOVE" in m.upper() for m in yazi.oku(tmp_path / "dolu.jpg"))
+    assert yazi.oku(tmp_path / "bos.jpg") == []

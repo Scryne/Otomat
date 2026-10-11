@@ -4,7 +4,7 @@
 
 Reddederken `RED: <neden>` ile çıkar (çıkış kodu 1). Kontroller meta.json'un değerlerine ve yanındaki dosyalara bakar:
 boş/yer tutucu/yarım/tekrarlı meta, sessiz ya da yanlış boyutlu video, eksik sahne görseli, hakemden geçmemiş senaryo,
-kaynak ve müzik atfı olmayan açıklama, kanalın MFK ayarıyla çelişen bayrak yayına çıkamaz.
+kaynak ve müzik atfı olmayan açıklama, başlıkta/anlatımda hakaret, kanalın MFK ayarıyla çelişen bayrak yayına çıkamaz.
 """
 
 import json
@@ -14,6 +14,7 @@ import sys
 from pathlib import Path
 
 from otomat import kanal
+from otomat.hikaye.kaynaklar import HAKARET
 from otomat.hikaye.senaryo import ORAN
 
 SURE = (20.0, 60.0)  # Shorts: 60 sn altı; 20 sn altı hikâye olamaz
@@ -78,6 +79,9 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
         h.append("anlatıcının okuyamayacağı sembol var")
     if any(CAGRI.search(s) for s in [baslik or "", *satirlar]):
         h.append("abone/yorum çağrısı var")
+    kaynak_adi = str((meta.get("paket") or {}).get("anahtar", ""))
+    if hakaret := {m.lower() for s in [baslik or "", kaynak_adi, *satirlar] for m in HAKARET.findall(s)}:
+        h.append(f"hakaret/küfür var: {', '.join(sorted(hakaret))}")
     if meta.get("kanca") != satirlar[0]:
         h.append("kanca ilk satır değil")
 
