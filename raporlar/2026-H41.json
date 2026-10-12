@@ -1,0 +1,18 @@
+{
+ "kanal": "earth",
+ "hafta": {
+  "views": 100,
+  "engaged_views": 22,
+  "abone_net": 1,
+  "abone_toplam": 2,
+  "video_sayisi": 3
+ },
+ "son_56_gun": {
+  "views": 100,
+  "engaged_views": 22,
+  "abone_net": 1,
+  "abone_toplam": 2,
+  "video_sayisi": 3
+ },
+ "analitik_hatasi": null
+}
