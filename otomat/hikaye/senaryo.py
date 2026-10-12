@@ -136,8 +136,9 @@ LINES:
 PROBLEMS:
 {sorun}
 
-Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less. Keep each line
-4-12 words, spoken, and keep the story flowing with the lines around it. Return the fixed lines."""
+Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less. Use only what the
+source states: add no new detail, purpose, cause or number. Keep each line 4-12 words, spoken, and keep the story
+flowing with the lines around it. Return the fixed lines."""
 
 # Yazı taşıyan nesne: flux "no text"i tutmuyor, tarifte tabela/pankart/gazete varsa anlamsız harflerle çiziyor
 # (Sister Boom Boom, Wog Rolo, Prester John; 10-12). Olumsuz kalıp ("no signs") sayılmaz.
@@ -216,6 +217,11 @@ SAHNE_SAYISI = {"tuhaf": (7, 8), "masal": (7, 7)}
 KELIME = {"tuhaf": (60, 100), "masal": (50, 95)}  # toplam kelime; dışı onarıma girer
 SATIR_KELIME = 14
 SAYI_SINIRI = 3  # istem 2 der; bir pay bırakılır
+SAYI_HEDEF = 2  # sınır aşılınca ilk ikisinden sonraki sayıları taşıyan her satır onarıma gider
+# Son tur kalanı ara satırlardaysa (ilk ve son satır değil) en çok bu kadar satır çıkarılıp hakeme bir kez daha
+# sorulur; kabul 6 satırın altını reddeder (kabul.SATIR)
+CIKAR_EN_COK = 2
+CIKAR_EN_AZ = 6
 # Oran ("1:4-million" anlatıcıda "1, 4 million" oldu, Tree of Ténéré 10-09). Saat ("12:30") doğru okunuyor.
 ORAN = r"\b\d+:(?!\d{2}(?![\d,-]))\d"
 SEMBOL = re.compile(rf"[°%&$€£#@/+=<>~^*|]|{ORAN}|\b(?:mph|km/h|ft|lbs?|approx|etc)\b\.?", re.I)
@@ -238,6 +244,7 @@ class Senaryo:
     gorseller: list[str]
     turlar: list[list] = field(default_factory=list)  # her turda bulunan sorunlar (meta.json'a)
     gorsel_onarim: list[list] = field(default_factory=list)  # yazı taşıyan nesne: [onarımdan önce, sonra]
+    cikarilan: list[str] = field(default_factory=list)  # son çare: onarılamayıp çıkarılan ara satırlar
 
 
 def sema(tur: str, moodlar: list[str]) -> dict:
@@ -285,11 +292,12 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
     sorun = []
     if tur == "tuhaf":
         sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak, adlar=i > 0)]
-        # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons")
+        # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons").
+        # Yalnız son sayılı satır işaretlenince onarım öbürlerine dokunmuyordu, sorun 4 turda kapanmadı (Loret, 10-12).
         sayili = [i for i, s in enumerate(satirlar, 1) for _ in re.findall(r"\d[\d,.]*", s)]
         if len(sayili) > SAYI_SINIRI:
-            sorun.append((sayili[-1], f"too many numbers in the script ({len(sayili)}); keep the 2 most striking, "
-                                      "tell the rest as story"))  # fmt: skip
+            sorun += [(n, f"the script has {len(sayili)} numbers but may hold only {SAYI_HEDEF}; tell this line "
+                          "without its number") for n in dict.fromkeys(sayili[SAYI_HEDEF:])]  # fmt: skip
     for i, s in enumerate(satirlar, 1):  # anlatıcı sembolü okuyamıyor ("40°F")
         if sembol := SEMBOL.findall(s):
             sorun.append((i, f"spell out symbols as words for the narrator: {' '.join(sembol)}"))
@@ -344,6 +352,37 @@ def _numarali(satirlar: list[str]) -> str:
     return "\n".join(f"{i}. {s}" for i, s in enumerate(satirlar, 1))
 
 
+def _hakem(tur: str, kisa: str, baslik: str, satirlar: list[str]) -> list[tuple[int, str]]:
+    h = cf.sohbet(HAKEM_ISTEM[tur].format(metin=kisa, baslik=baslik, satirlar=_numarali(satirlar)), SORUN_SEMA)
+    return [(p["line"], p["reason"]) for p in h["problems"]]
+
+
+def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str, kisa: str) -> bool:
+    """Son çare: son turda kalan sorunlar yalnız ara satırlardaysa o satırlar (ve sahneleri) çıkarılır; kalan senaryo
+    kod kontrolünden ve bir hakem turundan daha temiz geçerse kabul. "Emin değilsen az söyle"nin satır karşılığı:
+    10-11/12'de Earth'te düşen 8 hikâyenin 5'i son turda tek sorunla düştü (kaynakta olmayan ayrıntı, tekrar)."""
+    nolar = {n for n, _ in sorun}
+    if (
+        not nolar
+        or len(nolar) > CIKAR_EN_COK
+        or min(nolar) < 2  # başlık ve kanca çıkarılmaz
+        or max(nolar) >= len(sc.satirlar)  # son satır (vurgu) ya da toplam kelime sorunu
+        or len(sc.satirlar) - len(nolar) < CIKAR_EN_AZ
+    ):
+        return False
+    kalan = [i for i in range(len(sc.satirlar)) if i + 1 not in nolar]
+    satirlar = [sc.satirlar[i] for i in kalan]
+    if kod_kontrolu(tur, sc.baslik, satirlar, kaynak):
+        return False
+    yeni = _hakem(tur, kisa, sc.baslik, satirlar)
+    sc.turlar.append([[n, r[:300]] for n, r in yeni])
+    if yeni:
+        return False
+    sc.cikarilan = [sc.satirlar[n - 1] for n in sorted(nolar)]
+    sc.satirlar, sc.gorseller = satirlar, [sc.gorseller[i] for i in kalan]
+    return True
+
+
 def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> Senaryo:
     kisa = kaynak[:6000]
     istem = ISTEM[tur].format(baslik=baslik, metin=kisa, konu=konu, kalip=KALIPLAR[kalip]) + SAHNE_ISTEMI.format(
@@ -359,13 +398,9 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         gorseller=[x["image"] for x in s["scenes"]],
     )
     for tur_no in range(TUR_SAYISI):
-        sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak)
-        h = cf.sohbet(
-            HAKEM_ISTEM[tur].format(metin=kisa, baslik=sc.baslik, satirlar=_numarali(sc.satirlar)), SORUN_SEMA
-        )
-        sorun += [(p["line"], p["reason"]) for p in h["problems"]]
+        sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar)
         sc.turlar.append([[n, r[:300]] for n, r in sorun])
-        if not sorun:
+        if not sorun or (tur_no == TUR_SAYISI - 1 and satir_cikar(tur, sc, sorun, kaynak, kisa)):
             gorsel_temizle(sc)
             return sc
         if tur_no == TUR_SAYISI - 1:

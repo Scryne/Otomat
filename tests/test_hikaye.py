@@ -72,7 +72,8 @@ def test_kod_kontrolu_sayi_yigini():
     dolu = ["In 1919 the tank burst open.", "It was 50 feet tall, holding 2.3 million gallons.", "At 12:30 it went."]
     dolu += ["Then the dark wave rolled down the street."] * 5
     sorun = senaryo.kod_kontrolu("tuhaf", "Baslik", dolu, kaynak)
-    assert [n for n, s in sorun if "too many numbers" in s] == [3]  # sorunlu sayı son sayılı satıra yazılır
+    # ilk iki sayıdan sonrakini taşıyan her satır (10-12 Loret: yalnız son satır işaretlenince sorun kapanmadı)
+    assert [n for n, s in sorun if "may hold only 2" in s] == [2, 3]
     seyrek = ["In 1919 the tank burst open."] + ["Then the dark wave rolled down the street."] * 7
     assert not [s for _, s in senaryo.kod_kontrolu("tuhaf", "Baslik", seyrek, kaynak) if "numbers" in s]
 
@@ -438,6 +439,45 @@ def test_kisa_makale_kaynak_hatasi(monkeypatch):
     monkeypatch.setattr(kaynaklar, "_wiki", lambda params: {"query": {"pages": [{"missing": True}]}})
     with pytest.raises(kaynaklar.KaynakHatasi, match="bulunamadı"):
         kaynaklar.metin(_hikaye_paketi())
+
+
+def _senaryo_yaz(monkeypatch, satirlar, hakemler):
+    """`yaz`ı sahte modelle koşturur: ilk çağrı senaryo, sonra hakem (sırayla `hakemler`) ve onarım (değişiklik yok)."""
+    ilk = {"title": "The Vat That Burst", "mood": "m", "world": "A London street in 1814, brown and gray.",
+           "cast": [], "scenes": [{"line": s, "image": f"image {i}"} for i, s in enumerate(satirlar, 1)]}  # fmt: skip
+    hakem = iter(hakemler)
+    istemler = []
+
+    def sohbet(istem, sema):
+        istemler.append(istem)
+        if "title" in sema["properties"]:
+            return ilk
+        if "problems" in sema["properties"]:
+            return {"problems": [{"line": n, "reason": r} for n, r in next(hakem)]}
+        return {"fixes": []}
+
+    monkeypatch.setattr(senaryo.cf, "sohbet", sohbet)
+    return istemler
+
+
+def test_son_turda_kalan_ara_satir_cikarilir_hakem_onaylarsa(monkeypatch):
+    """10-11/12: Earth'te düşen 8 hikâyenin 5'i son turda tek sorunla düştü; ara satır çıkarılıp yeniden sorulur."""
+    satirlar = [f"The beer wave rolled down street {k} that day." for k in "abcdefgh"]
+    kalan = [(5, "repeats line 3")]
+    _senaryo_yaz(monkeypatch, satirlar, [kalan] * senaryo.TUR_SAYISI + [[]])
+    sc = senaryo.yaz("tuhaf", "London Beer Flood", "a beer wave rolled down the street that day", "", "detay", ["m"])
+    assert len(sc.satirlar) == len(sc.gorseller) == 7 and sc.cikarilan == [satirlar[4]]
+    assert "image 5" not in sc.gorseller and sc.turlar[-1] == []  # kabul son turun temiz olmasını ister
+
+    # kanca, son satır ya da 2'den fazla satır çıkarılmaz; çıkarılmış hali de hakemden geçmezse senaryo düşer
+    for sorun, sonra in [([(1, "x")], []), ([(8, "x")], []), ([(3, "x"), (4, "y"), (5, "z")], []), (kalan, kalan)]:
+        _senaryo_yaz(monkeypatch, satirlar, [sorun] * senaryo.TUR_SAYISI + [sonra])
+        with pytest.raises(senaryo.SenaryoHatasi):
+            senaryo.yaz("tuhaf", "London Beer Flood", "a beer wave rolled down the street that day", "", "detay", ["m"])
+
+
+def test_onarim_istemi_yeni_ayrinti_eklemeyi_yasaklar():
+    assert "add no new detail, purpose, cause or number" in senaryo.ONARIM_ISTEM
 
 
 def test_baslikta_buyuk_harfli_kelime_ad_sayilmaz_bos_satir_onarima_gider():

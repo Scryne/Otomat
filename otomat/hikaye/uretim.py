@@ -373,6 +373,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
             "gorseller": sc.gorseller,
             "hakem_turlari": sc.turlar,
             "gorsel_onarim": sc.gorsel_onarim,
+            "cikarilan": sc.cikarilan,
         },  # fmt: skip
         "muzik": muzik_adi,
         "yazi": yazi_kaydi,
