@@ -557,6 +557,40 @@ def test_yazi_tasiyan_nesne_tarifte_bulunur_olumsuz_sayilmaz():
     assert "neon" in s[0][1] and "slogans" in s[1][1] and '"for sale"' in s[2][1]
 
 
+def test_yazisiz_yazi_tasiyan_yan_cumleyi_duser_stile_dokunmaz(kanal_sec):
+    """Bartman (10-12): skor tabelası iki onarım turunda ve OCR yeniden çiziminde kaldı, "WACTER" diye çizildi."""
+    skor = ("Mark Prior winding up to throw a wild pitch; the ball crosses home plate, Luis Castillo and Juan Pierre "
+            "sprinting toward third; the scoreboard shows the run tally climbing.")  # fmt: skip
+    assert senaryo.yazisiz(skor) == (
+        "Mark Prior winding up to throw a wild pitch; the ball crosses home plate, Luis Castillo and Juan Pierre "
+        "sprinting toward third."
+    )
+    assert senaryo.yazisiz("A tank of 2.3 million gallons bursts, molasses everywhere, a huge brown wave.") == (
+        "A tank of 2.3 million gallons bursts, molasses everywhere, a huge brown wave."
+    )
+    assert senaryo.yazisiz("A neon sign glows.") == "A neon sign glows."  # geriye tarif kalmıyorsa dokunulmaz
+    stil = kanal.aktif().stil
+    istem = uretim.gorsel_istemi(stil, "Wrigley Field at dusk.", [], skor)
+    assert senaryo.yazisiz(istem).startswith(f"{stil}. A single full-frame scene") and "scoreboard" not in (
+        senaryo.yazisiz(istem)
+    )
+
+
+def test_gorsel_temizle_forma_duzlesir_onarim_tutmazsa_yan_cumle_duser(monkeypatch):
+    sc = senaryo.Senaryo(
+        "B", "m", "Wrigley Field in 2003, ivy walls.", ["Moises Alou: a tall man in a white jersey"], ["l"] * 2,
+        ["Moises Alou (white jersey, red cap) leaps near the wall, glove out, crowd behind.",
+         "Mark Prior throws a wild pitch toward home plate; the scoreboard shows the run tally climbing."],
+    )  # fmt: skip
+    # model tarifleri hiç değiştirmeden geri verdi (10-12 Bartman: iki turda da aynı işaretler kaldı)
+    ayni = {"world": sc.dunya, "scenes": [{"scene": 2, "image": sc.gorseller[1]}]}
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: ayni)
+    senaryo.gorsel_temizle(sc)
+    assert "jersey" not in " ".join([*sc.gorseller, *sc.oyuncular]) and "white uniform" in sc.oyuncular[0]
+    assert sc.gorseller[1] == "Mark Prior throws a wild pitch toward home plate."
+    assert sc.gorsel_onarim == [[[2, "scoreboard"]], []]
+
+
 def test_gorsel_temizle_atif_donen_tarifi_almaz_ikinci_tur_kalani_onarir(monkeypatch):
     """S12: model iki sahneye tarif yerine "SCENE 2" yazdı; kare ana karaktersiz boş sokak çıktı."""
     sc = senaryo.Senaryo(

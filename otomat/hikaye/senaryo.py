@@ -152,6 +152,9 @@ YAZI_TASIYAN = re.compile(
 GORSEL_TUR = 2
 TARIF_KELIME = 8  # onarımdan dönen tarif bundan kısaysa özgün tarif kalır
 OLUMSUZ = re.compile(r"\b(?:no|without|never|not any)\b[^.;:]*", re.I)
+# Forma takım adı basılıyor; "jersey" karakter tarifinde durunca onarım ona dokunmuyordu ("tarifi değiştirme"), iki tur
+# boşa gitti (Bartman, 10-12). Kodla düz forma yapılır, karakter tarifinde de.
+GIYSI = [(re.compile(r"\bnumbered\s+", re.I), ""), (re.compile(r"\bjersey(s?)\b", re.I), r"uniform\1")]
 
 GORSEL_ONARIM_ISTEM = """These are illustration descriptions for a short video. The illustrator cannot draw writing:
 anything that carries words or numbers comes out as garbled letters.
@@ -322,9 +325,42 @@ def yazi_tasiyanlar(dunya: str, gorseller: list[str]) -> list[tuple[int, str]]:
     return sorun
 
 
+def _yan_cumleler(metin: str) -> list[str]:
+    """Ayraçlarıyla birlikte yan cümleler: parantez dışındaki virgül/noktalı virgül ve cümle sonu ("2.3" bölünmez)."""
+    parca, derinlik, bas = [], 0, 0
+    for i, c in enumerate(metin):
+        derinlik += (c == "(") - (c == ")")
+        if derinlik == 0 and (c in ",;" or (c == "." and metin[i + 1 : i + 2] in (" ", ""))):
+            parca.append(metin[bas : i + 1])
+            bas = i + 1
+    return [p for p in [*parca, metin[bas:]] if p.strip()]
+
+
+def yazisiz(metin: str) -> str:
+    """Yazı taşıyan nesne geçen yan cümleler düşer ("…; the scoreboard shows the run tally climbing"). Olumsuz kalıp
+    ("no text, no signs") sayılmaz; geriye anlamlı tarif kalmazsa metin aynen döner."""
+    kalan = "".join(p for p in _yan_cumleler(metin) if not YAZI_TASIYAN.search(OLUMSUZ.sub("", p))).strip()
+    kalan = kalan.rstrip(",;").rstrip()
+    if len(kalan.split()) < TARIF_KELIME:
+        return metin
+    return kalan if kalan.endswith(".") else kalan + "."
+
+
+def giysi_duz(metin: str) -> str:
+    for desen, yerine in GIYSI:
+        metin = desen.sub(yerine, metin)
+    return metin
+
+
 def gorsel_temizle(sc: Senaryo) -> None:
     """Tarifte yazı taşıyan nesne varsa en çok GORSEL_TUR onarım turu; ikinci tur yalnız hâlâ işaretli kalanları
-    gönderir. Kalan yazıyı üretimde OCR yakalar (yazi.py)."""
+    gönderir. Onarımdan sonra da işaretli kalan tarifin o yan cümlesi kodla düşer: Bartman'da (10-12) iki tur hiçbir
+    şeyi değiştirmedi, skor tabelası anlamsız harflerle çizildi. Kalan yazıyı üretimde OCR yakalar (yazi.py)."""
+    sc.dunya, sc.gorseller, sc.oyuncular = (
+        giysi_duz(sc.dunya),
+        [giysi_duz(g) for g in sc.gorseller],
+        [giysi_duz(o) for o in sc.oyuncular],
+    )
     if not (ilk := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
         return
     sorun = ilk
@@ -345,6 +381,12 @@ def gorsel_temizle(sc: Senaryo) -> None:
                 sc.gorseller[d["scene"] - 1] = d["image"].strip()
         if not (sorun := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
             break
+    for n, _ in sorun:
+        if n == 0:
+            sc.dunya = yazisiz(sc.dunya)
+        else:
+            sc.gorseller[n - 1] = yazisiz(sc.gorseller[n - 1])
+    sorun = yazi_tasiyanlar(sc.dunya, sc.gorseller)
     sc.gorsel_onarim = [[[n, r] for n, r in ilk], [[n, r] for n, r in sorun]]
 
 

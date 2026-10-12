@@ -372,6 +372,23 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     değil) o satırlar sahneleriyle çıkarılır, senaryo kod kontrolünden ve bir hakem turundan daha geçerse kabul.
     Kabul en az 6 satır ister. Çıkarılan satırlar `meta.json`'da (`senaryo.cikarilan`). Ek maliyet bir hakem çağrısı.
   - Testler 140. Etkisi canlı koşuda ölçülecek: Earth'ün hikâye başına geçme oranı (10-11/12: 1/8).
+  - İlk canlı koşu (elle tetik, 10-12 21:00 UTC; dünkü akşam koşusunun kotası kayan pencereden düşünce): Earth'te 3
+    hikâyeden 2'si geçti. Mónica Macías 10-13 boş slotuna (`OoBBwiDNlSc`, 4. turda temiz), Bartman 10-14'e
+    (`ZwMNjnj4uBk`, 2. turda temiz) planlandı. Roland the Farter tek sorunla düştü ("fertile" kaynakta yok, satır 5).
+    Satır çıkarma bu koşuda devreye girmedi. Alarm #7 kapandı.
+  - Kare incelemesi: iki videoda hakaret, şiddet ya da yanlış olgu yok, yayında kalıyor (Drag Nun emsali). Kusurlar:
+    - Bartman'da skor tabelası "WACTER" diye çizilmiş; formalarda bozuk takım adı var.
+    - Bartman'ın son iki satırı ters sırada: "13 yıl sonra yüzük" satırından sonra "polis çıkardı" geliyor. Hakem
+      zaman sıçramasını yakalamadı.
+    - Mónica'da tabela ve istasyon yazıları anlamsız Asya harfleriyle çizilmiş. OCR yalnız Latin harfi sayıyor,
+      masal karelerinde uydurma Çince yanlış alarm verdiği için (yazi.py ölçümü); bu bilerek kabul edilmiş bir açık.
+  - Görsel onarımı Bartman'da iki turda hiçbir tarifi değiştirmedi. "jersey" karakter tarifindeydi ve istem
+    karakter tarifini değiştirmeyi yasaklıyordu. Skor tabelasının neden kaldığı bilinmiyor (model yanıtı
+    kaydedilmiyor). Düzeltmeler:
+    - `giysi_duz`: jersey kodla uniform olur, karakter tariflerinde de.
+    - `yazisiz`: onarımdan sonra da işaretli kalan tarifin yazı taşıyan yan cümlesi kodla düşer. OCR yeniden
+      çiziminde de istemden düşer; eskiden yalnız sona "yazısız" cümlesi ekleniyordu.
+    - Bartman'ın gerçek tariflerinde 4 işaretin 4'ü temizleniyor. Testler 142.
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri

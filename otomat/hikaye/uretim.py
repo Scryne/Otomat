@@ -315,7 +315,8 @@ def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
         eski = dizin / f"yazili_{i}.jpg"  # sahne_* değil: kabul ve yarım üretim sahne dosyalarını sayıyor
         yol.replace(eski)
         try:
-            cf.gorsel(f"{istem} {YAZISIZ}", yol, taban + 10 * i + 5)
+            # istem aynı nesneyi istedikçe ek cümle tutmuyor (Bartman skor tabelası, 10-12): o yan cümle düşer
+            cf.gorsel(f"{senaryo.yazisiz(istem)} {YAZISIZ}", yol, taban + 10 * i + 5)
         except cf.KotaHatasi:
             eski.replace(yol)  # sonraki koşu senaryoyu sürdürür, bu sahneyi yeniden dener
             raise
