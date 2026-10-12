@@ -24,7 +24,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
 | 11 | Kanal 2: Orbit Ruler (uzay) | ✅ Tamamlandı | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
-| 13 | Portföy işletimi | 🔄 Devam Ediyor | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
+| 13 | Portföy işletimi | ✅ Tamamlandı | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
 
 ## Faz Detayları
 
@@ -361,12 +361,25 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Testler 138 (yeni ve değişen 9 test eski kodda düşüyor). CI OCR'ı Linux'ta `--extra gorsel` ile kurar.
   - Açık: karakter tutarlılığı ve hikâyede olmayan nesne (ayılar). Bunlar için vision modeli gerekir, neuron
     harcar; ölçülmeden eklenmedi.
+- **Senaryo yakınsaması (2026-10-12 akşam):**
+  - 10-11 ve 10-12'de Earth'te denenen 8 hikâyeden 7'si hakemden geçmedi, 5'i son turda tek sorunla: kaynakta
+    olmayan ayrıntı ("for interviews"), tekrar eden olay, fazla sayı. 10-12 koşusu 3 hikâyeyi de düşürdü, Earth'ün
+    10-13 slotu boş kaldı (Wog Rolo da geri çekilmişti). Orbit aynı günlerde hep geçti.
+  - Sayı sınırı aşılınca yalnız son sayılı satır işaretleniyordu, onarım öbür satırlara dokunmadı (Loret, 4 turda
+    4 sayı). Artık ilk iki sayıdan sonrakini taşıyan her satır onarıma gider.
+  - Onarım istemi yeni ayrıntı, amaç, neden ya da sayı eklemeyi yasaklar (onarım yeni uydurma getirebiliyordu).
+  - Son çare (`senaryo.satir_cikar`): son turda kalan sorunlar en çok iki ara satırdaysa (başlık, kanca ve son satır
+    değil) o satırlar sahneleriyle çıkarılır, senaryo kod kontrolünden ve bir hakem turundan daha geçerse kabul.
+    Kabul en az 6 satır ister. Çıkarılan satırlar `meta.json`'da (`senaryo.cikarilan`). Ek maliyet bir hakem çağrısı.
+  - Testler 140. Etkisi canlı koşuda ölçülecek: Earth'ün hikâye başına geçme oranı (10-11/12: 1/8).
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri
   kanal başına (ilk public + 56 gün; Earth 12-05, Orbit 12-04) ve paylaşılan kotaların en yoğun günü. Kanal raporları
   sayılarını `YYYY-HWW.json`'a yazar (token yalnız kanalın kendi işinde). H41 verisiyle yerelde üretildi. Bitti: ilk
   portföy raporu (H41) repoda.
+  - **Kapandı (2026-10-12):** ilk portföy raporu günlük iş akışının `portfoy` işinden geldi (`38e8308`,
+    `raporlar/portfoy/2026-H41.md`): iki kanal yan yana, K-14 karar günleri, paylaşılan kotaların en yoğun günü.
 
 ### Faz 10–13: Çok kanal (2026-10-06)
 - **Neden:** Scryne: "farklı kanallarda farklı konulu kanallar… projeyi en üst seviyeye çıkaracak her şey, tamamen sana
