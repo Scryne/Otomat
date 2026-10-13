@@ -55,6 +55,8 @@ class Kanal:
     # bugünkü formatın ilk yayın günü (ISO): haydut ödülleri ve K-14 öldürme sayacı bu günden sayılır. Orbit'in çocuk
     # dönemi (MFK, 0 izlenme) genel kitle formatının kollarını aşağı çekmesin (10-13 denetimi)
     donem: str = ""
+    # ana karakterin ilk karesi sonraki sahnelerine referans görsel olarak verilir (flux-2-klein input_image; S14)
+    referans: bool = False
 
     @property
     def yeni_adlar(self) -> tuple[str, ...]:
@@ -108,6 +110,7 @@ def yukle(kimlik: str) -> Kanal:
         eski_adlar=tuple(d.get("eski_adlar", [])),
         yedek_adlar=tuple(d.get("yedek_adlar", [])),
         donem=str(d.get("donem", "")),
+        referans=bool(d.get("referans", False)),
     )
 
 

@@ -232,3 +232,26 @@ def test_kabul_kaynak_atfi_aciklamada_hakaret_sembol_gorunus(kanal_sec, tmp_path
     assert any("hakaret" in h for h in bozuk(etiketler=["history", "wogs"]))
     assert any("sembol" in h for h in bozuk(cumleler=[*meta["cumleler"][:-1], "It moved at 35 mph that day."]))
     assert any("görünüş" in h for h in bozuk(durum={"tutmayan": {"2": "tail?"}}))
+
+
+def test_referans_plani_ana_karakterin_ilk_karesini_sonrakilere_verir(kanal_sec, tmp_path, monkeypatch):
+    import dataclasses
+
+    gorseller = ["A meadow at dawn.", "Felix sniffs grapes.", "Felix jumps.", "A crow laughs.", "Felix walks off."]
+    sc = senaryo.Senaryo("T", "m", "W.", ["Felix: a red fox", "Crow: a black crow"], ["l"] * 5, gorseller)
+    kanal_sec("uzay")
+    assert uretim.referans_plani(sc) is None  # profilde kapalı (S14 ölçülene kadar)
+    monkeypatch.setattr(kanal, "aktif", lambda: dataclasses.replace(kanal.yukle("uzay"), referans=True))
+    assert uretim.referans_plani(sc) == (1, "Felix", frozenset({2, 4}))
+    cizim = []
+
+    def gorsel(istem, yol, tohum, referanslar=()):
+        cizim.append((yol.name, istem.endswith("setting change."), tuple(r.name for r in referanslar)))
+        return yol
+
+    monkeypatch.setattr(cf, "gorsel", gorsel)
+    uretim.sahneleri_ciz([f"istem {i}." for i in range(5)], tmp_path, 0, uretim.referans_plani(sc))
+    assert cizim[0] == ("sahne_1.jpg", False, ())  # önce kaynak kare, referanssız
+    refli = {c[0]: c[1:] for c in cizim[1:]}
+    assert refli["sahne_2.jpg"] == (True, ("sahne_1.jpg",)) and refli["sahne_4.jpg"] == (True, ("sahne_1.jpg",))
+    assert refli["sahne_0.jpg"] == (False, ()) and refli["sahne_3.jpg"] == (False, ())

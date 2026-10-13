@@ -435,14 +435,43 @@ def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, tab
     return kayit
 
 
-def sahneleri_ciz(istemler: list[str], dizin: Path, taban: int) -> list[Path]:
+REFERANS_CUMLESI = (
+    "{ad} looks exactly as in the reference image: same species, face, colors and clothes; only the pose, action, "
+    "camera and setting change."
+)
+
+
+def referans_plani(sc: senaryo.Senaryo) -> tuple[int, str, frozenset[int]] | None:
+    """(kaynak sahne, ana karakter, referansla çizilecek sahneler) ya da None. Ana karakter kadronun ilki; kaynak,
+    adının geçtiği ilk sahne (masalda ilk kare zaten onun yakın portresi). Profilde `referans` kapalıysa None."""
+    if not kanal.aktif().referans or not sc.oyuncular:
+        return None
+    ad = sc.oyuncular[0].partition(":")[0].strip()
+    gecen = [i for i, g in enumerate(sc.gorseller) if _sahnede(ad, g)]
+    if len(gecen) < 2:
+        return None
+    return gecen[0], ad, frozenset(gecen[1:])
+
+
+def sahneleri_ciz(
+    istemler: list[str], dizin: Path, taban: int, plan: tuple[int, str, frozenset[int]] | None = None
+) -> list[Path]:
     """Sahneler PARALEL çizilir. Biri kota ya da filtreye takılınca kuyruktaki çizimler iptal edilir: `ex.map` hata
-    sonrasında da kalan istekleri gönderiyordu (kota doluyken boşa istek, filtrede boşa neuron)."""
+    sonrasında da kalan istekleri gönderiyordu (kota doluyken boşa istek, filtrede boşa neuron). `plan` varsa önce
+    ana karakterin ilk karesi çizilir, karakterin geçtiği sonraki sahneler onu referans alır (tür, renk ve kıyafet
+    kareden kareye kayıyordu; Cock and Jewel'de tavuk her karede başkaydı)."""
     ex = ThreadPoolExecutor(PARALEL)
     try:
-        isler = [
-            ex.submit(cf.gorsel, istem, dizin / f"sahne_{i}.jpg", taban + 10 * i) for i, istem in enumerate(istemler)
-        ]
+        ref: tuple[Path, ...] = ()
+        cumle = {}
+        if plan:
+            kaynak, ad, refli = plan
+            ref = (cf.gorsel(istemler[kaynak], dizin / f"sahne_{kaynak}.jpg", taban + 10 * kaynak),)
+            cumle = {i: " " + REFERANS_CUMLESI.format(ad=ad) for i in refli}
+        isler = []
+        for i, istem in enumerate(istemler):
+            ek = {"referanslar": ref} if i in cumle else {}
+            isler.append(ex.submit(cf.gorsel, istem + cumle.get(i, ""), dizin / f"sahne_{i}.jpg", taban + 10 * i, **ek))
         return [f.result() for f in isler]
     except BaseException:
         ex.shutdown(wait=True, cancel_futures=True)
@@ -459,7 +488,8 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     sc, kalip, istemler = senaryo_al(paket, kalip, dizin)
     t_senaryo = time.time()
     taban = sum(map(ord, paket.anahtar)) % 100_000
-    gorseller = sahneleri_ciz(istemler, dizin, taban)
+    plan = referans_plani(sc)
+    gorseller = sahneleri_ciz(istemler, dizin, taban, plan)
     # önce görünüş, sonra yazı: OCR son kareye bakar (görünüş yeniden çizimi yazıyı geri getirebiliyordu)
     durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban)
     yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
@@ -494,6 +524,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
         },  # fmt: skip
         "muzik": muzik_adi,
         "yazi": yazi_kaydi,
+        "referans": {"kaynak": plan[0], "ad": plan[1], "sahneler": sorted(plan[2])} if plan else None,
         "durum": durum_kaydi,
         "vurgu": "whisper" if gercek else "orantili",
         "altyazi": [asdict(p) for p in parcalar],
