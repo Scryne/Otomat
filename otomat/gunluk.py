@@ -314,6 +314,51 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
         alarmlar.append("**Pist denetimi yapılamadı** (üretim sürdü):\n\n" + _hata(e))
 
 
+CEVIRI_ONARIM = 1  # koşu başına en çok bu kadar planlı videonun eksik çevirisi tamamlanır (Cloudflare + 400 birim/dil)
+
+
+def ceviri_onarimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
+    """Çevirisi atlanmış (kota, bozuk çıktı) ve hâlâ planlı videonun eksik dillerini tamamlar: üretim klasörü bu ya da
+    önceki koşuların artifact'ında durur; hazirla yalnız eksik dilleri çevirir, yeni diller YouTube'a eklenir. 10-15
+    Earth videosu dört dilin dördü kotaya takılıp çevirisiz planlanmıştı ve hiçbir koşu tamamlamıyordu."""
+    from otomat.yayin import youtube
+
+    planli = {
+        a: v
+        for a, v, y in db.execute(
+            "SELECT anahtar, video_id, yayin_ani FROM secimler WHERE video_id IS NOT NULL"
+            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+        )
+        if dt.datetime.fromisoformat(y).astimezone(dt.UTC) > simdi + dt.timedelta(minutes=30)
+    }
+    onarilan = []
+    for yerel_yol in uretim_dosyalari("yerel.json"):
+        if len(onarilan) >= CEVIRI_ONARIM:
+            break
+        try:
+            yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))
+            anahtar = json.loads((yerel_yol.parent / "meta.json").read_text(encoding="utf-8"))["paket"]["anahtar"]
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+        if not yerel.get("atlanan") or (video_id := planli.pop(anahtar, None)) is None:
+            continue
+        try:
+            sonuc = hazirla(yerel_yol.parent)
+            yeni = [d for d in yerel["atlanan"] if d in sonuc["yerel"]]
+            if not yeni:
+                continue
+            youtube.yerellestir(video_id, sonuc["yerel"], yt=yt)
+            for dil in yeni:
+                srt = yerel_yol.parent / f"{dil}.srt"
+                youtube.altyazi_ekle(video_id, dil, srt.read_text(encoding="utf-8"), yt=yt)
+            onarilan.append({"video_id": video_id, "diller": yeni})
+        except Exception as e:  # noqa: BLE001
+            alarmlar.append(f"**Eksik çeviri tamamlanamadı** (`{video_id}`, üretim sürdü):\n\n" + _hata(e))
+            break
+    if onarilan:
+        kayit["ceviri_onarimi"] = onarilan
+
+
 BUFFER_SINIR = 3000  # istek / 30 gün, anahtar başına; tüm kanallar paylaşır
 BUFFER_ESIK = 2500
 
@@ -503,6 +548,8 @@ def main() -> None:
                 raise
             if kayit["video_id"] is None:
                 break  # kanala çıkmadı (Plan B): slot boş kalır, aynı slota ikinci video üretilmez
+        if HIKAYE and pist and yt is not None:  # üretimden sonra: kota önce yeni videonun
+            ceviri_onarimi(db, yt, simdi, kayitlar[-1] if kayitlar else genel, alarmlar)
     except Exception as e:
         son = kayitlar[-1] if kayitlar else genel
         if son.get("durum") != "kota":  # kota raporda ayrı sayılır (alarm yine yazılır: yarının slotu boş)

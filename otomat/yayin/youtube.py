@@ -238,6 +238,19 @@ def durumlar(video_idler: list[str], yt=None) -> dict[str, dict]:
     return sonuc
 
 
+def yerellestir(video_id: str, yerellestirme: dict[str, dict], yt=None) -> None:
+    """Yalnız çeviri başlık/açıklamaları (part=localizations; snippet ve status'a dokunmaz). Video `duzenle` ile
+    defaultLanguage=en almış olmalı."""
+    yt = yt or servis()
+    govde = {
+        "id": video_id,
+        "localizations": {
+            d: {"title": v["title"][:100], "description": v["description"][:5000]} for d, v in yerellestirme.items()
+        },
+    }
+    yt.videos().update(part="localizations", body=govde).execute(num_retries=DENEME)
+
+
 def altyazi_ekle(video_id: str, dil: str, srt_metni: str, yt=None) -> None:
     from googleapiclient.http import MediaIoBaseUpload
 

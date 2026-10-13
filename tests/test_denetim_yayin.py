@@ -184,3 +184,27 @@ def test_altyazi_biri_duserse_digerleri_yuklenir(tmp_path, monkeypatch):
     alarmlar = []
     assert gunluk.yayinla_buffer(tmp_path, None, "2026-10-14", alarmlar) == "vid"
     assert yuklenen == ["en", "es"] and "de" in alarmlar[0]  # eskiden ilk hata kalanları atlıyordu
+
+
+def test_ceviri_onarimi_planli_videonun_eksik_dillerini_tamamlar(tmp_path, monkeypatch):
+    """10-15 Earth: dört dil kotaya takıldı, video çevirisiz planlandı ve hiçbir koşu tamamlamıyordu."""
+    db = durum.baglan(tmp_path / "d.db")
+    simdi = dt.datetime(2026, 10, 13, 22, tzinfo=UTC)
+    _secim(db, "2026-10-15", "2026-10-15T14:00:00+00:00", "vid")
+    db.execute("UPDATE secimler SET anahtar = 'wiki:Heraclitus'")
+    _secim(db, "2026-10-12", "2026-10-12T14:00:00+00:00", "yayinda")  # yayınlanmış: dokunulmaz
+    klasor = tmp_path / "onceki" / "2026-10-15" / "wiki_Heraclitus"
+    klasor.mkdir(parents=True)
+    (klasor / "meta.json").write_text(json.dumps({"paket": {"anahtar": "wiki:Heraclitus"}}), encoding="utf-8")
+    (klasor / "yerel.json").write_text(json.dumps({"yerel": {}, "atlanan": ["es", "de"], "kota": True}), "utf-8")
+    (klasor / "es.srt").write_text("1\nes", encoding="utf-8")
+    monkeypatch.setattr(gunluk, "uretim_dosyalari", lambda ad: [klasor / ad])
+    monkeypatch.setattr(gunluk, "hazirla", lambda d: {"yerel": {"es": {"title": "T", "description": "D"}},
+                                                       "atlanan": ["de"], "kota": True})  # fmt: skip
+    yerel, altyazi = [], []
+    monkeypatch.setattr(youtube, "yerellestir", lambda v, y, yt=None: yerel.append((v, sorted(y))))
+    monkeypatch.setattr(youtube, "altyazi_ekle", lambda v, d, m, yt=None: altyazi.append((v, d)))
+    kayit, alarmlar = {}, []
+    gunluk.ceviri_onarimi(db, object(), simdi, kayit, alarmlar)
+    assert yerel == [("vid", ["es"])] and altyazi == [("vid", "es")] and alarmlar == []
+    assert kayit["ceviri_onarimi"] == [{"video_id": "vid", "diller": ["es"]}]
