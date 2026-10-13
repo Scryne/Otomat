@@ -97,11 +97,13 @@ scenes[].image: a concrete visual description of that scene for an illustrator w
   "the tank"). Copy cast descriptions verbatim when a character appears. {ilk_kare} {gorsel_kurali}
   No image may contradict the lines so far: a character who lost something is never shown with it again.
 changes: when a cast member's look changes during the story (loses its tail, gets a crown, turns muddy), one entry:
-  who (the cast name), from_scene (first scene number showing the new look), look (the new look in positive, visible
-  words: what the viewer SEES, e.g. "a tailless fox with a round bare rump and a small pink bandage"; the illustrator
-  cannot draw "gone", "without" or "no"), question (a yes/no question about one picture that checks it, e.g. "Does the
-  orange fox in the red scarf have a tail?"), expected (the correct answer from from_scene on). The cast description
-  shows the look at the start and does not mention the feature that changes. Empty list if no look changes.
+  who (the cast name), from_scene (first scene number showing the new look), look (the complete new look in positive,
+  visible words: what the viewer SEES, e.g. "a tailless red fox with a round bare rump"; the illustrator cannot draw
+  "gone", "without" or "no"; a second change of the same character repeats what still holds from the first, e.g. "a
+  tailless red fox wearing a small golden crown"), question (a yes/no question about one picture that checks it, e.g.
+  "Does the red fox have a tail?"; if a later change undoes an earlier one, reuse the earlier question word for word),
+  expected (the correct answer from from_scene on). The cast description shows the look at the start and does not
+  mention the feature that changes. Empty list if no look changes.
 mood: the music mood that fits the story."""
 
 HAKEM_ISTEM = {
@@ -112,6 +114,7 @@ HAKEM_ISTEM = {
 TITLE: {baslik}
 SCRIPT LINES:
 {satirlar}
+OPENING (line 1 was written to this instruction; do not flag line 1 for following it): {acilis}
 
 Check the title (as line 0) and every line: numbers, names, dates, places, causes, sequence, who did what.
 Flag a line if it states something the source does not say, contradicts it, attaches a fact to the wrong person or
@@ -127,6 +130,7 @@ FABLE:
 TITLE: {baslik}
 SCRIPT LINES:
 {satirlar}
+OPENING (line 1 was written to this instruction; do not flag line 1 for following it): {acilis}
 
 Flag a line (title = line 0) only if it:
 - contradicts the fable: changes who does what, the outcome, or the moral; adds an event, character or modern object
@@ -169,10 +173,12 @@ YAZI_TASIYAN = re.compile(
 )
 GORSEL_TUR = 2
 TARIF_KELIME = 8  # onarımdan dönen tarif bundan kısaysa özgün tarif kalır
-OLUMSUZ = re.compile(r"\b(?:no|without|never|not any)\b[^.;:]*", re.I)
+# virgülde de biter: "without a hat, holding a protest placard" pankartı da siliyordu (10-13 ikinci denetim)
+OLUMSUZ = re.compile(r"\b(?:no|without|never|not any)\b[^.;:,]*", re.I)
 # Forma takım adı basılıyor; "jersey" karakter tarifinde durunca onarım ona dokunmuyordu ("tarifi değiştirme"), iki tur
-# boşa gitti (Bartman, 10-12). Kodla düz forma yapılır, karakter tarifinde de.
-GIYSI = [(re.compile(r"\bnumbered\s+", re.I), ""), (re.compile(r"\bjersey(s?)\b", re.I), r"uniform\1")]
+# boşa gitti (Bartman, 10-12). Kodla düz forma yapılır, karakter tarifinde de. Büyük harfli "Jersey" ve "New jersey"
+# yer adıdır (New Jersey, Jersey Devil havuzda): dokunulmaz.
+GIYSI = [(re.compile(r"\bnumbered\s+", re.I), ""), (re.compile(r"(?<!New )\bjersey(s?)\b"), r"uniform\1")]
 
 GORSEL_ONARIM_ISTEM = """These are illustration descriptions for a short video. The illustrator cannot draw writing:
 anything that carries words or numbers comes out as garbled letters.
@@ -424,12 +430,12 @@ def _yan_cumleler(metin: str) -> list[str]:
     return [p for p in [*parca, metin[bas:]] if p.strip()]
 
 
-def yazisiz(metin: str) -> str:
+def yazisiz(metin: str, en_az: int = TARIF_KELIME) -> str:
     """Yazı taşıyan nesne geçen yan cümleler düşer ("…; the scoreboard shows the run tally climbing"). Olumsuz kalıp
-    ("no text, no signs") sayılmaz; geriye anlamlı tarif kalmazsa metin aynen döner."""
+    ("no text, no signs") sayılmaz; geriye `en_az` kelimeden kısa tarif kalırsa metin aynen döner."""
     kalan = "".join(p for p in _yan_cumleler(metin) if not YAZI_TASIYAN.search(OLUMSUZ.sub("", p))).strip()
     kalan = kalan.rstrip(",;").rstrip()
-    if len(kalan.split()) < TARIF_KELIME:
+    if len(kalan.split()) < en_az:
         return metin
     return kalan if kalan.endswith(".") else kalan + "."
 
@@ -440,6 +446,13 @@ def giysi_duz(metin: str) -> str:
     return metin
 
 
+def _kadro_yazisiz(oyuncu: str) -> str:
+    """Kadro tarifi karakterin geçtiği her sahne istemine girer ("a newsboy holding a stack of newspapers" her karede
+    anlamsız yazı çizdirirdi): yazı taşıyan yan cümle düşer, ad kalır."""
+    ad, ayrac, tarif = oyuncu.partition(":")
+    return f"{ad}{ayrac} {yazisiz(tarif.strip(), en_az=2)}" if ayrac else oyuncu
+
+
 def gorsel_temizle(sc: Senaryo) -> None:
     """Tarifte yazı taşıyan nesne varsa en çok GORSEL_TUR onarım turu; ikinci tur yalnız hâlâ işaretli kalanları
     gönderir. Onarımdan sonra da işaretli kalan tarifin o yan cümlesi kodla düşer: Bartman'da (10-12) iki tur hiçbir
@@ -447,7 +460,7 @@ def gorsel_temizle(sc: Senaryo) -> None:
     sc.dunya, sc.gorseller, sc.oyuncular = (
         giysi_duz(sc.dunya),
         [giysi_duz(g) for g in sc.gorseller],
-        [giysi_duz(o) for o in sc.oyuncular],
+        [_kadro_yazisiz(giysi_duz(o)) for o in sc.oyuncular],
     )
     if not (ilk := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
         return
@@ -482,12 +495,16 @@ def _numarali(satirlar: list[str]) -> str:
     return "\n".join(f"{i}. {s}" for i, s in enumerate(satirlar, 1))
 
 
-def _hakem(tur: str, kisa: str, baslik: str, satirlar: list[str]) -> list[tuple[int, str]]:
-    h = cf.sohbet(HAKEM_ISTEM[tur].format(metin=kisa, baslik=baslik, satirlar=_numarali(satirlar)), SORUN_SEMA)
-    return [(p["line"], p["reason"]) for p in h["problems"]]
+def _hakem(tur: str, kisa: str, baslik: str, satirlar: list[str], kalip: str) -> list[tuple[int, str]]:
+    """Hakem açılış kalıbını görür: `sonuc_once` sonucu, `ders` dersi baştan söyler; hakem bunu "sonu baştan
+    veriyor" diye işaretleyince kanca onarıma gidip kalıbını kaybediyordu. Aralık dışı satır numarası düşer: onarım
+    onu hiç düzeltemez, senaryo boşuna düşerdi."""
+    istem = HAKEM_ISTEM[tur].format(metin=kisa, baslik=baslik, satirlar=_numarali(satirlar), acilis=KALIPLAR[kalip])
+    h = cf.sohbet(istem, SORUN_SEMA)
+    return [(p["line"], p["reason"]) for p in h["problems"] if 0 <= p["line"] <= len(satirlar)]
 
 
-def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str, kisa: str) -> bool:
+def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str, kisa: str, kalip: str) -> bool:
     """Son çare: son turda kalan sorunlar yalnız ara satırlardaysa o satırlar (ve sahneleri) çıkarılır; kalan senaryo
     kod kontrolünden ve bir hakem turundan daha temiz geçerse kabul. "Emin değilsen az söyle"nin satır karşılığı:
     10-11/12'de Earth'te düşen 8 hikâyenin 5'i son turda tek sorunla düştü (kaynakta olmayan ayrıntı, tekrar)."""
@@ -504,7 +521,7 @@ def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str
     satirlar = [sc.satirlar[i] for i in kalan]
     if kod_kontrolu(tur, sc.baslik, satirlar, kaynak):
         return False
-    yeni = _hakem(tur, kisa, sc.baslik, satirlar)
+    yeni = _hakem(tur, kisa, sc.baslik, satirlar, kalip)
     sc.turlar.append([[n, r[:300]] for n, r in yeni])
     if yeni:
         return False
@@ -555,9 +572,9 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
     )
     sc.degisimler = degisimler(s.get("changes"), sc.oyuncular, len(sc.gorseller))
     for tur_no in range(TUR_SAYISI):
-        sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar)
+        sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar, kalip)
         sc.turlar.append([[n, r[:300]] for n, r in sorun])
-        if not sorun or (tur_no == TUR_SAYISI - 1 and satir_cikar(tur, sc, sorun, kaynak, kisa)):
+        if not sorun or (tur_no == TUR_SAYISI - 1 and satir_cikar(tur, sc, sorun, kaynak, kisa, kalip)):
             gorsel_temizle(sc)
             return sc
         if tur_no == TUR_SAYISI - 1:

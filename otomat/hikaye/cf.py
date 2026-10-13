@@ -31,7 +31,9 @@ REFERANS_KENAR = 504  # klein girdi görselleri 512x512'den küçük olmalı
 REFERANS_EN_COK = 4  # input_image_0..3
 FILTRE_KODU = b"3030"  # "output has been flagged": güvenlik filtresi
 KOTA_KODU = b"4006"
-KALICI = (400, 401, 403, 404)  # yeniden denemek boşuna (yetki, model adı, şema); 3030 ayrıca ele alınır
+# yeniden denemek boşuna (yetki, model adı). 400 kalıcı değil: Workers AI model tarafı hatalarını da 400 döner
+# ("AiError … InferenceUpstreamError"); kalıcı sayılınca tek seferlik hata bütün koşuyu düşürüyordu
+KALICI = (401, 403, 404)
 DUZ = {"‑": "-", "‐": "-", "–": "-", "—": " - ", "’": "'", "‘": "'",
        "“": '"', "”": '"', " ": " ", " ": " "}  # fmt: skip
 
@@ -170,9 +172,10 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4, referanslar: tupl
     sinir = "----otomat"
     dosyalar = {f"input_image_{i}": _referans_baytlari(r) for i, r in enumerate(referanslar[:REFERANS_EN_COK])}
     maliyet = GORSEL_NEURON + REFERANS_NEURON * len(dosyalar)
-    son = None
+    son, yumusak = None, ""
     for i in range(deneme):
-        alanlar = {"prompt": istem[:2000], "width": GORSEL_BOYUT[0], "height": GORSEL_BOYUT[1], "seed": tohum + i}
+        alanlar = {"prompt": (istem + yumusak)[:2000], "width": GORSEL_BOYUT[0], "height": GORSEL_BOYUT[1],
+                   "seed": tohum + i}  # fmt: skip
         try:
             y = _istek(f"run/{GORSEL_MODELI}", _cok_parcali(alanlar, dosyalar, sinir),
                        f"multipart/form-data; boundary={sinir}")  # fmt: skip
@@ -191,7 +194,7 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4, referanslar: tupl
             if FILTRE_KODU in hata:
                 if i == deneme - 1:
                     raise FiltreHatasi(f"görsel üretilemedi {son}") from e
-                istem += ". Calm, gentle, non-graphic, nobody hurt."
+                yumusak = " Calm, non-graphic composition."  # bir kez: her denemede istemin sonuna birikiyordu
             elif e.code in KALICI:
                 break
             _bekle(i, deneme, 3)
@@ -206,6 +209,17 @@ GORME_SEMA = {
     "properties": {"answer": {"type": "boolean"}, "confidence": {"type": "number"}},
     "required": ["answer", "confidence"],
 }
+
+
+def _evet(cevap) -> bool:
+    """Şemaya rağmen dize dönebiliyor: bool("false") True'ydu, kuyruklu kare "kuyruksuz" geçerdi."""
+    if isinstance(cevap, str):
+        if cevap.strip().lower() in ("true", "yes"):
+            return True
+        if cevap.strip().lower() in ("false", "no"):
+            return False
+        raise ValueError(f"evet/hayır değil: {cevap!r}")
+    return bool(cevap)
 
 
 def gorsel_sor(yol: Path, soru: str, deneme: int = 2) -> tuple[bool, float]:
@@ -234,7 +248,7 @@ def gorsel_sor(yol: Path, soru: str, deneme: int = 2) -> tuple[bool, float]:
             harca(y.get("usage", {}).get("neurons", 0))
             c = json.loads(y["choices"][0]["message"].get("content") or "")
             guven = float(c["confidence"])
-            return bool(c["answer"]), min(1.0, max(0.0, guven / 100 if guven > 1 else guven))
+            return _evet(c["answer"]), min(1.0, max(0.0, guven / 100 if guven > 1 else guven))
         except urllib.error.HTTPError as e:
             son = f"HTTP {e.code}: {_kota_mi(e)[:200]!r}"
             if e.code in KALICI:

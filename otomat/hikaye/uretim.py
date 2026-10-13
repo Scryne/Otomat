@@ -5,6 +5,7 @@
 """
 
 import datetime as dt
+import hashlib
 import http.client
 import json
 import re
@@ -14,7 +15,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import wave
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import FIRST_EXCEPTION, ThreadPoolExecutor, wait
 from dataclasses import asdict
 from functools import lru_cache
 from pathlib import Path
@@ -201,8 +202,10 @@ def render(
 
 def muzik_sec(mood: str, tohum: str) -> tuple[Path, str]:
     """Tohumun seçtiği parça; indirilemezse (incompetech kapalı) aynı mood'un sıradaki parçası. Video müziksiz çıkmaz:
-    açıklamadaki atıf hangi parça çaldıysa onu yazar."""
-    parcalar = kanal.aktif().muzik[mood]
+    açıklamadaki atıf hangi parça çaldıysa onu yazar. Kanalda olmayan mood (format değişiminden önce yazılmış senaryo:
+    Orbit'in çocuk dönemindeki "playful") ilk mood'a düşer: KeyError render'dan sonra bütün koşuyu düşürüyordu."""
+    muzik = kanal.aktif().muzik
+    parcalar = muzik.get(mood) or next(iter(muzik.values()))
     bas = sum(map(ord, tohum)) % len(parcalar)
     son = None
     for ad in parcalar[bas:] + parcalar[:bas]:
@@ -285,11 +288,24 @@ def gorsel_istemi(
 
 
 def istemleri_kur(stil: str, sc: senaryo.Senaryo) -> list[str]:
+    """Karakter başına o sahnedeki en son görünüş. Senaryo istemi ikinci değişimin görünüşüne birincinin hâlâ geçerli
+    olanını da yazdırır ("a tailless red fox wearing a small golden crown"): sahne sırasıyla son değişim kazanır, model
+    çıktısının sırası değil."""
     istemler = []
+    sirali = sorted(sc.degisimler, key=lambda d: d["sahne"])
     for i, g in enumerate(sc.gorseller, 1):
-        durumlar = {d["kim"]: d["gorunum"] for d in sc.degisimler if i >= d["sahne"]}
+        durumlar = {d["kim"]: d["gorunum"] for d in sirali if i >= d["sahne"]}
         istemler.append(gorsel_istemi(stil, sc.dunya, sc.oyuncular, g, durumlar))
     return istemler
+
+
+def bicim_imzasi(tur: str, k: kanal.Kanal) -> str:
+    """Senaryoyu üreten istemlerin ve kanalın mood kümesinin imzası. Kayıtlı senaryo yalnız aynı imzayla sürdürülür:
+    format değişince (K-24'te Orbit çocuk masalından genel kitleye döndü) eski istemle yazılmış senaryo yeni kanala
+    çıkmasın, eski mood'u müzik seçimini düşürmesin."""
+    parcalar = [senaryo.ISTEM[tur], senaryo.SAHNE_ISTEMI, senaryo.GORSEL_KURALI[tur], senaryo.HAKEM_ISTEM[tur],
+                *sorted(k.muzik), *k.kaliplar]  # fmt: skip
+    return hashlib.sha256("\0".join(parcalar).encode()).hexdigest()[:12]
 
 
 SENARYO = "senaryo.json"
@@ -312,9 +328,10 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
     senaryonun sahnelerine karışmasın (aynı slot aynı hikâyeyi yeniden seçince öyle olacaktı)."""
     k = kanal.aktif()
     yol = dizin / SENARYO
+    imza = bicim_imzasi(paket.tur, k)
     try:
         d = json.loads(yol.read_text(encoding="utf-8"))
-        if (d["anahtar"], d["hash"]) == (paket.anahtar, paket.hash):
+        if (d["anahtar"], d["hash"], d.get("bicim")) == (paket.anahtar, paket.hash, imza):
             sc = senaryo.Senaryo(**d["senaryo"])
             istemler = istemleri_kur(k.stil, sc)
             for i, eski in enumerate(d.get("istemler", [])):
@@ -329,7 +346,8 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
     kaynak = kaynaklar.metin(paket)
     sc = senaryo.yaz(paket.tur, paket.gorsel["baslik"], kaynak, paket.konu, kalip, list(k.muzik))
     istemler = istemleri_kur(k.stil, sc)
-    kayit = {"anahtar": paket.anahtar, "hash": paket.hash, "kalip": kalip, "senaryo": asdict(sc), "istemler": istemler}
+    kayit = {"anahtar": paket.anahtar, "hash": paket.hash, "bicim": imza, "kalip": kalip, "senaryo": asdict(sc),
+             "istemler": istemler}  # fmt: skip
     yol.write_text(json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8")
     return sc, kalip, istemler
 
@@ -338,11 +356,19 @@ YAZI_YENIDEN = 3  # video başına en çok yeniden çizim (kare ~156 neuron)
 YAZISIZ = "Every surface in the picture is blank and wordless."
 
 
-def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
+def yeniden_ciz(istemler: list[str], i: int, yol: Path, tohum: int, dizin: Path, plan=None) -> Path:
+    """Görünüş ya da yazı yüzünden yeniden çizim: yazı taşıyan yan cümle düşer (Bartman skor tabelası, 10-12) ve
+    sahne ilk çizimdeki karakter referansını yine alır; yoksa yeniden çizilen kare referanstan kayardı."""
+    cumle, ek = _referans_eki(plan, dizin, i)
+    return cf.gorsel(f"{senaryo.yazisiz(istemler[i])}{cumle} {YAZISIZ}", yol, tohum, **ek)
+
+
+def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int, plan=None) -> dict:
     """OCR'da yazı çıkan sahne yeni tohumla yeniden çizilir (hak sahne sırasıyla). Yeniden çizim de yazılıysa daha az
-    yazılı olan kalır. Kayıt meta.json'a: `ilk` (çizimde yazı çıkanlar), `son` (videoda kalanlar), `yeniden`."""
-    kayit: dict = {"ilk": {}, "son": {}, "yeniden": 0}
-    for i, istem in enumerate(istemler):
+    yazılı olan kalır. Kayıt meta.json'a: `ilk` (çizimde yazı çıkanlar), `son` (videoda kalanlar), `yeniden`,
+    `cizilen` (karesi değişen sahneler: görünüş denetimi onlara yeniden bakar)."""
+    kayit: dict = {"ilk": {}, "son": {}, "yeniden": 0, "cizilen": []}
+    for i in range(len(istemler)):
         yol = dizin / f"sahne_{i}.jpg"
         bulgu = yazi.oku(yol)
         if bulgu is None:
@@ -357,8 +383,7 @@ def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
         eski = dizin / f"yazili_{i}.jpg"  # sahne_* değil: kabul ve yarım üretim sahne dosyalarını sayıyor
         yol.replace(eski)
         try:
-            # istem aynı nesneyi istedikçe ek cümle tutmuyor (Bartman skor tabelası, 10-12): o yan cümle düşer
-            cf.gorsel(f"{senaryo.yazisiz(istem)} {YAZISIZ}", yol, taban + 10 * i + 5)
+            yeniden_ciz(istemler, i, yol, taban + 10 * i + 5, dizin, plan)
         except cf.KotaHatasi:
             eski.replace(yol)  # sonraki koşu senaryoyu sürdürür, bu sahneyi yeniden dener
             raise
@@ -372,6 +397,7 @@ def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
             yeni = bulgu
         else:
             eski.unlink()
+            kayit["cizilen"].append(i)
         if yeni:
             kayit["son"][i] = yeni
     return kayit
@@ -386,12 +412,41 @@ class DurumHatasi(RuntimeError):
     kare masalın konusunu bozar (10-15 Orbit: kuyruğunu kaybeden tilkinin kuyruğu 3 karede yerindeydi)."""
 
 
-def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, taban: int) -> dict:
+def _ayni_soru(a: dict, b: dict) -> bool:
+    return a["soru"].strip().lower() == b["soru"].strip().lower()
+
+
+def etkin_sorular(sc: senaryo.Senaryo) -> dict[int, list[dict]]:
+    """Sahne (0'dan) → o karede sınanacak değişimler. Görünüş birikir: tilki 3. sahnede kuyruğunu kaybedip 4.'de taç
+    takınca 4-7'de ikisi de sorulur (eskiden taç başlayınca kuyruk sorusu bırakılıyordu, Felix hatası geri gelirdi).
+    Aynı karakterin sonraki değişimi aynı soruyu soruyorsa (görünüşü geri alıyor) öncekinin penceresi orada biter."""
+    etkin: dict[int, list[dict]] = {}
+    for d in sc.degisimler:
+        bitis = min((e["sahne"] for e in sc.degisimler if e["kim"] == d["kim"] and e["sahne"] > d["sahne"]
+                     and _ayni_soru(e, d)), default=len(sc.gorseller) + 1)  # fmt: skip
+        for i in range(d["sahne"] - 1, bitis - 1):
+            if _sahnede(d["kim"], sc.gorseller[i]):
+                etkin.setdefault(i, []).append(d)
+    return etkin
+
+
+def durumlari_denetle(
+    sc: senaryo.Senaryo,
+    istemler: list[str],
+    dizin: Path,
+    taban: int,
+    plan=None,
+    sahneler: set[int] | None = None,
+    ayirmayan: list[str] | None = None,
+) -> dict:
     """Değişimden sonraki, karakterin adının geçtiği her sahne görme modeline sorulur; beklenmeyen cevap (yeterince
-    emin) → yeni tohumla yeniden çizim. Önce soru değişimden önceki son karede sınanır: orada da beklenen cevap
-    çıkıyorsa soru iki görünüşü ayırmıyor (ya da `expected` ters yazılmış), o değişim denetlenmez; yoksa doğru kareler
-    boşuna yeniden çizilip hikâye düşerdi. Model yanıt vermezse kare denetlenmemiş sayılır, video yine çıkar."""
-    kayit: dict = {"soru": 0, "yeniden": 0, "tutmayan": {}, "hata": 0, "ayirmayan": []}
+    emin) → yeni tohumla yeniden çizim, sonra o karenin BÜTÜN etkin soruları yeniden sorulur (bir değişimin geçmesi
+    öbürünün tutmayan kaydını silmesin; yeniden çizim öbür görünüşü bozabilir). Önce soru değişimden önceki son karede
+    sınanır: orada da beklenen cevap emin çıkıyorsa soru iki görünüşü ayırmıyor (ya da `expected` ters), o değişim
+    denetlenmez; yoksa doğru kareler boşuna yeniden çizilip hikâye düşerdi. Model yanıt vermezse soru denetlenmemiş
+    sayılır, video yine çıkar. `sahneler` + `ayirmayan`: yalnız bu sahnelere yeniden bakılır, sınama yapılmaz (OCR'ın
+    yeniden çizdiği kareler)."""
+    kayit: dict = {"soru": 0, "yeniden": 0, "tutmayan": {}, "hata": 0, "ayirmayan": list(ayirmayan or [])}
 
     def sor(yol: Path, soru: str) -> tuple[bool, float] | None:
         kayit["soru"] += 1
@@ -403,33 +458,37 @@ def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, tab
             kayit["hata"] += 1
             return None
 
-    for d in sc.degisimler:
-        onceki = [i for i in range(d["sahne"] - 1) if _sahnede(d["kim"], sc.gorseller[i])]
-        if onceki and (c := sor(dizin / f"sahne_{onceki[-1]}.jpg", d["soru"])) and c[0] == d["beklenen"]:
-            kayit["ayirmayan"].append(d["soru"])
-            continue
-        # aynı karakterin sonraki değişimi başlayınca bu soru artık geçerli değil (ikinci görünüş onun penceresi)
-        sonraki = [e["sahne"] for e in sc.degisimler if e["kim"] == d["kim"] and e["sahne"] > d["sahne"]]
-        for i in range(d["sahne"] - 1, min(sonraki, default=len(sc.gorseller) + 1) - 1):
-            if not _sahnede(d["kim"], sc.gorseller[i]):
+    if sahneler is None:
+        for d in sc.degisimler:
+            onceki = [i for i in range(d["sahne"] - 1) if _sahnede(d["kim"], sc.gorseller[i])]
+            if not onceki or d["soru"] in kayit["ayirmayan"]:
                 continue
-            yol, deneme = dizin / f"sahne_{i}.jpg", 0
-            while True:
-                if (c := sor(yol, d["soru"])) is None:
-                    kayit["tutmayan"].pop(str(i), None)  # yeniden çizilen kare denetlenemedi: düşürme nedeni değil
-                    break
-                cevap, guven = c
-                if cevap == d["beklenen"] or guven < DURUM_GUVEN:
-                    kayit["tutmayan"].pop(str(i), None)
-                    break
-                kayit["tutmayan"][str(i)] = d["soru"]
-                if kayit["yeniden"] >= DURUM_YENIDEN:
-                    break
-                kayit["yeniden"] += 1
-                deneme += 1
-                yol.unlink()
-                # OCR yeniden çizimiyle aynı yazısız istem: yazı taşıyan yan cümle geri gelmesin
-                cf.gorsel(f"{senaryo.yazisiz(istemler[i])} {YAZISIZ}", yol, taban + 10 * i + 7 + deneme)
+            c = sor(dizin / f"sahne_{onceki[-1]}.jpg", d["soru"])
+            # az emin tek cevap bütün değişimin denetimini kapatmasın (kare denetimi de az emin cevabı saymıyor)
+            if c and c[0] == d["beklenen"] and c[1] >= DURUM_GUVEN:
+                kayit["ayirmayan"].append(d["soru"])
+    for i, degisimler in sorted(etkin_sorular(sc).items()):
+        sorular = [d for d in degisimler if d["soru"] not in kayit["ayirmayan"]]
+        if not sorular or (sahneler is not None and i not in sahneler):
+            continue
+        yol, deneme = dizin / f"sahne_{i}.jpg", 0
+        while True:
+            tutmayan = []
+            for d in sorular:
+                c = sor(yol, d["soru"])
+                if c is not None and c[0] != d["beklenen"] and c[1] >= DURUM_GUVEN:
+                    tutmayan.append(d["soru"])
+            if not tutmayan:
+                kayit["tutmayan"].pop(str(i), None)
+                break
+            kayit["tutmayan"][str(i)] = tutmayan
+            if kayit["yeniden"] >= DURUM_YENIDEN:
+                break
+            kayit["yeniden"] += 1
+            deneme += 1
+            yol.unlink()
+            # OCR yeniden çizimiyle aynı yazısız istem: yazı taşıyan yan cümle geri gelmesin
+            yeniden_ciz(istemler, i, yol, taban + 10 * i + 7 + deneme, dizin, plan)
     if kayit["tutmayan"]:
         raise DurumHatasi(f"değişen görünüş karede tutmadı: {kayit['tutmayan']}")
     return kayit
@@ -443,14 +502,24 @@ REFERANS_CUMLESI = (
 
 def referans_plani(sc: senaryo.Senaryo) -> tuple[int, str, frozenset[int]] | None:
     """(kaynak sahne, ana karakter, referansla çizilecek sahneler) ya da None. Ana karakter kadronun ilki; kaynak,
-    adının geçtiği ilk sahne (masalda ilk kare zaten onun yakın portresi). Profilde `referans` kapalıysa None."""
+    adının geçtiği ilk sahne (masalda ilk kare zaten onun yakın portresi). Profilde `referans` kapalıysa None.
+    Karakterin görünüşü değiştikten sonraki sahneler referans almaz: "looks exactly as in the reference" kuyruklu ilk
+    kareyi kuyruksuz sahneye dayatırdı."""
     if not kanal.aktif().referans or not sc.oyuncular:
         return None
     ad = sc.oyuncular[0].partition(":")[0].strip()
+    degisim = min((d["sahne"] - 1 for d in sc.degisimler if d["kim"] == ad), default=len(sc.gorseller))
     gecen = [i for i, g in enumerate(sc.gorseller) if _sahnede(ad, g)]
-    if len(gecen) < 2:
+    if len(gecen) < 2 or not (refli := frozenset(i for i in gecen[1:] if i < degisim)):
         return None
-    return gecen[0], ad, frozenset(gecen[1:])
+    return gecen[0], ad, refli
+
+
+def _referans_eki(plan, dizin: Path, i: int) -> tuple[str, dict]:
+    """(istem eki, cf.gorsel argümanı): `i` planda referanslı sahneyse kaynak kare ve referans cümlesi."""
+    if not plan or i not in plan[2]:
+        return "", {}
+    return " " + REFERANS_CUMLESI.format(ad=plan[1]), {"referanslar": (dizin / f"sahne_{plan[0]}.jpg",)}
 
 
 def sahneleri_ciz(
@@ -462,16 +531,14 @@ def sahneleri_ciz(
     kareden kareye kayıyordu; Cock and Jewel'de tavuk her karede başkaydı)."""
     ex = ThreadPoolExecutor(PARALEL)
     try:
-        ref: tuple[Path, ...] = ()
-        cumle = {}
         if plan:
-            kaynak, ad, refli = plan
-            ref = (cf.gorsel(istemler[kaynak], dizin / f"sahne_{kaynak}.jpg", taban + 10 * kaynak),)
-            cumle = {i: " " + REFERANS_CUMLESI.format(ad=ad) for i in refli}
+            cf.gorsel(istemler[plan[0]], dizin / f"sahne_{plan[0]}.jpg", taban + 10 * plan[0])
         isler = []
         for i, istem in enumerate(istemler):
-            ek = {"referanslar": ref} if i in cumle else {}
-            isler.append(ex.submit(cf.gorsel, istem + cumle.get(i, ""), dizin / f"sahne_{i}.jpg", taban + 10 * i, **ek))
+            cumle, ek = _referans_eki(plan, dizin, i)
+            isler.append(ex.submit(cf.gorsel, istem + cumle, dizin / f"sahne_{i}.jpg", taban + 10 * i, **ek))
+        # ilk hatada dön: sırayla `result()` beklemek, sıradaki işin hatasını görene kadar kuyruğu çalıştırıyordu
+        wait(isler, return_when=FIRST_EXCEPTION)
         return [f.result() for f in isler]
     except BaseException:
         ex.shutdown(wait=True, cancel_futures=True)
@@ -490,9 +557,15 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     taban = sum(map(ord, paket.anahtar)) % 100_000
     plan = referans_plani(sc)
     gorseller = sahneleri_ciz(istemler, dizin, taban, plan)
-    # önce görünüş, sonra yazı: OCR son kareye bakar (görünüş yeniden çizimi yazıyı geri getirebiliyordu)
-    durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban)
-    yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
+    # önce görünüş, sonra yazı: OCR son kareye bakar (görünüş yeniden çizimi yazıyı geri getirebiliyordu). OCR'ın
+    # yeniden çizdiği kare görünüşü bozabilir (yeni tohumda kuyruk geri gelir): o kareler bir kez daha sorulur
+    durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban, plan)
+    yazi_kaydi = yazilari_ayikla(istemler, dizin, taban, plan)
+    if yazi_kaydi.get("cizilen") and sc.degisimler:
+        ek = durumlari_denetle(sc, istemler, dizin, taban + 1, plan, set(yazi_kaydi["cizilen"]),
+                               durum_kaydi["ayirmayan"])  # fmt: skip
+        for alan in ("soru", "yeniden", "hata"):
+            durum_kaydi[alan] += ek[alan]
     t_gorsel = time.time()
     sure, parcalar = seslendir(sc.satirlar, dizin / "ses.wav")
     try:

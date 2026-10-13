@@ -2,8 +2,8 @@
 
 - `tuhaf` (Earth → hikâye kanalı): Wikipedia:Unusual articles alt sayfalarındaki makaleler + editörün tek satırlık
   tanımı. Makale metni üretim anında Wikipedia API'den çekilir (CC BY-SA 4.0, açıklamada atıf).
-- `ezop` (Orbit → çocuk kanalı): Aesop's Fables, V. S. Vernon Jones çevirisi (1912), Project Gutenberg #11339,
-  kamu malı. Metin havuzda.
+- `ezop` (Orbit → masal kanalı, genel kitle; K-24): Aesop's Fables, V. S. Vernon Jones çevirisi (1912), Project
+  Gutenberg #11339, kamu malı. Metin havuzda.
 
 Havuzlar bir kez çıkarılıp TypeSafe (jev-1.13.0) ile süzüldü (K-18, docs/arastirma/08). Puanlar havuzda durur,
 eşikler burada: anlam kararı modelde, kural kodda.
@@ -122,7 +122,8 @@ def _wiki(params: dict) -> dict:
     for i in range(4):
         try:
             istek = urllib.request.Request(WIKI_API + "?" + urllib.parse.urlencode(params), headers=UA)
-            return json.load(urllib.request.urlopen(istek, timeout=30))
+            with urllib.request.urlopen(istek, timeout=30) as yanit:
+                return json.load(yanit)
         except urllib.error.HTTPError as e:
             if e.code != 429 and e.code < 500:
                 raise

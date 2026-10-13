@@ -176,17 +176,27 @@ def test_sahne_cizimi_kotada_kuyruktakileri_iptal_eder(tmp_path, monkeypatch):
     assert baslayan[0] == "0" and len(baslayan) <= 2
 
 
-def test_durum_yeniden_cizimi_yazisiz_ister_sonraki_degisimin_penceresine_tasmaz(tmp_path, monkeypatch):
+def _iki_degisim(tmp_path):
     gorseller = ["Felix smiling.", "Felix caught.", "Felix on a log.", "Felix crowned.", "Felix ruling."]
     sc = senaryo.Senaryo("T", "m", "A forest.", ["Felix: a fox"], ["l"] * 5, gorseller)
-    sc.degisimler = senaryo.degisimler([KUYRUK, TAC], sc.oyuncular, 5)
+    sc.degisimler = senaryo.degisimler([TAC, KUYRUK], sc.oyuncular, 5)  # model sırası sahne sırası değil
     for i in range(5):
         (tmp_path / f"sahne_{i}.jpg").write_bytes(b"eski")
+    return sc
+
+
+def test_gorunus_birikir_ikinci_degisim_ilkinin_denetimini_kapatmaz(tmp_path, monkeypatch):
+    """Kuyruğunu kaybeden tilki 4. sahnede taç takınca kuyruk sorusu bırakılıyordu: 4-5'te kuyruklu tilki denetimsiz
+    yayına çıkardı (10-15 Felix hatasının aynısı; 10-13 ikinci denetim)."""
+    sc = _iki_degisim(tmp_path)
+    istemler = uretim.istemleri_kur("S", sc)
+    assert "Felix is now a tailless fox with a round" in istemler[2] and "golden crown" in istemler[3]
+    assert "golden crown" in istemler[4]  # sahne sırasıyla son görünüş (model TAC'ı önce yazdı)
     sorulan, istenen = [], []
 
     def sor(yol, soru):
         sorulan.append((yol.name, "kuyruk" if "tail" in soru else "tac"))
-        if "tail" in soru:  # 1 (sınama) kuyruklu, doğru; 2 eskiden kuyruklu çizilmiş
+        if "tail" in soru:  # 1 (sınama) kuyruklu, doğru; eskiden çizilmiş kareler kuyruklu
             return yol.name == "sahne_1.jpg" or yol.read_bytes() == b"eski", 0.9
         return yol.name in ("sahne_3.jpg", "sahne_4.jpg"), 0.9
 
@@ -198,10 +208,49 @@ def test_durum_yeniden_cizimi_yazisiz_ister_sonraki_degisimin_penceresine_tasmaz
     monkeypatch.setattr(cf, "gorsel_sor", sor)
     monkeypatch.setattr(cf, "gorsel", gorsel)
     k = uretim.durumlari_denetle(sc, [f"istem {i}" for i in range(5)], tmp_path, 0)
-    # kuyruk sorusu 3-4'e sorulmaz (orası tacın penceresi; eskiden ikisinde de soruluyordu)
-    assert sorulan == [("sahne_1.jpg", "kuyruk"), ("sahne_2.jpg", "kuyruk"), ("sahne_2.jpg", "kuyruk"),
-                       ("sahne_2.jpg", "tac"), ("sahne_3.jpg", "tac"), ("sahne_4.jpg", "tac")]  # fmt: skip
-    assert k["yeniden"] == 1 and k["tutmayan"] == {} and istenen == [f"istem 2 {uretim.YAZISIZ}"]
+    sahne = [(f"sahne_{i}.jpg", s) for i in (3, 4) for s in ("tac", "kuyruk", "tac", "kuyruk")]  # 3-4: ikisi de
+    assert sorulan == [("sahne_2.jpg", "tac"), ("sahne_1.jpg", "kuyruk"),  # sınamalar
+                       ("sahne_2.jpg", "kuyruk"), ("sahne_2.jpg", "kuyruk"), *sahne]  # fmt: skip
+    assert k["yeniden"] == 3 and k["tutmayan"] == {} and istenen[0] == f"istem 2 {uretim.YAZISIZ}"
+
+
+def test_ayni_karede_gecen_degisim_tutmayani_silmez(tmp_path, monkeypatch):
+    """`tutmayan` yalnız sahne no'suyla tutuluyordu: taç sorusu geçince aynı karenin kuyruk hatası siliniyor, hikâye
+    düşmüyordu."""
+    sc = _iki_degisim(tmp_path)
+    # kuyruk hiçbir karede gitmiyor; taç 3-4'te tutuyor
+    monkeypatch.setattr(cf, "gorsel_sor", lambda yol, soru: (True, 0.9) if "tail" in soru
+                        else (yol.name in ("sahne_3.jpg", "sahne_4.jpg"), 0.9))  # fmt: skip
+    monkeypatch.setattr(cf, "gorsel", lambda istem, yol, tohum: yol.write_bytes(b"x") and yol)
+    with pytest.raises(uretim.DurumHatasi, match="tail"):
+        uretim.durumlari_denetle(sc, [f"istem {i}" for i in range(5)], tmp_path, 0)
+
+
+def test_gorunus_sinamasi_az_emin_cevapla_denetimi_kapatmaz(tmp_path, monkeypatch):
+    sc = _iki_degisim(tmp_path)
+    sc.degisimler = sc.degisimler[1:]  # yalnız kuyruk
+    monkeypatch.setattr(cf, "gorsel_sor", lambda yol, soru: (False, 0.3 if yol.name == "sahne_1.jpg" else 0.9))
+    k = uretim.durumlari_denetle(sc, [f"istem {i}" for i in range(5)], tmp_path, 0)
+    assert k["ayirmayan"] == [] and k["soru"] == 4  # sınama + 3 kare: az emin "hayır" denetimi kapatmadı
+
+
+def test_ocr_yeniden_cizdigi_kare_gorunus_icin_yeniden_sorulur(tmp_path, monkeypatch):
+    from otomat.hikaye import yazi
+
+    sc = _iki_degisim(tmp_path)
+    sc.degisimler = sc.degisimler[1:]
+    monkeypatch.setattr(yazi, "oku", lambda yol: ["SALE"] if yol.read_bytes() == b"kuyruksuz" else [])
+    for i in range(5):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"kuyruksuz" if i >= 2 else b"kuyruklu")
+    monkeypatch.setattr(cf, "gorsel_sor", lambda yol, soru: (yol.read_bytes() != b"kuyruksuz", 0.9))
+    monkeypatch.setattr(cf, "gorsel", lambda istem, yol, tohum: yol.write_bytes(b"temiz ama kuyruklu") and yol)
+    istemler = [f"istem {i}" for i in range(5)]
+    k = uretim.durumlari_denetle(sc, istemler, tmp_path, 0)
+    assert k["yeniden"] == 0
+    y = uretim.yazilari_ayikla(istemler, tmp_path, 0)
+    assert y["cizilen"] == [2, 3, 4]  # yazısız ama yeni tohumda kuyruk geri geldi
+    with pytest.raises(uretim.DurumHatasi):
+        uretim.durumlari_denetle(sc, istemler, tmp_path, 1, None, set(y["cizilen"]), k["ayirmayan"])
 
 
 def test_render_hatasinda_ffmpeg_kapanir_yarim_dosya_kalmaz(kanal_sec, tmp_path):
