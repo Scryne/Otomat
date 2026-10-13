@@ -197,7 +197,7 @@ def test_buffer_gonderisi_belirsizse_hikaye_harcanir_ikinci_kopya_gonderilmez(tm
 
     hata = buffer.GonderiBelirsiz("gönderi 900 sn'de gitmedi")
     db, paket, an, kayit, alarmlar, teslim = _buffer_duser(tmp_path, monkeypatch, hata)
-    assert kayit["video_id"] is None and teslim == [] and "Studio" in alarmlar[0]
+    assert kayit["video_id"] is None and teslim == [] and "başlıkla bulur" in alarmlar[0]
     assert not durum.taze_mi(db, paket, an.date(), gunluk.HIKAYE_TEKRAR_GUN)
     assert gunluk.hazir_uretim([paket], db, an.date()) is None
 

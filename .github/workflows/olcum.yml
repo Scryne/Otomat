@@ -1,6 +1,7 @@
 name: Ölçüm
 
-# Faz 1: runner'da LLM + TTS + render süresini ölçer. Elle tetiklenir.
+# Faz 1 (arşiv): runner'da yerel LLM (Ollama) + TTS + veri videosu render süresini ölçer. Hikâye motoru Ollama
+# kullanmıyor (Cloudflare); bu iş yalnız arşiv veri motorunun ölçümü için durur. Elle tetiklenir.
 on:
   workflow_dispatch:
     inputs:
@@ -13,7 +14,7 @@ permissions:
 
 jobs:
   olcum:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 40
     steps:
       - uses: actions/checkout@v7

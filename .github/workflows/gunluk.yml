@@ -41,8 +41,10 @@ jobs:
       cancel-in-progress: false
     env:
       OTOMAT_KANAL: ${{ matrix.kanal }}
-      # kanal başına mod (OTOMAT_YAYIN_<id>); earth eski OTOMAT_YAYIN değişkenini de okur
-      OTOMAT_YAYIN: ${{ vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN) || 'teslim' }}
+      # kanal başına mod (OTOMAT_YAYIN_<id>); earth eski OTOMAT_YAYIN değişkenini de okur. Yalnız main gerçek yayın
+      # yapar: başka dalda elle tetiklenen koşu gerçek sırlarla yayınlayıp durumu o dala yazıyordu (main aynı slotu
+      # ikinci kez doldururdu); dal denemesi teslim modunda koşar
+      OTOMAT_YAYIN: ${{ github.ref_name == 'main' && (vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN) || 'teslim') || 'teslim' }}
     # sırlar yalnız onları kullanan adımda (Üret): checkout, cache, artifact ve gh adımlarına geçmesinler
     steps:
       # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
@@ -86,7 +88,7 @@ jobs:
         # son 12 koşu (4 cron ≈ 3 gün = pist; T+2 videosunun klasörü yayınına kadar bulunsun: çeviri onarımı ve
         # planlama onarımı ona bakar); yeniden denenen koşunun artifact'ı ayrı adlı
         run: |
-          for id in $(gh run list --workflow gunluk.yml -L 12 --json databaseId --jq '.[].databaseId'); do
+          for id in $(gh run list --workflow gunluk.yml --branch main -L 12 --json databaseId --jq '.[].databaseId'); do
             for ad in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts" \
                 --jq ".artifacts[] | select(.expired | not) | .name | select(startswith(\"uretim-$OTOMAT_KANAL-\"))"); do
               gh run download "$id" -n "$ad" -D "calisma/onceki/$ad" 2>/dev/null || true
@@ -139,6 +141,11 @@ jobs:
           uv run python -m otomat.yayin.hafta hafta "$TAG" > HAFTA.md
           gh release upload "$TAG" HAFTA.md --clobber
           gh release edit "$TAG" --notes "Plan B: bu haftanın videoları. Yüklerken yalnız HAFTA.md'yi aç: sıra, yayın saati (TR) ve yapıştırılacak metinler orada."
+      # Koşunun durumu kaybolursa sonraki koşu aynı videoyu yeniden yayınlar (çift video): push mutlaka gitmeli.
+      # Diğer kanalların işleri aynı dala ayrı dosyalarla yazar, rebase çakışmaz. Çakışma yalnız aynı kanalın
+      # veritabanına başka bir commit (yerel `youtube geri`) dokunduğunda olur: ikili dosya birleşmez, koşunun
+      # sürümü alınır (yeni yayınlar onda) ve alarm yazılır. `bash -e`: eskiden ilk başarısız `pull --rebase` adımı
+      # düşürüyor, beş deneme hiç yapılmıyordu.
       - name: Durumu kaydet
         if: always() && steps.kontrol.outputs.atla != '1'
         run: |
@@ -146,9 +153,22 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add durum/ raporlar/
           git diff --cached --quiet || git commit -m "Günlük koşu ($OTOMAT_KANAL): durum ve rapor ($(date -u +%F))"
-          # diğer kanalların işleri aynı dala yazıyor; dosyalar ayrı olduğu için rebase çakışmaz
-          for i in 1 2 3 4 5; do git push && break; git pull --rebase; sleep $((i * 5)); done
-          git push  # beş denemede de gitmediyse adım düşsün
+          for i in 1 2 3 4 5 6; do
+            git push && exit 0
+            if ! git pull --rebase; then
+              cakisan=$(git diff --name-only --diff-filter=U)
+              if [ -n "$cakisan" ] && ! echo "$cakisan" | grep -qv '^durum/'; then
+                git checkout --theirs -- $cakisan && git add -- $cakisan
+                GIT_EDITOR=true git rebase --continue
+                mkdir -p calisma
+                printf '\n\n---\n\n**Durum kaydında çakışma:** %s başka bir commit de değiştirmiş (yerel `youtube geri`?). Koşunun sürümü yazıldı; o değişiklik kayboldu, gerekiyorsa yeniden yap.\n' "$cakisan" >> calisma/alarm.md
+              else
+                git rebase --abort || true
+              fi
+            fi
+            sleep $((i * 5))
+          done
+          exit 1
       - name: Alarm (issue)
         if: always() && steps.kontrol.outputs.atla != '1'
         env:
@@ -178,6 +198,9 @@ jobs:
     if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    concurrency:  # elle tetikleme ile 06:17 koşusu aynı rapor dosyasına yazmasın
+      group: gunluk-portfoy
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
         with:
@@ -211,5 +234,6 @@ jobs:
           git add raporlar/portfoy/
           git diff --cached --quiet && exit 0
           git commit -m "Portföy raporu"
-          for i in 1 2 3 4 5; do git push && break; git pull --rebase; sleep $((i * 5)); done
-          git push
+          # `bash -e`: başarısız pull adımı düşürmesin; portföy dosyaları kanal işleriyle çakışmaz
+          for i in 1 2 3 4 5; do git push && exit 0; git pull --rebase || git rebase --abort || true; sleep $((i * 5)); done
+          exit 1

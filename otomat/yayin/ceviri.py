@@ -91,7 +91,17 @@ def _cevir(dil: str, baslik: str, aciklama: str, altyazilar: list[str], tohum: i
         return None
     if rakamlar(aciklama_c) != rakamlar(aciklama):
         return None
+    # çevrilmemiş çıktı (model metni aynen döndü) rakam kapısından kendiliğinden geçiyordu: İngilizce, İspanyolca
+    # yerelleştirme ve altyazı izi olarak yayına çıkardı
+    if [_norm(c) for c in caps] == [_norm(a) for a in altyazilar] or (
+        _norm(baslik_c) == _norm(baslik) and _norm(aciklama_c) == _norm(aciklama)
+    ):
+        return None
     return {"title": baslik_c.strip()[:100], "description": kes(aciklama_c, 5000), "captions": caps}
+
+
+def _norm(metin: str) -> str:
+    return re.sub(r"\W+", " ", metin).strip().casefold()
 
 
 def kes(metin: str, bayt: int) -> str:

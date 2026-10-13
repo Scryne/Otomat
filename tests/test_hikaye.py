@@ -154,9 +154,11 @@ def test_marka_adi_beklemez_ad_degisince_yerel_adi_gunceller(kanal_sec, monkeypa
     # 10-13: Orbit genel kitleye geçti; kanal hâlâ MFK ise kimlik yeniden uygulanır
     assert marka.kontrol(_SahteKanal("Orbit Ruler", m["aciklama"]["en"], True, "Orbit Ruler")).startswith("uygulandı")
     uygulanan.pop()
-    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], False, "Orbit Ruler")) == "uygulandı"
+    # yalnız çevirili ad eskimiş: tam kimlik (~250 birim) değil, yalnız yerelleştirme (50 birim)
+    yeni_ad = _SahteKanal("Lanternbug Tales", m["aciklama"]["en"], False, "Orbit Ruler")
+    assert marka.kontrol(yeni_ad) == "yerel ad güncellendi" and yeni_ad.guncellemeler == ["localizations"]
     assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], False, "Lanternbug Tales")) == "tamam"
-    assert uygulanan == ["Orbit Ruler", "Lanternbug Tales"]
+    assert uygulanan == ["Orbit Ruler"]
     assert (marka.KOK / m["banner"]).exists() and (marka.KOK / m["filigran"]).exists()
 
 

@@ -290,10 +290,11 @@ def test_geri_cek_private_yapar_slotu_bosaltir(tmp_path, monkeypatch):
 
     yt = _Yt()
     youtube.geri_cek("vkusurlu", "kalite", yt=yt)
-    yt.mfk = None  # video okunamadı: kanalın ayarı (uzay artık MFK değil)
-    youtube.geri_cek("vkusurlu", "kalite", yt=yt)
+    yt.mfk = None  # kanalda yok (silinmiş): güncelleme 404 verip slotu hiç boşaltmıyordu; yalnız kayıt düşülür
+    youtube.geri_cek("vsilinen", "silindi", yt=yt)
     kanal._aktif.cache_clear()
-    assert govdeler[1][1]["status"]["selfDeclaredMadeForKids"] is False
+    assert len(govdeler) == 1
+    assert {v for (v,) in db.execute("SELECT video_id FROM geri_cekilen")} == {"vkusurlu", "vsilinen"}
     part, govde = govdeler[0]
     assert part == "status" and "publishAt" not in govde["status"]
     assert govde["status"]["privacyStatus"] == "private" and govde["status"]["selfDeclaredMadeForKids"] is True

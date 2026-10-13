@@ -66,7 +66,8 @@ def test_portfoy_kanallari_yan_yana_ve_kotalar(kanallar):
     assert "| | Inkwell Oddities (`earth`) | Lanternbug Tales (`uzay`) |" in metin
     assert "| Görüntüleme (hafta) | 1.500 | — |" in metin and "| Abone (net · toplam) | +3 · 12 | — |" in metin
     assert "| Hikâye havuzu (kalan) | 700 | 140 |" in metin
-    assert "karar günü 2026-12-05 (9/56 gün); son 56 günde 4.000 / 1.200.000 görüntüleme, 12 / 200 abone" in metin
+    k14 = "karar günü 2026-12-05 (9/56 gün); ilk public videodan bu yana 4.000 / 1.200.000 görüntüleme, 12 / 200 abone"
+    assert k14 in metin
     assert "Lanternbug Tales**: kanalda henüz yeni formatta video yok" in metin
     assert "Cloudflare neuron: haftada 3.700; en yoğun gün 2026-10-12 3.700 (sınır günde 10.000)" in metin
     assert "Buffer: son 30 günde 23 istek" in metin and "haftada 45 dk (ortak işler 7)" in metin

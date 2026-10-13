@@ -24,7 +24,7 @@ KAPSAMLAR = [
     "https://www.googleapis.com/auth/yt-analytics.readonly",  # Faz 6 geri besleme
 ]
 SIRLAR = KOK / "sirlar"
-KATEGORI = kanal.aktif().kategori  # earth: 28 Science & Technology
+KATEGORI = kanal.aktif().kategori  # kanal.toml: earth 27 Education, uzay 1 Film & Animation
 # 5xx/429/bağlantı hatasında üstel bekleyerek yeniden dene (10-05 analitik adımı tek seferlik 500 ile düştü).
 # Yalnız tekrarı zararsız çağrılarda: okumalar ve devam ettirilebilir yükleme; captions.insert çift iz açabilir.
 DENEME = 4
@@ -151,7 +151,10 @@ def yukle(
     from googleapiclient.http import MediaFileUpload
 
     yt = yt or servis()
-    govde, parcalar = _govde(baslik, aciklama, etiketler, yayin_ani, yerellestirme)
+    gecmis = yayin_ani is not None and yayin_ani <= dt.datetime.now(dt.UTC) + dt.timedelta(minutes=5)
+    govde, parcalar = _govde(baslik, aciklama, etiketler, None if gecmis else yayin_ani, yerellestirme)
+    if gecmis:  # duzenle'deki gibi: geçmişe planlı yayın kurulamaz (API reddeder), hemen public
+        govde["status"]["privacyStatus"] = "public"
     istek = yt.videos().insert(
         part=parcalar, body=govde, media_body=MediaFileUpload(str(video), mimetype="video/mp4", resumable=True)
     )
@@ -190,7 +193,10 @@ def geri_cek(video_id: str, neden: str, yt=None) -> None:
     from otomat import durum
 
     yt = yt or servis()
-    yt.videos().update(part="status", body=tam_durum(yt, video_id)).execute(num_retries=DENEME)
+    if yt.videos().list(part="id", id=video_id).execute(num_retries=DENEME).get("items"):
+        yt.videos().update(part="status", body=tam_durum(yt, video_id)).execute(num_retries=DENEME)
+    else:  # kanaldan silinmiş: güncelleme 404 verirdi ve slot hiç boşalmazdı; yalnız kayıt düşülür
+        print(f"{video_id} kanalda yok (silinmiş); yalnız durum kaydı güncellendi")
     durum.geri_cek(durum.baglan(), [video_id], dt.datetime.now(dt.UTC).date(), neden)
 
 

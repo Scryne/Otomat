@@ -19,23 +19,29 @@ jobs:
           - { kanal: uzay, sir: "_UZAY" }
     env:
       OTOMAT_KANAL: ${{ matrix.kanal }}
-      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-      OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
-      YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
-      KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}
+    # sırlar yalnız onları kullanan adımda (gunluk.yml gibi): checkout, setup-uv ve uv sync görmesin
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv sync --locked
+      # kanal kimliği profilde yazılı olduğu için kanal_id() anahtarı hiç sınamıyordu: hesap sorgusu anahtarı doğrular
       - name: Buffer
-        run: uv run python -c "from otomat.yayin import buffer; print('buffer kanal:', buffer.kanal_id())"
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: |
+          uv run python -c "from otomat.yayin import buffer; h = buffer.sorgu('query { account { organizations { id } } }'); print('buffer org:', len(h['account']['organizations']), 'kanal:', buffer.kanal_id())"
       - name: YouTube
+        env:
+          YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
+          KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}
         run: |
           export "YT_TOKEN_JSON${{ matrix.sir }}=$KANAL_TOKEN"
           uv run python -m otomat.yayin.youtube kontrol
       - name: Site deploy key
+        env:
+          OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
         run: |
           umask 077
           printf '%s\n' "$OTOMAT_SITE_ANAHTAR" > /tmp/site_anahtar

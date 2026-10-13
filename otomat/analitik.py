@@ -105,7 +105,8 @@ def olc(db: sqlite3.Connection, yt, ya, bugun: dt.date) -> list[str]:
     bekleyen = [
         v
         for (v,) in db.execute(
-            "SELECT s.video_id FROM secimler s LEFT JOIN olcumler o ON o.video_id = s.video_id "
+            # DISTINCT: aynı video iki seçim satırında olabilir (hazır üretim); ikinci INSERT ölçümü düşürüyordu
+            "SELECT DISTINCT s.video_id FROM secimler s LEFT JOIN olcumler o ON o.video_id = s.video_id "
             "WHERE s.video_id IS NOT NULL AND o.video_id IS NULL"
             " AND s.video_id NOT IN (SELECT video_id FROM geri_cekilen)"
         )
@@ -123,7 +124,7 @@ def olc(db: sqlite3.Connection, yt, ya, bugun: dt.date) -> list[str]:
             # yanıt kalıcı sıfır ödül oluyordu; video bir hafta dolunca sıfır gerçek sayılır
             continue
         db.execute(
-            "INSERT INTO olcumler VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT OR IGNORE INTO olcumler VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (vid, gun.isoformat(), bugun.isoformat(), m["views"], m["engaged_views"], m["ort_izlenme_yuzde"],
              m["ort_izlenme_sn"], m["abone"]),
         )  # fmt: skip

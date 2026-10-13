@@ -51,7 +51,8 @@ CREATE TABLE IF NOT EXISTS geri_cekilen (
 -- private'a çekilmiş bir videoya dokunulmasın diye "plansız private" her videoya değil (10-13 denetimi).
 CREATE TABLE IF NOT EXISTS planlanamayan (
     video_id TEXT PRIMARY KEY,
-    yayin_ani TEXT NOT NULL
+    yayin_ani TEXT NOT NULL,
+    deneme INTEGER NOT NULL DEFAULT 0
 );
 -- Eksik çevirisi sonradan tamamlanan videolar (gunluk.ceviri_onarimi bir videoyu bir kez onarır).
 CREATE TABLE IF NOT EXISTS ceviri_onarim (
@@ -76,6 +77,10 @@ def baglan(yol: Path = VARSAYILAN) -> sqlite3.Connection:
     yol.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(yol)
     db.executescript(SEMA)
+    # göç: deneme sayacı 10-13 ikinci denetiminde eklendi (kalıcı hatalı video her koşuyu bakım koşusuna çeviriyordu)
+    if "deneme" not in {r[1] for r in db.execute("PRAGMA table_info(planlanamayan)")}:
+        db.execute("ALTER TABLE planlanamayan ADD COLUMN deneme INTEGER NOT NULL DEFAULT 0")
+        db.commit()
     return db
 
 
@@ -113,10 +118,51 @@ def planlanamayan_var(db: sqlite3.Connection) -> bool:
 
 def planlanamadi(db: sqlite3.Connection, video_id: str, yayin_ani: dt.datetime | None) -> None:
     db.execute(
-        "INSERT OR REPLACE INTO planlanamayan VALUES (?, ?)",
+        "INSERT OR REPLACE INTO planlanamayan (video_id, yayin_ani) VALUES (?, ?)",
         (video_id, (yayin_ani or dt.datetime.now(dt.UTC)).isoformat()),
     )
     db.commit()
+
+
+def planlama_denemesi(db: sqlite3.Connection, video_id: str) -> int:
+    """Onarımı düşen videonun deneme sayısını bir artırır, yenisini döner."""
+    db.execute("UPDATE planlanamayan SET deneme = deneme + 1 WHERE video_id = ?", (video_id,))
+    db.commit()
+    satir = db.execute("SELECT deneme FROM planlanamayan WHERE video_id = ?", (video_id,)).fetchone()
+    return satir[0] if satir else 0
+
+
+def jsonl_oku(yol: Path) -> list[dict]:
+    """Günlük rapor satırları; bozuk satır atlanır. Yarım yazılmış tek satır (iş zaman aşımı) "iş var mı" adımını
+    ve bütün koşuyu her seferinde düşürüyordu, dosya elle düzeltilene kadar."""
+    if not yol.exists():
+        return []
+    satirlar = []
+    for s in yol.read_text(encoding="utf-8").splitlines():
+        try:
+            if isinstance(k := json.loads(s), dict):
+                satirlar.append(k)
+        except ValueError:
+            continue
+    return satirlar
+
+
+def ceviri_bekliyor(db: sqlite3.Connection, rapor: Path, simdi: dt.datetime) -> bool:
+    """Çevirisi atlanmış (kota) ve hâlâ planlı, onarılmamış video var mı (gunluk.ceviri_onarimi). Pist dolu günlerde
+    koşu ilk adımda bittiği için onarım hiç yapılmıyordu; video yayına çevirisiz çıkıyordu."""
+    yapilan = {v for (v,) in db.execute("SELECT video_id FROM ceviri_onarim UNION SELECT video_id FROM geri_cekilen")}
+    sinir = simdi + dt.timedelta(minutes=30)
+    for k in jsonl_oku(rapor):
+        # `ceviri_atlanan` 10-13'ten önce yazılmıyordu: o kayıtlarda boş `diller` dört dilin de atlandığını gösterir
+        eksik = k.get("ceviri_atlanan") or ("diller" in k and not k["diller"])
+        if not (eksik and k.get("video_id")) or k["video_id"] in yapilan:
+            continue
+        try:
+            if dt.datetime.fromisoformat(k["yayin_ani"]).astimezone(dt.UTC) > sinir:
+                return True
+        except (KeyError, TypeError, ValueError):
+            continue
+    return False
 
 
 def yayin_slotu(db: sqlite3.Connection, simdi: dt.datetime, saat: int | None = None) -> dt.datetime:
@@ -183,12 +229,9 @@ def secim_kaydet(
 
 def gecmisi_doldur(db: sqlite3.Connection, rapor: Path) -> int:
     """Faz 6 öncesi günlük koşuları (raporlar/gunluk.jsonl) seçim tablosuna taşır; elle yüklenen videolar eşleşsin."""
-    if not rapor.exists():
-        return 0
     n = 0
-    for satir in rapor.read_text(encoding="utf-8").splitlines():
-        k = json.loads(satir)
-        if k.get("durum") != "tamam":
+    for k in jsonl_oku(rapor):
+        if k.get("durum") != "tamam" or not all(a in k for a in ("anahtar", "hash", "kalip", "sablon", "baslik")):
             continue
         kol = k["anahtar"].split(":")[0]
         n += db.execute(
@@ -218,9 +261,12 @@ if __name__ == "__main__":
 
     simdi = dt.datetime.now(dt.UTC)
     db = baglan()
+    mod = os.environ.get("OTOMAT_YAYIN", "teslim")
+    pist = mod in ("api", "buffer")
     is_yok = (
-        pist_dolu(db, simdi, os.environ.get("OTOMAT_YAYIN", "teslim"))
+        pist_dolu(db, simdi, mod)
         and rapor.bekleyen(simdi.date()) is None
-        and not planlanamayan_var(db)  # planlaması düşmüş video bakım bekliyor
+        and not (pist and planlanamayan_var(db))  # planlaması düşmüş video bakım bekliyor
+        and not (pist and ceviri_bekliyor(db, kanal.aktif().raporlar / "gunluk.jsonl", simdi))
     )
     sys.exit(0 if is_yok else 1)

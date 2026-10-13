@@ -10,6 +10,7 @@ Ortam:
 - OTOMAT_SITE_ANAHTAR: otomat-site deploy key'inin özel anahtarı (Actions). Yoksa yerel git kimliği (https).
 """
 
+import http.client
 import json
 import os
 import re
@@ -67,14 +68,20 @@ def sorgu(metin: str, degiskenler: dict | None = None, tekrar: bool = True) -> d
         try:
             with urllib.request.urlopen(istek, timeout=120) as y:
                 yanit = json.load(y)
+            if not isinstance(yanit, dict):
+                raise ValueError(f"beklenmeyen yanıt: {str(yanit)[:100]}")
             break
-        except (urllib.error.URLError, TimeoutError) as e:
+        # okurken kopan bağlantı (RemoteDisconnected, IncompleteRead) ve yarım JSON da ağ hatasıdır: eskiden
+        # BufferHatasi'na çevrilmeden kaçıyor, gönderiden sonra "gönderi açılmadı" sanılıp video ikinci kez gidiyordu
+        except (OSError, http.client.HTTPException, ValueError) as e:
             gecici = not isinstance(e, urllib.error.HTTPError) or e.code == 429 or e.code >= 500
             if not tekrar or not gecici or i == DENEME - 1:
-                raise BufferHatasi(f"Buffer API: {e}") from e
+                raise BufferHatasi(f"Buffer API: {type(e).__name__}: {e}") from e
             time.sleep(5 * 2**i)
     if yanit.get("errors"):
         raise BufferHatasi(f"Buffer API: {yanit['errors']}"[:500])
+    if not isinstance(yanit.get("data"), dict):
+        raise BufferHatasi(f"Buffer API: veri yok: {str(yanit)[:200]}")
     return yanit["data"]
 
 
@@ -109,7 +116,7 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
                 "title": baslik[:100],
                 "privacy": "private",
                 "categoryId": kanal.aktif().kategori,
-                # çocuk kanalı (Orbit, K-19): yükleme anından itibaren doğru kitle; duzenle aynısını yazar
+                # kanalın MFK ayarı (K-24'ten beri iki kanal da genel kitle): yükleme anından itibaren doğru kitle
                 "madeForKids": kanal.aktif().mfk,
                 "isAiGenerated": False,  # youtube.py: containsSyntheticMedia False (gerçekçi değil)
                 "notifySubscribers": True,
@@ -123,23 +130,30 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
         if isinstance(neden, urllib.error.HTTPError) and neden.code < 500 or neden is None:
             raise  # Buffer isteği reddetti (4xx ya da GraphQL hatası): gönderi açılmadı
         raise GonderiBelirsiz(f"createPost yanıtı alınamadı (gönderi açılmış olabilir): {e}") from e
+    if not isinstance(sonuc, dict):
+        raise GonderiBelirsiz(f"createPost yanıtı okunamadı (gönderi açılmış olabilir): {sonuc!r}"[:300])
     if "post" not in sonuc:
         raise BufferHatasi(f"createPost: {sonuc.get('message')}")
-    post_id = sonuc["post"]["id"]
+    try:
+        post_id = sonuc["post"]["id"]
+    except (KeyError, TypeError) as e:
+        raise GonderiBelirsiz(f"createPost gönderi kimliği okunamadı: {sonuc!r}"[:300]) from e
     son = time.monotonic() + bekle_sn
     while True:
+        # gönderi açıldı: bundan sonra her hata (ağ, bozuk yanıt, `post: null`) belirsizdir, kesin red değil
         try:
             p = sorgu(DURUM, {"p": post_id})["post"]
-        except BufferHatasi as e:
-            raise GonderiBelirsiz(f"gönderi {post_id} durumu okunamadı: {e}") from e
-        if p["status"] == "sent" and p.get("externalLink"):
+            durum_ = p["status"]
+        except Exception as e:  # noqa: BLE001
+            raise GonderiBelirsiz(f"gönderi {post_id} durumu okunamadı: {type(e).__name__}: {e}") from e
+        if durum_ == "sent" and p.get("externalLink"):
             if m := re.search(r"(?:v=|youtu\.be/|shorts/)([\w-]{11})", p["externalLink"]):
                 return m[1]
             raise GonderiBelirsiz(f"gönderi {post_id} gitti ama video id okunamadı: {p['externalLink']}")
-        if p["status"] == "error":
+        if durum_ == "error":
             raise BufferHatasi(f"Buffer yayını düştü: {(p.get('error') or {}).get('message')}")
         if time.monotonic() > son:
-            raise GonderiBelirsiz(f"Buffer gönderisi {post_id} {bekle_sn} sn'de gitmedi (durum: {p['status']})")
+            raise GonderiBelirsiz(f"Buffer gönderisi {post_id} {bekle_sn} sn'de gitmedi (durum: {durum_})")
         time.sleep(YOKLAMA_SN)
 
 
@@ -200,7 +214,7 @@ def medya_koy(video: Path, ad: str, bekle_sn: int = 600) -> str:
             with urllib.request.urlopen(urllib.request.Request(url, method="HEAD"), timeout=30) as y:
                 if int(y.headers.get("Content-Length", -1)) == boyut:
                     return url
-        except (urllib.error.URLError, TimeoutError):
+        except (OSError, http.client.HTTPException, ValueError):  # kopan bağlantı da "henüz yok" demek
             pass
         if time.monotonic() > son:
             raise BufferHatasi(f"Pages {bekle_sn} sn'de yayınlamadı: {url}")

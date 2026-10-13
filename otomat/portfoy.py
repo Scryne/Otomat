@@ -82,7 +82,9 @@ def _api_gunu(r: dict) -> str:
 
 
 def _neuron(r: dict) -> int:
-    return r.get("neuron", 0) + sum(d.get("neuron", 0) for d in r.get("dusen_hikayeler", []))
+    return (
+        r.get("neuron", 0) + r.get("onarim_neuron", 0) + sum(d.get("neuron", 0) for d in r.get("dusen_hikayeler", []))
+    )
 
 
 def _api_birimi(r: dict) -> int:
@@ -127,7 +129,8 @@ def kanal_ozeti(k: kanal.Kanal, yil: int, hafta: int) -> dict:
     return {
         "id": k.id,
         "ad": k.ad,
-        "uretilen": sum(r.get("durum") == "tamam" for r in kosu),
+        # slot başına bir kez (rapor.py gibi): Plan B'ye düşüp sonraki koşuda kanala çıkan video iki satır yazar
+        "uretilen": len({r.get("tarih") for r in kosu if r.get("durum") == "tamam"}),
         "kanala_cikan": sum(bool(r.get("video_id")) for r in kosu),
         "dusen_hikaye": sum(len(r.get("dusen_hikayeler", [])) for r in kosu),
         "kota": sum(r.get("durum") == "kota" for r in kosu),
@@ -263,12 +266,17 @@ def olustur(yil: int, hafta: int, ozetler: list[dict], dakika: dict[str, int] | 
             s.append(f"- **{o['ad']}**: kanalda henüz yeni formatta video yok; sayaç başlamadı.")
             continue
         karar = o["ilk_public"] + dt.timedelta(days=OLDURME["gun"])
+        if o["ilk_public"] > son:  # ilk video planlı ama bu hafta henüz yayında değil: "-3/56 gün" yazıyordu
+            s.append(
+                f"- **{o['ad']}**: ilk yayın {o['ilk_public'].isoformat()} (planlı), karar günü {karar.isoformat()}."
+            )
+            continue
         gecen = (son - o["ilk_public"]).days + 1
         if o["son_56_gun"] is None:
             olcum = "analitik bu hafta okunamadı"
         else:
             olcum = (
-                f"son {OLDURME['gun']} günde {_sayi(o['son_56_gun']['views'])} / {_sayi(OLDURME['views'])} "
+                f"ilk public videodan bu yana {_sayi(o['son_56_gun']['views'])} / {_sayi(OLDURME['views'])} "
                 "görüntüleme, "
                 f"{_sayi(o['hafta']['abone_toplam'])} / {OLDURME['abone']} abone"
             )

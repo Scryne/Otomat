@@ -35,16 +35,7 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
     )
     marka.setdefault("image", {})["bannerExternalUrl"] = banner.execute()["url"]
     yt.channels().update(part="brandingSettings", body={"id": kimlik, "brandingSettings": marka}).execute()
-    ad = kanal_ogesi["snippet"]["title"]  # Scryne'ın Studio'da seçebildiği ad (`ad` ya da bir yedek)
-    yerel = {"en_US": {"title": ad, "description": m["aciklama"]["en"]}}
-    yerel |= {YEREL[d]: {"title": ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
-    try:
-        yt.channels().update(part="localizations", body={"id": kimlik, "localizations": yerel}).execute()
-    except HttpError as e:
-        # çevirili ad da kanal adı sayılıyor: ad değiştirme kilidinde 429 rateLimitExceeded (Earth, 2026-10-09);
-        # kimliğin geri kalanı sürer, ad değişince kontrol farkı görüp yeniden dener
-        if e.resp.status != 429:
-            raise
+    yerel_adi_yaz(yt, kanal_ogesi, m)
     yt.channels().update(part="status", body={"id": kimlik, "status": {"selfDeclaredMadeForKids": k.mfk}}).execute()
     if k.mfk:
         eski_videolari_ayir(yt)
@@ -61,6 +52,21 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
         raise  # yetki ya da kota: kimlik "uygulandı" sayılmasın, alarm olsun
     except Exception:  # noqa: BLE001 — 10-06'da yanıt kütüphane hatasıyla okunamadı ama ayar uygulanmıştı
         pass
+
+
+def yerel_adi_yaz(yt, kanal_ogesi: dict, m: dict) -> bool:
+    """Çevirili kanal adı ve açıklamaları o anki adla. Ad değiştirme kilidinde 429 (Earth, 2026-10-09): False döner,
+    kimliğin geri kalanı sürer, ad değişince kontrol farkı görüp yeniden dener."""
+    ad = kanal_ogesi["snippet"]["title"]  # Scryne'ın Studio'da seçebildiği ad (`ad` ya da bir yedek)
+    yerel = {"en_US": {"title": ad, "description": m["aciklama"]["en"]}}
+    yerel |= {YEREL[d]: {"title": ad, "description": m["aciklama"][d]} for d in YEREL if d in m["aciklama"]}
+    try:
+        yt.channels().update(part="localizations", body={"id": kanal_ogesi["id"], "localizations": yerel}).execute()
+        return True
+    except HttpError as e:
+        if e.resp.status != 429:
+            raise
+        return False
 
 
 def eski_videolari_ayir(yt) -> list[str]:
@@ -95,12 +101,12 @@ def kontrol(yt) -> str:
     ek = "" if ad in k.yeni_adlar else " (ad bekleniyor)"
     kanal_ayari = oge["brandingSettings"].get("channel", {})
     yerel_ad = (oge.get("localizations") or {}).get("en_US", {}).get("title")
-    if (
-        kanal_ayari.get("description") == m["aciklama"]["en"]
-        and oge["status"].get("selfDeclaredMadeForKids") == k.mfk
-        and yerel_ad == ad
-    ):
-        return "tamam" + ek
+    if kanal_ayari.get("description") == m["aciklama"]["en"] and oge["status"].get("selfDeclaredMadeForKids") == k.mfk:
+        if yerel_ad == ad:
+            return "tamam" + ek
+        # yalnız çevirili ad eskimiş: bütün kimliği (banner, 3 güncelleme, filigran ~250 birim) her koşuda yeniden
+        # uygulamak yerine yalnız yerelleştirme (50 birim); ad kilidinde (429) her koşu tam kimliği yeniden yüklüyordu
+        return ("yerel ad güncellendi" if yerel_adi_yaz(yt, oge, m) else "yerel ad kilitli") + ek
     uygula(yt, oge, m)
     return "uygulandı" + ek
 
