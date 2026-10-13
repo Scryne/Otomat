@@ -198,10 +198,23 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
     try:
         yt = youtube.servis()
         youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
-        for srt in sorted(dizin.glob("*.srt")):
-            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
     except Exception as e:  # noqa: BLE001
-        alarmlar.append(f"**Video yüklendi ama planlanamadı** (`{video_id}` private kalmış olabilir):\n\n" + _hata(e))
+        alarmlar.append(
+            f"**Video yüklendi ama planlanamadı** (`{video_id}`; sonraki koşunun pist denetimi yeniden planlar):\n\n"
+            + _hata(e)
+        )
+        return video_id
+    # altyazılar dil başına: biri (kota, geçici hata) düşünce öbürleri sürsün (400 birim/dil; eskiden ilk hata kalanı
+    # atlıyordu)
+    dusen = []
+    for srt in sorted(dizin.glob("*.srt")):
+        try:
+            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
+        except Exception as e:  # noqa: BLE001
+            dusen.append(f"{srt.stem}: {type(e).__name__}: {e}"[:200])
+    if dusen:
+        liste = "\n".join(f"- {d}" for d in dusen)
+        alarmlar.append(f"**Altyazı yüklenemedi** (`{video_id}`, video planlı):\n\n{liste}")
     return video_id
 
 
@@ -265,6 +278,49 @@ def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) ->
         alarmlar.append("**Haftalık rapor yazılamadı:**\n\n" + _hata(e))
 
 
+def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
+    """Planlı videolar kanalda gerçekten planlı mı? Buffer yükleyip `duzenle` düştüğünde video private ve plansız
+    kalıyordu, slot dolu sayıldığı için hiçbir koşu onarmıyordu (yayın günü kaybolurdu). Plansız video yeniden
+    planlanır; kanalda bulunmayan video alarm olur. Maliyet: 50 video başına 1 kota birimi."""
+    from otomat.yayin import youtube
+
+    satirlar = [
+        (v, dt.datetime.fromisoformat(y).astimezone(dt.UTC))
+        for v, y in db.execute(
+            "SELECT video_id, yayin_ani FROM secimler WHERE video_id IS NOT NULL"
+            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+        )
+    ]
+    satirlar = [(v, y) for v, y in satirlar if y > simdi]
+    if not satirlar:
+        return
+    try:
+        durumlar = youtube.durumlar([v for v, _ in satirlar], yt)
+        onarilan, kayip = [], []
+        for v, y in satirlar:
+            if (st := durumlar.get(v)) is None:
+                kayip.append(v)
+            elif st.get("privacyStatus") == "private" and not st.get("publishAt"):
+                youtube.planla(v, y, yt=yt)
+                onarilan.append(v)
+        kayit["pist"] = {"denetlenen": len(satirlar), "onarilan": onarilan, "kayip": kayip}
+        if onarilan:
+            alarmlar.append(f"**Plansız kalmış video yeniden planlandı** (bilgi): {', '.join(onarilan)}")
+        if kayip:
+            alarmlar.append(f"**Planlı video kanalda yok** (silinmiş olabilir; slot boş kalır): {', '.join(kayip)}")
+    except Exception as e:  # noqa: BLE001
+        alarmlar.append("**Pist denetimi yapılamadı** (üretim sürdü):\n\n" + _hata(e))
+
+
+def son_kayit() -> dict | None:
+    """Bu kanalın günlük raporundaki son satır (bu koşudan önceki)."""
+    try:
+        satirlar = RAPOR.read_text(encoding="utf-8").splitlines()
+        return json.loads(satirlar[-1]) if satirlar else None
+    except (OSError, ValueError):
+        return None
+
+
 def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:
     """Hikâye havuzunda anlatılmamış kaç hikâye kaldı; azalınca alarm (havuz sessizce bitip kanal durmasın)."""
     kalan = sum(durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN) for p in paketler)
@@ -317,6 +373,8 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         baslik=meta["baslik"],
         kaynak=meta["secim"]["kaynak"],
         diller=list(diller["yerel"]),
+        # atlanan dil raporda görünsün: 10-15 Earth videosu dört dilin dördü de kotaya takılıp sessizce çevirisiz çıktı
+        **({"ceviri_atlanan": diller["atlanan"]} if diller["atlanan"] else {}),
         video_id=video_id,
         yayin_ani=yayin_ani.isoformat(),
         sure_sn=meta["sure_sn"],
@@ -360,7 +418,17 @@ def main() -> None:
     yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
     if HIKAYE and yt is not None:
         marka_adimi(yt, genel, alarmlar)
+    if pist and yt is not None:
+        pist_denetimi(db, yt, simdi, genel, alarmlar)
+    onceki = son_kayit()
     try:
+        if pist and yt is None:
+            # token düşmüşse üretme: Buffer videoyu private yükler, planlama düşer, slot dolu sayılır ve hikâye
+            # harcanır.
+            # YetkiHatasi burada alarm olur (çözüm adımlarıyla); başka bir analitik hatasında servis yine kurulur.
+            from otomat.yayin import youtube
+
+            youtube.servis()
         if HIKAYE:
             from otomat.hikaye import kaynaklar as hikaye_kaynaklari
 
@@ -392,7 +460,13 @@ def main() -> None:
                 )
                 if pist and gun > bugun + dt.timedelta(days=1):
                     # yarının videosu kanalda planlı: sonraki koşu bu slotu yeniden dener, alarm gerekmez (10-11'de
-                    # 3. pist gününün hikâyeleri düştü, alarm çaldı, akşam koşusu slotu doldurdu)
+                    # 3. pist gününün hikâyeleri düştü, alarm çaldı, akşam koşusu slotu doldurdu). Ama üst üste iki
+                    # koşu düşerse sistemik bir sorun havuzu sessizce yakıyor olabilir (her koşu 3 hikâye harcar).
+                    if not kota and (onceki or {}).get("durum") == "hata" and "HikayeDustu" in onceki.get("hata", ""):
+                        alarmlar.append(
+                            "**Pistin uzak slotu üst üste iki koşuda düştü** (her koşu 3 hikâyeyi havuzdan "
+                            "harcıyor; kalıcı bir kapı sorunu olabilir):\n\n" + f"{type(e).__name__}: {e}"[:800]
+                        )
                     break
                 raise
             if kayit["video_id"] is None:

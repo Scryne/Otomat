@@ -95,19 +95,22 @@ def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, ned
 
 
 def yayin_slotu(db: sqlite3.Connection, simdi: dt.datetime, saat: int | None = None) -> dt.datetime:
-    """Günde tek yayın, kanalın yayın saatinde: en erken bir saat sonrası, kanala yüklenmiş son videonun ertesi günü.
-    Video kimliği olmayan (Plan B / teslim) ve geri çekilen satırlar slot tutmaz."""
+    """Günde tek yayın, kanalın yayın saatinde: en erken bir saat sonrası, kanalda videosu olmayan ilk gün. Video
+    kimliği olmayan (Plan B / teslim) ve geri çekilen satırlar slot tutmaz. İlk boş gün aranır, son videonun ertesi
+    günü değil: pistin ortasından geri çekilen videonun slotu (T+1 çekildi, T+2 planlı) kalıcı boş kalıyordu."""
     saat = kanal.aktif().yayin_saati_utc if saat is None else saat
     aday = simdi.replace(hour=saat, minute=0, second=0, microsecond=0)
     if aday < simdi + dt.timedelta(hours=1):
         aday += dt.timedelta(days=1)
-    son = db.execute(
-        "SELECT max(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
-        " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
-    ).fetchone()[0]
-    if son:
-        ertesi = dt.datetime.fromisoformat(son).astimezone(dt.UTC) + dt.timedelta(days=1)
-        aday = max(aday, ertesi.replace(hour=saat, minute=0, second=0, microsecond=0))
+    dolu = {
+        dt.datetime.fromisoformat(y).astimezone(dt.UTC).date()
+        for (y,) in db.execute(
+            "SELECT yayin_ani FROM secimler WHERE video_id IS NOT NULL"
+            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+        )
+    }
+    while aday.date() in dolu:
+        aday += dt.timedelta(days=1)
     return aday
 
 

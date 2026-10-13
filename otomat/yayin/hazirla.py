@@ -38,14 +38,18 @@ def hazirla(dizin: Path, deneme: int = 3) -> dict:
     (dizin / "en.srt").write_text(srt(altyazi_parcalari(cumle_parcalari)), encoding="utf-8")
     cumleler = [p.metin for p in cumle_parcalari]
     onceki = _onceki(dizin, ozet)
-    yerel, atlanan = {}, []
+    yerel, atlanan, kota = {}, [], False
     for dil in kanal.aktif().diller:
         if dil in onceki:
             yerel[dil] = onceki[dil]
             continue
         sonuc = None
-        for tohum in range(deneme):
-            sonuc = ceviri.cevir(dil, meta["baslik"], meta["aciklama"], cumleler, tohum=tohum)
+        for tohum in range(0 if kota else deneme):
+            try:
+                sonuc = ceviri.cevir(dil, meta["baslik"], meta["aciklama"], cumleler, tohum=tohum)
+            except ceviri.CeviriKotasi:
+                kota = True  # kalan diller denenmez; yerel.json'da "kota" işaretlenir, sonraki deneme yeniden çevirir
+                break
             if sonuc:
                 break
         if sonuc is None:
@@ -56,10 +60,10 @@ def hazirla(dizin: Path, deneme: int = 3) -> dict:
         cevrilmis = [Parca(p.bas, p.son, c) for p, c in zip(cumle_parcalari, sonuc["captions"], strict=True)]
         (dizin / f"{dil}.srt").write_text(srt(altyazi_parcalari(cevrilmis)), encoding="utf-8")
     (dizin / "yerel.json").write_text(
-        json.dumps({"yerel": yerel, "atlanan": atlanan, "kaynak": ozet}, ensure_ascii=False, indent=1),
+        json.dumps({"yerel": yerel, "atlanan": atlanan, "kota": kota, "kaynak": ozet}, ensure_ascii=False, indent=1),
         encoding="utf-8",
     )
-    return {"yerel": yerel, "atlanan": atlanan}
+    return {"yerel": yerel, "atlanan": atlanan, "kota": kota}
 
 
 if __name__ == "__main__":

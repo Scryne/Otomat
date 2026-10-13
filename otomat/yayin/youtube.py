@@ -173,6 +173,8 @@ def duzenle(
     """Başka bir yoldan (Buffer) yüklenmiş videoya metadata, planlı yayın ve yerelleştirme yazar. Kilit yalnız bizim
     projemizin videos.insert'ünde; update serbest (docs/arastirma/06, 10-05 testi). yayin_ani yoksa hemen public."""
     yt = yt or servis()
+    if yayin_ani and yayin_ani <= dt.datetime.now(dt.UTC) + dt.timedelta(minutes=5):
+        yayin_ani = None  # üretim + Buffer gecikmesi slotu geçirdiyse planlı yayın kurulamaz: hemen public
     govde, parcalar = _govde(baslik, aciklama, etiketler, yayin_ani, yerellestirme)
     govde["id"] = video_id
     # status güncellemesi verilmeyen alanları varsayılana çeker (publicStatsViewable false oluyordu)
@@ -188,23 +190,52 @@ def geri_cek(video_id: str, neden: str, yt=None) -> None:
     from otomat import durum
 
     yt = yt or servis()
-    # MFK videonun kendi ayarından gelir, kanalınkinden değil: Orbit 10-13'te genel kitleye geçti, eski masal videoları
-    # çocuk içeriği kalır; kanal ayarı yazılsaydı geri çekilen çocuk videosu "çocuklara özel değil" olurdu
-    ogeler = yt.videos().list(part="status", id=video_id).execute(num_retries=DENEME).get("items", [])
-    mfk = ogeler[0]["status"].get("selfDeclaredMadeForKids", ogeler[0]["status"].get("madeForKids")) if ogeler else None
-    govde = {
-        "id": video_id,
-        "status": {
-            "privacyStatus": "private",
-            "selfDeclaredMadeForKids": kanal.aktif().mfk if mfk is None else mfk,
-            "containsSyntheticMedia": False,
-            "embeddable": True,
-            "publicStatsViewable": True,
-            "license": "youtube",
-        },
-    }
-    yt.videos().update(part="status", body=govde).execute(num_retries=DENEME)
+    yt.videos().update(part="status", body=tam_durum(yt, video_id)).execute(num_retries=DENEME)
     durum.geri_cek(durum.baglan(), [video_id], dt.datetime.now(dt.UTC).date(), neden)
+
+
+def tam_durum(yt, video_id: str, mfk: bool | None = None, yayin_ani: dt.datetime | None = None) -> dict:
+    """`videos.update(part=status)` gövdesi, bütün alanlarıyla: verilmeyen alan varsayılana döner (publicStatsViewable
+    false oluyordu). Private; `yayin_ani` verilirse o anda public olur. MFK videonun kendi ayarından gelir,
+    kanalınkinden değil: Orbit 10-13'te genel kitleye geçti, eski masal videoları çocuk içeriği kalır."""
+    if mfk is None:
+        ogeler = yt.videos().list(part="status", id=video_id).execute(num_retries=DENEME).get("items", [])
+        if ogeler:
+            mfk = ogeler[0]["status"].get("selfDeclaredMadeForKids", ogeler[0]["status"].get("madeForKids"))
+    durum_ = {
+        "privacyStatus": "private",
+        "selfDeclaredMadeForKids": kanal.aktif().mfk if mfk is None else mfk,
+        "containsSyntheticMedia": False,
+        "embeddable": True,
+        "publicStatsViewable": True,
+        "license": "youtube",
+    }
+    if yayin_ani:
+        durum_["publishAt"] = yayin_ani.astimezone(dt.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    return {"id": video_id, "status": durum_}
+
+
+def planla(video_id: str, yayin_ani: dt.datetime, yt=None) -> None:
+    """Planı düşmüş (Buffer yükledi ama `duzenle` düştü) videoyu yeniden planlar; başlık ve açıklamayı Buffer zaten
+    yazmıştı. Geçmiş bir an verilirse hemen public olur (planlı yayın geçmişe kurulamaz)."""
+    yt = yt or servis()
+    if yayin_ani <= dt.datetime.now(dt.UTC) + dt.timedelta(minutes=5):
+        govde = tam_durum(yt, video_id)
+        govde["status"]["privacyStatus"] = "public"
+    else:
+        govde = tam_durum(yt, video_id, yayin_ani=yayin_ani)
+    yt.videos().update(part="status", body=govde).execute(num_retries=DENEME)
+
+
+def durumlar(video_idler: list[str], yt=None) -> dict[str, dict]:
+    """video_id → status (yalnız kanalda bulunanlar; silinen video sözlükte yok). 50'lik gruplar, grup başına 1
+    birim."""
+    yt = yt or servis()
+    sonuc = {}
+    for i in range(0, len(video_idler), 50):
+        y = yt.videos().list(part="status", id=",".join(video_idler[i : i + 50])).execute(num_retries=DENEME)
+        sonuc |= {o["id"]: o["status"] for o in y.get("items", [])}
+    return sonuc
 
 
 def altyazi_ekle(video_id: str, dil: str, srt_metni: str, yt=None) -> None:

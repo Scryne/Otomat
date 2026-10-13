@@ -23,10 +23,17 @@ def test_yayin_slotu_gunde_bir_ve_kuyruk(tmp_path):
     assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 6, 14, tzinfo=UTC)
     # yayına bir saatten az kaldıysa ertesi gün
     assert gunluk.yayin_slotu(db, sabah.replace(hour=13, minute=30)) == dt.datetime(2026, 10, 7, 14, tzinfo=UTC)
-    # kanalda planlı video varsa onun ertesi günü; video_id'siz (Plan B) satır slot tutmaz
-    _secim(db, "2026-10-05", "2026-10-08T14:00:00+00:00", "abcdefghijk")
-    _secim(db, "2026-10-06", "2026-10-20T14:00:00+00:00", None)
+    # videosu olan günler atlanır, ilk boş gün dolar (10-13 denetimi: eskiden son videonun ertesi günü seçiliyordu,
+    # pistin ortasından geri çekilen videonun slotu kalıcı boş kalıyordu); video_id'siz (Plan B) satır slot tutmaz
+    _secim(db, "2026-10-08", "2026-10-08T14:00:00+00:00", "abcdefghijk")
+    _secim(db, "2026-10-20", "2026-10-20T14:00:00+00:00", None)
+    assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 6, 14, tzinfo=UTC)
+    _secim(db, "2026-10-06", "2026-10-06T14:00:00+00:00", "v06")
+    _secim(db, "2026-10-07", "2026-10-07T14:00:00+00:00", "v07")
     assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 9, 14, tzinfo=UTC)
+    durum.geri_cek(db, ["v07"], sabah.date(), "kalite")  # ortadaki çekildi: o gün yeniden dolar
+    assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 7, 14, tzinfo=UTC)
+    durum.geri_cek(db, ["v06"], sabah.date(), "kalite")
     # geri çekilen (private'a alınıp planı kaldırılan) video slot tutmaz (2026-10-08 format değişimi)
     durum.geri_cek(db, ["abcdefghijk"], sabah.date(), "format değişimi")
     assert gunluk.yayin_slotu(db, sabah) == dt.datetime(2026, 10, 6, 14, tzinfo=UTC)
@@ -120,6 +127,7 @@ def _pist_ortami(tmp_path, monkeypatch, db, uretim):
     monkeypatch.setattr(gunluk.rapor, "RAPORLAR", tmp_path)  # haftalık rapor da test klasörüne
     monkeypatch.setattr(gunluk, "HIKAYE", False)
     monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (None, None))
+    monkeypatch.setattr(youtube, "servis", lambda *a, **k: object())  # token ön kontrolü geçsin
     monkeypatch.setattr(gunluk, "topla", lambda: ([], []))
     monkeypatch.setattr(gunluk, "bir_video", uretim)
 

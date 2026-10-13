@@ -359,7 +359,8 @@ def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
         if ad in TAKVIM:  # "Monday" kaynakta yazmasa da uydurma ad değil; tarihi hakem denetler
             continue
         # kısa ad tam kelime ("Tom" kaynaktaki "tomorrow"dan geçiyordu), uzun ad kelime başında kök (Londoners → london)
-        kalip = rf"\b{re.escape(ad.lower())}\b" if len(ad) <= 4 else rf"\b{re.escape(ad.lower()[: max(5, len(ad) - 3)])}"
+        kok = ad.lower() if len(ad) <= 4 else ad.lower()[: max(5, len(ad) - 3)]
+        kalip = rf"\b{re.escape(kok)}\b" if len(ad) <= 4 else rf"\b{re.escape(kok)}"
         if not re.search(kalip, k):
             hata.append(f"name not in source: {ad}")
     return hata
