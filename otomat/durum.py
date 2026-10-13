@@ -47,6 +47,12 @@ CREATE TABLE IF NOT EXISTS geri_cekilen (
     tarih TEXT NOT NULL,
     neden TEXT NOT NULL
 );
+-- Buffer yükledi ama planlama (videos.update) düştü: pist denetimi yalnız bunları yeniden planlar. Kanalda elle
+-- private'a çekilmiş bir videoya dokunulmasın diye "plansız private" her videoya değil (10-13 denetimi).
+CREATE TABLE IF NOT EXISTS planlanamayan (
+    video_id TEXT PRIMARY KEY,
+    yayin_ani TEXT NOT NULL
+);
 -- Ödül penceresi ölçümü: yayın günü + 2 gün (Analytics), bir kez yazılır.
 CREATE TABLE IF NOT EXISTS olcumler (
     video_id TEXT PRIMARY KEY,
@@ -90,6 +96,14 @@ def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, ned
     db.executemany(
         "INSERT OR REPLACE INTO geri_cekilen (video_id, tarih, neden) VALUES (?, ?, ?)",
         [(v, bugun.isoformat(), neden) for v in video_idler],
+    )
+    db.commit()
+
+
+def planlanamadi(db: sqlite3.Connection, video_id: str, yayin_ani: dt.datetime | None) -> None:
+    db.execute(
+        "INSERT OR REPLACE INTO planlanamayan VALUES (?, ?)",
+        (video_id, (yayin_ani or dt.datetime.now(dt.UTC)).isoformat()),
     )
     db.commit()
 

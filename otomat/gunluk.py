@@ -178,7 +178,7 @@ def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
     return durum.yayin_slotu(db, simdi, YAYIN_SAATI_UTC)
 
 
-def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str]) -> str:
+def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str], db=None) -> str:
     """Buffer private yükler; planlı yayın, etiket, yerelleştirme ve altyazı bizim API'mizle. Video kanala çıktıktan
     sonraki hata yayını geri almaz: alarm yazılır, video id yine döner (seçim kaydı ve analitik için)."""
     from otomat.yayin import buffer, youtube
@@ -199,6 +199,8 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
         yt = youtube.servis()
         youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
     except Exception as e:  # noqa: BLE001
+        if db is not None:
+            durum.planlanamadi(db, video_id, yayin_ani)
         alarmlar.append(
             f"**Video yüklendi ama planlanamadı** (`{video_id}`; sonraki koşunun pist denetimi yeniden planlar):\n\n"
             + _hata(e)
@@ -282,8 +284,9 @@ def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) ->
 
 def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
     """Planlı videolar kanalda gerçekten planlı mı? Buffer yükleyip `duzenle` düştüğünde video private ve plansız
-    kalıyordu, slot dolu sayıldığı için hiçbir koşu onarmıyordu (yayın günü kaybolurdu). Plansız video yeniden
-    planlanır; kanalda bulunmayan video alarm olur. Maliyet: 50 video başına 1 kota birimi."""
+    kalıyordu, slot dolu sayıldığı için hiçbir koşu onarmıyordu (yayın günü kaybolurdu). Yalnız planlaması düştüğü
+    kaydedilen (`planlanamayan`) video yeniden planlanır; başka bir plansız private video elle çekilmiş olabilir, ona
+    dokunulmaz, alarm olur. Kanalda bulunmayan video alarm olur. Maliyet: 50 video başına 1 kota birimi."""
     from otomat.yayin import youtube
 
     satirlar = [
@@ -298,16 +301,28 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
         return
     try:
         durumlar = youtube.durumlar([v for v, _ in satirlar], yt)
-        onarilan, kayip = [], []
+        bekleyen = {v for (v,) in db.execute("SELECT video_id FROM planlanamayan")}
+        onarilan, kayip, plansiz = [], [], []
         for v, y in satirlar:
             if (st := durumlar.get(v)) is None:
                 kayip.append(v)
             elif st.get("privacyStatus") == "private" and not st.get("publishAt"):
-                youtube.planla(v, y, yt=yt)
-                onarilan.append(v)
-        kayit["pist"] = {"denetlenen": len(satirlar), "onarilan": onarilan, "kayip": kayip}
+                if v in bekleyen:
+                    youtube.planla(v, y, yt=yt)
+                    onarilan.append(v)
+                else:
+                    plansiz.append(v)
+        if onarilan:
+            db.executemany("DELETE FROM planlanamayan WHERE video_id = ?", [(v,) for v in onarilan])
+            db.commit()
+        kayit["pist"] = {"denetlenen": len(satirlar), "onarilan": onarilan, "kayip": kayip, "plansiz": plansiz}
         if onarilan:
             alarmlar.append(f"**Plansız kalmış video yeniden planlandı** (bilgi): {', '.join(onarilan)}")
+        if plansiz:
+            alarmlar.append(
+                f"**Planlı görünen video kanalda private ve plansız:** {', '.join(plansiz)}. Elle çekildiyse "
+                '`python -m otomat.yayin.youtube geri <id> "<neden>"` ile kaydet (slot yeniden dolar).'
+            )
         if kayip:
             alarmlar.append(f"**Planlı video kanalda yok** (silinmiş olabilir; slot boş kalır): {', '.join(kayip)}")
     except Exception as e:  # noqa: BLE001
@@ -428,7 +443,7 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         video_id = yayinla_api(dizin, yayin_ani)
     elif mod == "buffer":
         try:
-            video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar)
+            video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar, db=db)
         except Exception as e:  # noqa: BLE001
             alarmlar.append(
                 "**Buffer yayını düştü**: video Plan B paketine kondu, sonraki koşu aynı videoyu yeniden yayınlamayı "

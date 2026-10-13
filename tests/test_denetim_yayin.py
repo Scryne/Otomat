@@ -76,16 +76,21 @@ def test_pist_denetimi_plansizi_yeniden_planlar_kayibi_bildirir(tmp_path, monkey
     _secim(db, "2026-10-16", "2026-10-16T14:00:00+00:00", "planli")
     _secim(db, "2026-10-12", "2026-10-12T14:00:00+00:00", "gecmis")  # yayınlanmış: denetlenmez
     _secim(db, "2026-10-17", "2026-10-17T14:00:00+00:00", "cekilen")
+    _secim(db, "2026-10-18", "2026-10-18T14:00:00+00:00", "elle")  # Studio'dan elle private: dokunulmaz
     durum.geri_cek(db, ["cekilen"], simdi.date(), "kalite")
+    durum.planlanamadi(db, "plansiz", dt.datetime(2026, 10, 14, 14, tzinfo=UTC))  # Buffer yükledi, planlama düştü
     yt = _Yt({"plansiz": {"privacyStatus": "private", "selfDeclaredMadeForKids": False},
-              "planli": {"privacyStatus": "private", "publishAt": "2026-10-16T14:00:00Z"}})  # fmt: skip
+              "planli": {"privacyStatus": "private", "publishAt": "2026-10-16T14:00:00Z"},
+              "elle": {"privacyStatus": "private"}})  # fmt: skip
     kayit, alarmlar = {}, []
     gunluk.pist_denetimi(db, yt, simdi, kayit, alarmlar)
-    assert kayit["pist"] == {"denetlenen": 3, "onarilan": ["plansiz"], "kayip": ["kayip"]}
+    assert kayit["pist"] == {"denetlenen": 4, "onarilan": ["plansiz"], "kayip": ["kayip"], "plansiz": ["elle"]}
+    assert len(yt.guncellenen) == 1  # yalnız kaydedilmiş başarısızlık
     part, govde = yt.guncellenen[0]
     assert govde["id"] == "plansiz" and govde["status"]["publishAt"] == "2026-10-14T14:00:00.000Z"
     assert govde["status"]["publicStatsViewable"] is True and govde["status"]["selfDeclaredMadeForKids"] is False
-    assert len(alarmlar) == 2 and "kayip" in alarmlar[1]
+    assert len(alarmlar) == 3 and any("kayip" in a for a in alarmlar) and any(":** elle." in a for a in alarmlar)
+    assert db.execute("SELECT count(*) FROM planlanamayan").fetchone()[0] == 0  # onarılan kayıttan düşer
 
 
 def test_uzak_slot_ust_uste_iki_kez_duserse_alarm(tmp_path, monkeypatch):
