@@ -147,10 +147,13 @@ def test_marka_adi_beklemez_ad_degisince_yerel_adi_gunceller(kanal_sec, monkeypa
     uygulanan = []
     monkeypatch.setattr(marka, "uygula", lambda yt, oge, m: uygulanan.append(oge["snippet"]["title"]))
     assert marka.kontrol(_SahteKanal("Orbit Ruler")) == "uygulandı (ad bekleniyor)"
-    tamam = _SahteKanal("Orbit Ruler", m["aciklama"]["en"], mfk=True, yerel_ad="Orbit Ruler")
+    tamam = _SahteKanal("Orbit Ruler", m["aciklama"]["en"], mfk=False, yerel_ad="Orbit Ruler")
     assert marka.kontrol(tamam) == "tamam (ad bekleniyor)"
-    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], True, "Orbit Ruler")) == "uygulandı"
-    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], True, "Lanternbug Tales")) == "tamam"
+    # 10-13: Orbit genel kitleye geçti; kanal hâlâ MFK ise kimlik yeniden uygulanır
+    assert marka.kontrol(_SahteKanal("Orbit Ruler", m["aciklama"]["en"], True, "Orbit Ruler")).startswith("uygulandı")
+    uygulanan.pop()
+    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], False, "Orbit Ruler")) == "uygulandı"
+    assert marka.kontrol(_SahteKanal("Lanternbug Tales", m["aciklama"]["en"], False, "Lanternbug Tales")) == "tamam"
     assert uygulanan == ["Orbit Ruler", "Lanternbug Tales"]
     assert (marka.KOK / m["banner"]).exists() and (marka.KOK / m["filigran"]).exists()
 
@@ -201,8 +204,9 @@ def test_kabul_referansi_kabul_eder_kusurlari_reddeder(kanal_sec, tmp_path):
     assert any("hakaret" in h for h in bozuk(baslik="Lord Bloody Wog Rolo: Guest of Her Majesty"))
     assert any("hakaret" in h for h in bozuk(paket={**meta.get("paket", {}), "anahtar": "wiki:Lord Bloody Wog Rolo"}))
     assert not any("hakaret" in h for h in bozuk(baslik="The Boy Who Outran Michael Fagan"))
+    # 10-13: Orbit genel kitleye geçti; artifact'ta kalan çocuk formatı üretimi (MFK) yayına çıkmaz
     kanal_sec("uzay")
-    (tmp_path / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
+    (tmp_path / "meta.json").write_text(json.dumps({**meta, "mfk": True}), encoding="utf-8")
     assert any("MFK" in h for h in kabul.denetle(tmp_path / "meta.json", _sahte_video()))
 
 
@@ -495,7 +499,7 @@ def test_muzik_indirilemezse_ayni_moodun_siradaki_parcasi(kanal_sec, tmp_path, m
 
     kanal_sec("uzay")
     monkeypatch.setattr(uretim, "MUZIK_DIZIN", tmp_path)
-    parcalar = kanal.aktif().muzik["gentle"]
+    parcalar = kanal.aktif().muzik["wistful"]
     istenen = []
 
     def urlopen(istek, timeout):
@@ -507,13 +511,13 @@ def test_muzik_indirilemezse_ayni_moodun_siradaki_parcasi(kanal_sec, tmp_path, m
     monkeypatch.setattr(uretim.urllib.request, "urlopen", urlopen)
     tohum = "x"
     bas = sum(map(ord, tohum)) % len(parcalar)
-    yol, ad = uretim.muzik_sec("gentle", tohum)
+    yol, ad = uretim.muzik_sec("wistful", tohum)
     assert ad == parcalar[(bas + 1) % len(parcalar)] and yol.read_bytes() == b"mp3" and len(istenen) == 2
     assert not list(tmp_path.glob("*.tmp"))
     # tohumun parçası önbellekteyse indirilmeden o kullanılır
     monkeypatch.setattr(uretim.urllib.request, "urlopen", lambda *a, **k: pytest.fail("önbellek varken indirme"))
     (tmp_path / f"{parcalar[bas]}.mp3").write_bytes(b"ilk")
-    assert uretim.muzik_sec("gentle", tohum) == (tmp_path / f"{parcalar[bas]}.mp3", parcalar[bas])
+    assert uretim.muzik_sec("wistful", tohum) == (tmp_path / f"{parcalar[bas]}.mp3", parcalar[bas])
 
 
 def test_gorsel_yanitsiz_donerse_dosya_yazilmaz(tmp_path, monkeypatch):

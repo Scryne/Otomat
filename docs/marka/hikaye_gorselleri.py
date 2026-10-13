@@ -15,7 +15,6 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 KOK = Path(__file__).parent
 RENDER = Path.home() / ".claude/skills/logo-design/scripts/render_png.py"
-LUCKIEST = KOK.parents[1] / "otomat/varliklar/fontlar/LuckiestGuy-Regular.ttf"
 FELL = KOK / "fontlar/IMFellEnglish-Regular.ttf"
 
 MARKA = {
@@ -27,12 +26,12 @@ MARKA = {
         "font": FELL,
     },
     "lanternbug": {
-        "ad": "LANTERNBUG TALES",
-        "slogan": "GENTLE FABLES FOR LITTLE ONES",
+        "ad": "Lanternbug Tales",
+        "slogan": "Aesop's fables, told straight",  # 10-13: çocuk kanalından genel kitleye (K-20)
         "zemin": "#1F2B4D",  # gece
         "govde": "#F6EBD9",  # krem
         "isik": "#FFB703",  # ateş böceği ışığı (altyazı vurgusuyla aynı)
-        "font": LUCKIEST,
+        "font": FELL,
     },
 }
 

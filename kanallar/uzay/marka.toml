@@ -1,26 +1,27 @@
-# Lanternbug Tales — kanal ayarları (Faz 15). otomat/yayin/marka.py kanal bu adı alınca bir kez uygular.
+# Lanternbug Tales — kanal ayarları (Faz 15; 10-13'te genel kitleye çevrildi, K-20). otomat/yayin/marka.py açıklama
+# YouTube'dakinden farklıysa bir kez uygular (banner, açıklama, anahtar kelime, kanal düzeyinde MFK).
 banner = "docs/marka/lanternbug/banner-2560x1440.png"
 filigran = "docs/marka/lanternbug/filigran-150.png"
-anahtar = "\"kids stories\" \"bedtime stories\" \"fables for kids\" \"Aesop's fables\" \"moral stories\" \"animal stories\" \"stories for toddlers\" storytime"
+anahtar = "\"Aesop's fables\" fables \"Aesop\" \"moral stories\" \"short stories\" \"animal fables\" \"classic stories\" storytelling"
 
 [aciklama]
-en = """Gentle animal fables for little ones, one every day. A classic Aesop fable (the Lion and the Mouse, the Fox and the Grapes, the North Wind and the Sun) retold in simple words with soft picture-book illustrations and a kind lesson at the end. For children aged 3 to 7.
+en = """Aesop's fables, told straight. One every day: the fox, the crow, the wolf and the lion, retold in about thirty seconds with the original ending and the moral Aesop meant for people, not just animals.
 
-Stories are retold from Aesop's public-domain fables and checked to be gentle and child-friendly. Illustrations are AI-generated; narration is computer-generated.
+Stories are retold from Aesop's public-domain fables (tr. V. S. Vernon Jones, 1912). Illustrations are AI-generated; narration is computer-generated.
 """
-es = """Fábulas de animales tranquilas para los más pequeños, una cada día. Una fábula clásica de Esopo (el león y el ratón, la zorra y las uvas, el viento del norte y el sol) contada con palabras sencillas, ilustraciones suaves de libro infantil y una enseñanza amable al final. Para niños de 3 a 7 años.
+es = """Las fábulas de Esopo, contadas sin rodeos. Una cada día: el zorro, el cuervo, el lobo y el león, en unos treinta segundos, con el final original y la moraleja que Esopo pensó para las personas, no solo para los animales.
 
-Las historias se basan en las fábulas de Esopo, de dominio público, y se revisan para que sean suaves y aptas para niños. Las ilustraciones están generadas con IA y la narración por computadora.
+Las historias se basan en las fábulas de Esopo, de dominio público (trad. V. S. Vernon Jones, 1912). Las ilustraciones están generadas con IA y la narración por computadora.
 """
-pt = """Fábulas de animais tranquilas para os pequenos, uma por dia. Uma fábula clássica de Esopo (o leão e o rato, a raposa e as uvas, o vento norte e o sol) recontada com palavras simples, ilustrações suaves de livro infantil e uma lição gentil no final. Para crianças de 3 a 7 anos.
+pt = """As fábulas de Esopo, contadas sem rodeios. Uma por dia: a raposa, o corvo, o lobo e o leão, em cerca de trinta segundos, com o final original e a moral que Esopo pensou para as pessoas, não só para os animais.
 
-As histórias são recontadas a partir das fábulas de Esopo, em domínio público, e revisadas para serem suaves e adequadas às crianças. As ilustrações são geradas por IA e a narração por computador.
+As histórias são recontadas a partir das fábulas de Esopo, em domínio público (trad. V. S. Vernon Jones, 1912). As ilustrações são geradas por IA e a narração por computador.
 """
-de = """Sanfte Tierfabeln für die Kleinen, jeden Tag eine. Eine klassische Fabel von Äsop (der Löwe und die Maus, der Fuchs und die Trauben, der Nordwind und die Sonne), in einfachen Worten neu erzählt, mit weichen Bilderbuch-Illustrationen und einer freundlichen Lehre am Ende. Für Kinder von 3 bis 7 Jahren.
+de = """Äsops Fabeln, ungeschönt erzählt. Jeden Tag eine: der Fuchs, der Rabe, der Wolf und der Löwe, in rund dreißig Sekunden, mit dem ursprünglichen Ende und der Moral, die Äsop für Menschen meinte, nicht nur für Tiere.
 
-Die Geschichten beruhen auf Äsops gemeinfreien Fabeln und werden darauf geprüft, dass sie sanft und kindgerecht sind. Die Illustrationen sind KI-generiert, die Sprecherstimme computergeneriert.
+Die Geschichten beruhen auf Äsops gemeinfreien Fabeln (Übers. V. S. Vernon Jones, 1912). Die Illustrationen sind KI-generiert, die Sprecherstimme computergeneriert.
 """
-fr = """De douces fables d'animaux pour les petits, une chaque jour. Une fable classique d'Ésope (le lion et le rat, le renard et les raisins, le vent du nord et le soleil) racontée avec des mots simples, de douces illustrations d'album et une gentille leçon à la fin. Pour les enfants de 3 à 7 ans.
+fr = """Les fables d'Ésope, racontées sans détour. Une chaque jour : le renard, le corbeau, le loup et le lion, en une trentaine de secondes, avec la fin d'origine et la morale qu'Ésope destinait aux humains, pas seulement aux animaux.
 
-Les histoires reprennent les fables d'Ésope, du domaine public, et sont vérifiées pour rester douces et adaptées aux enfants. Les illustrations sont générées par IA et la narration par ordinateur.
+Les histoires reprennent les fables d'Ésope, du domaine public (trad. V. S. Vernon Jones, 1912). Les illustrations sont générées par IA et la narration par ordinateur.
 """

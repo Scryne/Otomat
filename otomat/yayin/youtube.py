@@ -188,11 +188,15 @@ def geri_cek(video_id: str, neden: str, yt=None) -> None:
     from otomat import durum
 
     yt = yt or servis()
+    # MFK videonun kendi ayarından gelir, kanalınkinden değil: Orbit 10-13'te genel kitleye geçti, eski masal videoları
+    # çocuk içeriği kalır; kanal ayarı yazılsaydı geri çekilen çocuk videosu "çocuklara özel değil" olurdu
+    ogeler = yt.videos().list(part="status", id=video_id).execute(num_retries=DENEME).get("items", [])
+    mfk = ogeler[0]["status"].get("selfDeclaredMadeForKids", ogeler[0]["status"].get("madeForKids")) if ogeler else None
     govde = {
         "id": video_id,
         "status": {
             "privacyStatus": "private",
-            "selfDeclaredMadeForKids": kanal.aktif().mfk,
+            "selfDeclaredMadeForKids": kanal.aktif().mfk if mfk is None else mfk,
             "containsSyntheticMedia": False,
             "embeddable": True,
             "publicStatsViewable": True,

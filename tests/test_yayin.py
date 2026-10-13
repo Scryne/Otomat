@@ -54,17 +54,18 @@ def test_hafta_sayfasi_teslim_dosyalarindan(tmp_path, monkeypatch):
 
 
 def test_hafta_sayfasi_kitleyi_kanaldan_yazar(monkeypatch):
-    """Plan B sayfası Orbit (MFK) için de "Hayır, çocuklara özel değil" diyordu."""
+    """Plan B sayfası Orbit (MFK) için de "Hayır, çocuklara özel değil" diyordu. Orbit 10-13'te genel kitleye geçti:
+    MFK kanal profilinden gelir (burada sahte bir MFK kanalıyla)."""
+    import dataclasses
+
     from otomat import kanal
     from otomat.yayin import hafta
 
     v = [{"tarih": "2026-10-10", "baslik": "B", "aciklama": "A", "etiketler": ""}]
-    for kimlik, beklenen in (("uzay", "Evet, çocuklara özel"), ("earth", "Hayır, çocuklara özel değil")):
-        monkeypatch.setenv("OTOMAT_KANAL", kimlik)
-        kanal._aktif.cache_clear()
+    for mfk, beklenen in ((True, "Evet, çocuklara özel"), (False, "Hayır, çocuklara özel değil")):
+        monkeypatch.setattr(kanal, "aktif", lambda m=mfk: dataclasses.replace(kanal.yukle("uzay"), mfk=m))
         sayfa = hafta.olustur(v, "teslim-2026-H41")
         assert beklenen in sayfa and "veri animasyonu" not in sayfa
-    kanal._aktif.cache_clear()
 
 
 def test_hazirla_ayni_metnin_cevirisini_yeniden_kullanir(tmp_path, monkeypatch):

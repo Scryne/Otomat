@@ -60,9 +60,10 @@ def test_veri_arsivi_eski_degerleri_korur():
     assert (k.yayin_saati_utc, k.ses, k.kategori, k.tur) == (14, "am_michael", "28", "veri")
 
 
-def test_cocuk_kanali_mfk():
+def test_masal_kanali_genel_kitle():
+    """Orbit 10-08…10-13 çocuk kanalıydı (MFK): public 3 masal videosu 0 izlenme; genel kitleye geçti (K-20)."""
     k = kanal.yukle("uzay")
-    assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("ezop",), True)
+    assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("ezop",), False)
     assert k.token_degiskeni == "YT_TOKEN_JSON_UZAY" and k.durum == KOK / "durum" / "uzay.db"
 
 

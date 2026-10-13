@@ -1,35 +1,37 @@
-# Orbit kanalı → çocuklar için Ezop masalları (2026-10-08, K-15…K-19; docs/arastirma/08). Made for kids (MFK):
-# Scryne riskleri görüp seçti (yorum/kişiselleştirilmiş reklam kapalı, denetim sıkı). Kimlik `uzay` kalır (token
-# secret'ı YT_TOKEN_JSON_UZAY, durum/uzay.db); `ad` YouTube'daki kanal adıyla birebir aynı olmalı.
+# Orbit kanalı → Ezop masalları, genel kitle (K-20, 2026-10-13; docs/arastirma/08). 10-08'de çocuklar için (MFK, K-19)
+# başladı; public 3 masal videosu 0 izlenmede kaldı (MFK Shorts'un dağıtımı kapalı), Scryne genel kitleye çevirdi:
+# yumuşatılmamış masal, yetişkin anlatım, gravür stili, MFK kapalı. Eski MFK videoları video düzeyinde MFK kalır.
+# Kimlik `uzay` kalır (token secret'ı YT_TOKEN_JSON_UZAY, durum/uzay.db); `ad` YouTube'daki kanal adıyla birebir aynı.
 id = "uzay"
 ad = "Lanternbug Tales"
 eski_adlar = ["Orbit Ruler"]  # Scryne Studio'da yeniden adlandırana kadar (Faz 15); sonra silinebilir
-yedek_adlar = ["The Lanternbug Tales", "Lanternbug Tales Kids", "Lanternbug Tales TV"]  # YouTube `ad`ı reddederse (10-08: "Bu adı kullanamazsınız")
-tanim = "gentle illustrated fables for children aged 3 to 7, each with a simple lesson"
+yedek_adlar = ["The Lanternbug Tales", "Lanternbug Fables", "Lanternbug Tales TV"]  # YouTube `ad`ı reddederse (10-08: "Bu adı kullanamazsınız")
+tanim = "Aesop's fables told straight for grown-ups: short illustrated stories with the original moral"
 tur = "hikaye"
 kaynaklar = ["ezop"]
 veri = "kanallar/uzay/havuz.json"
 tasarim = "kanallar/uzay/DESIGN.md"
 durum = "durum/uzay.db"
 raporlar = "raporlar/uzay"
-ses = "af_heart"
-hiz = 0.95
-yayin_saati_utc = 20  # 23:00 TR; ABD öğleden sonrası (okul çıkışı). Earth'le aynı saat değil (K-11)
+ses = "af_heart"  # Kokoro'nun en yüksek dereceli sesi; çocuksu değil, hız normale çekildi (10-13)
+hiz = 1.02
+yayin_saati_utc = 20  # 23:00 TR; ABD öğleden sonrası. Earth'le aynı saat değil (K-11)
 diller = ["es", "pt", "de", "fr"]
 kategori = "1"  # Film & Animation
 sir_eki = "_UZAY"  # YT_TOKEN_JSON_UZAY
 buffer_kanal_id = "6ac549856a5c39ccb634a0b1"  # Buffer GraphQL kanal kimliği (2026-10-06)
-mfk = true
+mfk = false
 ornekler = ""
-kaliplar = ["karakter", "soru", "ses", "sorun"]
-stil = """Soft children's picture book illustration, gouache and colored pencil, rounded friendly shapes, warm pastel
-palette, cute animals with big kind eyes, cozy and gentle, full-bleed edge-to-edge artwork with no border or frame,
-no text, no letters"""
-font = "otomat/varliklar/fontlar/LuckiestGuy-Regular.ttf"
-font_boyu = 100
+kaliplar = ["karakter", "sorun", "ders", "zitlik"]
+stil = """Nineteenth-century wood engraving illustration, fine cross-hatched ink lines, muted sepia and ochre wash with
+deep shadows, realistic animals with natural anatomy and sharply expressive faces, dramatic chiaroscuro light, cinematic
+composition, full-bleed edge-to-edge artwork with no border or frame, no text, no letters"""
+font = "otomat/varliklar/fontlar/IMFellEnglish-Regular.ttf"
+font_boyu = 108
 vurgu = "#FFB703"
-muzik_lufs = -27  # müzik yatağı (anlatıcı -14 LUFS, karışım ≈ -14)
+muzik_lufs = -28  # müzik yatağı (anlatıcı -14 LUFS, karışım ≈ -14)
 
 [muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
-playful = ["Monkeys Spinning Monkeys", "Carefree", "Pippin the Hunchback", "Fluffing a Duck"]
-gentle = ["Wholesome", "Fairytale Waltz", "Dreamer", "Floating Cities"]
+sly = ["Sneaky Snitch", "Pippin the Hunchback", "Investigations"]
+grim = ["Darkling", "Curse of the Scarab", "Lightless Dawn"]
+wistful = ["Gymnopedie No 1", "Dreamer", "Fairytale Waltz"]

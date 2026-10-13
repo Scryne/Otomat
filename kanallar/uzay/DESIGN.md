@@ -1,32 +1,37 @@
 ---
-version: alpha
-name: Orbit (kids fables)
-description: Çocuk masalı kanalının dikey (9:16) video kimliği — yumuşak resimli kitap illüstrasyonu, sıcak anlatıcı.
+version: beta
+name: Orbit (Lanternbug Tales — Aesop, told straight)
+description: Ezop masalı kanalının dikey (9:16) video kimliği — 19. yüzyıl gravürü, kuru ve hafif alaycı anlatıcı, genel kitle.
 colors:
   ink-primary: "#ffffff"
-  ink-stroke: "#2b1d0e"
+  ink-stroke: "#000000"
   highlight: "#FFB703"
 typography:
   caption:
-    fontFamily: Luckiest Guy
+    fontFamily: IM Fell English
     fontWeight: 400
-    fontSize: 100px
+    fontSize: 108px
     lineHeight: 1.0
     textTransform: uppercase
 ---
-# Orbit — çocuklar için masallar
+# Orbit — Ezop masalları, yumuşatılmadan
 
-**Ne:** Ezop masalları (Vernon Jones çevirisi, 1912, kamu malı), 3-7 yaşa yumuşatılarak, 7 sahnede ~35 sn; son satır
-dersi tek basit cümleyle söyler. Made for kids (MFK).
+**Ne:** Ezop masalları (Vernon Jones çevirisi, 1912, kamu malı), genel kitleye, 7 sahnede ~30-35 sn. Orijinal son
+korunur (ölüm ya da zarar düz ve kısa söylenir, kanlı ayrıntı yok); son satır dersi insanlar için de geçerli tek bir
+cümleyle söyler. MFK kapalı (K-20, 10-13): 10-08…10-13 arasındaki çocuk formatı (pastel, 3-7 yaş, MFK) 0 izlenmede
+kaldı.
 
-**Görsel dil:** Yumuşak resimli kitap: guaj + renkli kalem, yuvarlak dost şekiller, sıcak pastel palet, büyük ve sevimli
-gözlü hayvanlar. Korkutucu hiçbir şey yok (diş, yara, karanlık tehdit); senaryo istemi ve çocuk hakemi bunu iki kez
-denetler. Hayvanların tarifi (`cast`) her sahnede aynen tekrarlanır, karakter sahneden sahneye aynı kalsın.
+**Görsel dil:** 19. yüzyıl ahşap baskı gravürü: ince çapraz taramalı mürekkep, soluk sepya ve okr lavi, derin gölge,
+dramatik ışık. Hayvanlar gerçek anatomili ve yüzleri anlamlı; maskot ya da sevimli çizgi film değil, masal söylemedikçe
+giysi yok. İlk kare ana hayvanın yakın, dramatik portresi. Hayvanların tarifi (`cast`) her sahnede aynen tekrarlanır;
+hikâyede değişen görünüş (`changes`) sonraki sahnelere kodla eklenir ve karede görme modeliyle denetlenir.
 
-**Hareket:** Veri kanalıyla aynı Ken Burns; tempo sakin.
+**Hareket:** Earth'le aynı Ken Burns.
 
-**Altyazı:** Luckiest Guy (Apache 2.0), büyük harf, beyaz + koyu kahve kontur, söylenen kelime turuncu-sarı
-(`highlight`). Okumayı yeni öğrenen çocuk kelimeyi sesle eşleştirebilsin: aynı anda en çok 3 kelime.
+**Altyazı:** IM Fell English (OFL), büyük harf, beyaz + siyah kontur, söylenen kelime ateş böceği sarısı (`highlight`);
+kelime arası kontur kalınlığı kadar açık (dar boşlukta kelimeler bitişiyordu). Aynı anda en çok 3 kelime.
 
-**Ses:** Kokoro `af_heart` (sıcak kadın anlatıcı), 0,95×. Müzik Kevin MacLeod (CC BY 4.0), `playful` ya da `gentle`,
-sesin altında (-27 LUFS; anlatıcı -14, karışım ≈ -14 LUFS).
+**Ses:** Kokoro `af_heart` (Kokoro'nun en yüksek dereceli sesi), 1,02×. Müzik Kevin MacLeod (CC BY 4.0), `sly`,
+`grim` ya da `wistful`, sesin altında (-28 LUFS; anlatıcı -14, karışım ≈ -14 LUFS).
+
+**Kanal:** ateş böceği sembolü kalır; banner sloganı "Aesop's fables, told straight", yazı IM Fell English.

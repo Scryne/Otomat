@@ -85,14 +85,18 @@ def _font(boyut: int) -> ImageFont.FreeTypeFont:
 def altyazi_yaz(kare: Image.Image, grup: list[str], vurgu: int, font: ImageFont.FreeTypeFont, renk: str) -> None:
     d = ImageDraw.Draw(kare)
     kelimeler = [w.upper() for w in grup]
-    bosluk = d.textlength(" ", font=font)
-    genislik = sum(d.textlength(w, font=font) for w in kelimeler) + bosluk * (len(kelimeler) - 1)
+
+    def olc(f: ImageFont.FreeTypeFont) -> tuple[int, float, float]:
+        kalin = max(6, f.size // 9)
+        # kontur kelimenin iki yanına taşar: boşluk kontur kadar açılır (IM Fell'in dar boşluğunda kelimeler bitişti)
+        bosluk = d.textlength(" ", font=f) + kalin
+        return kalin, bosluk, sum(d.textlength(w, font=f) for w in kelimeler) + bosluk * (len(kelimeler) - 1)
+
+    kalin, bosluk, genislik = olc(font)
     if genislik > G - 90:
         font = _font(int(font.size * (G - 90) / genislik))
-        bosluk = d.textlength(" ", font=font)
-        genislik = sum(d.textlength(w, font=font) for w in kelimeler) + bosluk * (len(kelimeler) - 1)
+        kalin, bosluk, genislik = olc(font)
     x = (G - genislik) / 2
-    kalin = max(6, font.size // 9)
     for j, w in enumerate(kelimeler):
         d.text((x, Y * ALTYAZI_Y), w, font=font, fill=renk if j == vurgu else "white", stroke_width=kalin,
                stroke_fill="black")  # fmt: skip
@@ -229,7 +233,7 @@ def aciklama(paket: OlguPaketi, sc: senaryo.Senaryo, muzik_adi: str) -> str:
     etiket = " ".join(dict.fromkeys("#" + "".join(w[:1].upper() + w[1:] for w in e.split()) for e in paket.etiketler))
     ad = paket.gorsel["baslik"]
     if paket.tur == "masal":
-        govde = f'{sc.satirlar[-1]}\n\nA gentle retelling of Aesop\'s fable "{ad}" (public domain).'
+        govde = f'{sc.satirlar[-1]}\n\nAesop\'s fable "{ad}", retold (public domain).'
     else:
         govde = f'{sc.satirlar[0]}\n\nSource: Wikipedia, "{ad}" ({paket.kaynak.lisans}) {paket.kaynak.url}'
     return (

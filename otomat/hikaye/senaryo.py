@@ -2,7 +2,9 @@
 
 S11 dersi: bütün senaryoyu yeniden yazdırmak yakınsamıyor (her turda yeni hata); yalnız hakemin işaretlediği satırlar
 onarılır. Kalan sorun varsa senaryo düşer, gunluk sıradaki hikâyeyi dener. Açılış kalıbını haydut seçer (kanca
-kalıbının hikâye karşılığı). İki tür var: `tuhaf` (gerçek tuhaf olay, genel kitle) ve `masal` (Ezop, 3-7 yaş, MFK).
+kalıbının hikâye karşılığı). İki tür var: `tuhaf` (gerçek tuhaf olay) ve `masal` (Ezop, yumuşatılmadan); ikisi de genel
+kitle. Masal 10-08'den 10-13'e 3-7 yaş ve MFK'ydı: public 3 video 0 izlenmede kaldı (Earth'ün hikâyeleri 6-81), Scryne
+genel kitleye çevirdi (K-20, docs/arastirma/08).
 """
 
 import re
@@ -16,11 +18,11 @@ KALIPLAR = {
     "detay": "Open with one vivid, concrete detail that makes no sense yet; the next lines explain it.",
     "zitlik": "Open with the contrast between what was supposed to happen and what actually happened.",
     "kisi": "Open with the main person or animal in the middle of the action, as if the camera is already rolling.",
-    # masal
-    "karakter": "Open by introducing the main animal warmly, with one fun detail about it.",
-    "soru": "Open with one short question to the child that connects to the lesson.",
-    "ses": "Open with a playful sound word the main character makes (like Hop! Splash! Munch!), then who makes it.",
-    "sorun": "Open with the problem the main character has, in simple words.",
+    # masal (zitlik ortak)
+    "karakter": "Open with the main animal in the middle of what it wants, with one telling detail about its nature.",
+    "sorun": "Open with the problem or temptation the main animal faces, stated plainly.",
+    "ders": "Open with the uncomfortable truth the fable proves, stated as a flat rule of life; the story then shows "
+    "it.",
 }
 
 ISTEM = {
@@ -45,24 +47,26 @@ Rules:
 - EVERY fact, number, name, date and cause must be stated in the source. If the source is unsure, say "reportedly".
   Do not merge different events. Do not round or change numbers; write a number as digits only if the source does.
 title: a curiosity title under 60 characters that only uses facts from the source; no clickbait words.""",
-    "masal": """You write scripts for 35-second YouTube Shorts for children aged 3 to 7: a gentle retelling of one
-Aesop fable, told by a warm storyteller.
+    "masal": """You write scripts for 35-second YouTube Shorts for adults: one Aesop fable, told straight by a dry,
+quick-witted storyteller. Aesop wrote these about people; the viewer should recognize someone they know.
+Viewers swipe away in one second unless the first line grabs them, so the story must pull them to the end.
 
 The fable ("{baslik}"):
 <<<
 {metin}
 >>>
 
-Write 7 scenes, 60-85 words in total. Each scene = one spoken line (4-12 words) + one illustration.
+Write 7 scenes, 60-90 words in total. Each scene = one spoken line (5-12 words) + one illustration.
 Opening line: {kalip}
-Then tell the fable's events in order, so a 5-year-old can follow. The last line says the lesson in one short,
-simple sentence a child can remember.
+Then tell the fable's events in order, sharply, every line moving the story. Keep the original ending as Aesop wrote
+it, without softening; state any death or harm plainly and briefly, never in gory detail. The last line is the moral
+in one short, memorable sentence that is as true for people as for animals.
 Rules:
-- Simple words a 5-year-old knows. Short sentences. Warm, playful, kind. Past tense, except a question to the child.
-- Keep the fable's plot and lesson. Soften any harm: nobody is hurt, killed, eaten or cruelly punished; no scary
-  threats; no mean name-calling. If the original is harsh, the character simply learns, leaves or says sorry.
-- No "subscribe", "like", "comment" or links. No brand names. No "Once upon a time" unless it truly fits.
-title: a friendly title under 50 characters with the main characters, e.g. "The Fox Who Wanted the Grapes".""",
+- Spoken, plain English that reads naturally aloud. Past tense. Wry, not cute: no baby talk, no sound words, no
+  questions to the viewer, no "kids" or "little ones".
+- Keep the fable's plot, characters and moral; add no new events, characters or modern objects.
+- No "subscribe", "like", "comment" or links. No brand names. No "Once upon a time".
+title: a curiosity title under 55 characters that names the main animals and hints at the twist, not the moral.""",
 }
 
 GORSEL_KURALI = {
@@ -71,15 +75,17 @@ GORSEL_KURALI = {
     "scoreboards, numbered jerseys, license plates, graffiti) and never quote words. Show a protest through faces and "
     "raised fists, a shop as a lit window full of goods, a court through robes and a gavel. Never show dead bodies, "
     "injuries or blood; show the moment before, or the aftermath through objects and faces.",
-    "masal": "No text or letters in the image. Cute, friendly, safe and cozy; nothing scary, no sharp teeth shown, "
-    "nobody hurt.",
+    "masal": "The illustrator cannot draw writing: never describe anything that carries words. Animals look like real "
+    "animals with natural anatomy and expressive faces, not cartoon mascots; no clothes unless the fable says so. "
+    "Never show blood, wounds or a dead body; show the moment before, or the aftermath through faces.",
 }
 
 # İlk kare kaydırmayı durdurmalı (Shorts feed'inde küçük resim yok; ilk saniye izlendi/kaydırıldı oranını belirler)
 ILK_KARE = {
     "tuhaf": "The first scene's image must stop a scrolling viewer: a close, bold, dramatic composition with one clear "
     "subject that shows what the opening line says.",
-    "masal": "The first scene's image is a close, cheerful portrait of the main character, big and centered.",
+    "masal": "The first scene's image must stop a scrolling viewer: a close, dramatic portrait of the main animal in "
+    "the moment the opening line describes, one clear subject, strong light.",
 }
 
 SAHNE_ISTEMI = """
@@ -111,7 +117,7 @@ Flag a line if it states something the source does not say, contradicts it, atta
 event, or exaggerates. Also flag a line that breaks the telling: it gives away the ending before the story gets
 there, jumps in time without saying when, or repeats an event an earlier line already told. Dramatic wording is fine
 when the facts underneath are correct. Return only real problems.""",
-    "masal": """You review a children's story script (ages 3-7) against the original fable.
+    "masal": """You review a short video script against the original Aesop fable it retells.
 FABLE:
 <<<
 {metin}
@@ -121,15 +127,14 @@ SCRIPT LINES:
 {satirlar}
 
 Flag a line (title = line 0) only if it:
-- contradicts the fable or changes its outcome or lesson (softening harm is expected and fine: a threat becoming a
-  grumble, hunters becoming "a net", someone leaving instead of being punished);
-- contains something scary, violent, cruel, distressing, rude, or unsafe for a child to copy;
-- uses a word most 5-year-olds would not understand (like "gnawed", "unconcern", "trellis");
-- is the last line and does not state the fable's lesson in a simple sentence;
+- contradicts the fable: changes who does what, the outcome, or the moral; adds an event, character or modern object
+  the fable does not have; softens the ending into something Aesop did not write;
+- describes harm in gory or graphic detail (stating plainly that someone was killed or eaten is fine);
+- is the last line and does not state the fable's moral in one clear sentence;
 - cannot be followed from the lines before it: unclear who speaks or acts, a line of dialogue that makes no sense
-  in the story, or events out of order.
-Do not flag playful sound words, an opening question to the child, small added details that fit the fable, or
-style choices. Return only real problems.""",
+  in the story, events out of order, or the ending given away before the story gets there;
+- the title gives away the moral or names an animal that is not in the fable.
+Do not flag wry wording, small added details that fit the fable, or style choices. Return only real problems.""",
 }
 
 ONARIM_ISTEM = """SOURCE:

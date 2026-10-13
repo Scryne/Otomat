@@ -1,5 +1,6 @@
 import datetime as dt
 import json
+import os
 
 import pytest
 
@@ -181,9 +182,18 @@ def test_pist_plan_b_ye_dusen_video_ikinciyi_uretmez(tmp_path, monkeypatch):
 
 
 def test_gonder_cocuk_kanalinda_mfk_yukler(monkeypatch):
-    """Orbit (MFK) videoları Buffer'dan "çocuklara özel değil" yükleniyordu; duzenle sonra düzeltiyordu."""
+    """Orbit (MFK) videoları Buffer'dan "çocuklara özel değil" yükleniyordu; duzenle sonra düzeltiyordu. Orbit 10-13'te
+    genel kitleye geçti: MFK kanal profilinden gelir (burada sahte bir MFK kanalıyla)."""
+    import dataclasses
+
     from otomat import kanal
 
+    def aktif():
+        kimlik = os.environ["OTOMAT_KANAL"]
+        k = kanal.yukle("uzay" if kimlik == "cocuk" else kimlik)
+        return dataclasses.replace(k, mfk=True) if kimlik == "cocuk" else k
+
+    monkeypatch.setattr(kanal, "aktif", aktif)
     girdiler = []
 
     def sahte(metin, degiskenler=None, tekrar=True):
@@ -194,12 +204,10 @@ def test_gonder_cocuk_kanalinda_mfk_yukler(monkeypatch):
 
     monkeypatch.setattr(buffer, "kanal_id", lambda: "c1")
     monkeypatch.setattr(buffer, "sorgu", sahte)
-    for kimlik, mfk in (("uzay", True), ("earth", False)):
+    for kimlik, mfk in (("cocuk", True), ("uzay", False), ("earth", False)):
         monkeypatch.setenv("OTOMAT_KANAL", kimlik)
-        kanal._aktif.cache_clear()
         buffer.gonder("https://x/v.mp4", "Başlık", "Açıklama")
         assert girdiler[-1]["metadata"]["youtube"]["madeForKids"] is mfk
-    kanal._aktif.cache_clear()
 
 
 def test_sorgu_istek_sayar(monkeypatch):
@@ -242,7 +250,8 @@ def test_pist_hikayeler_duserse_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path,
 
 
 def test_geri_cek_private_yapar_slotu_bosaltir(tmp_path, monkeypatch):
-    """10-12: kusurlu video (Orbit'te masalda olmayan ayılar, Earth'te başlıkta hakaret) elle geri çekildi."""
+    """10-12: kusurlu video (Orbit'te masalda olmayan ayılar, Earth'te başlıkta hakaret) elle geri çekildi. MFK
+    videonun kendi ayarından gelir: Orbit 10-13'te genel kitleye geçti, eski masal videoları çocuk içeriği kalır."""
     from otomat import kanal
 
     monkeypatch.setenv("OTOMAT_KANAL", "uzay")
@@ -253,18 +262,29 @@ def test_geri_cek_private_yapar_slotu_bosaltir(tmp_path, monkeypatch):
     govdeler = []
 
     class _Yt:
+        mfk = True
+
         def videos(self):
+            return self
+
+        def list(self, part, id):
+            self.yanit = {"items": [{"status": {"selfDeclaredMadeForKids": self.mfk}}]} if self.mfk is not None else {}
             return self
 
         def update(self, part, body):
             govdeler.append((part, body))
+            self.yanit = {}
             return self
 
         def execute(self, **_):
-            return {}
+            return self.yanit
 
-    youtube.geri_cek("vkusurlu", "kalite", yt=_Yt())
+    yt = _Yt()
+    youtube.geri_cek("vkusurlu", "kalite", yt=yt)
+    yt.mfk = None  # video okunamadı: kanalın ayarı (uzay artık MFK değil)
+    youtube.geri_cek("vkusurlu", "kalite", yt=yt)
     kanal._aktif.cache_clear()
+    assert govdeler[1][1]["status"]["selfDeclaredMadeForKids"] is False
     part, govde = govdeler[0]
     assert part == "status" and "publishAt" not in govde["status"]
     assert govde["status"]["privacyStatus"] == "private" and govde["status"]["selfDeclaredMadeForKids"] is True
