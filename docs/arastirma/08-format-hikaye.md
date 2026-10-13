@@ -117,5 +117,6 @@ kırpmayı artır.
   içerikte MFK zorunlu: etiketi kapatmak için içerik de değişmeli.
 - **K-24 (K-19'un yerine):** Orbit genel kitleye. Ezop masalları yumuşatılmadan, yetişkin anlatıcı, orijinal son, ders
   insanlar için; 19. yüzyıl gravürü stili, gerçek anatomili hayvanlar; altyazı IM Fell English; MFK kapalı (kanal ve
-  yeni videolar). Eski masal videoları video düzeyinde MFK kalır (`geri_cek` MFK'yı videodan okur). Havuz aynı (144,
-  çocuk eşikleriyle süzülmüş); genişletmek açık iş. 7 gün sonra Earth'le kıyas.
+  yeni videolar). Eski masal videoları video düzeyinde MFK kalır (`geri_cek` MFK'yı videodan okur). Havuz çocuk
+  eşiklerinden (ölüm, 5 yaşın anlayışı) kurtuldu: 144 → 245 (yetişkin teması hâlâ elenir; ırk/kölelik üzerine
+  kurulu 2 masal elle dışarıda). 7 gün sonra Earth'le kıyas.

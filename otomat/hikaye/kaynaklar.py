@@ -51,9 +51,14 @@ def tuhaf_uygun(ts: dict) -> bool:
 
 
 def ezop_uygun(ts: dict) -> bool:
-    """3-7 yaşa: kimse ölmüyor/yenmiyor, yetişkin teması yok, 5 yaşındaki anlar. Şiddet tek başına eleme nedeni
-    değil (Aslan ile Fare); anlatım yumuşatır, çocuk hakemi denetler."""
-    return ts["olum"] < 0.5 and ts["yetiskin"] < 0.5 and ts["anlasilir"] >= 1.0
+    """Yetişkin teması yok. 10-13'e kadar 3-7 yaşa göre ölüm (`olum`) ve 5 yaşın anlayışı (`anlasilir`) da eleme
+    nedeniydi (144/283); genel kitlede (K-24) ölüm düz söylenir, havuz 247'ye çıkar ve en bilinen masallar girer
+    (Kuzu ile Kurt, Yalancı Çoban, Kral İsteyen Kurbağalar)."""
+    return ts["yetiskin"] < 0.5
+
+
+# Bugünün izleyicisine ırk ve kölelik üzerinden kurulmuş masallar (10-13, genişletilen 103 masal tek tek okundu)
+EZOP_DISLA = {"The Blackamoor", "The Runaway Slave"}
 
 
 def _tuhaf(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
@@ -92,7 +97,7 @@ def _ezop(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
             etiketler=["Aesop", "fables", "short stories", "moral stories"],  # genel kitle (K-24, 10-13)
         )
         for h in havuz
-        if ezop_uygun(h["ts"])
+        if ezop_uygun(h["ts"]) and h["baslik"] not in EZOP_DISLA and not HAKARET.search(h["baslik"])
     ]
 
 

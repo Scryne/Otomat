@@ -28,20 +28,22 @@ def test_havuzlar_suzulur(kanal_sec):
     tuhaf, _ = kaynaklar.topla()
     kanal_sec("uzay")
     masal, _ = kaynaklar.topla()
-    assert len(tuhaf) > 500 and len(masal) > 100  # 2026-10-08: 713 ve 144
+    assert len(tuhaf) > 500 and len(masal) > 200  # 2026-10-08: 713 ve 144; 10-13 genel kitle: 245
     assert all(p.anahtar.startswith("wiki:") for p in tuhaf)
     assert len({p.anahtar for p in tuhaf}) == len(tuhaf), "aynı makale iki kez"
     anahtarlar = {p.anahtar for p in masal}
     assert "ezop:The Lion And The Mouse" in anahtarlar
-    assert "ezop:The Wolf And The Lamb" not in anahtarlar  # kuzu yenir: 3-7 yaşa uygun değil
+    assert "ezop:The Wolf And The Lamb" in anahtarlar  # 10-13'e kadar dışarıdaydı (kuzu yenir, 3-7 yaş)
+    assert "ezop:The Blackamoor" not in anahtarlar and "ezop:The Runaway Slave" not in anahtarlar
 
 
 def test_suzgec_esikleri():
     assert not kaynaklar.tuhaf_uygun({"hikaye": 0.9, "hassas": 0.1})  # siyaset sorulmamış: geçemez
     assert kaynaklar.tuhaf_uygun({"hikaye": 0.9, "hassas": 0.1, "siyaset": 0.1})
     assert not kaynaklar.tuhaf_uygun({"hikaye": 0.9, "hassas": 0.6, "siyaset": 0.1})
-    assert not kaynaklar.ezop_uygun({"olum": 0.9, "siddet": 0.9, "yetiskin": 0.1, "anlasilir": 1.5})
-    assert kaynaklar.ezop_uygun({"olum": 0.2, "siddet": 0.8, "yetiskin": 0.1, "anlasilir": 1.8})
+    # genel kitle (K-24, 10-13): ölüm ve çocuğun anlayışı eleme nedeni değil, yetişkin teması hâlâ
+    assert kaynaklar.ezop_uygun({"olum": 0.9, "siddet": 0.9, "yetiskin": 0.1, "anlasilir": 0.4})
+    assert not kaynaklar.ezop_uygun({"olum": 0.2, "siddet": 0.1, "yetiskin": 0.7, "anlasilir": 1.8})
 
 
 def test_sayi_ad_kapisi():
