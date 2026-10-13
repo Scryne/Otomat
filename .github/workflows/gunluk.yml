@@ -95,9 +95,13 @@ jobs:
             done
           done
           ls calisma/onceki 2>/dev/null || echo "önceki üretim yok"
+      # adım sınırı işinkinden kısa: üretim takılırsa (Cloudflare, Buffer yoklaması) iş 45 dk'da bütünüyle kesilip
+      # "Durumu kaydet" hiç koşmuyordu; Buffer'a gitmiş videonun kaydı kaybolup sonraki koşu onu yeniden yayınlardı.
+      # Normal koşu 6-19 dk; kalan ~9 dk artifact, kayıt ve alarm adımlarına yeter
       - name: Üret
         id: uret
         if: steps.kontrol.outputs.atla != '1'
+        timeout-minutes: 33
         env:
           YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
           KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}

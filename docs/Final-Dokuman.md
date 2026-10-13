@@ -17,6 +17,51 @@ bir LLM ile kancaya çevirir, kodla harita/grafik animasyonu üretir, yerel TTS 
 geçirip YouTube'a beş dilli metadata ve altyazıyla yükler. YouTube Analytics'ten gelen geri bildirimle hangi konu
 ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden çalışır; Scryne'ın haftalık yükü ≤ 10 dk.
 
+> **Format değişimi (2026-10-08, K-15…K-24).** Veri videoları izlenmedi (3-63 izlenme); iki kanal da **kaynaklı,
+> illüstrasyonlu kısa hikâye** kanalına döndü. Aşağıdaki "Güncel mimari" bölümü bugünkü ürünü anlatır. Ondan sonraki
+> bölümler (stack, mimari şeması, kapsam, riskler) v1 veri videosu kararlarıdır: veri motoru silinmedi, arşiv profilleri
+> (`kanallar/veri-earth`, `veri-uzay`) ve testleriyle duruyor. Gerekçeler: `docs/arastirma/08-format-hikaye.md`,
+> `09-kanal-karari.md`; faz kayıtları `docs/Roadmap.md` (Faz 14–15).
+
+## Güncel mimari (hikâye motoru, 2026-10-13)
+
+| Kanal | YouTube adı | İçerik | Kaynak havuzu | Ses | Yayın (UTC) |
+| --- | --- | --- | --- | --- | --- |
+| `earth` | Inkwell Oddities | gerçek tuhaf olaylar, genel kitle (K-15) | Wikipedia: Unusual articles, ~710 makale (TypeSafe jev-1.13.0 ile süzüldü, K-18) | Kokoro `bm_george` 1,08× | 14:00 |
+| `uzay` | Lanternbug Tales | Ezop masalları yumuşatılmadan, yetişkinlere (K-24) | Aesop's Fables, V. S. Vernon Jones 1912 (kamu malı), 245 masal | Kokoro `af_heart` 1,02× | 20:00 |
+
+| Katman | Seçim | Not |
+| --- | --- | --- |
+| Senaryo, hakem, satır onarımı, çeviri | Cloudflare Workers AI `gpt-oss-120b` (JSON şeması) | Bedava 10.000 neuron/gün, iki kanal ve yerel denemeler ortak, **kayan 24 saat** (docs/arastirma/09) |
+| Sahne görseli | `flux-2-klein-4b`, 768×1344, sahne başına; kanal stili profilde | Earth suluboya-mürekkep, Orbit 19. yy gravürü |
+| Kare denetimi | `llama-4-scout` (değişen görünüş, evet/hayır) + RapidOCR (karede yazı) | Tutmayan kare yeni tohumla yeniden çizilir |
+| Ses ve altyazı | Kokoro ONNX; faster-whisper `base.en` kelime zamanı | Anlatıcı −14, müzik −30/−28 LUFS; kelime vurgulu yakılmış altyazı + 5 dilde SRT |
+| Render | PIL + ffmpeg (Ken Burns, sahne başına 5 kamera hareketi), Kevin MacLeod müziği (CC BY 4.0, mood'a göre) | 1080×1920, 20-60 sn |
+| Yayın | Buffer (private yükler) + YouTube Data API (`duzenle`: plan, etiket, 5 dil yerelleştirme, altyazı) | Audit gerektirmez (docs/arastirma/06); video gönderim süresince `otomat-site/media/`'da |
+| Durum | SQLite (`durum/<kanal>.db`), her koşu sonunda commit | Tekrar engeli, seçimler, pist, planlanamayan, çeviri onarımı, ölçümler |
+| İşletim | GitHub Actions matrisi (kanal başına iş), günde 4 cron (1'i asıl, 3'ü yedek), alarm = GitHub issue | Haftalık rapor kanal başına, portföy raporu iki kanal yan yana |
+
+Günlük akış (kanal başına, `otomat/gunluk.py`):
+
+```
+"iş var mı" (sistem python'u, ~20 sn): pist dolu, rapor bekleyen yok, onarım yok → bitir
+analitik (eşleştir + 3 günlük ödül penceresi) → marka kontrolü → pist denetimi (plansız kalan videoyu onar)
+pistte boş slot (bugün + 2 gün) oldukça, koşu başına en çok 2 video:
+  hazır üretim (kabulden geçmiş, kanala çıkmamış; artifact) → yoksa yarım üretim (senaryo + görseller) → yoksa
+  haydut (kanca kalıbı) + havuzdan taze hikâye
+    → senaryo (kod kapısı: sayı, ad, sembol, hakaret, uzunluk) + hakem, en çok 4 tur satır onarımı, son çare satır çıkarma
+    → görsel tarifinde yazı taşıyan nesne temizliği → sahneler (4'lü paralel) → değişen görünüş + OCR denetimi
+    → ses → Whisper hizalama → render → müzik karışımı → yayın kabulü (kabul.py; geçmeyen yayına çıkmaz)
+    → 4 dil çeviri (rakam kapısı) → Buffer → YouTube planlama → kayıt
+  kota (4006) → slot bir sonraki koşuya kalır; yarının videosu planlıysa alarm yok (K-22)
+çeviri onarımı (kotaya takılıp çevirisiz planlanan videonun eksik dilleri) → haftalık rapor (eksikse) → alarm
+```
+
+Kararlar: K-15 (genel kitle, Wikipedia), K-16 (sahne başına illüstrasyon), K-18 (havuz TypeSafe ile bir kez süzülür,
+üretimdeki hakem LLM), K-20 (yeni kanal yok), K-22 (pist: üretim yayından ayrı), K-23 (yapı videodan videoya değişir),
+K-24 (Orbit genel kitleye, MFK kapalı). K-14 öldürme kriteri kanal başına, formatın ilk public videosundan (`donem`)
+56 gün.
+
 ## Teknoloji Stack
 
 | Katman | Seçim | Gerekçe |

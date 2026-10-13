@@ -441,6 +441,31 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Bilerek açık bırakılanlar: OCR'ın son karede bıraktığı yazı kabulü durdurmaz (daha az yazılı kare seçilir);
     render hatası hikâye değil altyapı hatası sayılır (hikâye harcanmaz, alarm); iş 45 dk zaman aşımına düşerse
     durum commit'i kaybolabilir (Buffer'a gitmiş video ile; çok nadir, koşu ~6 dk).
+- **İkinci denetim (2026-10-13 gece, Scryne aynı isteği tekrarladı):** ilk turun kesitinden farklı dört bağımsız
+  inceleme (orkestrasyon + iş akışı, hikâye hattı, yayın + analitik, eski kod + test + belge kayması), ~60 bulgu;
+  doğrulananlar düzeltildi. Yeni testler (`tests/test_denetim2_*.py`, `test_hikaye_uctan_uca.py`) düzeltme öncesi
+  koda karşı koşturuldu: 34'ün 32'si eski kodda düştü (kalan 2'si kapsama testi). 187 → 224 test.
+  - Çift video riski: Buffer gönderisi açıldıktan sonra kopan bağlantı/yarım JSON/`post: null` ham istisnaydı,
+    "gönderi açılmadı" sayılıp hazır üretim aynı videoyu yeniden gönderiyordu → hepsi `GonderiBelirsiz`. Belirsiz
+    gönderinin yetimi analitikte başlıkla bulununca pist denetimine girer (slot sessizce kayboluyordu). "Durumu
+    kaydet" adımı `bash -e` altında beş denemeyi hiç yapmıyordu; `durum/` çakışmasında koşunun sürümü + alarm
+    (gerçek git senaryosuyla sınandı). Üret adımının kendi süre sınırı (33 dk): iş zaman aşımında kayıt adımı koşar
+    (ilk turun "bilerek açık" maddesi kapandı).
+  - Hikâye: aynı karakterin ikinci değişimi (taç) ilkinin (kuyruk) denetimini kapatıyordu, bir değişimin geçmesi
+    aynı karenin öbür hatasını siliyordu, OCR'ın yeniden çizdiği kare görünüş için sorulmuyordu → görünüş birikir,
+    kare başına bütün sorular, OCR sonrası yeniden soru. Senaryo `bicim` imzasıyla sürdürülür (K-24 öncesi masal
+    senaryosu artifact'tan dönebilirdi; eski mood render'dan sonra koşuyu düşürürdü). Hakem açılış kalıbını görür,
+    kadro tarifindeki yazı taşıyan nesne düşer, Cloudflare 400'ü yeniden denenir, kesinti hikâyeyi havuzdan yakmaz.
+  - Pist ve onarım: kayıp ya da kalıcı hatalı video (3 deneme) her cron'u bakım koşusuna çevirmiyor; onarım video
+    başına kaydedilir (çift altyazı yok); çeviri onarımı en yakın yayını önce alır ve pist dolu günde bakım koşusu
+    açar (10-15 Earth videosu bu yolla onarılır). K-14 penceresi formatın ilk public videosundan.
+  - Test ve CI: testler kabuktaki `OTOMAT_KANAL=earth`'le 5 yerde düşüyordu (conftest ezer); `uretim.uret` ve
+    hikâye modunda `main()` ilk kez testte; CI üretimle aynı imajda (ubuntu-24.04) ve ses/OCR ekleriyle; Pillow açık
+    bağımlılık; canlı koşu arşiv veri motorunu (28 modül + matplotlib) artık yüklemiyor.
+  - Belgeler: Final-Doküman'a "Güncel mimari" (hikâye motoru), kökte README, kök `DESIGN.md` arşiv notu.
+  - Bilerek açık: satır başındaki uydurma ad kod kapısından geçer (her cümle başı kelimesini sormak Earth'ün zaten
+    düşük geçme oranını yanlış alarmla düşürürdü; hakem adları denetliyor); yazıyla yazılmış sayı sayı sınırına
+    girmez; Latin dışı uydurma yazı OCR'da sayılmaz; portföyün API birimi tahmini onarım ve marka çağrılarını içermez.
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri

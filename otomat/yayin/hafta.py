@@ -50,7 +50,8 @@ def olustur(yukleler: list[dict], etiket: str) -> str:
     videolar = sorted(yukleler, key=lambda y: y["tarih"])
     anlar = takvim(etiket, len(videolar))
     k = kanal.aktif()
-    # kitle kanaldan: çocuk kanalında (Orbit, K-19) "çocuklara özel" işaretlemek zorunlu, seçmeli değil
+    # kitle kanaldan: çocuğa yönelik içerikte "çocuklara özel" işareti zorunlu (Orbit K-19…K-24 arası; bugün iki kanal
+    # da genel kitle)
     kitle = "**Evet, çocuklara özel**" if k.mfk else "**Hayır, çocuklara özel değil**"
     yapay = "illüstrasyon, gerçekçi değil" if k.tur == "hikaye" else "veri animasyonu, gerçekçi değil"
     s = [

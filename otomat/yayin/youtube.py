@@ -122,7 +122,7 @@ def _govde(
         },
         "status": {
             "privacyStatus": "private",
-            # çocuk kanalı (uzay, K-19): içerik çocuklara yönelikse işaret zorunlu, seçmeli değil
+            # kanalın MFK ayarı: çocuğa yönelik içerikte zorunlu (K-24 sonrası iki kanal da genel kitle)
             "selfDeclaredMadeForKids": kanal.aktif().mfk,
             # gerçekçi değil: veri animasyonu ya da açıkça illüstrasyon (YouTube yardım 14328491)
             "containsSyntheticMedia": False,

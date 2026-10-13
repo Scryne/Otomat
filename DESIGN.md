@@ -49,6 +49,10 @@ spacing:
 
 # Otomat
 
+> **Arşiv kimliği.** Bu dosya v1 veri videolarının (harita, koroplet, sıralı çubuk) görsel kimliğidir; bugün yalnız
+> arşiv profili `kanallar/veri-earth` okur (`kanal.toml` `tasarim`, `test_kanal.py` kilitler). Yayındaki hikâye
+> kanallarının kimliği `kanallar/earth/DESIGN.md` (Inkwell Oddities) ve `kanallar/uzay/DESIGN.md` (Lanternbug Tales).
+
 ## Overview
 
 Bu proje web arayüzü değil, **video karesi** üretir: 1080×1920, 30 fps, matplotlib ile kodla çizilen harita ve

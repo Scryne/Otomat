@@ -47,12 +47,16 @@ OTOMAT_KANAL=<kanal> uv run python -m otomat.yayin.youtube geri <video_id> "<ned
 ## 3. Kanalda ne planlı, durum veritabanıyla uyuşuyor mu
 
 ```bash
-OTOMAT_KANAL=uzay uv run python -c "import datetime as dt; from otomat import durum; db=durum.baglan(); s=dt.datetime.now(dt.UTC); print(durum.yayin_slotu(db, s), durum.pist_dolu(db, s, 'buffer'))"
+OTOMAT_KANAL=uzay uv run python -c "import datetime as dt, sqlite3; from otomat import durum, kanal; db=sqlite3.connect(f'file:{kanal.aktif().durum.as_posix()}?mode=ro', uri=True); s=dt.datetime.now(dt.UTC); print(durum.yayin_slotu(db, s), durum.pist_dolu(db, s, 'buffer'))"
 ```
 
+Veritabanı salt okunur açılır: `durum.baglan()` şema göçü yazabilir, yerelde değişen `durum/*.db` botun commit'iyle
+çakışır (iş akışı çakışmada koşunun sürümünü alır, yereldeki değişiklik kaybolur). Yerelde veritabanına yazan tek
+komut `youtube geri`; ondan sonra hemen commit + push.
+
 Günlük koşu her üretimde pist denetimi yapar (planı düşen videoyu yeniden planlar, kaybolanı alarm yapar) ve
-çevirisi atlanan planlı videonun eksik dillerini tamamlar; sonuç `raporlar/<kanal>/gunluk.jsonl`'da `pist` ve
-`ceviri_onarimi` alanlarında.
+çevirisi atlanan planlı videonun eksik dillerini tamamlar (pist doluysa bakım koşusunda); sonuç kanalın günlük
+kaydında (`raporlar/gunluk.jsonl` Earth, `raporlar/uzay/gunluk.jsonl` Orbit) `pist` ve `ceviri_onarimi` alanlarında.
 
 ## Testler
 
@@ -60,4 +64,6 @@ Günlük koşu her üretimde pist denetimi yapar (planı düşen videoyu yeniden
 uv run pytest -q && uv run ruff check . && uv run ruff format --check .
 ```
 
-Testler gerçek ağa çıkmaz; `durum/`, `raporlar/`, `sirlar/` dosyalarına dokunmaz (tmp_path, monkeypatch).
+Testler gerçek ağa çıkmaz; `durum/`, `raporlar/`, `sirlar/` dosyalarına yazmaz ve onları okumaz (tmp_path,
+monkeypatch); kabuktaki `OTOMAT_KANAL`/`OTOMAT_YAYIN` ve sırlar `tests/conftest.py`'de ezilir. Hikâye hattının uçtan
+uca testi (`tests/test_hikaye_uctan_uca.py`) gerçek render, karışım ve kabulle ~20 sn sürer.
