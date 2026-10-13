@@ -89,7 +89,7 @@ def _ezop(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
             olgular={},
             gorsel={"sablon": "illustrasyon", "baslik": h["baslik"], "metin": h["metin"]},
             kaynak=Kaynak("Aesop's Fables, tr. V. S. Vernon Jones (1912)", EZOP_URL, "Public domain", cekildi),
-            etiketler=["Aesop", "fables", "short stories", "moral stories"],  # genel kitle (K-20, 10-13)
+            etiketler=["Aesop", "fables", "short stories", "moral stories"],  # genel kitle (K-24, 10-13)
         )
         for h in havuz
         if ezop_uygun(h["ts"])

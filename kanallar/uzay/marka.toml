@@ -1,4 +1,4 @@
-# Lanternbug Tales — kanal ayarları (Faz 15; 10-13'te genel kitleye çevrildi, K-20). otomat/yayin/marka.py açıklama
+# Lanternbug Tales — kanal ayarları (Faz 15; 10-13'te genel kitleye çevrildi, K-24). otomat/yayin/marka.py açıklama
 # YouTube'dakinden farklıysa bir kez uygular (banner, açıklama, anahtar kelime, kanal düzeyinde MFK).
 banner = "docs/marka/lanternbug/banner-2560x1440.png"
 filigran = "docs/marka/lanternbug/filigran-150.png"

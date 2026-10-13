@@ -61,7 +61,7 @@ def test_veri_arsivi_eski_degerleri_korur():
 
 
 def test_masal_kanali_genel_kitle():
-    """Orbit 10-08…10-13 çocuk kanalıydı (MFK): public 3 masal videosu 0 izlenme; genel kitleye geçti (K-20)."""
+    """Orbit 10-08…10-13 çocuk kanalıydı (MFK): public 3 masal videosu 0 izlenme; genel kitleye geçti (K-24)."""
     k = kanal.yukle("uzay")
     assert (k.tur, k.kaynaklar, k.mfk) == ("hikaye", ("ezop",), False)
     assert k.token_degiskeni == "YT_TOKEN_JSON_UZAY" and k.durum == KOK / "durum" / "uzay.db"

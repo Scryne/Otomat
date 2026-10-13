@@ -106,3 +106,16 @@ kırpmayı artır.
   stiline uyar), Orbit → **Lanternbug Tales** (eş yok; ateş böceği maskotu). Elenenler: Strange But True Tales, Oddly
   True, The Odd Ledger, Little Fable Tales, Fable Garden, Tiny Fables, Acorn Fables, Pocket Fables, Puddlejump Tales
   (hepsinin eşi var).
+
+## Karar (2026-10-13, Scryne: "bu çocuklara özel kanaldaki videolar hiç izlenmemiş")
+- **Ölçüm:** Orbit'te public 3 masal videosu (10-09, 10-10, 10-12) 1-4 gün sonra 0 görüntüleme. Aynı hattan çıkan
+  Earth hikâyeleri (MFK değil) 81, 37, 6; Orbit'in format öncesi MFK olmayan veri videosu 70. Shorts 2025'ten beri
+  her başlangıcı sayıyor (support.google.com/youtube/answer/10059070): 0, hiç gösterim yok demek.
+- **Platform (arastirmaci, kaynaklı):** MFK videolar "daha çok başka çocuk videolarının yanında" önerilir
+  (answer/9684541); YouTube Kids'e giriş otomatik değil, Kids'te Shorts yok; YouTube Nisan 2026'da Kids'teki AI
+  içeriğin "küçük bir yüksek kaliteli kanal kümesiyle" sınırlı olduğunu söyledi (AP, 2026-04-01). Çocuğa yönelik
+  içerikte MFK zorunlu: etiketi kapatmak için içerik de değişmeli.
+- **K-24 (K-19'un yerine):** Orbit genel kitleye. Ezop masalları yumuşatılmadan, yetişkin anlatıcı, orijinal son, ders
+  insanlar için; 19. yüzyıl gravürü stili, gerçek anatomili hayvanlar; altyazı IM Fell English; MFK kapalı (kanal ve
+  yeni videolar). Eski masal videoları video düzeyinde MFK kalır (`geri_cek` MFK'yı videodan okur). Havuz aynı (144,
+  çocuk eşikleriyle süzülmüş); genişletmek açık iş. 7 gün sonra Earth'le kıyas.

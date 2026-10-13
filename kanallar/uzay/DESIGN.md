@@ -18,7 +18,7 @@ typography:
 
 **Ne:** Ezop masalları (Vernon Jones çevirisi, 1912, kamu malı), genel kitleye, 7 sahnede ~30-35 sn. Orijinal son
 korunur (ölüm ya da zarar düz ve kısa söylenir, kanlı ayrıntı yok); son satır dersi insanlar için de geçerli tek bir
-cümleyle söyler. MFK kapalı (K-20, 10-13): 10-08…10-13 arasındaki çocuk formatı (pastel, 3-7 yaş, MFK) 0 izlenmede
+cümleyle söyler. MFK kapalı (K-24, 10-13): 10-08…10-13 arasındaki çocuk formatı (pastel, 3-7 yaş, MFK) 0 izlenmede
 kaldı.
 
 **Görsel dil:** 19. yüzyıl ahşap baskı gravürü: ince çapraz taramalı mürekkep, soluk sepya ve okr lavi, derin gölge,

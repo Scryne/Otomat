@@ -27,7 +27,7 @@ MARKA = {
     },
     "lanternbug": {
         "ad": "Lanternbug Tales",
-        "slogan": "Aesop's fables, told straight",  # 10-13: çocuk kanalından genel kitleye (K-20)
+        "slogan": "Aesop's fables, told straight",  # 10-13: çocuk kanalından genel kitleye (K-24)
         "zemin": "#1F2B4D",  # gece
         "govde": "#F6EBD9",  # krem
         "isik": "#FFB703",  # ateş böceği ışığı (altyazı vurgusuyla aynı)

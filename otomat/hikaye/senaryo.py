@@ -4,7 +4,7 @@ S11 dersi: bütün senaryoyu yeniden yazdırmak yakınsamıyor (her turda yeni h
 onarılır. Kalan sorun varsa senaryo düşer, gunluk sıradaki hikâyeyi dener. Açılış kalıbını haydut seçer (kanca
 kalıbının hikâye karşılığı). İki tür var: `tuhaf` (gerçek tuhaf olay) ve `masal` (Ezop, yumuşatılmadan); ikisi de genel
 kitle. Masal 10-08'den 10-13'e 3-7 yaş ve MFK'ydı: public 3 video 0 izlenmede kaldı (Earth'ün hikâyeleri 6-81), Scryne
-genel kitleye çevirdi (K-20, docs/arastirma/08).
+genel kitleye çevirdi (K-24, docs/arastirma/08).
 """
 
 import re

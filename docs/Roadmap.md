@@ -17,8 +17,8 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
-| 14 | Hikâye motoru (format değişimi) | 🔄 Devam Ediyor | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, MFK) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
-| 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK; `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
+| 14 | Hikâye motoru (format değişimi) | 🔄 Devam Ediyor | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
+| 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 14'ün main'deki ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
@@ -389,6 +389,23 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     - `yazisiz`: onarımdan sonra da işaretli kalan tarifin yazı taşıyan yan cümlesi kodla düşer. OCR yeniden
       çiziminde de istemden düşer; eskiden yalnız sona "yazısız" cümlesi ekleniyordu.
     - Bartman'ın gerçek tariflerinde 4 işaretin 4'ü temizleniyor. Testler 142.
+- **Değişen görünüş ve Orbit'in kitlesi (2026-10-13):**
+  - 10-14/15 videoları kare kare incelendi. Earth "Heraclitus" temiz. Orbit "Felix the Fox Who Loved His Tail"
+    (`HPfeJf5PlLc`, 10-15 planlı) geri çekildi: kuyruğunu kaybeden tilki 3 karede kuyrukluydu, masalın konusu bozuk.
+    Sahne metni "his tail gone" diyordu, 7. sahne "tails intact" istiyordu.
+  - S13 (`spikes/s13_karakter_durumu.py`): klein olumsuzu çizemiyor ("his tail gone" 2/2 kuyruklu), görüneni söyleyen
+    olumlu tarifi çiziyor (2/2 kuyruksuz). llama-4-scout 11 karenin 10'unda kuyruğu doğru söyledi, ~51 neuron/kare.
+  - Düzeltme (`336bbe2`): senaryo `changes` bildirir (kim, ilk sahne, olumlu görünüş, evet/hayır sorusu); kod sonraki
+    sahnelerin istemine "X is now …" ekler; `uretim.durumlari_denetle` soruyu önce değişimden önceki karede sınar
+    (ayırt etmiyorsa atlar), sonra her sahnede sorar; tutmayan kare yeni tohumla yeniden çizilir (video başına 3),
+    yine tutmazsa hikâye düşer. Karakter tutarlılığı açığının bir kısmını kapatır (renk ve tür kayması hâlâ açık).
+  - Orbit 0 izlenme: public 3 masal videosu 0, Earth'ün hikâyeleri 6-81. MFK Shorts'un dağıtımı kapalı görünüyor
+    (`docs/arastirma/08`, 10-13 kararı). Scryne genel kitleyi seçti (K-24, `67a79e6`): Ezop yumuşatılmadan, yetişkin
+    anlatıcı, gravür stili, IM Fell English altyazı, MFK kapalı; kanal açıklaması, anahtar kelime ve banner sloganı
+    API ile uygulandı. `geri_cek` artık MFK'yı videonun kendi ayarından alır. Faz 14'ün Orbit kanıtı yeni formatla
+    yeniden toplanır; 7 gün sonra Earth'le kıyas.
+  - Kota: bu oturumun spike'ları ve 10-12 21:00 elle koşusu kayan pencerede 10.000'i doldurdu (18:30 UTC). 10-14
+    sabah koşusu pistin 3. günü için kotaya takılırsa alarm çalmaz; Orbit'in boşalan 10-15 slotu takılırsa çalar.
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri
