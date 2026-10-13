@@ -503,19 +503,35 @@ def test_muzik_indirilemezse_ayni_moodun_siradaki_parcasi(kanal_sec, tmp_path, m
     monkeypatch.setattr(uretim, "MUZIK_DIZIN", tmp_path)
     parcalar = kanal.aktif().muzik["wistful"]
     istenen = []
+    mp3 = b"ID3" + b"\0" * uretim.MUZIK_EN_AZ
+    yanitlar = iter([None, b"<html>404</html>" * 10_000, mp3])  # kapalı, hata sayfası (mp3 değil), gerçek parça
+
+    class Yanit:
+        def __init__(self, veri):
+            self.veri = veri
+
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def read(self):
+            return self.veri
 
     def urlopen(istek, timeout):
         istenen.append(istek.full_url)
-        if len(istenen) == 1:
+        if (veri := next(yanitlar)) is None:
             raise urllib.error.URLError("incompetech kapalı")
-        return type("Y", (), {"read": lambda self: b"mp3"})()
+        return Yanit(veri)
 
     monkeypatch.setattr(uretim.urllib.request, "urlopen", urlopen)
     tohum = "x"
     bas = sum(map(ord, tohum)) % len(parcalar)
     yol, ad = uretim.muzik_sec("wistful", tohum)
-    assert ad == parcalar[(bas + 1) % len(parcalar)] and yol.read_bytes() == b"mp3" and len(istenen) == 2
-    assert not list(tmp_path.glob("*.tmp"))
+    # hata sayfası önbelleğe girmez (birleştirme o parçada hep düşerdi); üçüncü parça indirilir
+    assert ad == parcalar[(bas + 2) % len(parcalar)] and yol.read_bytes() == mp3 and len(istenen) == 3
+    assert not list(tmp_path.glob("*.tmp")) and len(list(tmp_path.glob("*.mp3"))) == 1
     # tohumun parçası önbellekteyse indirilmeden o kullanılır
     monkeypatch.setattr(uretim.urllib.request, "urlopen", lambda *a, **k: pytest.fail("önbellek varken indirme"))
     (tmp_path / f"{parcalar[bas]}.mp3").write_bytes(b"ilk")

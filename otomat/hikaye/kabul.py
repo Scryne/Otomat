@@ -15,11 +15,12 @@ from pathlib import Path
 
 from otomat import kanal
 from otomat.hikaye.kaynaklar import HAKARET
-from otomat.hikaye.senaryo import ORAN
+from otomat.hikaye.senaryo import SEMBOL  # senaryo kapısıyla aynı desen (mph, ft, oran …); ayrı liste eksik kalmıştı
 
 SURE = (20.0, 60.0)  # Shorts: 60 sn altı; 20 sn altı hikâye olamaz
 SATIR = (6, 9)
-SEMBOL = re.compile(rf"[°%&$€£#@/+=<>~^*|]|{ORAN}")  # oran: anlatıcı "1:4" için "1, 4" diyor; saat okunuyor
+# açıklamadaki kaynak atfı türüne göre: müzik atfının https'i "kaynak bağlantısı var" kontrolünü her zaman geçiriyordu
+KAYNAK_ATFI = {"wiki": "wikipedia.org/wiki/", "ezop": "Aesop"}
 CAGRI = re.compile(r"\b(subscribe|like (?:and|&) subscribe|comment below|link in (?:the )?bio)\b", re.I)
 
 
@@ -80,7 +81,9 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
     if any(CAGRI.search(s) for s in [baslik or "", *satirlar]):
         h.append("abone/yorum çağrısı var")
     kaynak_adi = str((meta.get("paket") or {}).get("anahtar", ""))
-    if hakaret := {m.lower() for s in [baslik or "", kaynak_adi, *satirlar] for m in HAKARET.findall(s)}:
+    metinler = [baslik or "", kaynak_adi, str(meta.get("aciklama") or ""), *map(str, meta.get("etiketler") or []),
+                *satirlar]  # fmt: skip
+    if hakaret := {m.lower() for s in metinler for m in HAKARET.findall(s)}:
         h.append(f"hakaret/küfür var: {', '.join(sorted(hakaret))}")
     if meta.get("kanca") != satirlar[0]:
         h.append("kanca ilk satır değil")
@@ -89,9 +92,12 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
     if not isinstance(turlar, list) or not turlar or turlar[-1] != []:
         h.append("senaryo hakemden temiz geçmemiş (son tur boş değil)")
 
+    if (meta.get("durum") or {}).get("tutmayan"):
+        h.append("hikâyede değişen görünüş karede tutmadı")
     aciklama = meta.get("aciklama")
-    if not isinstance(aciklama, str) or "https://" not in aciklama:
-        h.append("açıklamada kaynak bağlantısı yok")
+    atif = KAYNAK_ATFI.get(kaynak_adi.partition(":")[0])
+    if not isinstance(aciklama, str) or "https://" not in aciklama or (atif and atif not in aciklama):
+        h.append("açıklamada kaynak atfı yok")
     elif "Kevin MacLeod" not in aciklama or "creativecommons.org/licenses/by/4.0" not in aciklama:
         h.append("açıklamada müzik atfı (CC BY 4.0) yok")
     if not meta.get("etiketler"):

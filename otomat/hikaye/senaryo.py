@@ -90,7 +90,8 @@ ILK_KARE = {
 
 SAHNE_ISTEMI = """
 world: one sentence describing era, place, clothing and palette for the illustrator (same in every scene).
-cast: 0-3 recurring characters, each a fixed visual description (species or age, clothes, colors) reused verbatim.
+cast: 0-3 recurring characters, each with a short name (exactly as you will write it in every scene) and a fixed
+  look (species or age, clothes, colors) reused verbatim.
 scenes[].image: a concrete visual description of that scene for an illustrator who knows nothing about the story
   (who, doing what, where, camera angle). Name every object unambiguously ("a huge steel storage tank", never just
   "the tank"). Copy cast descriptions verbatim when a character appears. {ilk_kare} {gorsel_kurali}
@@ -241,6 +242,11 @@ CIKAR_EN_AZ = 6
 ORAN = r"\b\d+:(?!\d{2}(?![\d,-]))\d"
 SEMBOL = re.compile(rf"[°%&$€£#@/+=<>~^*|]|{ORAN}|\b(?:mph|km/h|ft|lbs?|approx|etc)\b\.?", re.I)
 TUR_SAYISI = 4
+TAKVIM = {
+    "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "January", "February", "March",
+    "April", "June", "July", "August", "September", "October", "November", "December",
+}  # fmt: skip
+BASLIK_UZUNLUK = (10, 100)  # YouTube sınırı 100; kabul de bunu ister
 
 
 class SenaryoHatasi(RuntimeError):
@@ -273,7 +279,16 @@ def sema(tur: str, moodlar: list[str]) -> dict:
             "title": {"type": "string"},
             "mood": {"type": "string", "enum": moodlar},
             "world": {"type": "string"},
-            "cast": {"type": "array", "items": {"type": "string"}},
+            # nesne: düz metin cast "Ad, tarif" biçiminde geliyordu, `Ad: tarif` ayrılamayınca Earth'te tarif hiçbir
+            # sahne istemine girmiyordu (Heraclitus, 10-13 denetimi)
+            "cast": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {"name": {"type": "string"}, "look": {"type": "string"}},
+                    "required": ["name", "look"],
+                },
+            },
             "changes": {
                 "type": "array",
                 "items": {
@@ -335,18 +350,31 @@ def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
     hata = []
     k = kaynak.lower().replace(",", "")
     for n in re.findall(r"\d[\d,.]*", metin):
-        if n.strip(".,").replace(",", "") not in k:
+        # tam sayı olarak geçmeli: alt dize eşlemesinde "19" kaynaktaki "1950"den geçiyordu (10-13 denetimi)
+        if not re.search(rf"(?<![\d.]){re.escape(n.strip('.,').replace(',', ''))}(?![\d]|\.\d)", k):
             hata.append(f"number not in source: {n}")
     if not adlar:
         return hata
     for ad in re.findall(r"(?<![.!?:\"]\s)(?<!^)\b[A-Z][a-z]{2,}\b", metin):
-        if ad.lower()[: max(4, len(ad) - 3)] not in k:  # Londoners → london
+        if ad in TAKVIM:  # "Monday" kaynakta yazmasa da uydurma ad değil; tarihi hakem denetler
+            continue
+        # kısa ad tam kelime ("Tom" kaynaktaki "tomorrow"dan geçiyordu), uzun ad kelime başında kök (Londoners → london)
+        kalip = rf"\b{re.escape(ad.lower())}\b" if len(ad) <= 4 else rf"\b{re.escape(ad.lower()[: max(5, len(ad) - 3)])}"
+        if not re.search(kalip, k):
             hata.append(f"name not in source: {ad}")
     return hata
 
 
 def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> list[tuple[int, str]]:
+    from otomat.hikaye.kaynaklar import HAKARET
+
     sorun = []
+    if not BASLIK_UZUNLUK[0] <= len(baslik.strip()) <= BASLIK_UZUNLUK[1]:  # onarım başlığı boşaltabiliyor
+        sorun.append((0, f"the title must be {BASLIK_UZUNLUK[0]}-{BASLIK_UZUNLUK[1]} characters"))
+    # hakaret kabulde render'dan sonra yakalanıyordu: kota harcanmadan onarıma gitsin
+    for i, s in enumerate([baslik, *satirlar]):
+        if bulunan := HAKARET.findall(s):
+            sorun.append((i, f"remove the slur or profanity: {', '.join(bulunan)}"))
     if tur == "tuhaf":
         sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak, adlar=i > 0)]
         # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons").
@@ -481,8 +509,32 @@ def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str
     return True
 
 
+KAYNAK_SINIR = 6000  # model ve hakeme giden kaynak; uzun makalede baş ve son korunur
+KAYNAK_SON = 1500
+
+
+def kisalt(kaynak: str) -> str:
+    """Uzun makalede sonuç/epilog modele görünsün: düz kesim (`[:6000]`) hikâyenin sonunu atıyordu."""
+    if len(kaynak) <= KAYNAK_SINIR:
+        return kaynak
+    return f"{kaynak[: KAYNAK_SINIR - KAYNAK_SON]}\n[...]\n{kaynak[-KAYNAK_SON:]}"
+
+
+def oyuncular(ham: list) -> list[str]:
+    """Cast `Ad: tarif` dizesine çevrilir (uretim ve degisimler bu biçimi okur); adda iki nokta olmasın."""
+    sonuc = []
+    for o in ham or []:
+        if isinstance(o, dict):
+            ad, tarif = str(o.get("name", "")).replace(":", " ").strip(), str(o.get("look", "")).strip()
+            if ad and tarif:
+                sonuc.append(f"{ad}: {tarif}")
+        elif str(o).strip():
+            sonuc.append(str(o).strip())
+    return sonuc
+
+
 def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> Senaryo:
-    kisa = kaynak[:6000]
+    kisa = kisalt(kaynak)
     istem = ISTEM[tur].format(baslik=baslik, metin=kisa, konu=konu, kalip=KALIPLAR[kalip]) + SAHNE_ISTEMI.format(
         gorsel_kurali=GORSEL_KURALI[tur], ilk_kare=ILK_KARE[tur]
     )
@@ -491,7 +543,7 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         baslik=s["title"].strip(),
         mood=s["mood"],
         dunya=s["world"],
-        oyuncular=s["cast"],
+        oyuncular=oyuncular(s["cast"]),
         satirlar=[x["line"].strip() for x in s["scenes"]],
         gorseller=[x["image"] for x in s["scenes"]],
     )

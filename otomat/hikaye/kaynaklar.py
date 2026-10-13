@@ -10,6 +10,7 @@ eşikler burada: anlam kararı modelde, kural kodda.
 """
 
 import datetime as dt
+import http.client
 import json
 import re
 import time
@@ -28,10 +29,10 @@ EN_AZ_METIN = 400  # karakter; daha kısa kaynaktan 75-90 kelimelik hikâye uydu
 
 # Başlıkta/anlatımda hakaret ya da ağır küfür: reklam uygunluğu ve nefret söylemi politikası. TypeSafe süzgecinden
 # "Lord Bloody Wog Rolo" geçti, video 10-13'e planlanmıştı (10-12'de geri çekildi). Kelime sınırıyla: Fagan,
-# raccoon geçer.
+# raccoon geçer. "dyke" çıkarıldı (10-13): Hollanda seddi makalelerini render'dan sonra reddediyordu.
 HAKARET = re.compile(
     r"\b(?:wogs?|nigg(?:er|a)s?|coons?|chinks?|gooks?|japs?|kikes?|spics?|wetbacks?|pakis?|ragheads?|redskins?|"
-    r"squaws?|trann(?:y|ies)|retards?|fags?|faggots?|dykes?|cunts?|fuck\w*|shit\w*)\b",
+    r"squaws?|trann(?:y|ies)|retards?|fags?|faggots?|cunts?|fuck\w*|shit\w*)\b",
     re.I,
 )
 
@@ -115,15 +116,28 @@ def topla() -> tuple[list[OlguPaketi], list[str]]:
 
 
 def _wiki(params: dict) -> dict:
+    """429, 5xx ve bağlantı hataları yeniden denenir. Wikipedia'nın kalıcı hatası hikâye hatası değil (KaynakHatasi
+    değil): öyle sayılsaydı geçici bir kesintide denenen 3 hikâye havuzdan kalıcı düşerdi; koşu düşer, alarm yazılır."""
+    son = None
     for i in range(4):
         try:
             istek = urllib.request.Request(WIKI_API + "?" + urllib.parse.urlencode(params), headers=UA)
             return json.load(urllib.request.urlopen(istek, timeout=30))
         except urllib.error.HTTPError as e:
-            if e.code != 429 or i == 3:
+            if e.code != 429 and e.code < 500:
                 raise
+            son = e
+        except (OSError, http.client.HTTPException, ValueError) as e:  # URLError, kopan bağlantı, yarım JSON
+            son = e
+        if i < 3:
             time.sleep(5 * (i + 1))
-    raise RuntimeError("wikipedia yanıt vermedi")
+    raise RuntimeError(f"wikipedia yanıt vermedi: {son}")
+
+
+BITIS = re.compile(
+    r"\n(?:See also|References|External links|Notes|Further reading|Sources|Bibliography|Footnotes|Citations|"
+    r"Works cited)\n"
+)
 
 
 def metin(paket: OlguPaketi) -> str:
@@ -137,7 +151,7 @@ def metin(paket: OlguPaketi) -> str:
     if "extract" not in d:
         raise KaynakHatasi(f"makale bulunamadı: {paket.gorsel['baslik']}")
     # Kaynakça ve dış bağlantılar hikâyeye girmesin
-    govde = re.split(r"\n(?:See also|References|External links|Notes|Further reading)\n", d["extract"])[0].strip()
+    govde = re.split(BITIS, d["extract"])[0].strip()
     if len(govde) < EN_AZ_METIN:
         raise KaynakHatasi(f"makale çok kısa ({len(govde)} karakter): {paket.gorsel['baslik']}")
     return govde

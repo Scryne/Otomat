@@ -5,6 +5,7 @@
 """
 
 import datetime as dt
+import http.client
 import json
 import re
 import subprocess
@@ -15,6 +16,7 @@ import urllib.request
 import wave
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
+from functools import lru_cache
 from pathlib import Path
 
 import imageio_ffmpeg
@@ -38,6 +40,7 @@ PARALEL = 4  # aynı anda görsel isteği
 MUZIK_URL = "https://incompetech.com/music/royalty-free/mp3-royaltyfree/{}.mp3"
 MUZIK_ATIF = '"{}" Kevin MacLeod (incompetech.com), licensed under Creative Commons: By Attribution 4.0'
 MUZIK_DIZIN = KOK / "modeller" / "muzik"  # Actions'ta modeller önbelleğinde
+MUZIK_EN_AZ = 100_000  # bayt; incompetech parçaları birkaç MB
 
 
 def seslendir(satirlar: list[str], cikti: Path) -> tuple[float, list[Parca]]:
@@ -79,7 +82,12 @@ def kelime_zamanlari(
 
 
 def _font(boyut: int) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(str(KOK / kanal.aktif().font), boyut)
+    return _font_yukle(str(KOK / kanal.aktif().font), boyut)
+
+
+@lru_cache(maxsize=64)
+def _font_yukle(yol: str, boyut: int) -> ImageFont.FreeTypeFont:
+    return ImageFont.truetype(yol, boyut)  # uzun grupta küçültülmüş font her karede yeniden yükleniyordu
 
 
 def altyazi_yaz(kare: Image.Image, grup: list[str], vurgu: int, font: ImageFont.FreeTypeFont, renk: str) -> None:
@@ -166,21 +174,28 @@ def render(
         stdin=subprocess.PIPE,
     )  # fmt: skip
     kare_no, ki = 0, 0
-    for i in range(len(parcalar)):
-        son = parcalar[i + 1].bas if i + 1 < len(parcalar) else sure
-        with Image.open(gorseller[i]) as img:
-            for kare in sahne_kareleri(img, round(son * FPS) - kare_no, hareket(i)):
-                an = kare_no / FPS
-                while ki < len(kelimeler) - 1 and kelimeler[ki][1] <= an:
-                    ki += 1
-                bas, bit, grup, vurgu = kelimeler[ki]
-                if bas <= an < bit:
-                    altyazi_yaz(kare, grup, vurgu, font, k.vurgu)
-                proc.stdin.write(kare.tobytes())
-                kare_no += 1
-    proc.stdin.close()
-    if proc.wait() != 0:
-        raise RuntimeError("ffmpeg render hatası")
+    try:
+        for i in range(len(parcalar)):
+            son = parcalar[i + 1].bas if i + 1 < len(parcalar) else sure
+            with Image.open(gorseller[i]) as img:
+                for kare in sahne_kareleri(img, round(son * FPS) - kare_no, hareket(i)):
+                    an = kare_no / FPS
+                    while ki < len(kelimeler) - 1 and kelimeler[ki][1] <= an:
+                        ki += 1
+                    bas, bit, grup, vurgu = kelimeler[ki]
+                    if bas <= an < bit:
+                        altyazi_yaz(kare, grup, vurgu, font, k.vurgu)
+                    proc.stdin.write(kare.tobytes())
+                    kare_no += 1
+        proc.stdin.close()
+        if proc.wait() != 0:
+            raise RuntimeError("ffmpeg render hatası")
+    except BaseException:
+        # bozuk kare ya da kopan boru: ffmpeg açık stdin'le asılı kalmasın, yarım dosya bir sonraki koşuya kalmasın
+        proc.kill()
+        proc.wait()
+        cikti.unlink(missing_ok=True)
+        raise
     return cikti
 
 
@@ -197,9 +212,14 @@ def muzik_sec(mood: str, tohum: str) -> tuple[Path, str]:
         yol.parent.mkdir(parents=True, exist_ok=True)
         istek = urllib.request.Request(MUZIK_URL.format(urllib.parse.quote(ad)), headers={"User-Agent": "Mozilla/5.0"})
         try:
-            veri = urllib.request.urlopen(istek, timeout=60).read()
-        except (urllib.error.URLError, TimeoutError) as e:
+            with urllib.request.urlopen(istek, timeout=60) as yanit:
+                veri = yanit.read()
+        except (OSError, http.client.HTTPException) as e:  # URLError, zaman aşımı, kopan bağlantı
             son = e
+            continue
+        # hata sayfası ya da kesik gövde mp3 diye önbelleğe girerse birleştirme o parçada hep düşerdi
+        if len(veri) < MUZIK_EN_AZ or not (veri[:3] == b"ID3" or veri[:2] in (b"\xff\xfb", b"\xff\xf3", b"\xff\xf2")):
+            son = RuntimeError(f"{ad}: mp3 değil ({len(veri)} bayt)")
             continue
         gecici = yol.with_suffix(".tmp")
         gecici.write_bytes(veri)
@@ -388,12 +408,15 @@ def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, tab
         if onceki and (c := sor(dizin / f"sahne_{onceki[-1]}.jpg", d["soru"])) and c[0] == d["beklenen"]:
             kayit["ayirmayan"].append(d["soru"])
             continue
-        for i in range(d["sahne"] - 1, len(sc.gorseller)):
+        # aynı karakterin sonraki değişimi başlayınca bu soru artık geçerli değil (ikinci görünüş onun penceresi)
+        sonraki = [e["sahne"] for e in sc.degisimler if e["kim"] == d["kim"] and e["sahne"] > d["sahne"]]
+        for i in range(d["sahne"] - 1, min(sonraki, default=len(sc.gorseller) + 1) - 1):
             if not _sahnede(d["kim"], sc.gorseller[i]):
                 continue
             yol, deneme = dizin / f"sahne_{i}.jpg", 0
             while True:
                 if (c := sor(yol, d["soru"])) is None:
+                    kayit["tutmayan"].pop(str(i), None)  # yeniden çizilen kare denetlenemedi: düşürme nedeni değil
                     break
                 cevap, guven = c
                 if cevap == d["beklenen"] or guven < DURUM_GUVEN:
@@ -405,10 +428,27 @@ def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, tab
                 kayit["yeniden"] += 1
                 deneme += 1
                 yol.unlink()
-                cf.gorsel(istemler[i], yol, taban + 10 * i + 7 + deneme)
+                # OCR yeniden çizimiyle aynı yazısız istem: yazı taşıyan yan cümle geri gelmesin
+                cf.gorsel(f"{senaryo.yazisiz(istemler[i])} {YAZISIZ}", yol, taban + 10 * i + 7 + deneme)
     if kayit["tutmayan"]:
         raise DurumHatasi(f"değişen görünüş karede tutmadı: {kayit['tutmayan']}")
     return kayit
+
+
+def sahneleri_ciz(istemler: list[str], dizin: Path, taban: int) -> list[Path]:
+    """Sahneler PARALEL çizilir. Biri kota ya da filtreye takılınca kuyruktaki çizimler iptal edilir: `ex.map` hata
+    sonrasında da kalan istekleri gönderiyordu (kota doluyken boşa istek, filtrede boşa neuron)."""
+    ex = ThreadPoolExecutor(PARALEL)
+    try:
+        isler = [
+            ex.submit(cf.gorsel, istem, dizin / f"sahne_{i}.jpg", taban + 10 * i) for i, istem in enumerate(istemler)
+        ]
+        return [f.result() for f in isler]
+    except BaseException:
+        ex.shutdown(wait=True, cancel_futures=True)
+        raise
+    finally:
+        ex.shutdown(wait=True)
 
 
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
@@ -419,12 +459,10 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     sc, kalip, istemler = senaryo_al(paket, kalip, dizin)
     t_senaryo = time.time()
     taban = sum(map(ord, paket.anahtar)) % 100_000
-    with ThreadPoolExecutor(PARALEL) as ex:
-        gorseller = list(
-            ex.map(lambda a: cf.gorsel(a[1], dizin / f"sahne_{a[0]}.jpg", taban + 10 * a[0]), enumerate(istemler))
-        )
-    yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
+    gorseller = sahneleri_ciz(istemler, dizin, taban)
+    # önce görünüş, sonra yazı: OCR son kareye bakar (görünüş yeniden çizimi yazıyı geri getirebiliyordu)
     durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban)
+    yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
     t_gorsel = time.time()
     sure, parcalar = seslendir(sc.satirlar, dizin / "ses.wav")
     try:
