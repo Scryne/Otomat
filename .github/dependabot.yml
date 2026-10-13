@@ -3,7 +3,12 @@ updates:
   - package-ecosystem: "uv"
     directory: "/"
     schedule: { interval: "weekly" }
-    groups: { tum: { patterns: ["*"] } }
+    # yerel modeller (TTS, hizalama, OCR) ayrı PR: biri bozulunca saf Python yükseltmeleri de onunla takılmasın
+    groups:
+      modeller:
+        patterns: ["onnxruntime*", "kokoro-onnx", "faster-whisper", "ctranslate2", "rapidocr*", "tokenizers"]
+      tum:
+        patterns: ["*"]
     open-pull-requests-limit: 3
   - package-ecosystem: "github-actions"
     directory: "/"

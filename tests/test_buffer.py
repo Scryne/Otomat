@@ -129,6 +129,7 @@ def _pist_ortami(tmp_path, monkeypatch, db, uretim):
     monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (None, None))
     monkeypatch.setattr(youtube, "servis", lambda *a, **k: object())  # token ön kontrolü geçsin
     monkeypatch.setattr(gunluk, "topla", lambda: ([], []))
+    monkeypatch.setattr(gunluk, "buffer_istekleri", lambda _: 0)  # gerçek raporlar/ okunmasın
     monkeypatch.setattr(gunluk, "bir_video", uretim)
 
 

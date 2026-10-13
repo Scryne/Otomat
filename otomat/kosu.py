@@ -1,9 +1,15 @@
-"""Komut satırı. `duman`: yüklemesiz, sabit veriyle tek kısa video (CI'da koşar)."""
+"""Komut satırı. `duman`: yüklemesiz, sabit veriyle tek kısa video (CI'da koşar; arşiv veri motorunun regresyonu).
+
+Harita şablonu kimliği etkin kanalın DESIGN.md'sinden okur: hikâye kanallarının kimliğinde harita alanları yok
+(`KeyError: 'spacing'`). Kanal seçilmemişse arşiv profili kurulur, importlardan önce."""
 
 import argparse
 import json
+import os
 import time
 from pathlib import Path
+
+os.environ.setdefault("OTOMAT_KANAL", "veri-earth")
 
 from otomat.ayarlar import KOK
 from otomat.gorsel import nokta_harita

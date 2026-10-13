@@ -14,15 +14,20 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    # üretimle aynı imaj (gunluk.yml): ubuntu-latest 2026-10-19'da 26'ya geçiyor, CI'ın yeşili üretimi temsil etsin
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
-      - run: uv sync --locked --extra gorsel  # OCR testi Linux'ta gerçekten koşsun (yazi.py)
+      # üretimle aynı ekler: OCR testi Linux'ta gerçekten koşsun (yazi.py); Dependabot'un kokoro/faster-whisper/
+      # onnxruntime yükseltmeleri de en azından import edilerek sınansın
+      - run: uv sync --locked --extra ses --extra gorsel
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pytest -q
-      - name: Duman koşusu (yüklemesiz tek video)
-        run: OTOMAT_KANAL=veri-earth uv run python -m otomat.kosu duman
+      - name: Ses ve hizalama kütüphaneleri yükleniyor
+        run: uv run python -c "import kokoro_onnx, faster_whisper, rapidocr_onnxruntime"
+      - name: Duman koşusu (arşiv veri motoru, yüklemesiz tek video)
+        run: uv run python -m otomat.kosu duman
