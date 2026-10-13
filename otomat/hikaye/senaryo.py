@@ -117,7 +117,8 @@ Check the title (as line 0) and every line: numbers, names, dates, places, cause
 Flag a line if it states something the source does not say, contradicts it, attaches a fact to the wrong person or
 event, or exaggerates. Also flag a line that breaks the telling: it gives away the ending before the story gets
 there, jumps in time without saying when, or repeats an event an earlier line already told. Dramatic wording is fine
-when the facts underneath are correct. Return only real problems.""",
+when the facts underneath are correct. An event the source calls legend or doubtful is fine when the line marks it
+("reportedly", "legend says"). Return only real problems.""",
     "masal": """You review a short video script against the original Aesop fable it retells.
 FABLE:
 <<<
@@ -150,8 +151,12 @@ PROBLEMS:
 {sorun}
 
 Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less. Use only what the
-source states: add no new detail, purpose, cause or number. Keep each line 4-12 words, spoken, and keep the story
-flowing with the lines around it. Return the fixed lines."""
+source states: add no new detail, purpose, cause or number. Common fixes:
+- a word or adjective the source does not support: delete it, keep the rest of the line;
+- an event the source calls legend, tradition, rumor or possibly exaggerated: keep it, but mark it ("reportedly",
+  "legend says", "the story goes");
+- a repeated event: tell the next step of the story instead.
+Keep each line 4-12 words, spoken, and keep the story flowing with the lines around it. Return the fixed lines."""
 
 # Yazı taşıyan nesne: flux "no text"i tutmuyor, tarifte tabela/pankart/gazete varsa anlamsız harflerle çiziyor
 # (Sister Boom Boom, Wog Rolo, Prester John; 10-12). Olumsuz kalıp ("no signs") sayılmaz.
