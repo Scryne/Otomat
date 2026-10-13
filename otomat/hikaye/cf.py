@@ -1,4 +1,5 @@
-"""Cloudflare Workers AI istemcisi: metin (gpt-oss-120b, JSON şeması) ve görsel (flux-2-klein-4b).
+"""Cloudflare Workers AI istemcisi: metin (gpt-oss-120b, JSON şeması), görsel (flux-2-klein-4b) ve kare denetimi
+(llama-4-scout, evet/hayır).
 
 Bedava kota günde 10.000 neuron (aşınca istek hata verir, fatura yok). Panel sayacı 00:00 UTC'de sıfırlanıyor ama
 engel kayan 24 saat sürdü (10-09 ölçümü, docs/arastirma/09). Video başına ~1.250-2.100 neuron harcanır. Harcanan
@@ -18,6 +19,8 @@ from otomat.ayarlar import KOK
 
 METIN_MODELI = "@cf/openai/gpt-oss-120b"
 GORSEL_MODELI = "@cf/black-forest-labs/flux-2-klein-4b"
+# S13 (10-13): kuyruklu/kuyruksuz tilki 11 karenin 10'unda doğru, ~51 neuron; mistral-small JSON'u bozdu
+GORME_MODELI = "@cf/meta/llama-4-scout-17b-16e-instruct"
 GORSEL_BOYUT = (768, 1344)  # 9:16'ya en yakın; 6 karo × 26,05 neuron
 GORSEL_NEURON = 6 * 26.05
 FILTRE_KODU = b"3030"  # "output has been flagged": güvenlik filtresi
@@ -149,3 +152,45 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4) -> Path:
                 raise CFHatasi(f"görsel üretilemedi: {e}") from e
             time.sleep(5)
     raise CFHatasi("görsel üretilemedi")
+
+
+GORME_SEMA = {
+    "type": "object",
+    "properties": {"answer": {"type": "boolean"}, "confidence": {"type": "number"}},
+    "required": ["answer", "confidence"],
+}
+
+
+def gorsel_sor(yol: Path, soru: str, deneme: int = 2) -> tuple[bool, float]:
+    """Karedeki görünüm hakkında evet/hayır sorusu: (cevap, güven 0-1)."""
+    resim = base64.b64encode(yol.read_bytes()).decode()
+    govde = json.dumps(
+        {
+            "model": GORME_MODELI,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": f"{soru} Answer about this picture only, as JSON."},
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{resim}"}},
+                    ],
+                }
+            ],
+            "response_format": {"type": "json_schema", "json_schema": {"name": "cevap", "schema": GORME_SEMA}},
+            "max_tokens": 100,
+        }
+    ).encode()
+    son = None
+    for i in range(deneme):
+        try:
+            y = _istek("v1/chat/completions", govde, "application/json", 60)
+            NEURON["toplam"] += y.get("usage", {}).get("neurons", 0)
+            c = json.loads(y["choices"][0]["message"].get("content") or "")
+            return bool(c["answer"]), float(c["confidence"])
+        except urllib.error.HTTPError as e:
+            son = f"HTTP {e.code}: {_kota_mi(e)[:200]!r}"
+        except (urllib.error.URLError, json.JSONDecodeError, TimeoutError, KeyError, IndexError, TypeError,
+                ValueError) as e:  # fmt: skip
+            son = f"{type(e).__name__}: {e}"
+        time.sleep(3 * (i + 1))
+    raise CFHatasi(f"görme modeli {deneme} denemede yanıt vermedi: {son}")

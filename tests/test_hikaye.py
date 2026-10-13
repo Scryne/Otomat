@@ -441,10 +441,11 @@ def test_kisa_makale_kaynak_hatasi(monkeypatch):
         kaynaklar.metin(_hikaye_paketi())
 
 
-def _senaryo_yaz(monkeypatch, satirlar, hakemler):
+def _senaryo_yaz(monkeypatch, satirlar, hakemler, cast=(), changes=()):
     """`yaz`ı sahte modelle koşturur: ilk çağrı senaryo, sonra hakem (sırayla `hakemler`) ve onarım (değişiklik yok)."""
     ilk = {"title": "The Vat That Burst", "mood": "m", "world": "A London street in 1814, brown and gray.",
-           "cast": [], "scenes": [{"line": s, "image": f"image {i}"} for i, s in enumerate(satirlar, 1)]}  # fmt: skip
+           "cast": list(cast), "changes": list(changes),
+           "scenes": [{"line": s, "image": f"image {i}"} for i, s in enumerate(satirlar, 1)]}  # fmt: skip
     hakem = iter(hakemler)
     istemler = []
 
@@ -681,3 +682,129 @@ def test_yazi_ocr_gercek_karede_yaziyi_bulur_bos_karede_bulmaz(tmp_path):
     bos.save(tmp_path / "bos.jpg")
     assert any("ABOVE" in m.upper() for m in yazi.oku(tmp_path / "dolu.jpg"))
     assert yazi.oku(tmp_path / "bos.jpg") == []
+
+
+KUYRUK = {"who": "Felix", "from_scene": 3, "look": "a tailless fox with a round bare rump and a pink bandage",
+          "question": "Does the orange fox have a tail?", "expected": False}  # fmt: skip
+
+
+def test_degisimler_suzulur_olumsuz_gorunus_alinmaz():
+    """10-15 Orbit: "his tail gone" yazan sahnede klein kuyruğu çizdi (S13: olumsuz 2/2 kuyruklu, olumlu 2/2
+    kuyruksuz)."""
+    oyuncular = ["Felix: a bright orange fox in a red scarf"]
+    assert senaryo.degisimler([dict(KUYRUK, who="felix")], oyuncular, 7) == [
+        {"kim": "Felix", "sahne": 3, "gorunum": KUYRUK["look"], "soru": KUYRUK["question"], "beklenen": False}
+    ]
+    for bozuk in [{"who": "Willow"}, {"from_scene": 1}, {"from_scene": 8}, {"look": "his tail gone now forever"},
+                  {"look": "tailless"}, {"question": "Tail visible"}]:  # fmt: skip
+        assert senaryo.degisimler([dict(KUYRUK, **bozuk)], oyuncular, 7) == []
+    assert senaryo.degisimler(None, oyuncular, 7) == []
+
+
+def test_degisen_gorunus_sonraki_sahnelerin_istemine_girer():
+    gorseller = ["Felix smiling.", "Felix caught in a snare.", "Felix on a log.", "A wise gray fox."]
+    sc = senaryo.Senaryo("T", "m", "A forest.", ["Felix: a bright orange fox"], ["l"] * 4, gorseller)
+    sc.degisimler = senaryo.degisimler([KUYRUK], sc.oyuncular, 4)
+    istemler = uretim.istemleri_kur("Stil", sc)
+    assert [("is now a tailless fox" in i) for i in istemler] == [False, False, True, False]  # 4: Felix sahnede yok
+    assert istemler[2].index("Felix is a bright orange fox.") < istemler[2].index("Felix is now")
+
+
+def test_cikarilan_sahne_degisimin_sahnesini_kaydirir(monkeypatch):
+    satirlar = [f"Felix the fox walked down path {k} that day." for k in "abcdefgh"]
+    _senaryo_yaz(monkeypatch, satirlar, [[(4, "repeats line 2")]] * senaryo.TUR_SAYISI + [[]],
+                 cast=["Felix: an orange fox"], changes=[dict(KUYRUK, from_scene=6)])  # fmt: skip
+    sc = senaryo.yaz("tuhaf", "Fox", "felix the fox walked down the path that day", "", "detay", ["m"])
+    assert sc.cikarilan == [satirlar[3]] and sc.degisimler[0]["sahne"] == 5
+    _senaryo_yaz(monkeypatch, satirlar, [[(4, "x")]] * senaryo.TUR_SAYISI + [[]],
+                 cast=["Felix: an orange fox"], changes=[dict(KUYRUK, from_scene=4)])  # fmt: skip
+    sc = senaryo.yaz("tuhaf", "Fox", "felix the fox walked down the path that day", "", "detay", ["m"])
+    assert sc.degisimler[0]["sahne"] == 4  # değişimin ilk sahnesi çıktı: yeni görünüş sonraki sahneden (eski 5)
+
+
+def _durum_senaryosu():
+    sc = senaryo.Senaryo("T", "m", "A forest.", ["Felix: a fox"], ["l"] * 4,
+                         ["Felix smiling.", "Felix caught.", "Felix on a log.", "Felix playing."])  # fmt: skip
+    sc.degisimler = senaryo.degisimler([KUYRUK], sc.oyuncular, 4)
+    return sc
+
+
+def test_degisen_gorunus_tutmayan_kare_yeniden_cizilir(tmp_path, monkeypatch):
+    from otomat.hikaye import cf
+
+    for i in range(4):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"kuyruklu")
+    sorulan, tohumlar = [], []
+
+    def sor(yol, soru):
+        sorulan.append(yol.name)
+        return yol.read_bytes() == b"kuyruklu", 0.95  # kuyruk var mı?
+
+    def gorsel(istem, yol, tohum):
+        tohumlar.append(tohum)
+        yol.write_bytes(b"kuyruksuz")
+        return yol
+
+    monkeypatch.setattr(cf, "gorsel_sor", sor)
+    monkeypatch.setattr(cf, "gorsel", gorsel)
+    k = uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 100)
+    # önce değişimden önceki son kare (1) sınanır, 0 sorulmaz
+    assert sorulan == ["sahne_1.jpg", "sahne_2.jpg", "sahne_2.jpg", "sahne_3.jpg", "sahne_3.jpg"]
+    assert k == {"soru": 5, "yeniden": 2, "tutmayan": {}, "hata": 0, "ayirmayan": []} and tohumlar == [128, 138]
+
+    # yeniden çizim de tutmazsa hak bitince hikâye düşer; az emin cevap kareyi reddetmez
+    monkeypatch.setattr(cf, "gorsel", lambda istem, yol, tohum: yol.write_bytes(b"kuyruklu") and yol)
+    for i in range(4):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"kuyruklu")
+    with pytest.raises(uretim.DurumHatasi, match="tutmadı"):
+        uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 100)
+    monkeypatch.setattr(cf, "gorsel_sor", lambda yol, soru: (True, 0.4))
+    assert uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 100)["yeniden"] == 0
+
+    # değişimden önceki karede de beklenen cevap çıkıyor: soru ayırt etmiyor (ya da expected ters), denetlenmez
+    monkeypatch.setattr(cf, "gorsel_sor", lambda yol, soru: (False, 0.9))
+    k = uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 100)
+    assert k["ayirmayan"] == [KUYRUK["question"]] and k["soru"] == 1 and k["yeniden"] == 0
+
+
+def test_gorme_modeli_yanit_vermezse_kare_denetlenmemis_sayilir_kota_yukari_firlar(tmp_path, monkeypatch):
+    from otomat.hikaye import cf
+
+    for i in range(4):
+        (tmp_path / f"sahne_{i}.jpg").write_bytes(b"x")
+
+    def hata(yol, soru):
+        raise cf.CFHatasi("yanıt yok")
+
+    monkeypatch.setattr(cf, "gorsel_sor", hata)
+    assert uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 0)["hata"] == 3  # sınama + 2 kare
+
+    def kota(yol, soru):
+        raise cf.KotaHatasi("kota")
+
+    monkeypatch.setattr(cf, "gorsel_sor", kota)
+    with pytest.raises(cf.KotaHatasi):
+        uretim.durumlari_denetle(_durum_senaryosu(), ["i"] * 4, tmp_path, 0)
+
+
+def test_degisen_gorunus_tutmayan_hikaye_duser_siradaki_denenir(tmp_path, monkeypatch):
+    from otomat import durum, gunluk
+    from otomat.hikaye import kabul
+    from otomat.hikaye import uretim as h_uretim
+
+    db = durum.baglan(tmp_path / "d.db")
+    paketler = [type("P", (), {"anahtar": f"ezop:{i}", "hash": f"h{i}", "kol": "k", "tur": "t"})() for i in range(2)]
+    sira = iter(paketler)
+    monkeypatch.setattr(gunluk, "sec", lambda *a: (next(sira), "kalip", "sablon", {}))
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
+    monkeypatch.setattr(kabul, "denetle", lambda *a: [])
+
+    def uret(paket, *a):
+        if paket.anahtar == "ezop:0":
+            raise h_uretim.DurumHatasi("değişen görünüş karede tutmadı: {'2': 'tail?'}")
+        return {"baslik": "ok"}
+
+    monkeypatch.setattr(h_uretim, "uret", uret)
+    kayit = {}
+    paket, *_ = gunluk.hikaye_uret([], db, dt.date(2026, 10, 13), kayit)
+    assert paket.anahtar == "ezop:1" and "tutmadı" in kayit["dusen_hikayeler"][0]["sorunlar"][0]

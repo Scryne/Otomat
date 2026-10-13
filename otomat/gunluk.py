@@ -127,6 +127,7 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     from otomat.hikaye import cf, kabul
     from otomat.hikaye.kaynaklar import KaynakHatasi
     from otomat.hikaye.senaryo import SenaryoHatasi
+    from otomat.hikaye.uretim import DurumHatasi
     from otomat.hikaye.uretim import uret as h_uret
 
     if hazir := hazir_uretim(paketler, db, bugun):
@@ -142,7 +143,8 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
             meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except SenaryoHatasi as e:
             sorunlar = e.sorunlar[-1][:5]
-        except (cf.FiltreHatasi, KaynakHatasi) as e:  # sahne görseli güvenlik filtresinde (Earth, 10-09); makale yok
+        # sahne görseli güvenlik filtresinde (Earth, 10-09); makale yok; değişen görünüş karede tutmadı (Orbit, 10-13)
+        except (cf.FiltreHatasi, KaynakHatasi, DurumHatasi) as e:
             sorunlar = [str(e)[:200]]
         else:
             if not (sorunlar := kabul.denetle(dizin / "meta.json")):

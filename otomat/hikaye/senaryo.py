@@ -88,6 +88,13 @@ cast: 0-3 recurring characters, each a fixed visual description (species or age,
 scenes[].image: a concrete visual description of that scene for an illustrator who knows nothing about the story
   (who, doing what, where, camera angle). Name every object unambiguously ("a huge steel storage tank", never just
   "the tank"). Copy cast descriptions verbatim when a character appears. {ilk_kare} {gorsel_kurali}
+  No image may contradict the lines so far: a character who lost something is never shown with it again.
+changes: when a cast member's look changes during the story (loses its tail, gets a crown, turns muddy), one entry:
+  who (the cast name), from_scene (first scene number showing the new look), look (the new look in positive, visible
+  words: what the viewer SEES, e.g. "a tailless fox with a round bare rump and a small pink bandage"; the illustrator
+  cannot draw "gone", "without" or "no"), question (a yes/no question about one picture that checks it, e.g. "Does the
+  orange fox in the red scarf have a tail?"), expected (the correct answer from from_scene on). The cast description
+  shows the look at the start and does not mention the feature that changes. Empty list if no look changes.
 mood: the music mood that fits the story."""
 
 HAKEM_ISTEM = {
@@ -248,6 +255,9 @@ class Senaryo:
     turlar: list[list] = field(default_factory=list)  # her turda bulunan sorunlar (meta.json'a)
     gorsel_onarim: list[list] = field(default_factory=list)  # yazı taşıyan nesne: [onarımdan önce, sonra]
     cikarilan: list[str] = field(default_factory=list)  # son çare: onarılamayıp çıkarılan ara satırlar
+    # hikâyede değişen görünüş (Fox Without A Tail, 10-13: kuyruk 2. satırda koptu, 3 karede yerindeydi):
+    # {"kim", "sahne" (1'den), "gorunum", "soru", "beklenen"}; istem kodla eklenir, kare görme modeliyle denetlenir
+    degisimler: list[dict] = field(default_factory=list)
 
 
 def sema(tur: str, moodlar: list[str]) -> dict:
@@ -259,6 +269,20 @@ def sema(tur: str, moodlar: list[str]) -> dict:
             "mood": {"type": "string", "enum": moodlar},
             "world": {"type": "string"},
             "cast": {"type": "array", "items": {"type": "string"}},
+            "changes": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "who": {"type": "string"},
+                        "from_scene": {"type": "integer"},
+                        "look": {"type": "string"},
+                        "question": {"type": "string"},
+                        "expected": {"type": "boolean"},
+                    },
+                    "required": ["who", "from_scene", "look", "question", "expected"],
+                },
+            },
             "scenes": {
                 "type": "array",
                 "minItems": en_az,
@@ -270,8 +294,33 @@ def sema(tur: str, moodlar: list[str]) -> dict:
                 },
             },
         },
-        "required": ["title", "mood", "world", "cast", "scenes"],
+        "required": ["title", "mood", "world", "cast", "changes", "scenes"],
     }
+
+
+DEGISIM_KELIME = 4
+
+
+def degisimler(ham: list[dict], oyuncular: list[str], sahne_sayisi: int) -> list[dict]:
+    """Model çıktısındaki `changes` süzülür: kişi kadroda olmalı, sahne aralıkta, görünüş tarif edilmiş, soru soru.
+    Görünüş olumsuz kalıpla yazıldıysa ("his tail gone") alınmaz: klein olumsuzu çizemiyor (S13, 2/2 kuyruklu)."""
+    adlar = {o.partition(":")[0].strip().lower(): o.partition(":")[0].strip() for o in oyuncular}
+    sonuc = []
+    for d in ham or []:
+        kim = adlar.get(str(d.get("who", "")).strip().lower())
+        gorunum, soru = str(d.get("look", "")).strip(), str(d.get("question", "")).strip()
+        sahne = d.get("from_scene")
+        if (
+            kim
+            and isinstance(sahne, int)
+            and 1 < sahne <= sahne_sayisi
+            and len(gorunum.split()) >= DEGISIM_KELIME
+            and not re.search(r"\b(?:gone|without|no|not|missing)\b", gorunum, re.I)
+            and soru.endswith("?")
+        ):
+            sonuc.append({"kim": kim, "sahne": sahne, "gorunum": gorunum.rstrip("."), "soru": soru,
+                          "beklenen": bool(d.get("expected"))})  # fmt: skip
+    return sonuc
 
 
 def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
@@ -422,6 +471,8 @@ def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str
         return False
     sc.cikarilan = [sc.satirlar[n - 1] for n in sorted(nolar)]
     sc.satirlar, sc.gorseller = satirlar, [sc.gorseller[i] for i in kalan]
+    for d in sc.degisimler:  # çıkarılan sahne değişimin ilk sahnesiyse yeni görünüş sonraki kalan sahneden başlar
+        d["sahne"] = 1 + sum(1 for i in kalan if i < d["sahne"] - 1)
     return True
 
 
@@ -439,6 +490,7 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         satirlar=[x["line"].strip() for x in s["scenes"]],
         gorseller=[x["image"] for x in s["scenes"]],
     )
+    sc.degisimler = degisimler(s.get("changes"), sc.oyuncular, len(sc.gorseller))
     for tur_no in range(TUR_SAYISI):
         sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar)
         sc.turlar.append([[n, r[:300]] for n, r in sorun])

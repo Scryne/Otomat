@@ -238,16 +238,34 @@ def aciklama(paket: OlguPaketi, sc: senaryo.Senaryo, muzik_adi: str) -> str:
     )
 
 
-def gorsel_istemi(stil: str, dunya: str, oyuncular: list[str], sahne: str) -> str:
+def _sahnede(ad: str, sahne: str) -> bool:
+    return bool(re.search(rf"\b{re.escape(ad.strip())}\b", sahne, re.I))
+
+
+def gorsel_istemi(
+    stil: str, dunya: str, oyuncular: list[str], sahne: str, durumlar: dict[str, str] | None = None
+) -> str:
     """Sahnede adı geçen her karakterin sabit tarifi istemde durur: model tarifi sahneye kopyalamayı unutunca horoz her
-    karede başka renk çıkıyordu (Orbit, 10-09)."""
+    karede başka renk çıkıyordu (Orbit, 10-09). `durumlar` (ad → o sahnedeki yeni görünüş) tariften sonra gelir:
+    sahne metni "his tail gone" deyince klein kuyruğu yine çiziyordu (S13)."""
     tarifler = []
     for o in oyuncular:
         ad, _, tarif = o.partition(":")
-        if tarif.strip() and re.search(rf"\b{re.escape(ad.strip())}\b", sahne, re.I) and tarif.strip() not in sahne:
+        if tarif.strip() and _sahnede(ad, sahne) and tarif.strip() not in sahne:
             tarifler.append(f"{ad.strip()} is {tarif.strip().rstrip('.')}.")
+    for ad, gorunum in (durumlar or {}).items():
+        if _sahnede(ad, sahne):
+            tarifler.append(f"{ad} is now {gorunum}.")
     # klein ara sıra iki panelli (çizgi roman) görsel çiziyordu: tek kare olduğu açıkça söylenir
     return " ".join([f"{stil}. A single full-frame scene, not a comic, no panels. {dunya}", *tarifler, sahne])
+
+
+def istemleri_kur(stil: str, sc: senaryo.Senaryo) -> list[str]:
+    istemler = []
+    for i, g in enumerate(sc.gorseller, 1):
+        durumlar = {d["kim"]: d["gorunum"] for d in sc.degisimler if i >= d["sahne"]}
+        istemler.append(gorsel_istemi(stil, sc.dunya, sc.oyuncular, g, durumlar))
+    return istemler
 
 
 SENARYO = "senaryo.json"
@@ -274,7 +292,7 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
         d = json.loads(yol.read_text(encoding="utf-8"))
         if (d["anahtar"], d["hash"]) == (paket.anahtar, paket.hash):
             sc = senaryo.Senaryo(**d["senaryo"])
-            istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
+            istemler = istemleri_kur(k.stil, sc)
             for i, eski in enumerate(d.get("istemler", [])):
                 if i >= len(istemler) or eski != istemler[i]:  # kanal stili değişmiş: o sahne yeniden çizilir
                     (dizin / f"sahne_{i}.jpg").unlink(missing_ok=True)
@@ -286,7 +304,7 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
             eski.unlink()
     kaynak = kaynaklar.metin(paket)
     sc = senaryo.yaz(paket.tur, paket.gorsel["baslik"], kaynak, paket.konu, kalip, list(k.muzik))
-    istemler = [gorsel_istemi(k.stil, sc.dunya, sc.oyuncular, g) for g in sc.gorseller]
+    istemler = istemleri_kur(k.stil, sc)
     kayit = {"anahtar": paket.anahtar, "hash": paket.hash, "kalip": kalip, "senaryo": asdict(sc), "istemler": istemler}
     yol.write_text(json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8")
     return sc, kalip, istemler
@@ -335,6 +353,60 @@ def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int) -> dict:
     return kayit
 
 
+DURUM_YENIDEN = 3  # video başına en çok yeniden çizim (değişen görünüş tutmadı)
+DURUM_GUVEN = 0.6  # görme modeli bundan az eminse kare reddedilmez
+
+
+class DurumHatasi(RuntimeError):
+    """Hikâyede değişen görünüş yeniden çizimden sonra da karede tutmadı: hikâye düşer, sıradaki denenir. Tutmayan
+    kare masalın konusunu bozar (10-15 Orbit: kuyruğunu kaybeden tilkinin kuyruğu 3 karede yerindeydi)."""
+
+
+def durumlari_denetle(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, taban: int) -> dict:
+    """Değişimden sonraki, karakterin adının geçtiği her sahne görme modeline sorulur; beklenmeyen cevap (yeterince
+    emin) → yeni tohumla yeniden çizim. Önce soru değişimden önceki son karede sınanır: orada da beklenen cevap
+    çıkıyorsa soru iki görünüşü ayırmıyor (ya da `expected` ters yazılmış), o değişim denetlenmez; yoksa doğru kareler
+    boşuna yeniden çizilip hikâye düşerdi. Model yanıt vermezse kare denetlenmemiş sayılır, video yine çıkar."""
+    kayit: dict = {"soru": 0, "yeniden": 0, "tutmayan": {}, "hata": 0, "ayirmayan": []}
+
+    def sor(yol: Path, soru: str) -> tuple[bool, float] | None:
+        kayit["soru"] += 1
+        try:
+            return cf.gorsel_sor(yol, soru)
+        except cf.KotaHatasi:
+            raise
+        except cf.CFHatasi:
+            kayit["hata"] += 1
+            return None
+
+    for d in sc.degisimler:
+        onceki = [i for i in range(d["sahne"] - 1) if _sahnede(d["kim"], sc.gorseller[i])]
+        if onceki and (c := sor(dizin / f"sahne_{onceki[-1]}.jpg", d["soru"])) and c[0] == d["beklenen"]:
+            kayit["ayirmayan"].append(d["soru"])
+            continue
+        for i in range(d["sahne"] - 1, len(sc.gorseller)):
+            if not _sahnede(d["kim"], sc.gorseller[i]):
+                continue
+            yol, deneme = dizin / f"sahne_{i}.jpg", 0
+            while True:
+                if (c := sor(yol, d["soru"])) is None:
+                    break
+                cevap, guven = c
+                if cevap == d["beklenen"] or guven < DURUM_GUVEN:
+                    kayit["tutmayan"].pop(str(i), None)
+                    break
+                kayit["tutmayan"][str(i)] = d["soru"]
+                if kayit["yeniden"] >= DURUM_YENIDEN:
+                    break
+                kayit["yeniden"] += 1
+                deneme += 1
+                yol.unlink()
+                cf.gorsel(istemler[i], yol, taban + 10 * i + 7 + deneme)
+    if kayit["tutmayan"]:
+        raise DurumHatasi(f"değişen görünüş karede tutmadı: {kayit['tutmayan']}")
+    return kayit
+
+
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
     k = kanal.aktif()
     dizin.mkdir(parents=True, exist_ok=True)
@@ -348,6 +420,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
             ex.map(lambda a: cf.gorsel(a[1], dizin / f"sahne_{a[0]}.jpg", taban + 10 * a[0]), enumerate(istemler))
         )
     yazi_kaydi = yazilari_ayikla(istemler, dizin, taban)
+    durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban)
     t_gorsel = time.time()
     sure, parcalar = seslendir(sc.satirlar, dizin / "ses.wav")
     try:
@@ -375,9 +448,11 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
             "hakem_turlari": sc.turlar,
             "gorsel_onarim": sc.gorsel_onarim,
             "cikarilan": sc.cikarilan,
+            "degisimler": sc.degisimler,
         },  # fmt: skip
         "muzik": muzik_adi,
         "yazi": yazi_kaydi,
+        "durum": durum_kaydi,
         "vurgu": "whisper" if gercek else "orantili",
         "altyazi": [asdict(p) for p in parcalar],
         "sure_sn": round(sure, 2),
