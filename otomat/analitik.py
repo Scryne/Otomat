@@ -14,6 +14,7 @@ from otomat.yayin.youtube import DENEME
 
 PENCERE_GUN = 3  # ödül penceresi: yayın günü dahil 3 gün
 GECIKME_GUN = 2  # Analytics gecikmesi
+BOS_BEKLE_GUN = 7  # satırsız (boş) yanıt bu yaştan önce ölçüm sayılmaz
 ESLESTIRME_GUN = 60  # bu kadar eski seçim artık eşleştirilmez
 METRIKLER = "views,engagedViews,averageViewPercentage,averageViewDuration,subscribersGained"
 
@@ -95,7 +96,8 @@ def pencere(ya, video_id: str, yayin_gunu: dt.date) -> dict:
         .execute(num_retries=DENEME)
     )
     satir = (y.get("rows") or [[0, 0, 0, 0, 0]])[0]
-    return dict(zip(["views", "engaged_views", "ort_izlenme_yuzde", "ort_izlenme_sn", "abone"], satir, strict=True))
+    sonuc = dict(zip(["views", "engaged_views", "ort_izlenme_yuzde", "ort_izlenme_sn", "abone"], satir, strict=True))
+    return {**sonuc, "bos": not y.get("rows")}
 
 
 def olc(db: sqlite3.Connection, yt, ya, bugun: dt.date) -> list[str]:
@@ -116,6 +118,10 @@ def olc(db: sqlite3.Connection, yt, ya, bugun: dt.date) -> list[str]:
         if not d or not d["public"] or gun is None or bugun < gun + dt.timedelta(days=PENCERE_GUN + GECIKME_GUN):
             continue
         m = pencere(ya, vid, gun)
+        if m["bos"] and bugun < gun + dt.timedelta(days=BOS_BEKLE_GUN):
+            # satırsız yanıt gecikme de olabilir, gerçek sıfır da: bir kez yazılan ölçüm düzelmediği için geçici boş
+            # yanıt kalıcı sıfır ödül oluyordu; video bir hafta dolunca sıfır gerçek sayılır
+            continue
         db.execute(
             "INSERT INTO olcumler VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
             (vid, gun.isoformat(), bugun.isoformat(), m["views"], m["engaged_views"], m["ort_izlenme_yuzde"],

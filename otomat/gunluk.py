@@ -218,12 +218,14 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
     return video_id
 
 
-def teslime_koy(dizin: Path, bugun: dt.date) -> Path:
-    """Dosyalar tarih önekiyle düz bir klasöre: Actions bunları haftanın GitHub Release'ine ekler ve o haftanın
-    YUKLE.md'lerinden yayın saatli HAFTA.md'yi üretir (yayin/hafta.py)."""
+def teslime_koy(dizin: Path, bugun: dt.date, anahtar: str = "") -> Path:
+    """Dosyalar tarih (ve hikâye) önekiyle düz bir klasöre: Actions bunları haftanın GitHub Release'ine ekler ve o
+    haftanın YUKLE.md'lerinden yayın saatli HAFTA.md'yi üretir (yayin/hafta.py). Hikâye öneki: aynı slota ikinci
+    video düşerse Release'teki ilki `--clobber` ile eziliyordu."""
     hedef = KOK / "teslim"
     hedef.mkdir(parents=True, exist_ok=True)
-    on = bugun.isoformat()
+    ek = re.sub(r"[^A-Za-z0-9]+", "-", anahtar.partition(":")[2])[:40].strip("-")
+    on = bugun.isoformat() + (f"_{ek}" if ek else "")
     for ad in ["video.mp4", *[p.name for p in dizin.glob("*.srt")]]:
         shutil.copy(dizin / ad, hedef / f"{on}_{ad}")
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
@@ -312,6 +314,30 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
         alarmlar.append("**Pist denetimi yapılamadı** (üretim sürdü):\n\n" + _hata(e))
 
 
+BUFFER_SINIR = 3000  # istek / 30 gün, anahtar başına; tüm kanallar paylaşır
+BUFFER_ESIK = 2500
+
+
+def buffer_istekleri(bugun: dt.date) -> int:
+    """Son 30 günde tüm kanalların Buffer isteği (günlük raporlardan). Sınır aşılırsa Buffer yayını durur."""
+    sinir = (bugun - dt.timedelta(days=29)).isoformat()
+    toplam = 0
+    for kimlik in kanal.hepsi():
+        try:
+            yol = kanal.yukle(kimlik).raporlar / "gunluk.jsonl"
+            satirlar = yol.read_text(encoding="utf-8").splitlines() if yol.exists() else []
+        except (OSError, ValueError):
+            continue
+        for s in satirlar:
+            try:
+                k = json.loads(s)
+            except ValueError:
+                continue
+            if k.get("kosu", k.get("tarih", "")) >= sinir:
+                toplam += k.get("buffer_istek", 0)
+    return toplam
+
+
 def son_kayit() -> dict | None:
     """Bu kanalın günlük raporundaki son satır (bu koşudan önceki)."""
     try:
@@ -359,10 +385,16 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         try:
             video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar)
         except Exception as e:  # noqa: BLE001
-            alarmlar.append("**Buffer yayını düştü**, video Plan B paketine kondu:\n\n" + _hata(e))
+            alarmlar.append(
+                "**Buffer yayını düştü**: video Plan B paketine kondu, sonraki koşu aynı videoyu yeniden yayınlamayı "
+                "dener (elle yükleme gerekmez):\n\n" + _hata(e)
+            )
     if video_id is None:
-        kayit["teslim"] = str(teslime_koy(dizin, gun).relative_to(KOK))
-    durum.kaydet(db, paket, gun, video_id)
+        kayit["teslim"] = str(teslime_koy(dizin, gun, paket.anahtar).relative_to(KOK))
+    # buffer/api'de kanala çıkamayan hikâye harcanmaz: sonraki koşunun hazır üretimi (artifact) aynı videoyu kota
+    # harcamadan yeniden yayınlar. Eskiden hikâye "üretildi" sayılıyor, slot yeni bir hikâyeyle yeniden üretiliyordu.
+    if video_id is not None or mod == "teslim":
+        durum.kaydet(db, paket, gun, video_id)
     durum.secim_kaydet(db, gun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)
     kayit.update(
         durum="tamam",
@@ -402,7 +434,7 @@ def main() -> None:
     bugun = simdi.date()
     mod = os.environ.get("OTOMAT_YAYIN", "teslim")
     pist = mod in ("api", "buffer")
-    genel: dict = {"tarih": bugun.isoformat(), "mod": mod}
+    genel: dict = {"tarih": bugun.isoformat(), "mod": mod, "kosu_ani": simdi.isoformat(timespec="minutes")}
     kayitlar: list[dict] = []
     alarmlar: list[str] = []
     db = durum.baglan()
@@ -482,6 +514,11 @@ def main() -> None:
             from otomat.yayin import buffer
 
             (kayitlar[-1] if kayitlar else genel)["buffer_istek"] = buffer.ISTEK["sayi"]
+            if (toplam := buffer_istekleri(bugun) + buffer.ISTEK["sayi"]) > BUFFER_ESIK:
+                alarmlar.append(
+                    f"**Buffer API sınırına yaklaşıldı:** son 30 günde {toplam} / {BUFFER_SINIR} istek (tüm kanallar). "
+                    "Aşılırsa yayın Plan B'ye düşer."
+                )
         rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
         alarm_yaz(bugun, alarmlar)
         RAPOR.parent.mkdir(parents=True, exist_ok=True)

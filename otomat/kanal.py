@@ -52,6 +52,9 @@ class Kanal:
     vurgu: str = "#FFD84D"  # o an söylenen kelimenin rengi
     eski_adlar: tuple[str, ...] = ()  # yeniden adlandırma sürerken token doğrulamasının kabul ettiği eski adlar
     yedek_adlar: tuple[str, ...] = ()  # YouTube `ad`ı reddederse seçilebilecek adlar (kimlik bunlarla da uygulanır)
+    # bugünkü formatın ilk yayın günü (ISO): haydut ödülleri ve K-14 öldürme sayacı bu günden sayılır. Orbit'in çocuk
+    # dönemi (MFK, 0 izlenme) genel kitle formatının kollarını aşağı çekmesin (10-13 denetimi)
+    donem: str = ""
 
     @property
     def yeni_adlar(self) -> tuple[str, ...]:
@@ -104,6 +107,7 @@ def yukle(kimlik: str) -> Kanal:
         vurgu=d.get("vurgu", Kanal.vurgu),
         eski_adlar=tuple(d.get("eski_adlar", [])),
         yedek_adlar=tuple(d.get("yedek_adlar", [])),
+        donem=str(d.get("donem", "")),
     )
 
 

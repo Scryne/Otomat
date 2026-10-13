@@ -57,6 +57,8 @@ def uygula(yt, kanal_ogesi: dict, m: dict) -> None:
             },
             media_body=MediaFileUpload(str(KOK / m["filigran"]), mimetype="image/png"),
         ).execute()
+    except HttpError:
+        raise  # yetki ya da kota: kimlik "uygulandı" sayılmasın, alarm olsun
     except Exception:  # noqa: BLE001 — 10-06'da yanıt kütüphane hatasıyla okunamadı ama ayar uygulanmıştı
         pass
 
@@ -70,9 +72,11 @@ def eski_videolari_ayir(yt) -> list[str]:
     # yalnız format değişiminin veri videoları; kalite yüzünden geri çekilen masal çocuk içeriği kalır (10-12)
     sorgu = "SELECT video_id FROM geri_cekilen WHERE neden LIKE 'format değişimi%' ORDER BY video_id"
     idler = [v for (v,) in durum.baglan().execute(sorgu)]
+    from otomat.yayin import youtube
+
     for vid in idler:
-        govde = {"id": vid, "status": {"privacyStatus": "private", "selfDeclaredMadeForKids": False}}
-        yt.videos().update(part="status", body=govde).execute()
+        # tam gövde: kısmi status embeddable/publicStatsViewable/license alanlarını varsayılana çekiyordu
+        yt.videos().update(part="status", body=youtube.tam_durum(yt, vid, mfk=False)).execute()
     return idler
 
 

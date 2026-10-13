@@ -1,9 +1,11 @@
 name: Günlük üretim
 
 # Her gün bir video: analitik → hikâye havuzu → haydut seçimi → senaryo + hakem (Cloudflare) → sahne görselleri → ses →
-# render → çeviri (Ollama) → yayın (buffer/api)
-# ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
-# GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05, 2026-10-09): ikinci cron yedektir.
+# render → çeviri (Cloudflare) → yayın (buffer/api) ya da teslim paketi (Plan B; buffer düşerse de). Pazartesi geçen
+# haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
+# GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05, 2026-10-09, 2026-10-13'te 06:17 koşusu
+# 14:10'da başladı, 16:47 hiç gelmedi): diğer cron'lar yedektir. Pist doluysa koşu ilk adımda biter (~20 sn).
+# 11:37 Earth'ün 14:00 yayınından, 21:37 kotanın kayan penceresi açıldıktan sonra telafi içindir.
 # buffer/api modunda kanal birkaç günlük planlı video stoğu (pist, durum.PIST_GUN) tutar; pist doluysa koşu
 # "Üretilecek iş var mı" adımında biter (teslim modunda: gün zaten üretildiyse).
 # Çok kanal: her kanal ayrı matris işi (kanallar/<id>/kanal.toml); biri düşerse diğerleri sürer, alarm kanal başına.
@@ -11,7 +13,9 @@ name: Günlük üretim
 on:
   schedule:
     - cron: "17 6 * * *"
+    - cron: "37 11 * * *"
     - cron: "47 16 * * *"
+    - cron: "37 21 * * *"
   workflow_dispatch:
 
 permissions:
@@ -21,16 +25,17 @@ permissions:
 
 jobs:
   uret:
-    runs-on: ubuntu-latest
+    # sürüm sabit: ubuntu-latest 2026-10-19'dan itibaren Ubuntu 26'ya geçiyor (ffmpeg/onnxruntime riski; 10-09'da
+    # ffprobe eksikliği bir günü yaktı). Yükseltme bilinçli yapılır.
+    runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki; ollama: yerel LLM gerekir mi
-        # (veri motoru evet; hikâye motoru metni ve çeviriyi Cloudflare'de yapar)
+        # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
         include:
-          - { kanal: earth, sir: "", etiket: teslim, ollama: false }
-          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay, ollama: false }
+          - { kanal: earth, sir: "", etiket: teslim }
+          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
     concurrency:
       group: gunluk-${{ matrix.kanal }}
       cancel-in-progress: false
@@ -38,14 +43,7 @@ jobs:
       OTOMAT_KANAL: ${{ matrix.kanal }}
       # kanal başına mod (OTOMAT_YAYIN_<id>); earth eski OTOMAT_YAYIN değişkenini de okur
       OTOMAT_YAYIN: ${{ vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN) || 'teslim' }}
-      YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
-      KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}
-      # buffer modu (docs/arastirma/06): Buffer API + otomat-site deploy key (medya geçici olarak Pages'ta)
-      BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-      OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
-      # hikâye motoru (K-16): senaryo + sahne görselleri Cloudflare Workers AI bedava kotasıyla
-      CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
-      CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+    # sırlar yalnız onları kullanan adımda (Üret): checkout, cache, artifact ve gh adımlarına geçmesinler
     steps:
       # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
       - uses: actions/checkout@v7
@@ -68,9 +66,7 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         uses: actions/cache@v6
         with:
-          path: |
-            ~/.ollama/models
-            modeller
+          path: modeller
           key: modeller-${{ hashFiles('config/modeller.toml') }}
       - name: Müzik önbelleği
         if: steps.kontrol.outputs.atla != '1'
@@ -79,13 +75,6 @@ jobs:
           path: modeller/muzik
           key: muzik-${{ hashFiles('kanallar/*/kanal.toml') }}
           restore-keys: muzik-
-      - name: Ollama
-        if: steps.kontrol.outputs.atla != '1' && matrix.ollama
-        run: |
-          curl -fsSL https://ollama.com/install.sh | sh
-          (ollama serve > /tmp/ollama.log 2>&1 &)
-          sleep 5
-          ollama pull "$(grep -m1 '^model' config/modeller.toml | cut -d'"' -f2)"
       # kabulden geçip kanala çıkamamış üretimler (kota, ffprobe, Buffer) kota harcamadan yeniden kullanılır
       # (gunluk.hazir_uretim), kotaya takılıp yarım kalanın senaryosu ve görselleri sürdürülür (yarim_uretimi_getir);
       # yayınlanmış ya da reddedilmiş olanları taze süzgeci eler. Koşu başına ayrı klasör: aynı yoldaki dosyalar
@@ -94,24 +83,38 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         env:
           GH_TOKEN: ${{ github.token }}
+        # son 8 koşu (4 cron ≈ 2 gün; atlananların artifact'ı yok); yeniden denenen koşunun artifact'ı ayrı adlı
         run: |
-          for id in $(gh run list --workflow gunluk.yml -L 6 --json databaseId --jq '.[].databaseId'); do
-            gh run download "$id" -n "uretim-$OTOMAT_KANAL-$id" -D "calisma/onceki/$id" 2>/dev/null || true
+          for id in $(gh run list --workflow gunluk.yml -L 8 --json databaseId --jq '.[].databaseId'); do
+            for ad in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts" \
+                --jq ".artifacts[] | select(.expired | not) | .name | select(startswith(\"uretim-$OTOMAT_KANAL-\"))"); do
+              gh run download "$id" -n "$ad" -D "calisma/onceki/$ad" 2>/dev/null || true
+            done
           done
           ls calisma/onceki 2>/dev/null || echo "önceki üretim yok"
       - name: Üret
         id: uret
         if: steps.kontrol.outputs.atla != '1'
+        env:
+          YT_ISTEMCI_JSON: ${{ secrets.YT_ISTEMCI_JSON }}
+          KANAL_TOKEN: ${{ secrets[format('YT_TOKEN_JSON{0}', matrix.sir)] }}
+          # buffer modu (docs/arastirma/06): Buffer API + otomat-site deploy key (medya geçici olarak Pages'ta)
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          OTOMAT_SITE_ANAHTAR: ${{ secrets.OTOMAT_SITE_ANAHTAR }}
+          # hikâye motoru (K-16): senaryo, sahne görselleri, kare denetimi ve çeviri Cloudflare Workers AI bedava kotasıyla
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: |
           export "YT_TOKEN_JSON${{ matrix.sir }}=$KANAL_TOKEN"
           uv run python -m otomat.gunluk
       # yalnız bu koşunun üretimleri: yayından önce/sonra inceleme (video, sahneler, meta, altyazı) ve sonraki
-      # koşunun hazır/yarım üretimi (senaryo, çeviri); kanala çıkan video da 7 gün durur
+      # koşunun hazır/yarım üretimi (senaryo, çeviri). 4 gün: pist 3 gün; 7 günde depo 360 MB'a çıkmıştı (10-13).
+      # Ad deneme numarasını taşır: "Re-run" aynı adla yüklemeye çalışıp düşüyordu.
       - name: Üretim klasörü (inceleme)
         if: always() && hashFiles('calisma/gunluk/**/meta.json', 'calisma/gunluk/**/senaryo.json') != ''
         uses: actions/upload-artifact@v7
         with:
-          name: uretim-${{ matrix.kanal }}-${{ github.run_id }}
+          name: uretim-${{ matrix.kanal }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: |
             calisma/gunluk/**/video.mp4
             calisma/gunluk/**/sahne_*.jpg
@@ -119,9 +122,9 @@ jobs:
             calisma/gunluk/**/senaryo.json
             calisma/gunluk/**/yerel.json
             calisma/gunluk/**/*.srt
-          retention-days: 7
+          retention-days: 4
       - name: Teslim paketi (Plan B) → haftanın Release'i
-        if: hashFiles('teslim/**') != ''
+        if: always() && hashFiles('teslim/**') != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -172,17 +175,23 @@ jobs:
   portfoy:
     needs: uret
     if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.ref_name }}
+      # son 4 haftadan eksik portföy raporu (yalnız geçen hafta bakılıyordu; o hafta kaçınca sonsuza dek eksik kalıyordu)
       - name: Yazılacak rapor var mı
         id: kontrol
         run: |
-          HAFTA=$(date -u -d '7 days ago' +%G-H%V)
-          if [ -f "raporlar/portfoy/$HAFTA.md" ]; then echo "atla=1" >> "$GITHUB_OUTPUT"; fi
+          eksik=0
+          for g in 7 14 21 28; do
+            h=$(date -u -d "$g days ago" +%G-H%V)
+            [[ "$h" < "2026-H41" ]] && continue  # portfoy.ILK_HAFTA öncesi rapor beklenmez
+            [ -f "raporlar/portfoy/$h.md" ] || eksik=1
+          done
+          if [ "$eksik" = 0 ]; then echo "atla=1" >> "$GITHUB_OUTPUT"; fi
       - uses: astral-sh/setup-uv@v7
         if: steps.kontrol.outputs.atla != '1'
         with:
@@ -200,6 +209,6 @@ jobs:
           [ -d raporlar/portfoy ] || exit 0  # rapor yazılmadı (ILK_HAFTA öncesi ya da kanal raporları eksik)
           git add raporlar/portfoy/
           git diff --cached --quiet && exit 0
-          git commit -m "Portföy raporu ($(date -u -d '7 days ago' +%G-H%V))"
+          git commit -m "Portföy raporu"
           for i in 1 2 3 4 5; do git push && break; git pull --rebase; sleep $((i * 5)); done
           git push

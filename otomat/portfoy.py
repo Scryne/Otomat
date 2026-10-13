@@ -26,11 +26,11 @@ import yaml
 
 from otomat import kanal
 from otomat.ayarlar import KOK
+from otomat.rapor import OLDURME  # Faz 8, kanal başına (K-14); tek tanım rapor.py'de
 
 PORTFOY = KOK / "raporlar" / "portfoy"
 IS_AKISI = KOK / ".github" / "workflows" / "gunluk.yml"
 ILK_HAFTA = (2026, 41)  # portföy raporu bu haftadan başlar (hikâye formatının ilk tam haftası)
-OLDURME = {"views": 1_200_000, "abone": 200, "gun": 56}  # Faz 8, kanal başına (K-14)
 SINIR = {"neuron_gun": 10_000, "buffer_30_gun": 3_000, "api_gun": 10_000, "actions_ay": 2_000}
 API_VIDEO, API_ALTYAZI, API_KOSU = 50, 400, 10
 REPO = "Scryne/Otomat"
@@ -67,6 +67,20 @@ def _kosu_gunu(r: dict) -> str:
     return r.get("kosu", r["tarih"])
 
 
+def _api_gunu(r: dict) -> str:
+    """YouTube Data API kotası Pasifik gece yarısında sıfırlanır: 06:17 UTC koşusu bir önceki PT gününe düşer.
+    `kosu_ani` olmayan eski kayıtta koşu günü (UTC)."""
+    if not (an := r.get("kosu_ani")):
+        return _kosu_gunu(r)
+    try:
+        from zoneinfo import ZoneInfo
+
+        pt = ZoneInfo("America/Los_Angeles")
+    except Exception:  # noqa: BLE001 — Windows'ta tzdata yoksa yaz saati yaklaşığı
+        pt = dt.timezone(dt.timedelta(hours=-7))
+    return dt.datetime.fromisoformat(an).astimezone(pt).date().isoformat()
+
+
 def _neuron(r: dict) -> int:
     return r.get("neuron", 0) + sum(d.get("neuron", 0) for d in r.get("dusen_hikayeler", []))
 
@@ -78,14 +92,16 @@ def _api_birimi(r: dict) -> int:
 
 
 def ilk_public(k: kanal.Kanal) -> dt.date | None:
-    """Kanalın şimdiki formatının ilk yayın günü: geri çekilmemiş, kanala çıkmış en erken video (K-14 sayacı)."""
+    """Kanalın şimdiki formatının ilk yayın günü: format döneminden (`donem`) beri geri çekilmemiş, kanala çıkmış en
+    erken video (K-14 sayacı). Orbit 10-13'te genel kitleye geçti: çocuk dönemi videoları sayacı başlatmaz."""
     if not k.durum.exists():
         return None
     db = sqlite3.connect(f"file:{k.durum.as_posix()}?mode=ro", uri=True)
     try:
         an = db.execute(
             "SELECT min(yayin_ani) FROM secimler WHERE video_id IS NOT NULL"
-            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen) AND substr(yayin_ani, 1, 10) >= ?",
+            (k.donem,),
         ).fetchone()[0]
     finally:
         db.close()
@@ -105,8 +121,8 @@ def kanal_ozeti(k: kanal.Kanal, yil: int, hafta: int) -> dict:
     gunluk_api: dict[str, int] = {}
     for r in kosu:
         gunluk_neuron[_kosu_gunu(r)] = gunluk_neuron.get(_kosu_gunu(r), 0) + _neuron(r)
-        gunluk_api[_kosu_gunu(r)] = gunluk_api.get(_kosu_gunu(r), 0) + _api_birimi(r)
-    for gun in {_kosu_gunu(r) for r in kosu}:
+        gunluk_api[_api_gunu(r)] = gunluk_api.get(_api_gunu(r), 0) + _api_birimi(r)
+    for gun in {_api_gunu(r) for r in kosu}:
         gunluk_api[gun] += API_KOSU
     return {
         "id": k.id,
@@ -295,13 +311,16 @@ def olustur(yil: int, hafta: int, ozetler: list[dict], dakika: dict[str, int] | 
 
 
 def bekleyen(bugun: dt.date) -> tuple[int, int] | None:
-    """Biten son haftanın portföy raporu yoksa ve kayıtlı her kanalın haftalık raporu yazıldıysa (yıl, hafta)."""
-    yil, hafta, _ = (bugun - dt.timedelta(days=7)).isocalendar()
-    if (yil, hafta) < ILK_HAFTA or dosya(yil, hafta).exists():
-        return None
-    ozetler = [kanal_ozeti(k, yil, hafta) for k in aktif_kanallar()]
-    hazir = all(o["rapor_var"] or not o["kayit_var"] for o in ozetler) and any(o["kayit_var"] for o in ozetler)
-    return (yil, hafta) if hazir else None
+    """Son 4 haftadan portföy raporu olmayan ve kayıtlı her kanalın haftalık raporu yazılmış en eski hafta (yıl,
+    hafta). Eskiden yalnız hemen önceki haftaya bakılıyordu: o hafta kaçarsa rapor sonsuza dek eksik kalıyordu."""
+    for geri in range(4, 0, -1):
+        yil, hafta, _ = (bugun - dt.timedelta(days=7 * geri)).isocalendar()
+        if (yil, hafta) < ILK_HAFTA or dosya(yil, hafta).exists():
+            continue
+        ozetler = [kanal_ozeti(k, yil, hafta) for k in aktif_kanallar()]
+        if all(o["rapor_var"] or not o["kayit_var"] for o in ozetler) and any(o["kayit_var"] for o in ozetler):
+            return yil, hafta
+    return None
 
 
 def yaz(yil: int, hafta: int) -> Path:

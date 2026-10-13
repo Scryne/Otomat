@@ -21,6 +21,7 @@ kategori = "1"  # Film & Animation
 sir_eki = "_UZAY"  # YT_TOKEN_JSON_UZAY
 buffer_kanal_id = "6ac549856a5c39ccb634a0b1"  # Buffer GraphQL kanal kimliği (2026-10-06)
 mfk = false
+donem = "2026-10-15"  # genel kitle formatının ilk yayın günü (K-24); öncesi çocuk dönemi, ödül ve K-14'e girmez
 ornekler = ""
 kaliplar = ["karakter", "sorun", "ders", "zitlik"]
 stil = """Nineteenth-century wood engraving illustration, fine cross-hatched ink lines, muted sepia and ochre wash with

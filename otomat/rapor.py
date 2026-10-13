@@ -25,14 +25,32 @@ def dosya(yil: int, hafta: int) -> Path:
     return RAPORLAR / f"{yil}-H{hafta:02d}.md"
 
 
+GERIYE_HAFTA = 4  # bu kadar eski eksik rapor da yazılır
+ANALITIK_YENIDEN_GUN = 14  # analitiksiz yazılan rapor hafta bitiminden bu kadar gün içinde yeniden denenir
+
+
+def _analitiksiz(yil: int, hafta: int) -> bool:
+    try:
+        sayilar = json.loads(dosya(yil, hafta).with_suffix(".json").read_text(encoding="utf-8"))
+        return bool(sayilar.get("analitik_hatasi"))
+    except (OSError, ValueError):
+        return False
+
+
 def bekleyen(bugun: dt.date) -> tuple[int, int] | None:
-    """Biten son haftanın raporu henüz yazılmadıysa (yıl, hafta). Pazartesi koşusu pist dolu diye atlanırsa rapor
-    ertesi koşuda yazılır (önceden yalnız pazartesi deneniyordu, o gün koşu yoksa hafta raporsuz kalıyordu). O hafta
-    hiç koşu kaydı olmayan kanal (henüz açılmamış) için rapor beklenmez."""
-    yil, hafta, _ = (bugun - dt.timedelta(days=7)).isocalendar()
-    if dosya(yil, hafta).exists():
-        return None
-    return (yil, hafta) if _jsonl(RAPORLAR / "gunluk.jsonl", *hafta_araligi(yil, hafta)) else None
+    """Yazılması gereken en eski hafta (yıl, hafta): biten son GERIYE_HAFTA haftadan raporu olmayan, ya da analitik
+    alınamadan yazılmış ve hâlâ yeniden denenebilecek olan. Pazartesi koşusu pist dolu diye atlanırsa rapor ertesi
+    koşuda yazılır; eskiden yalnız hemen önceki haftaya bakılıyordu (o hafta kaçarsa sonsuza dek eksik kalıyordu) ve
+    analitiksiz rapor bir daha yazılmıyordu. O hafta hiç koşu kaydı olmayan kanal için rapor beklenmez."""
+    for geri in range(GERIYE_HAFTA, 0, -1):
+        yil, hafta, _ = (bugun - dt.timedelta(days=7 * geri)).isocalendar()
+        bas, son = hafta_araligi(yil, hafta)
+        if dosya(yil, hafta).exists():
+            if not (_analitiksiz(yil, hafta) and bugun <= son + dt.timedelta(days=ANALITIK_YENIDEN_GUN)):
+                continue
+        if _jsonl(RAPORLAR / "gunluk.jsonl", bas, son):
+            return yil, hafta
+    return None
 
 
 def _sayi(n: float) -> str:
@@ -57,16 +75,22 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
             (bas.isoformat(), son.isoformat()),
         )
     }
-    tamam = [k for k in kosular if k["durum"] == "tamam"]
+    tamam_hepsi = [k for k in kosular if k["durum"] == "tamam"]
+    # aynı slot iki kez "tamam" yazılabiliyor (Plan B'ye düşen video sonraki koşuda hazır üretimle kanala çıktı):
+    # üretilen video slot başına bir kez sayılır, harcanan neuron ise her koşunun kendi gerçek harcaması
+    tamam = list({k["tarih"]: k for k in tamam_hepsi}.values())
     dusen = [k for k in kosular if k["durum"] != "tamam"]
-    yuklenen = [t for t, s in secim.items() if s[3]]
+    cekilen = {v for (v,) in db.execute("SELECT video_id FROM geri_cekilen")}
+    yuklenen = [t for t, s in secim.items() if s[3] and s[3] not in cekilen]
+    kosu_gunu = {k.get("kosu", k["tarih"]) for k in kosular}
     s = [
         f"# Haftalık rapor: {yil} / hafta {hafta} ({bas.isoformat()} – {son.isoformat()})",
         "",
         "## Üretim",
         "",
         f"Üretilen **{len(tamam)}** · düşen **{len(dusen)}** · kanala ulaşan **{len(yuklenen)}** "
-        f"(koşu kaydı {len(kosular)}/7 gün; mod: {', '.join(sorted({k['mod'] for k in kosular})) or '—'})",
+        f"(koşu kaydı {len(kosu_gunu)}/7 gün, {len(kosular)} satır; "
+        f"mod: {', '.join(sorted({k['mod'] for k in kosular})) or '—'})",
         "",
     ]
     if kosular:
@@ -80,7 +104,7 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
             durum = {"tamam": "✅", "kota": "⏸ kota"}.get(k["durum"], "❌ " + k.get("hata", "")[:80])
             s.append(f"| {k['tarih']} | {durum} | {konu} | {kalip} | {baslik} | {vid or '—'} |")
         s.append("")
-    neuron = [k["neuron"] for k in tamam if "neuron" in k]
+    neuron = [k["neuron"] for k in tamam_hepsi if "neuron" in k]
     dusen_hikaye = [d for k in kosular for d in k.get("dusen_hikayeler", [])]
     dusen_neuron = sum(d.get("neuron", 0) for d in dusen_hikaye)
     if neuron or dusen_neuron:  # hikâye motoru: Cloudflare bedava kotası günde 10.000, iki kanal paylaşır

@@ -130,7 +130,13 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
 
 
 def _git(*arg: str, cwd: Path | None = None, env: dict | None = None) -> None:
-    subprocess.run(["git", *KIMLIK, *arg], cwd=cwd, env=env, check=True, capture_output=True, text=True)
+    try:
+        subprocess.run(["git", *KIMLIK, *arg], cwd=cwd, env=env, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:  # capture_output yüzünden hata yalnız "exit status 1" görünüyordu
+        raise BufferHatasi(f"git {arg[0]}: {(e.stderr or e.stdout or '').strip()[-300:]}") from e
+
+
+PUSH_DENEME = 4
 
 
 def _site(islem) -> None:
@@ -150,7 +156,17 @@ def _site(islem) -> None:
         _git("add", "-A", cwd=kopya, env=env)
         if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=kopya).returncode:
             _git("commit", "-m", mesaj, cwd=kopya, env=env)
-            _git("push", cwd=kopya, env=env)
+            # iki kanal işi aynı anda aynı repoya yazıyor: ikinci push non-fast-forward'la reddediliyordu (Plan B'ye
+            # düşüyordu); dosyalar kanal önekli olduğu için rebase çakışmaz
+            for i in range(PUSH_DENEME):
+                try:
+                    _git("push", cwd=kopya, env=env)
+                    break
+                except BufferHatasi:
+                    if i == PUSH_DENEME - 1:
+                        raise
+                    _git("pull", "--rebase", cwd=kopya, env=env)
+                    time.sleep(3 * (i + 1))
 
 
 def medya_koy(video: Path, ad: str, bekle_sn: int = 600) -> str:

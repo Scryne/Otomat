@@ -172,7 +172,8 @@ def test_sahne_cizimi_kotada_kuyruktakileri_iptal_eder(tmp_path, monkeypatch):
     monkeypatch.setattr(uretim, "PARALEL", 1)
     with pytest.raises(cf.KotaHatasi):
         uretim.sahneleri_ciz([str(i) for i in range(6)], tmp_path, 0)
-    assert baslayan == ["0"]  # ex.map kalan 5 isteği yine gönderiyordu
+    # ex.map kalan 5 isteği yine gönderiyordu; şimdi en çok işçinin o an aldığı bir iş daha başlar
+    assert baslayan[0] == "0" and len(baslayan) <= 2
 
 
 def test_durum_yeniden_cizimi_yazisiz_ister_sonraki_degisimin_penceresine_tasmaz(tmp_path, monkeypatch):

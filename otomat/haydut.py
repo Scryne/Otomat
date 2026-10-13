@@ -15,6 +15,8 @@ import math
 import random
 import sqlite3
 
+from otomat import kanal
+
 PENCERE_GUN = 56  # posteriora giren ödüllerin yaşı
 KOMSU_GUN = 14  # ödül sırası bu yakınlıktaki videolara göre
 AGIRLIK = {"engaged_views": 0.7, "ort_izlenme_yuzde": 0.3}
@@ -69,18 +71,21 @@ def _sira(x: float, digerleri: list[float]) -> float:
 
 
 def oduller(db: sqlite3.Connection, bugun: dt.date) -> list[dict]:
-    """Ölçülmüş her video için ödül; komşusu olmayan video (ilk video) ödülsüz kalır."""
-    bas = (bugun - dt.timedelta(days=PENCERE_GUN + KOMSU_GUN)).isoformat()
+    """Ölçülmüş her video için ödül; komşusu olmayan video (ilk video) ödülsüz kalır. Kanalın format döneminden
+    (`donem`) önceki ve geri çekilen videolar ne ödül alır ne komşu olur: Orbit'in 0 izlenmeli çocuk dönemi genel
+    kitle formatının kollarını aşağı çekiyordu. Aynı video iki seçim satırında olsa da bir kez sayılır."""
+    bas = max((bugun - dt.timedelta(days=PENCERE_GUN + KOMSU_GUN)).isoformat(), kanal.aktif().donem)
     satirlar = db.execute(
         "SELECT s.konu, s.kalip, o.video_id, o.yayin_gunu, o.engaged_views, o.ort_izlenme_yuzde "
-        "FROM secimler s JOIN olcumler o ON o.video_id = s.video_id WHERE o.yayin_gunu >= ? ORDER BY o.yayin_gunu",
+        "FROM secimler s JOIN olcumler o ON o.video_id = s.video_id WHERE o.yayin_gunu >= ?"
+        " AND o.video_id NOT IN (SELECT video_id FROM geri_cekilen) ORDER BY o.yayin_gunu",
         (bas,),
     ).fetchall()
-    videolar = [
-        {"konu": k, "kalip": kl, "video_id": v, "gun": dt.date.fromisoformat(g), "engaged_views": e,
-         "ort_izlenme_yuzde": y}
+    videolar = list({
+        v: {"konu": k, "kalip": kl, "video_id": v, "gun": dt.date.fromisoformat(g), "engaged_views": e,
+            "ort_izlenme_yuzde": y}
         for k, kl, v, g, e, y in satirlar
-    ]  # fmt: skip
+    }.values())  # fmt: skip
     sonuc = []
     sinir = bugun - dt.timedelta(days=PENCERE_GUN)
     for v in videolar:

@@ -251,8 +251,10 @@ def test_mfk_kanalinda_eski_videolar_cocuk_icerigi_sayilmaz(kanal_sec, monkeypat
             return _Calistir({})
 
     assert marka.eski_videolari_ayir(_Video()) == ["eski1", "eski2"]
-    assert all(p == "status" and b["status"] == {"privacyStatus": "private", "selfDeclaredMadeForKids": False}
-               for p, b in guncellenen)  # fmt: skip
+    # tam gövde (10-13 denetimi): kısmi status embeddable/publicStatsViewable/license'ı varsayılana çekiyordu
+    assert all(p == "status" and b["status"]["privacyStatus"] == "private"
+               and b["status"]["selfDeclaredMadeForKids"] is False and b["status"]["publicStatsViewable"] is True
+               and b["status"]["license"] == "youtube" for p, b in guncellenen)  # fmt: skip
 
 
 def test_kabul_videoyu_ffprobesuz_okur(tmp_path):
