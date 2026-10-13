@@ -406,6 +406,41 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     yeniden toplanır; 7 gün sonra Earth'le kıyas.
   - Kota: bu oturumun spike'ları ve 10-12 21:00 elle koşusu kayan pencerede 10.000'i doldurdu (18:30 UTC). 10-14
     sabah koşusu pistin 3. günü için kotaya takılırsa alarm çalmaz; Orbit'in boşalan 10-15 slotu takılırsa çalar.
+- **Tam denetim (2026-10-13 akşam, Scryne: "eksikliklerin ve hataların tamamını çöz"):** dört paralel denetim
+  (orkestrasyon/workflow, hikâye hattı, yayın/analitik/haydut, canlı veri tutarlılığı) ~60 bulgu; doğrulananlar
+  düzeltildi, her biri için düzeltme öncesi davranışı reddeden test (`tests/test_denetim_*.py`; 148 → 183 test).
+  - Hikâye hattı (`d3631a5`): cast `{name, look}` (Earth'te "Ad, tarif" geliyordu, karakter tarifi hiçbir sahne
+    istemine girmiyordu); sayı kapısı tam sayı ("19" "1950"den geçiyordu), ad kapısı kısa adı tam kelime arar, gün/ay
+    muaf; başlık uzunluğu ve hakaret render'dan önce; uzun kaynakta son da modele gider; Wikipedia 5xx/ağ hatası
+    yeniden denenir ve hikâyeyi havuzdan düşürmez; cf.py kilitli neuron sayacı, kopan bağlantı, 401/403 denenmez,
+    güven 0-1; sahne çizimi kota/filtrede kuyruğu iptal eder; görünüş denetimi OCR'dan önce, yeniden çizim yazısız;
+    render hatasında ffmpeg kapanır; müzik indirmesi mp3 başlığıyla doğrulanır; kabul kaynak atfını türüne göre arar.
+  - Yayın/orkestrasyon (`ffd4413`, `3e51c27`): slot "son videonun ertesi günü" değil ilk boş gün; pist denetimi
+    planlaması düştüğü kaydedilen (`planlanamayan`) videoyu yeniden planlar, kanalda kaybolanı ve elle çekileni
+    alarm yapar; token düşükse üretime girilmez; uzak slot üst üste iki koşu düşerse alarm; geçmişe düşen yayın anı
+    hemen public; altyazılar dil başına; çeviri kotada kalan dilleri denemez ve atlananı raporlar; çeviri onarımı
+    (`350737e`) çevirisiz planlanan videonun eksik dillerini sonraki koşuda tamamlar (10-15 Earth: 4 dil kotaya
+    takılmıştı).
+  - Analitik/rapor/Buffer/workflow (`481f9d3`): kanal `donem` (Earth 10-10, Orbit 10-15): haydut ödülleri ve K-14
+    sayacı format döneminden (Orbit'in çocuk dönemi kolları kirletmesin; **Orbit K-14 karar günü buna göre kayar**);
+    satırsız analitik yanıtı bir haftadan önce kalıcı sıfır yazılmaz; rapor aynı slotu bir kez sayar, geri çekileni
+    "ulaşan" saymaz, son 4 haftanın eksiğini ve analitiksiz yazılanı yeniden yazar; Buffer site push'u rebase ile
+    yeniden dener, 30 günlük istek sınırına yaklaşınca alarm, Buffer düşünce hikâye harcanmaz (hazır üretim aynı
+    videoyu yayınlar); workflow'ta sırlar yalnız Üret adımında, ubuntu-24.04 sabit (ubuntu-latest 10-19'da 26'ya
+    geçiyor), 11:37 ve 21:37 yedek cron, artifact adı deneme numaralı ve 4 gün (depo 360 MB'a çıkmıştı).
+  - Kalite: onarım istemi rivayeti "reportedly" ile işaretler, desteksiz sıfatı siler; hakem işaretli rivayeti kabul
+    eder (`f8d7074`; 10-11/12 düşüşlerinin çoğu bu iki türdü).
+  - Karakter referansı (`606f077`): flux-2-klein `input_image_0..3` (+5,37 neuron/görsel); ana karakterin ilk karesi
+    sonraki sahnelerine referans. `referans = true` S14 (`spikes/s14_referans.py`) ölçülene kadar kapalı.
+  - Bağımsız inceleme (diff + kabul kriteri, bağlamı görmemiş alt ajan): 3 yüksek, 3 orta bulgu, hepsi düzeltildi.
+    Yayın anı geçmiş planlanamamış video da onarılır ve pist doluyken de bakım koşusu yapılır (iş var mı adımı
+    `planlanamayan`a bakar); onarım üretim klasörü varsa metadata + yerelleştirme + altyazıyla; çeviri onarımı
+    `ceviri_onarim` tablosuyla bir kez, tutmayan deneme de sayılır; Buffer gönderisi açılıp sonucu okunamazsa
+    (`GonderiBelirsiz`) hikâye harcanır (ikinci kopya gönderilmez); buffer/api'de Plan B paketi konmaz (otomatik
+    yeniden yayınla çift çıkardı); artifact penceresi 12 koşu (~3 gün = pist). 187 test.
+  - Bilerek açık bırakılanlar: OCR'ın son karede bıraktığı yazı kabulü durdurmaz (daha az yazılı kare seçilir);
+    render hatası hikâye değil altyapı hatası sayılır (hikâye harcanmaz, alarm); iş 45 dk zaman aşımına düşerse
+    durum commit'i kaybolabilir (Buffer'a gitmiş video ile; çok nadir, koşu ~6 dk).
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri

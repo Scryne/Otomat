@@ -282,42 +282,90 @@ def rapor_adimi(db, bugun: dt.date, yt, ya, kayit: dict, alarmlar: list[str]) ->
         alarmlar.append("**Haftalık rapor yazılamadı:**\n\n" + _hata(e))
 
 
-def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
-    """Planlı videolar kanalda gerçekten planlı mı? Buffer yükleyip `duzenle` düştüğünde video private ve plansız
-    kalıyordu, slot dolu sayıldığı için hiçbir koşu onarmıyordu (yayın günü kaybolurdu). Yalnız planlaması düştüğü
-    kaydedilen (`planlanamayan`) video yeniden planlanır; başka bir plansız private video elle çekilmiş olabilir, ona
-    dokunulmaz, alarm olur. Kanalda bulunmayan video alarm olur. Maliyet: 50 video başına 1 kota birimi."""
+def uretim_klasoru(anahtar: str) -> Path | None:
+    """Hikâyenin bu ya da önceki koşulardaki (artifact) üretim klasörü, en yenisi."""
+    for meta_yolu in uretim_dosyalari("meta.json"):
+        try:
+            if json.loads(meta_yolu.read_text(encoding="utf-8"))["paket"]["anahtar"] == anahtar:
+                return meta_yolu.parent
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+    return None
+
+
+def _yeniden_yayinla(video_id: str, yayin_ani: dt.datetime, dizin: Path | None, yt) -> list[str]:
+    """Planlaması düşen videonun metadata'sı, planı (geçmişse hemen public), yerelleştirmesi ve altyazıları; üretim
+    klasörü yoksa yalnız plan (başlık ve açıklamayı Buffer yazmıştı). Yüklenemeyen altyazılar döner."""
     from otomat.yayin import youtube
 
-    satirlar = [
-        (v, dt.datetime.fromisoformat(y).astimezone(dt.UTC))
-        for v, y in db.execute(
-            "SELECT video_id, yayin_ani FROM secimler WHERE video_id IS NOT NULL"
-            " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
-        )
-    ]
-    satirlar = [(v, y) for v, y in satirlar if y > simdi]
-    if not satirlar:
+    if dizin is None:
+        youtube.planla(video_id, yayin_ani, yt=yt)
+        return []
+    meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
+    yerel_yol = dizin / "yerel.json"
+    yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))["yerel"] if yerel_yol.exists() else None
+    youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
+    dusen = []
+    for srt in sorted(dizin.glob("*.srt")):
+        try:
+            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
+        except Exception as e:  # noqa: BLE001
+            dusen.append(f"{srt.stem}: {type(e).__name__}"[:120])
+    return dusen
+
+
+def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
+    """Planlı videolar kanalda gerçekten planlı mı? Buffer yükleyip `duzenle` düştüğünde video private ve plansız
+    kalıyordu, slot dolu sayıldığı için hiçbir koşu onarmıyordu (yayın günü kaybolurdu).
+    - Planlaması düştüğü kaydedilen (`planlanamayan`) video, yayın anı geçmiş olsa da onarılır: üretim klasörü
+      artifact'ta duruyorsa metadata, plan, yerelleştirme ve altyazıyla; yoksa yalnız planla. Geçmiş an hemen public.
+      Kanalda planlı/public bulunan kayıt çözülmüş sayılır.
+    - Başka bir plansız private video elle çekilmiş olabilir: ona dokunulmaz, alarm olur. Kaybolan video alarm olur.
+    Maliyet: 50 video başına 1 kota birimi (onarımda videos.update 50 + altyazı başına 400)."""
+    from otomat.yayin import youtube
+
+    cekilen = {v for (v,) in db.execute("SELECT video_id FROM geri_cekilen")}
+    planli = {
+        v: dt.datetime.fromisoformat(y).astimezone(dt.UTC)
+        for v, y in db.execute("SELECT video_id, yayin_ani FROM secimler WHERE video_id IS NOT NULL")
+        if v not in cekilen
+    }
+    yakin = {v: y for v, y in planli.items() if y > simdi}
+    bekleyen = {
+        v: dt.datetime.fromisoformat(y).astimezone(dt.UTC)
+        for v, y in db.execute("SELECT video_id, yayin_ani FROM planlanamayan")
+        if v not in cekilen
+    }
+    if not yakin and not bekleyen:
         return
     try:
-        durumlar = youtube.durumlar([v for v, _ in satirlar], yt)
-        bekleyen = {v for (v,) in db.execute("SELECT video_id FROM planlanamayan")}
-        onarilan, kayip, plansiz = [], [], []
-        for v, y in satirlar:
+        durumlar = youtube.durumlar(sorted(set(yakin) | set(bekleyen)), yt)
+        anahtar = dict(db.execute("SELECT video_id, anahtar FROM secimler WHERE video_id IS NOT NULL"))
+        onarilan, kayip, plansiz, cozulen, eksik_altyazi = [], [], [], [], []
+        for v, y in sorted(bekleyen.items()):
             if (st := durumlar.get(v)) is None:
                 kayip.append(v)
             elif st.get("privacyStatus") == "private" and not st.get("publishAt"):
-                if v in bekleyen:
-                    youtube.planla(v, y, yt=yt)
-                    onarilan.append(v)
-                else:
-                    plansiz.append(v)
-        if onarilan:
-            db.executemany("DELETE FROM planlanamayan WHERE video_id = ?", [(v,) for v in onarilan])
+                eksik_altyazi += _yeniden_yayinla(v, planli.get(v, y), uretim_klasoru(anahtar.get(v, "")), yt)
+                onarilan.append(v)
+            else:
+                cozulen.append(v)  # planlı ya da public: başka bir yoldan çözülmüş
+        for v in yakin:
+            if v in bekleyen:
+                continue
+            if (st := durumlar.get(v)) is None:
+                kayip.append(v)
+            elif st.get("privacyStatus") == "private" and not st.get("publishAt"):
+                plansiz.append(v)
+        if onarilan or cozulen:
+            db.executemany("DELETE FROM planlanamayan WHERE video_id = ?", [(v,) for v in onarilan + cozulen])
             db.commit()
-        kayit["pist"] = {"denetlenen": len(satirlar), "onarilan": onarilan, "kayip": kayip, "plansiz": plansiz}
+        kayit["pist"] = {"denetlenen": len(set(yakin) | set(bekleyen)), "onarilan": onarilan, "kayip": kayip,
+                         "plansiz": plansiz}  # fmt: skip
         if onarilan:
-            alarmlar.append(f"**Plansız kalmış video yeniden planlandı** (bilgi): {', '.join(onarilan)}")
+            alarmlar.append(f"**Plansız kalmış video yeniden yayına kondu** (bilgi): {', '.join(onarilan)}")
+        if eksik_altyazi:
+            alarmlar.append("**Onarılan videoda altyazı yüklenemedi:** " + "; ".join(eksik_altyazi))
         if plansiz:
             alarmlar.append(
                 f"**Planlı görünen video kanalda private ve plansız:** {', '.join(plansiz)}. Elle çekildiyse "
@@ -329,26 +377,30 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
         alarmlar.append("**Pist denetimi yapılamadı** (üretim sürdü):\n\n" + _hata(e))
 
 
-CEVIRI_ONARIM = 1  # koşu başına en çok bu kadar planlı videonun eksik çevirisi tamamlanır (Cloudflare + 400 birim/dil)
+CEVIRI_ONARIM = 1  # koşu başına en çok bu kadar video denenir (Cloudflare çevirisi + 400 birim/dil)
 
 
-def ceviri_onarimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
+def ceviri_onarimi(db, yt, kayit: dict, alarmlar: list[str]) -> None:
     """Çevirisi atlanmış (kota, bozuk çıktı) ve hâlâ planlı videonun eksik dillerini tamamlar: üretim klasörü bu ya da
     önceki koşuların artifact'ında durur; hazirla yalnız eksik dilleri çevirir, yeni diller YouTube'a eklenir. 10-15
-    Earth videosu dört dilin dördü kotaya takılıp çevirisiz planlanmıştı ve hiçbir koşu tamamlamıyordu."""
+    Earth videosu dört dilin dördü kotaya takılıp çevirisiz planlanmıştı ve hiçbir koşu tamamlamıyordu. Onarılan
+    video `ceviri_onarim`'a yazılır: artifact'taki eski yerel.json yine "atlanan" dese de ikinci kez onarılmaz.
+    Çeviri bu koşuda tutmasa da deneme sayılır (kota doluyken her koşu bütün videoları denemesin)."""
     from otomat.yayin import youtube
 
+    simdi = dt.datetime.now(dt.UTC)  # üretimden sonra çalışır: koşunun başındaki an 45 dk eskimiş olabilir
+    yapilan = {v for (v,) in db.execute("SELECT video_id FROM ceviri_onarim")}
     planli = {
         a: v
         for a, v, y in db.execute(
             "SELECT anahtar, video_id, yayin_ani FROM secimler WHERE video_id IS NOT NULL"
             " AND video_id NOT IN (SELECT video_id FROM geri_cekilen)"
         )
-        if dt.datetime.fromisoformat(y).astimezone(dt.UTC) > simdi + dt.timedelta(minutes=30)
+        if v not in yapilan and dt.datetime.fromisoformat(y).astimezone(dt.UTC) > simdi + dt.timedelta(minutes=30)
     }
-    onarilan = []
+    deneme, onarilan = 0, []
     for yerel_yol in uretim_dosyalari("yerel.json"):
-        if len(onarilan) >= CEVIRI_ONARIM:
+        if deneme >= CEVIRI_ONARIM:
             break
         try:
             yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))
@@ -357,6 +409,7 @@ def ceviri_onarimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str])
             continue
         if not yerel.get("atlanan") or (video_id := planli.pop(anahtar, None)) is None:
             continue
+        deneme += 1
         try:
             sonuc = hazirla(yerel_yol.parent)
             yeni = [d for d in yerel["atlanan"] if d in sonuc["yerel"]]
@@ -366,10 +419,11 @@ def ceviri_onarimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str])
             for dil in yeni:
                 srt = yerel_yol.parent / f"{dil}.srt"
                 youtube.altyazi_ekle(video_id, dil, srt.read_text(encoding="utf-8"), yt=yt)
+            db.execute("INSERT OR REPLACE INTO ceviri_onarim VALUES (?, ?)", (video_id, simdi.date().isoformat()))
+            db.commit()
             onarilan.append({"video_id": video_id, "diller": yeni})
         except Exception as e:  # noqa: BLE001
             alarmlar.append(f"**Eksik çeviri tamamlanamadı** (`{video_id}`, üretim sürdü):\n\n" + _hata(e))
-            break
     if onarilan:
         kayit["ceviri_onarimi"] = onarilan
 
@@ -439,21 +493,32 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         cf.NEURON["toplam"] = 0.0
     diller = hazirla(dizin)
     video_id = None
+    belirsiz = False
     if mod == "api":
         video_id = yayinla_api(dizin, yayin_ani)
     elif mod == "buffer":
+        from otomat.yayin import buffer
+
         try:
             video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar, db=db)
+        except buffer.GonderiBelirsiz as e:
+            belirsiz = True
+            alarmlar.append(
+                "**Buffer gönderisi açıldı ama sonucu okunamadı**: video kanala yine de yüklenmiş olabilir "
+                "(Studio'da bak; private ve plansızsa planla ya da sil). Aynı video ikinci kez gönderilmesin diye "
+                "hikâye harcandı, slot sonraki koşuda yeni bir hikâyeyle dolar:\n\n" + _hata(e)
+            )
         except Exception as e:  # noqa: BLE001
             alarmlar.append(
-                "**Buffer yayını düştü**: video Plan B paketine kondu, sonraki koşu aynı videoyu yeniden yayınlamayı "
-                "dener (elle yükleme gerekmez):\n\n" + _hata(e)
+                "**Buffer yayını düştü** (gönderi açılmadı): sonraki koşu aynı videoyu kota harcamadan yeniden "
+                "yayınlamayı dener:\n\n" + _hata(e)
             )
-    if video_id is None:
+    if video_id is None and mod == "teslim":
         kayit["teslim"] = str(teslime_koy(dizin, gun, paket.anahtar).relative_to(KOK))
     # buffer/api'de kanala çıkamayan hikâye harcanmaz: sonraki koşunun hazır üretimi (artifact) aynı videoyu kota
-    # harcamadan yeniden yayınlar. Eskiden hikâye "üretildi" sayılıyor, slot yeni bir hikâyeyle yeniden üretiliyordu.
-    if video_id is not None or mod == "teslim":
+    # harcamadan yeniden yayınlar (eskiden slot yeni bir hikâyeyle yeniden üretiliyordu); Plan B paketine de konmaz,
+    # elle yüklenip otomatik de yayınlanırsa iki kez çıkardı. Gönderi belirsizse video kanalda olabilir: harcanır.
+    if video_id is not None or mod == "teslim" or belirsiz:
         durum.kaydet(db, paket, gun, video_id)
     durum.secim_kaydet(db, gun, paket, kalip, sablon, meta["baslik"], yayin_ani, video_id, secim_logu)
     kayit.update(
@@ -501,8 +566,13 @@ def main() -> None:
     durum.gecmisi_doldur(db, RAPOR)
     if durum.pist_dolu(db, simdi, mod):
         print(f"{bugun.isoformat()}: " + ("pist dolu" if pist else "bugün zaten üretildi") + "; üretim yok.")
-        if rapor.bekleyen(bugun) is not None:  # yalnız rapor: üretim kaydı (gunluk.jsonl) yazılmaz
+        # yalnız bakım: bekleyen rapor ya da planlaması düşmüş video (yayın anı geçse de onarılır); üretim kaydı
+        # (gunluk.jsonl) yazılmaz
+        bakim = pist and durum.planlanamayan_var(db)
+        if rapor.bekleyen(bugun) is not None or bakim:
             yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
+            if bakim and yt is not None:
+                pist_denetimi(db, yt, simdi, genel, alarmlar)
             rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
             alarm_yaz(bugun, alarmlar)
             print(json.dumps(genel, ensure_ascii=False, indent=1))
@@ -564,7 +634,7 @@ def main() -> None:
             if kayit["video_id"] is None:
                 break  # kanala çıkmadı (Plan B): slot boş kalır, aynı slota ikinci video üretilmez
         if HIKAYE and pist and yt is not None:  # üretimden sonra: kota önce yeni videonun
-            ceviri_onarimi(db, yt, simdi, kayitlar[-1] if kayitlar else genel, alarmlar)
+            ceviri_onarimi(db, yt, kayitlar[-1] if kayitlar else genel, alarmlar)
     except Exception as e:
         son = kayitlar[-1] if kayitlar else genel
         if son.get("durum") != "kota":  # kota raporda ayrı sayılır (alarm yine yazılır: yarının slotu boş)

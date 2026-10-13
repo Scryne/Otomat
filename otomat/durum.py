@@ -53,6 +53,11 @@ CREATE TABLE IF NOT EXISTS planlanamayan (
     video_id TEXT PRIMARY KEY,
     yayin_ani TEXT NOT NULL
 );
+-- Eksik çevirisi sonradan tamamlanan videolar (gunluk.ceviri_onarimi bir videoyu bir kez onarır).
+CREATE TABLE IF NOT EXISTS ceviri_onarim (
+    video_id TEXT PRIMARY KEY,
+    tarih TEXT NOT NULL
+);
 -- Ödül penceresi ölçümü: yayın günü + 2 gün (Analytics), bir kez yazılır.
 CREATE TABLE IF NOT EXISTS olcumler (
     video_id TEXT PRIMARY KEY,
@@ -97,7 +102,13 @@ def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, ned
         "INSERT OR REPLACE INTO geri_cekilen (video_id, tarih, neden) VALUES (?, ?, ?)",
         [(v, bugun.isoformat(), neden) for v in video_idler],
     )
+    # geri çekilen video artık onarılacak bir plan değil
+    db.executemany("DELETE FROM planlanamayan WHERE video_id = ?", [(v,) for v in video_idler])
     db.commit()
+
+
+def planlanamayan_var(db: sqlite3.Connection) -> bool:
+    return db.execute("SELECT 1 FROM planlanamayan LIMIT 1").fetchone() is not None
 
 
 def planlanamadi(db: sqlite3.Connection, video_id: str, yayin_ani: dt.datetime | None) -> None:
@@ -206,7 +217,10 @@ if __name__ == "__main__":
     from otomat import rapor
 
     simdi = dt.datetime.now(dt.UTC)
+    db = baglan()
     is_yok = (
-        pist_dolu(baglan(), simdi, os.environ.get("OTOMAT_YAYIN", "teslim")) and rapor.bekleyen(simdi.date()) is None
+        pist_dolu(db, simdi, os.environ.get("OTOMAT_YAYIN", "teslim"))
+        and rapor.bekleyen(simdi.date()) is None
+        and not planlanamayan_var(db)  # planlaması düşmüş video bakım bekliyor
     )
     sys.exit(0 if is_yok else 1)

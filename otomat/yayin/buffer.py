@@ -38,6 +38,11 @@ class BufferHatasi(RuntimeError):
     pass
 
 
+class GonderiBelirsiz(BufferHatasi):
+    """Gönderi açıldı (ya da açılıp açılmadığı bilinmiyor) ama sonucu okunamadı: Buffer videoyu yine de yükleyebilir.
+    Hikâye harcanmış sayılır; aynı video sonraki koşuda yeniden gönderilirse kanalda iki kopyası olurdu."""
+
+
 def anahtar() -> str:
     if k := os.environ.get("BUFFER_API_KEY"):
         return k
@@ -111,21 +116,30 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
             }
         },
     }
-    sonuc = sorgu(GONDER, {"i": girdi}, tekrar=False)["createPost"]
+    try:
+        sonuc = sorgu(GONDER, {"i": girdi}, tekrar=False)["createPost"]
+    except BufferHatasi as e:
+        neden = e.__cause__
+        if isinstance(neden, urllib.error.HTTPError) and neden.code < 500 or neden is None:
+            raise  # Buffer isteği reddetti (4xx ya da GraphQL hatası): gönderi açılmadı
+        raise GonderiBelirsiz(f"createPost yanıtı alınamadı (gönderi açılmış olabilir): {e}") from e
     if "post" not in sonuc:
         raise BufferHatasi(f"createPost: {sonuc.get('message')}")
     post_id = sonuc["post"]["id"]
     son = time.monotonic() + bekle_sn
     while True:
-        p = sorgu(DURUM, {"p": post_id})["post"]
+        try:
+            p = sorgu(DURUM, {"p": post_id})["post"]
+        except BufferHatasi as e:
+            raise GonderiBelirsiz(f"gönderi {post_id} durumu okunamadı: {e}") from e
         if p["status"] == "sent" and p.get("externalLink"):
             if m := re.search(r"(?:v=|youtu\.be/|shorts/)([\w-]{11})", p["externalLink"]):
                 return m[1]
-            raise BufferHatasi(f"video id okunamadı: {p['externalLink']}")
+            raise GonderiBelirsiz(f"gönderi {post_id} gitti ama video id okunamadı: {p['externalLink']}")
         if p["status"] == "error":
             raise BufferHatasi(f"Buffer yayını düştü: {(p.get('error') or {}).get('message')}")
         if time.monotonic() > son:
-            raise BufferHatasi(f"Buffer gönderisi {bekle_sn} sn'de gitmedi (durum: {p['status']})")
+            raise GonderiBelirsiz(f"Buffer gönderisi {post_id} {bekle_sn} sn'de gitmedi (durum: {p['status']})")
         time.sleep(YOKLAMA_SN)
 
 

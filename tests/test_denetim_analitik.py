@@ -151,27 +151,55 @@ def test_site_push_hatasi_stderrle_bildirilir(monkeypatch):
         buffer._site(lambda kopya: "mesaj")
 
 
-def test_buffer_duserse_hikaye_harcanmaz_sonraki_kosu_yeniden_yayinlar(tmp_path, monkeypatch):
+def _buffer_duser(tmp_path, monkeypatch, hata):
+    from otomat.hikaye import kabul
+
     db = durum.baglan(tmp_path / "d.db")
     paket = type("P", (), {"anahtar": "ezop:The Fox", "hash": "h", "kol": "ezop", "tur": "masal"})()
-    meta = {"baslik": "B", "secim": {"kaynak": {}}, "sure_sn": 30, "neuron": 1500, "zaman_sn": {}}
+    klasor = tmp_path / "onceki" / "kosu" / "2026-10-15" / "ezop_The_Fox"
+    klasor.mkdir(parents=True)
+    meta = {"baslik": "B", "secim": {"kaynak": {}, "kalip": "karakter", "sablon": "illustrasyon"}, "sure_sn": 30,
+            "neuron": 1500, "zaman_sn": {}, "paket": {"anahtar": "ezop:The Fox", "hash": "h"}}  # fmt: skip
+    (klasor / "meta.json").write_text(json.dumps(meta), encoding="utf-8")
     monkeypatch.setattr(gunluk, "HIKAYE", True)
+    monkeypatch.setattr(gunluk, "KOK", tmp_path)
     log = {"degisti": [], "odul_sayisi": 0}
-    monkeypatch.setattr(gunluk, "hikaye_uret", lambda *a: (paket, "karakter", "illustrasyon", log, tmp_path, meta))
+    monkeypatch.setattr(gunluk, "hikaye_uret", lambda *a: (paket, "karakter", "illustrasyon", log, klasor, meta))
     monkeypatch.setattr(gunluk, "hazirla", lambda d: {"yerel": {}, "atlanan": [], "kota": False})
 
-    def duser(*a):
-        raise RuntimeError("Buffer 900 sn'de gitmedi")
+    def duser(*a, **k):
+        raise hata
 
     monkeypatch.setattr(gunluk, "yayinla_buffer", duser)
     teslim = []
     monkeypatch.setattr(gunluk, "teslime_koy", lambda d, g, a="": teslim.append(a) or gunluk.KOK / "teslim")
+    monkeypatch.setattr(gunluk, "uretim_dosyalari", lambda ad: [klasor / ad])
+    monkeypatch.setattr(kabul, "denetle", lambda *a: [])
     kayit, alarmlar = {}, []
     an = dt.datetime(2026, 10, 15, 20, tzinfo=dt.UTC)
     gunluk.bir_video([paket], db, an.date(), an, "buffer", kayit, alarmlar)
-    assert kayit["video_id"] is None and teslim == ["ezop:The Fox"]
-    assert durum.taze_mi(db, paket, an.date(), gunluk.HIKAYE_TEKRAR_GUN)  # hazır üretim sonraki koşuda kullanır
-    assert "yeniden yayınlamayı" in alarmlar[0]
+    return db, paket, an, kayit, alarmlar, teslim
+
+
+def test_buffer_duserse_hikaye_harcanmaz_sonraki_kosu_yeniden_yayinlar(tmp_path, monkeypatch):
+    from otomat.yayin import buffer
+
+    db, paket, an, kayit, alarmlar, teslim = _buffer_duser(tmp_path, monkeypatch, buffer.BufferHatasi("Pages 600 sn"))
+    # Plan B paketine konmaz (elle yüklenip otomatik de yayınlanırsa iki kez çıkardı)
+    assert kayit["video_id"] is None and teslim == [] and "yeniden" in alarmlar[0]
+    hazir = gunluk.hazir_uretim([paket], db, an.date())  # sonraki koşu: aynı video kota harcamadan yayına
+    assert hazir is not None and hazir[0] is paket and hazir[5]["paket"]["anahtar"] == "ezop:The Fox"
+
+
+def test_buffer_gonderisi_belirsizse_hikaye_harcanir_ikinci_kopya_gonderilmez(tmp_path, monkeypatch):
+    """Gönderi açılıp zaman aşımına düştüyse Buffer videoyu yine de yükleyebilir: yeniden göndermek iki kopya yapar."""
+    from otomat.yayin import buffer
+
+    hata = buffer.GonderiBelirsiz("gönderi 900 sn'de gitmedi")
+    db, paket, an, kayit, alarmlar, teslim = _buffer_duser(tmp_path, monkeypatch, hata)
+    assert kayit["video_id"] is None and teslim == [] and "Studio" in alarmlar[0]
+    assert not durum.taze_mi(db, paket, an.date(), gunluk.HIKAYE_TEKRAR_GUN)
+    assert gunluk.hazir_uretim([paket], db, an.date()) is None
 
 
 def test_teslim_dosya_adi_hikayeyi_tasir(tmp_path, monkeypatch):

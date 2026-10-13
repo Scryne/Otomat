@@ -83,9 +83,10 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         env:
           GH_TOKEN: ${{ github.token }}
-        # son 8 koşu (4 cron ≈ 2 gün; atlananların artifact'ı yok); yeniden denenen koşunun artifact'ı ayrı adlı
+        # son 12 koşu (4 cron ≈ 3 gün = pist; T+2 videosunun klasörü yayınına kadar bulunsun: çeviri onarımı ve
+        # planlama onarımı ona bakar); yeniden denenen koşunun artifact'ı ayrı adlı
         run: |
-          for id in $(gh run list --workflow gunluk.yml -L 8 --json databaseId --jq '.[].databaseId'); do
+          for id in $(gh run list --workflow gunluk.yml -L 12 --json databaseId --jq '.[].databaseId'); do
             for ad in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts" \
                 --jq ".artifacts[] | select(.expired | not) | .name | select(startswith(\"uretim-$OTOMAT_KANAL-\"))"); do
               gh run download "$id" -n "$ad" -D "calisma/onceki/$ad" 2>/dev/null || true
