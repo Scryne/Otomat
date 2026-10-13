@@ -156,8 +156,8 @@ def test_buffer_duserse_hikaye_harcanmaz_sonraki_kosu_yeniden_yayinlar(tmp_path,
     paket = type("P", (), {"anahtar": "ezop:The Fox", "hash": "h", "kol": "ezop", "tur": "masal"})()
     meta = {"baslik": "B", "secim": {"kaynak": {}}, "sure_sn": 30, "neuron": 1500, "zaman_sn": {}}
     monkeypatch.setattr(gunluk, "HIKAYE", True)
-    monkeypatch.setattr(gunluk, "hikaye_uret", lambda *a: (paket, "karakter", "illustrasyon",
-                                                          {"degisti": [], "odul_sayisi": 0}, tmp_path, meta))  # fmt: skip
+    log = {"degisti": [], "odul_sayisi": 0}
+    monkeypatch.setattr(gunluk, "hikaye_uret", lambda *a: (paket, "karakter", "illustrasyon", log, tmp_path, meta))
     monkeypatch.setattr(gunluk, "hazirla", lambda d: {"yerel": {}, "atlanan": [], "kota": False})
 
     def duser(*a):
