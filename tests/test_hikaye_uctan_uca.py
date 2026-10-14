@@ -127,6 +127,8 @@ def test_uret_gercek_render_ve_karisimla_kabulden_gecer(tmp_path, monkeypatch, e
     assert meta["cumleler"] == SATIRLAR and meta["kanca"] == SATIRLAR[0]
     assert meta["vurgu"] == "orantili"  # Whisper düşünce video yine çıkar
     assert meta["neuron"] == 7 * 156 and meta["mfk"] is False
+    # gerçek panel denetimi gerçek karelerde koştu (dokulu görseller panelsiz: yeniden çizim yok, neuron aynı)
+    assert meta["panel"] == {"ilk": [], "son": [], "yeniden": 0, "cizilen": []}
     assert "wikipedia.org/wiki/Great_Molasses_Flood" in meta["aciklama"] and "Investigations" in meta["aciklama"]
     assert sorted(p.name for p in dizin.glob("sahne_*.jpg")) == [f"sahne_{i}.jpg" for i in range(7)]
     assert not (dizin / "sessiz.mp4").exists()

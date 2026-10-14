@@ -26,7 +26,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from otomat import kanal
 from otomat.ayarlar import KOK
-from otomat.hikaye import cf, hizala, kaynaklar, senaryo, yazi
+from otomat.hikaye import cf, hizala, kaynaklar, panel, senaryo, yazi
 from otomat.ses import Parca, _kokoro
 from otomat.veri import OlguPaketi
 
@@ -313,6 +313,7 @@ ESKI_CIKTILAR = (
     "sahne_*.jpg",
     "sahne_*.tmp",
     "yazili_*.jpg",
+    "panelli_*.jpg",
     "*.srt",
     "yerel.json",
     "meta.json",
@@ -400,6 +401,53 @@ def yazilari_ayikla(istemler: list[str], dizin: Path, taban: int, plan=None) -> 
             kayit["cizilen"].append(i)
         if yeni:
             kayit["son"][i] = yeni
+    return kayit
+
+
+PANEL_YENIDEN = 3  # video başına en çok yeniden çizim (panelli kare)
+PANEL_KARE = 2  # aynı sahne için en çok deneme
+TEK_KARE = "One continuous picture of one place at one moment, edge to edge, with no borders, gutters or insets."
+
+
+def panelsiz_istem(istem: str, dunya: str) -> str:
+    """Panelli karenin yeniden çizim istemi: dünya cümlesi düşer. Panellerin çoğu zaman sıçramalı son sahnede çıktı
+    (dünya "1919 Boston", sahne "Modern summer street"): iki dönemi bir arada isteyen istem iki panele bölünüyordu."""
+    return istem.replace(f" {dunya}", "", 1) + f" {TEK_KARE}" if dunya else f"{istem} {TEK_KARE}"
+
+
+def panelleri_ayikla(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, taban: int, plan=None) -> dict:
+    """Panelli (çizgi roman sayfası gibi bölünmüş) sahne yeni tohumla, dünya cümlesiz istemle yeniden çizilir (sahne
+    başına PANEL_KARE, video başına PANEL_YENIDEN). Yeniden çizim de panelliyse yenisi kalır, `son`a yazılır; video yine
+    çıkar (tek kare için hikâyeyi düşürmek pahalı, Drag Nun emsali). Kayıt meta.json'a: `ilk`, `son`, `yeniden`,
+    `cizilen` (görünüş ve yazı denetimi bu karelere zaten ilk kez bakacak: panel denetimi onlardan önce koşar)."""
+    kayit: dict = {"ilk": [], "son": [], "yeniden": 0, "cizilen": []}
+    tek = [panelsiz_istem(s, sc.dunya) for s in istemler]
+    for i in range(len(istemler)):
+        yol = dizin / f"sahne_{i}.jpg"
+        if not panel.panelli(yol):
+            continue
+        kayit["ilk"].append(i)
+        for deneme in range(1, PANEL_KARE + 1):
+            if kayit["yeniden"] >= PANEL_YENIDEN:
+                break
+            kayit["yeniden"] += 1
+            eski = dizin / f"panelli_{i}.jpg"  # sahne_* değil: kabul ve yarım üretim sahne dosyalarını sayıyor
+            yol.replace(eski)
+            try:
+                yeniden_ciz(tek, i, yol, taban + 10 * i + 3 + 100 * deneme, dizin, plan)
+            except cf.KotaHatasi:
+                eski.replace(yol)  # sonraki koşu senaryoyu sürdürür, bu sahneyi yeniden dener
+                raise
+            except cf.CFHatasi:
+                eski.replace(yol)
+                break
+            eski.unlink()
+            if i not in kayit["cizilen"]:
+                kayit["cizilen"].append(i)
+            if not panel.panelli(yol):
+                break
+        if panel.panelli(yol):
+            kayit["son"].append(i)
     return kayit
 
 
@@ -557,6 +605,8 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     taban = sum(map(ord, paket.anahtar)) % 100_000
     plan = referans_plani(sc)
     gorseller = sahneleri_ciz(istemler, dizin, taban, plan)
+    # önce panel: görünüş ve yazı denetimi son karelere baksın
+    panel_kaydi = panelleri_ayikla(sc, istemler, dizin, taban, plan)
     # önce görünüş, sonra yazı: OCR son kareye bakar (görünüş yeniden çizimi yazıyı geri getirebiliyordu). OCR'ın
     # yeniden çizdiği kare görünüşü bozabilir (yeni tohumda kuyruk geri gelir): o kareler bir kez daha sorulur
     durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban, plan)
@@ -597,6 +647,7 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
         },  # fmt: skip
         "muzik": muzik_adi,
         "yazi": yazi_kaydi,
+        "panel": panel_kaydi,
         "referans": {"kaynak": plan[0], "ad": plan[1], "sahneler": sorted(plan[2])} if plan else None,
         "durum": durum_kaydi,
         "vurgu": "whisper" if gercek else "orantili",

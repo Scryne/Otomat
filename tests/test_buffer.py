@@ -157,6 +157,16 @@ def test_pist_bos_slotlari_doldurur_dolunca_atlar(tmp_path, monkeypatch):
     assert not (tmp_path / "alarm.md").exists()
 
 
+def _bugun_ve_yarin_planli(db) -> None:
+    """Bugünün ve yarının slotu kanalda planlı: koşunun sıradaki slotu pistin uzak günü olur. Yalnız yarını planlamak
+    yetmez: slot "ilk boş gün" (10-13) olduğundan yayın saatinden önce koşan test bugünün slotunu boş görüp alarm
+    bekliyordu (CI akşam koştuğu için görülmedi, sabah yerelde düştü)."""
+    bugun = dt.datetime.now(UTC).date()
+    for g in (0, 1):
+        an = dt.datetime.combine(bugun + dt.timedelta(days=g), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
+        _secim(db, an.date().isoformat(), an.isoformat(), f"v{g}")
+
+
 def test_pist_kota_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path, monkeypatch):
     from otomat.hikaye.cf import KotaHatasi
 
@@ -164,9 +174,7 @@ def test_pist_kota_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path, monkeypatch)
         raise KotaHatasi("kota bitti")
 
     db = durum.baglan(tmp_path / "d.db")
-    bugun = dt.datetime.now(UTC).date()
-    yarin = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
-    _secim(db, yarin.date().isoformat(), yarin.isoformat(), "vyarin")
+    _bugun_ve_yarin_planli(db)
     _pist_ortami(tmp_path, monkeypatch, db, kota)
     gunluk.main()  # sıradaki slot yarından sonra: alarm yok
     assert not (tmp_path / "alarm.md").exists()
@@ -244,9 +252,7 @@ def test_pist_hikayeler_duserse_yarin_planliysa_alarmsiz_degilse_alarm(tmp_path,
         raise gunluk.HikayeDustu("3 hikâye de hakemden ya da yayın kabulünden geçmedi")
 
     db = durum.baglan(tmp_path / "d.db")
-    bugun = dt.datetime.now(UTC).date()
-    yarin = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
-    _secim(db, yarin.date().isoformat(), yarin.isoformat(), "vyarin")
+    _bugun_ve_yarin_planli(db)
     _pist_ortami(tmp_path, monkeypatch, db, dustu)
     gunluk.main()
     assert not (tmp_path / "alarm.md").exists()

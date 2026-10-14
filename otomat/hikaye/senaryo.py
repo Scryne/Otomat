@@ -74,10 +74,14 @@ GORSEL_KURALI = {
     "neon signs, shop names, banners, placards, posters, slogans, newspapers, documents, maps, plaques, labels, "
     "scoreboards, numbered jerseys, license plates, graffiti) and never quote words. Show a protest through faces and "
     "raised fists, a shop as a lit window full of goods, a court through robes and a gavel. Never show dead bodies, "
-    "injuries or blood; show the moment before, or the aftermath through objects and faces.",
+    "injuries or blood; show the moment before, or the aftermath through objects and faces. Each "
+    "scene shows one place at one moment from one camera: never several places, a montage, a split view or a "
+    "before-and-after in one picture; a scene that jumps to the present day describes the present-day place fully.",
     "masal": "The illustrator cannot draw writing: never describe anything that carries words. Animals look like real "
     "animals with natural anatomy and expressive faces, not cartoon mascots; no clothes unless the fable says so. "
-    "Never show blood, wounds or a dead body; show the moment before, or the aftermath through faces.",
+    "Never show blood, wounds or a dead body; show the moment before, or the aftermath through faces. Each "
+    "scene shows one place at one moment from one camera: never several places, a montage, a split view or a "
+    "before-and-after in one picture.",
 }
 
 # İlk kare kaydırmayı durdurmalı (Shorts feed'inde küçük resim yok; ilk saniye izlendi/kaydırıldı oranını belirler)
@@ -171,6 +175,16 @@ YAZI_TASIYAN = re.compile(
     r"|\"[^\"]{2,}\"",
     re.I,
 )
+# Bir karede birden çok mekân: klein kareyi panellere bölüyor (Ganesha 10-16, "Three separate temples in different
+# settings"). Sayı + "ayrı/farklı" yalnız mekân adıyla işaretlenir: "three distinct dogs" tek sahnedir.
+COK_YER = re.compile(
+    r"\b(?:two|three|four|five|several|multiple|many)\s+(?:separate|different|distinct)\s+(?:temples|churches|"
+    r"cities|towns|villages|countries|places|settings|locations|scenes|rooms|buildings|streets|moments|eras|views)\b|"
+    r"\bsplit[- ]?screen\b|\bmontages?\b|\bcollages?\b|\btriptych\b|\bdiptych\b|\bbefore[- ]and[- ]after\b|"
+    r"\bin (?:different|various|several) (?:cities|countries|places|settings|locations|temples|towns|rooms)\b",
+    re.I,
+)
+COK_YER_NEDEN = "several places in one picture"
 GORSEL_TUR = 2
 TARIF_KELIME = 8  # onarımdan dönen tarif bundan kısaysa özgün tarif kalır
 # virgülde de biter: "without a hat, holding a protest placard" pankartı da siliyordu (10-13 ikinci denetim)
@@ -181,12 +195,13 @@ OLUMSUZ = re.compile(r"\b(?:no|without|never|not any)\b[^.;:,]*", re.I)
 GIYSI = [(re.compile(r"\bnumbered\s+", re.I), ""), (re.compile(r"(?<!New )\bjersey(s?)\b"), r"uniform\1")]
 
 GORSEL_ONARIM_ISTEM = """These are illustration descriptions for a short video. The illustrator cannot draw writing:
-anything that carries words or numbers comes out as garbled letters.
+anything that carries words or numbers comes out as garbled letters. It also splits a picture that shows several
+places into comic panels.
 WORLD: {dunya}
 SCENES:
 {sahneler}
 
-FLAGGED (object that would carry writing):
+FLAGGED (object that would carry writing, or "several places in one picture"):
 {sorun}
 
 Rewrite the world and ONLY the flagged scenes so the same moment is shown without the flagged objects. Do not mention
@@ -195,7 +210,8 @@ paper it is given. Show the moment through people, faces, gestures, clothing, li
 a crowd with raised fists; a vote = a hand dropping a folded slip into a wooden box; a shop = a lit window full of
 goods; colored light instead of neon signs). Do not quote words. Keep every character description and everything
 else unchanged. For each flagged scene return its complete new description (who, doing what, where, camera angle),
-never a reference like "same as before" or "SCENE 2"."""
+never a reference like "same as before" or "SCENE 2". A scene flagged "several places in one picture" shows ONE
+place at ONE moment: pick the most telling one (three temples in three countries = one crowd at one temple)."""
 GORSEL_ONARIM_SEMA = {
     "type": "object",
     "properties": {
@@ -419,6 +435,18 @@ def yazi_tasiyanlar(dunya: str, gorseller: list[str]) -> list[tuple[int, str]]:
     return sorun
 
 
+def cok_yerliler(gorseller: list[str]) -> list[tuple[int, str]]:
+    """(sahne no, neden): tek karede birden çok mekân isteyen tarifler (dünya cümlesi bir mekân/dönem, sayılmaz)."""
+    return [(i, COK_YER_NEDEN) for i, g in enumerate(gorseller, 1) if COK_YER.search(g)]
+
+
+def _gorsel_sorunlari(sc) -> list[tuple[int, str]]:
+    sorun = dict(yazi_tasiyanlar(sc.dunya, sc.gorseller))
+    for n, r in cok_yerliler(sc.gorseller):
+        sorun[n] = f"{sorun[n]}; {r}" if n in sorun else r
+    return sorted(sorun.items())
+
+
 def _yan_cumleler(metin: str) -> list[str]:
     """Ayraçlarıyla birlikte yan cümleler: parantez dışındaki virgül/noktalı virgül ve cümle sonu ("2.3" bölünmez)."""
     parca, derinlik, bas = [], 0, 0
@@ -454,15 +482,16 @@ def _kadro_yazisiz(oyuncu: str) -> str:
 
 
 def gorsel_temizle(sc: Senaryo) -> None:
-    """Tarifte yazı taşıyan nesne varsa en çok GORSEL_TUR onarım turu; ikinci tur yalnız hâlâ işaretli kalanları
-    gönderir. Onarımdan sonra da işaretli kalan tarifin o yan cümlesi kodla düşer: Bartman'da (10-12) iki tur hiçbir
-    şeyi değiştirmedi, skor tabelası anlamsız harflerle çizildi. Kalan yazıyı üretimde OCR yakalar (yazi.py)."""
+    """Tarifte yazı taşıyan nesne ya da birden çok mekân varsa en çok GORSEL_TUR onarım turu; ikinci tur yalnız hâlâ
+    işaretli kalanları gönderir. Onarımdan sonra da işaretli kalan tarifin yazı taşıyan yan cümlesi kodla düşer:
+    Bartman'da (10-12) iki tur hiçbir şeyi değiştirmedi, skor tabelası anlamsız harflerle çizildi. Kalan yazıyı
+    üretimde OCR (yazi.py), kalan paneli piksel denetimi (panel.py) yakalar."""
     sc.dunya, sc.gorseller, sc.oyuncular = (
         giysi_duz(sc.dunya),
         [giysi_duz(g) for g in sc.gorseller],
         [_kadro_yazisiz(giysi_duz(o)) for o in sc.oyuncular],
     )
-    if not (ilk := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
+    if not (ilk := _gorsel_sorunlari(sc)):
         return
     sorun = ilk
     for _ in range(GORSEL_TUR):
@@ -480,14 +509,14 @@ def gorsel_temizle(sc: Senaryo) -> None:
             # S12 (10-12): model sahnelere tarif yerine "SCENE 2" yazdı, kare ana karaktersiz boş sokak çıktı
             if 1 <= d["scene"] <= len(sc.gorseller) and len(d["image"].split()) >= TARIF_KELIME:
                 sc.gorseller[d["scene"] - 1] = d["image"].strip()
-        if not (sorun := yazi_tasiyanlar(sc.dunya, sc.gorseller)):
+        if not (sorun := _gorsel_sorunlari(sc)):
             break
-    for n, _ in sorun:
+    for n, _ in yazi_tasiyanlar(sc.dunya, sc.gorseller):
         if n == 0:
             sc.dunya = yazisiz(sc.dunya)
         else:
             sc.gorseller[n - 1] = yazisiz(sc.gorseller[n - 1])
-    sorun = yazi_tasiyanlar(sc.dunya, sc.gorseller)
+    sorun = _gorsel_sorunlari(sc)
     sc.gorsel_onarim = [[[n, r] for n, r in ilk], [[n, r] for n, r in sorun]]
 
 
