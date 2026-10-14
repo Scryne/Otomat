@@ -34,7 +34,7 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 | --- | --- | --- |
 | Senaryo, hakem, satır onarımı, çeviri | Cloudflare Workers AI `gpt-oss-120b` (JSON şeması) | Bedava 10.000 neuron/gün, iki kanal ve yerel denemeler ortak, **kayan 24 saat** (docs/arastirma/09) |
 | Sahne görseli | `flux-2-klein-4b`, 768×1344, sahne başına; kanal stili profilde | Earth suluboya-mürekkep, Orbit 19. yy gravürü |
-| Kare denetimi | `llama-4-scout` (değişen görünüş, evet/hayır) + RapidOCR (karede yazı) | Tutmayan kare yeni tohumla yeniden çizilir |
+| Kare denetimi | Piksel panel denetimi (`panel.py`) + `llama-4-scout` (değişen görünüş, evet/hayır) + RapidOCR (karede yazı) | Tutmayan kare yeni tohumla yeniden çizilir; panelli kare dünya cümlesiz istemle |
 | Ses ve altyazı | Kokoro ONNX; faster-whisper `base.en` kelime zamanı | Anlatıcı −14, müzik −30/−28 LUFS; kelime vurgulu yakılmış altyazı + 5 dilde SRT |
 | Render | PIL + ffmpeg (Ken Burns, sahne başına 5 kamera hareketi), Kevin MacLeod müziği (CC BY 4.0, mood'a göre) | 1080×1920, 20-60 sn |
 | Yayın | Buffer (private yükler) + YouTube Data API (`duzenle`: plan, etiket, 5 dil yerelleştirme, altyazı) | Audit gerektirmez (docs/arastirma/06); video gönderim süresince `otomat-site/media/`'da |
@@ -50,7 +50,8 @@ pistte boş slot (bugün + 2 gün) oldukça, koşu başına en çok 2 video:
   hazır üretim (kabulden geçmiş, kanala çıkmamış; artifact) → yoksa yarım üretim (senaryo + görseller) → yoksa
   haydut (kanca kalıbı) + havuzdan taze hikâye
     → senaryo (kod kapısı: sayı, ad, sembol, hakaret, uzunluk) + hakem, en çok 4 tur satır onarımı, son çare satır çıkarma
-    → görsel tarifinde yazı taşıyan nesne temizliği → sahneler (4'lü paralel) → değişen görünüş + OCR denetimi
+    → görsel tarifinde yazı taşıyan nesne ve çok mekân temizliği → sahneler (4'lü paralel) → panel + değişen görünüş
+      + OCR denetimi
     → ses → Whisper hizalama → render → müzik karışımı → yayın kabulü (kabul.py; geçmeyen yayına çıkmaz)
     → 4 dil çeviri (rakam kapısı) → Buffer → YouTube planlama → kayıt
   kota (4006) → slot bir sonraki koşuya kalır; yarının videosu planlıysa alarm yok (K-22)

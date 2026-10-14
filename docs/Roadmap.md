@@ -17,7 +17,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 4 | Anlatım ve kapılar | ✅ Tamamlandı | Olgu şablon havuzu (tip başına ≥ 5 varyant); LLM kanca/başlık (yer tutucu); anlamsal hakem seçimi 30 etiketli cümleyle ölçüldü (yerel vs Jev, D-8); TTS + kelime zamanlı altyazı; 10 uçtan uca video, kapı sonuçları raporlu |
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
-| 14 | Hikâye motoru (format değişimi) | 🔄 Devam Ediyor | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
+| 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
 | 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 14'ün main'deki ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
@@ -466,6 +466,27 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Bilerek açık: satır başındaki uydurma ad kod kapısından geçer (her cümle başı kelimesini sormak Earth'ün zaten
     düşük geçme oranını yanlış alarmla düşürürdü; hakem adları denetliyor); yazıyla yazılmış sayı sayı sınırına
     girmez; Latin dışı uydurma yazı OCR'da sayılmaz; portföyün API birimi tahmini onarım ve marka çağrılarını içermez.
+- **Faz 14 ✅ (2026-10-14):** kapanış incelemesi, iki denetimin düzeltmelerinden sonraki ilk üretimlerle.
+  - Kanıt: Earth "Heraclitus" (10-15, 10-13'te incelendi) ve "Ganesha" (10-16); Orbit yeni formatta (K-24) "Monkey As
+    King" (10-15, `EyLJf022flw`) ve "Crow And The Pitcher" (10-16, `qFQ0QRFW4IY`). Senaryo kaynakla tutarlı, ses
+    -14,8/-15,2 LUFS, tepe -1,0 dBFS, 24-32 sn, altyazı vurgusu yerinde. 10-13 akşam ve 10-14 koşuları iki kanalda
+    `tamam`, alarmsız. 237 test, CI yeşil.
+  - Karelerde kalan kusurlar (yayında kalıyor, Drag Nun emsali): Ganesha 4. sahnesi 4 panelli çizgi roman sayfası;
+    Monkey'nin taç sahnesinde iki tilki; Crow'un içme sahnesinde üç ayaklı karga, testi kareden kareye toprak/metal.
+  - **Panel kapısı (`74c382d`):** 164 benzersiz sahnenin (artifact'lar + yerel) gözle taramasında 4 panelli kare:
+    Ganesha, Mónica Macías (10-13, yayında, son sahne iki panel), Molasses (10-08), Curse of the Colonel (reddedilmişti).
+    Ganesha'nınki tarifin kendisinden ("Three separate temples in different settings"); öbür üçü zaman sıçramalı son
+    sahne ("now an adult", "Modern summer street"), dünya cümlesi eski dönemi söylerken.
+    - `panel.py`: kenar kırpılmış karede iç bölgede kare boyu uzanan düz bant, iki yanında resim. 4/4 yakalandı, 160
+      panelsiz karede yanlış alarm 0 (eşiğe en yakın iki panelsiz kare testte). Neuron harcamaz.
+    - Panelli sahne yeni tohumla, dünya cümlesi düşmüş + "tek sürekli resim" istemiyle yeniden çizilir (sahne başına 2,
+      video başına 3); yine panelliyse video çıkar, `meta.json` `panel.son`.
+    - Senaryo: görsel kuralı tek mekân ister (biçim imzası değişti: kayıtlı yarım senaryolar yeniden yazılır); çok
+      mekânlı tarif görsel onarımına gider.
+    - Açık: S15 (`spikes/s15_panel.py`) yeniden çizimin gerçekten tek kare verdiğini canlı ölçecek. 10-14 sabahı kota
+      doluydu (kayan pencere, gece koşuları). Tutmazsa panel `son`a kalır, video yine çıkar.
+  - Test hatası: iki pist testi saat 13:00 UTC'den önce düşüyordu (slot "ilk boş gün", bugünün slotu boş). CI akşam
+    koştuğu için görülmemişti; test bugünü de planlı kurar.
 - **Faz 13 (2026-10-09):** `otomat/portfoy.py` + günlük iş akışında `portfoy` işi (kanal işlerinden sonra, günün ilk
   koşusunda). Kanallar yan yana: üretim, kanala çıkan, düşen/kota/hata, görüntüleme, abone, havuz, neuron, Buffer
   isteği, YouTube API birimi (tahmin), Actions dakikası (GitHub API, kanal işine göre bölünür); K-14 öldürme kriteri
@@ -521,7 +542,8 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
-- **Sayaç:** 2026-10-08 Earth koşusuyla başlar (son bilinçli Earth değişikliği: kapanış karesi, `f080e42`, 10-07).
+- **Sayaç:** Faz 14 kapandıktan sonraki ilk günlük koşuyla başlar (2026-10-14 akşamı ya da 10-15; son çıktı değişikliği
+  panel kapısı, `74c382d`). 14 gün boyunca çıktıyı değiştiren commit sayacı sıfırlar; hata düzeltmesi ve ölçüm sayılmaz.
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
 - **Notlar:**
   - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design
