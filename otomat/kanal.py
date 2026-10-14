@@ -57,6 +57,9 @@ class Kanal:
     donem: str = ""
     # ana karakterin ilk karesi sonraki sahnelerine referans görsel olarak verilir (flux-2-klein input_image; S14)
     referans: bool = False
+    # hikâye kanalının video biçimi: "sahne" (anlatıcı + sahne illüstrasyonları) ya da "kart" (anlatıcısız tek ekran
+    # paragraf + gerçek görsel, 8 sn; K-25, otomat/hikaye/kart.py)
+    bicim: str = "sahne"
 
     @property
     def yeni_adlar(self) -> tuple[str, ...]:
@@ -111,6 +114,7 @@ def yukle(kimlik: str) -> Kanal:
         yedek_adlar=tuple(d.get("yedek_adlar", [])),
         donem=str(d.get("donem", "")),
         referans=bool(d.get("referans", False)),
+        bicim=d.get("bicim", Kanal.bicim),
     )
 
 

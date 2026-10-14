@@ -16,6 +16,15 @@ typography:
 ---
 # Earth — gerçek tuhaf hikâyeler
 
+> **Kart biçimi (2026-10-14, K-25):** Earth artık aşağıdaki sahneli anlatımı değil kartı yayınlar (`bicim = "kart"`).
+> 1080×1920, 8 sn, anlatıcısız: koyu zemin (#0C0C0E); en üstte kanal adı (Barlow Medium 34, gri); kanca (Barlow
+> Condensed Bold 92→68, büyük harf, sarı, en çok iki satır); 3-5 cümlelik paragraf (Barlow Medium 56→40, beyaz,
+> `[[vurgu]]`lar sırayla sarı #FFD84D / turuncu #FF8A3D / yeşil #7FE07A, ince siyah kontur); altında makalenin Commons
+> görseli (yoksa tek AI illüstrasyonu), üst ve alt kenarı zemine 60 px geçişli, ekranın %78'ine kadar; altında atıf
+> satırı (Barlow Regular 24, gri). Alt ~420 px Shorts arayüzüne bırakılır. Görsel 8 sn'de yaklaşıp başa döner (cos):
+> döngüde sıçrama yok. Müzik tek ses, -16 LUFS. Gerekçe: `docs/arastirma/10-rakip-kart.md`. Aşağısı sahne biçimidir
+> (Orbit aynı motoru kendi kimliğiyle kullanır).
+
 **Ne:** Wikipedia'nın "Unusual articles" listesinden tek bir gerçek olay, 7-8 sahnede, ~35 sn.
 
 **Görsel dil:** Her sahne kendi illüstrasyonu (flux-2-klein-4b, 768×1344): mürekkep çizgi + soluk suluboya, sıcak kâğıt

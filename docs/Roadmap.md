@@ -19,7 +19,8 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
 | 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
-| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 14'ün main'deki ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
+| 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
+| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
@@ -540,10 +541,33 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Faz 10 ✅ (2026-10-07):** main'de iki kanallı ilk planlı koşu (13:34 UTC) iki iş yeşil, alarmsız; Earth seçimi ve
   yerleşimi eski davranışla aynı (`usgs:bolge_yillik:Argentina`, `L2ar7ULV7Ic`), Orbit Ruler `rUEu2ssQwIg` planlı.
 
+### Faz 16: Kart biçimi ve izlenme deneyi (2026-10-14)
+- **Neden:** Scryne: "videolar neden izlenmiyor… yanlış mı ilerliyoruz?" Earth'ün public 4 hikâyesi 45, 81, 4, 3 izlendi;
+  izlenmelerin %25-38'i ilk saniyeleri geçti. Aynı nişte küçük kanalların tipik videosu 23-125 bin. Kanıt, rakip
+  taraması, politika ve karar: `docs/arastirma/10-rakip-kart.md` (K-25).
+- **Yapılan (10-14):**
+  - `otomat/hikaye/kart.py`: kart metni (gpt-oss; kanca + 3-5 cümle, `[[vurgu]]`), kod kapısı (sayı/ad kaynakta, yıl
+    sayı sınırına girmez, vurgu sayısı ve uzunluğu, kelime), olgu hakemi, en çok 4 tur onarım; görsel: makalenin
+    Commons ana görseli (serbest lisans, raster, ≥ 400 px, OCR'da ≥ 40 harf = belge → elenir), yoksa tek AI
+    illüstrasyonu (panel/yazı çıkarsa bir kez yeniden); 8 sn render (cos zoom, döngüde sıçrama yok), müzik -16 LUFS.
+  - Kabul kart dalı (cümle/kelime/kanca, Wikimedia atfı, tek görsel, 5-12 sn); çeviri altyazısız (srt yok, başlık ve
+    açıklama 4 dile). Haftalık raporda video başına "Kalan" (engaged / görüntüleme) ve kanal oranı.
+  - Testler 237 → 260 (`test_hikaye_kart.py`; iki testin bozuk koda karşı düştüğü elle denendi). Yerel uçtan uca
+    (metin modeli sahte, kota kapalıydı): Molasses ve Dancing plague gerçek Commons görseliyle kabulden geçti, Tarrare'nin
+    belge görseli elendi.
+  - Test izolasyonu açığı: senaryosu sahtelenmiş bir test kart yoluna sapıp yerelde gerçek Cloudflare'e istek attı
+    (`cf.kimlik` `sirlar/cloudflare.json`'a düşüyordu; CI'da dosya yok). `conftest` artık Cloudflare, YouTube ve
+    Buffer kimliklerini testte kapatıyor.
+- **Açık:** kart metni gerçek modelle henüz koşmadı (10-14 kota doluydu); ilk kart 10-15 koşusunda (10-17 slotu)
+  üretilir, pistin 3. günü olduğu için düşerse alarm çalmaz, sonraki koşu yeniden dener. İlk kartlar kare kare
+  incelenecek.
+- **Yayında kalan sahneli Earth videoları:** Bartman (10-14), Heraclitus (10-15), Ganesha (10-16). Kıyas tabanı.
+
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
-- **Sayaç:** Faz 14 kapandıktan sonraki ilk günlük koşuyla başlar (2026-10-14 akşamı ya da 10-15; son çıktı değişikliği
-  panel kapısı, `74c382d`). 14 gün boyunca çıktıyı değiştiren commit sayacı sıfırlar; hata düzeltmesi ve ölçüm sayılmaz.
+- **Sayaç:** Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar. (10-14 sabahı "Faz 14 kapanınca başlar"
+  yazılmıştı; aynı gün veri, izlenmeyen biçimi 14 gün dondurmanın kayıp olduğunu gösterdi: K-25.) 14 gün boyunca
+  çıktıyı değiştiren commit sayacı sıfırlar; hata düzeltmesi ve ölçüm sayılmaz.
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
 - **Notlar:**
   - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design

@@ -3,6 +3,7 @@ karışımı (anlatıcı/müzik loudness) ve gerçek yayın kabulüyle. Yalnız 
 görselleri (Cloudflare), OCR, Kokoro ve Whisper. Önceden `uret` hiçbir testte koşmuyordu; `meta.json` sözleşmesi
 (kabul, hazır üretim, yayın hepsi onu okur) elle yazılmış sözlüklerle sınanıyordu (2026-10-13 ikinci denetim)."""
 
+import dataclasses
 import json
 import re
 import subprocess
@@ -31,9 +32,13 @@ SATIRLAR = [
 
 @pytest.fixture
 def earth(monkeypatch):
+    """Earth profili sahne biçiminde: Earth kart biçimine geçti (K-25), sahne motoru Orbit'te sürüyor ve bu testler
+    onu sınıyor (Earth'ün kaynağı ve stiliyle)."""
     monkeypatch.setenv("OTOMAT_KANAL", "earth")
     kanal._aktif.cache_clear()
-    yield kanal.aktif()
+    k = dataclasses.replace(kanal.aktif(), bicim="sahne")
+    monkeypatch.setattr(kanal, "aktif", lambda: k)
+    yield k
     kanal._aktif.cache_clear()
 
 

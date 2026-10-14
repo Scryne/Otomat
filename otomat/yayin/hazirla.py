@@ -24,7 +24,9 @@ def _onceki(dizin: Path, ozet: str) -> dict:
         return {}
     if d.get("kaynak") != ozet:
         return {}
-    return {dil: v for dil, v in d.get("yerel", {}).items() if (dizin / f"{dil}.srt").exists()}
+    # altyazısız biçimde (kart, K-25) srt hiç yazılmaz: yerelleştirme tek başına yeterli
+    srtli = bool(json.loads((dizin / "meta.json").read_text(encoding="utf-8")).get("altyazi"))
+    return {dil: v for dil, v in d.get("yerel", {}).items() if not srtli or (dizin / f"{dil}.srt").exists()}
 
 
 def hazirla(dizin: Path, deneme: int = 3) -> dict:
@@ -35,7 +37,9 @@ def hazirla(dizin: Path, deneme: int = 3) -> dict:
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
     ozet = _kaynak_ozeti(meta)
     cumle_parcalari = [Parca(**p) for p in meta["altyazi"]]
-    (dizin / "en.srt").write_text(srt(altyazi_parcalari(cumle_parcalari)), encoding="utf-8")
+    # kart biçiminde (K-25) konuşma yok: altyazı izi yüklenmez, yalnız başlık ve açıklama çevrilir
+    if cumle_parcalari:
+        (dizin / "en.srt").write_text(srt(altyazi_parcalari(cumle_parcalari)), encoding="utf-8")
     cumleler = [p.metin for p in cumle_parcalari]
     onceki = _onceki(dizin, ozet)
     yerel, atlanan, kota = {}, [], False
@@ -57,8 +61,9 @@ def hazirla(dizin: Path, deneme: int = 3) -> dict:
             (dizin / f"{dil}.srt").unlink(missing_ok=True)
             continue
         yerel[dil] = {"title": sonuc["title"], "description": sonuc["description"]}
-        cevrilmis = [Parca(p.bas, p.son, c) for p, c in zip(cumle_parcalari, sonuc["captions"], strict=True)]
-        (dizin / f"{dil}.srt").write_text(srt(altyazi_parcalari(cevrilmis)), encoding="utf-8")
+        if cumle_parcalari:
+            cevrilmis = [Parca(p.bas, p.son, c) for p, c in zip(cumle_parcalari, sonuc["captions"], strict=True)]
+            (dizin / f"{dil}.srt").write_text(srt(altyazi_parcalari(cevrilmis)), encoding="utf-8")
     (dizin / "yerel.json").write_text(
         json.dumps({"yerel": yerel, "atlanan": atlanan, "kota": kota, "kaynak": ozet}, ensure_ascii=False, indent=1),
         encoding="utf-8",

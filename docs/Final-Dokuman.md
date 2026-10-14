@@ -22,12 +22,17 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 > bölümler (stack, mimari şeması, kapsam, riskler) v1 veri videosu kararlarıdır: veri motoru silinmedi, arşiv profilleri
 > (`kanallar/veri-earth`, `veri-uzay`) ve testleriyle duruyor. Gerekçeler: `docs/arastirma/08-format-hikaye.md`,
 > `09-kanal-karari.md`; faz kayıtları `docs/Roadmap.md` (Faz 14–15).
+>
+> **Kart biçimi (2026-10-14, K-25).** Earth'ün sahneli anlatımı 3-81 izlenmede kaldı (izleyicinin %62-75'i ilk
+> saniyelerde kaydırdı); nişte tutarlı izlenen küçük kanallar hikâyeyi anlatıcısız tek ekran paragrafla ve konunun
+> gerçek görseliyle veriyor. Earth `bicim = "kart"`a geçti (`otomat/hikaye/kart.py`); sahne motoru Orbit'te sürüyor.
+> Kanıt ve karar: `docs/arastirma/10-rakip-kart.md`, Roadmap Faz 16.
 
 ## Güncel mimari (hikâye motoru, 2026-10-13)
 
 | Kanal | YouTube adı | İçerik | Kaynak havuzu | Ses | Yayın (UTC) |
 | --- | --- | --- | --- | --- | --- |
-| `earth` | Inkwell Oddities | gerçek tuhaf olaylar, genel kitle (K-15) | Wikipedia: Unusual articles, ~710 makale (TypeSafe jev-1.13.0 ile süzüldü, K-18) | Kokoro `bm_george` 1,08× | 14:00 |
+| `earth` | Inkwell Oddities | gerçek tuhaf olaylar, genel kitle (K-15); **kart biçimi** (K-25): 8 sn, anlatıcısız paragraf + makalenin Commons görseli | Wikipedia: Unusual articles, ~710 makale (TypeSafe jev-1.13.0 ile süzüldü, K-18) | Kokoro `bm_george` 1,08× | 14:00 |
 | `uzay` | Lanternbug Tales | Ezop masalları yumuşatılmadan, yetişkinlere (K-24) | Aesop's Fables, V. S. Vernon Jones 1912 (kamu malı), 245 masal | Kokoro `af_heart` 1,02× | 20:00 |
 
 | Katman | Seçim | Not |
@@ -60,7 +65,7 @@ pistte boş slot (bugün + 2 gün) oldukça, koşu başına en çok 2 video:
 
 Kararlar: K-15 (genel kitle, Wikipedia), K-16 (sahne başına illüstrasyon), K-18 (havuz TypeSafe ile bir kez süzülür,
 üretimdeki hakem LLM), K-20 (yeni kanal yok), K-22 (pist: üretim yayından ayrı), K-23 (yapı videodan videoya değişir),
-K-24 (Orbit genel kitleye, MFK kapalı). K-14 öldürme kriteri kanal başına, formatın ilk public videosundan (`donem`)
+K-24 (Orbit genel kitleye, MFK kapalı), K-25 (Earth kart biçimi; pusula: ilk saniyeleri geçen oranı). K-14 öldürme kriteri kanal başına, formatın ilk public videosundan (`donem`)
 56 gün.
 
 ## Teknoloji Stack

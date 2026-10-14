@@ -55,6 +55,10 @@ def bekleyen(bugun: dt.date) -> tuple[int, int] | None:
     return None
 
 
+def _oran(pay, payda) -> str:
+    return f"%{100 * pay / payda:.0f}" if payda else "—"
+
+
 def _sayi(n: float) -> str:
     return f"{n:,.0f}".replace(",", ".")
 
@@ -144,7 +148,8 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
         s += [f"Analitik alınamadı: {analitik_hatasi or 'bilinmiyor'}", ""]
     else:
         s += [
-            f"Bu hafta {_sayi(kanal_bu['views'])} görüntüleme (engaged {_sayi(kanal_bu['engaged_views'])}), "
+            f"Bu hafta {_sayi(kanal_bu['views'])} görüntüleme (engaged {_sayi(kanal_bu['engaged_views'])}; ilk "
+            f"saniyeleri geçen {_oran(kanal_bu['engaged_views'], kanal_bu['views'])}), "
             f"abone net {kanal_bu['abone_net']:+d}. Kanalda {kanal_bu['video_sayisi']} video, "
             f"{kanal_bu['abone_toplam']} abone.",
             "",
@@ -158,22 +163,23 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
             ]
 
     od = haydut.oduller(db, son)
-    olculen = [
-        (v, g, e, y)
-        for v, g, e, y in db.execute(
-            "SELECT video_id, yayin_gunu, engaged_views, ort_izlenme_yuzde FROM olcumler WHERE olculdu BETWEEN ? AND ?",
-            (bas.isoformat(), son.isoformat()),
-        )
-    ]
+    olculen = db.execute(
+        "SELECT video_id, yayin_gunu, views, engaged_views, ort_izlenme_yuzde FROM olcumler"
+        " WHERE olculdu BETWEEN ? AND ?",
+        (bas.isoformat(), son.isoformat()),
+    ).fetchall()
     s += ["## Videolar (ödül penceresi: yayın günü + 2 gün)", ""]
     if not olculen:
         s += ["Bu hafta ölçümü olgunlaşan video yok.", ""]
     else:
         odul = {o["video_id"]: o["odul"] for o in od}
-        sirali = sorted(olculen, key=lambda r: (odul.get(r[0], -1), r[2]), reverse=True)
-        s += ["| Video | Yayın | Engaged | İzlenme % | Ödül |", "| --- | --- | --- | --- | --- |"]
-        for v, g, e, y in sirali:
-            s.append(f"| {v} | {g} | {_sayi(e)} | {y:.1f} | {odul.get(v, '—')} |")
+        sirali = sorted(olculen, key=lambda r: (odul.get(r[0], -1), r[3]), reverse=True)
+        # "Kalan": ilk saniyeleri geçen görüntüleme oranı (engaged / görüntüleme). Pusula bu (10-14): nişte tutarlı
+        # izlenen kanallar ~%70+, Earth'ün sahneli videoları %25-38'de kaldı
+        s += ["| Video | Yayın | Görüntüleme | Engaged | Kalan | İzlenme % | Ödül |",
+              "| --- | --- | --- | --- | --- | --- | --- |"]  # fmt: skip
+        for v, g, w, e, y in sirali:
+            s.append(f"| {v} | {g} | {_sayi(w)} | {_sayi(e)} | {_oran(e, w)} | {y:.1f} | {odul.get(v, '—')} |")
         s += ["", f"En iyi: {sirali[0][0]} · en kötü: {sirali[-1][0]}", ""]
 
     s += ["## Haydut", "", f"Posteriora giren ödül: {len(od)} (son {haydut.PENCERE_GUN} gün).", ""]

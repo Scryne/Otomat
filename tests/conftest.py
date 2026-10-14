@@ -24,3 +24,26 @@ for _ad in (
     "GITHUB_STEP_SUMMARY",
 ):
     os.environ.pop(_ad, None)
+
+
+import pytest  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _gercek_sir_yok(monkeypatch):
+    """Ortam değişkeni silmek yetmiyor: Cloudflare kimliği `sirlar/cloudflare.json`'a, YouTube token'ı `sirlar/`a,
+    Buffer anahtarı `.env`'e düşüyor. Earth kart biçimine geçince (K-25) senaryosu sahtelenmiş bir test kart yoluna
+    sapıp yerelde gerçek Cloudflare'e istek attı (CI'da dosya olmadığı için görünmüyordu). Gerçek uca giden her test
+    burada düşer."""
+    from otomat.hikaye import cf
+    from otomat.yayin import buffer, youtube
+
+    def yok(ad):
+        def _yok(*a, **k):
+            raise RuntimeError(f"testte gerçek {ad} kimliği kullanılamaz")
+
+        return _yok
+
+    monkeypatch.setattr(cf, "kimlik", yok("Cloudflare"))
+    monkeypatch.setattr(youtube, "kimlik", yok("YouTube"))
+    monkeypatch.setattr(buffer, "anahtar", yok("Buffer"))

@@ -597,6 +597,10 @@ def sahneleri_ciz(
 
 def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) -> dict:
     k = kanal.aktif()
+    if k.bicim == "kart":
+        from otomat.hikaye import kart
+
+        return kart.uret(paket, kalip, sablon, dizin, tohum)
     dizin.mkdir(parents=True, exist_ok=True)
     cf.NEURON["toplam"] = 0.0
     t0 = time.time()

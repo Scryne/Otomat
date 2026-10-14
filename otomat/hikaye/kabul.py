@@ -64,11 +64,12 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
     if not isinstance(meta, dict):
         return ["meta.json bir nesne değil"]
     h: list[str] = []
-    k = kanal.aktif()
 
     baslik = meta.get("baslik")
     if not isinstance(baslik, str) or not 10 <= len(baslik.strip()) <= 100:
         h.append(f"başlık 10-100 karakter olmalı: {baslik!r}")
+    if meta.get("bicim") == "kart":
+        return _kart(meta, d, h, video_bilgisi)
     satirlar = meta.get("cumleler")
     if not isinstance(satirlar, list) or not all(isinstance(s, str) and len(s.split()) >= 3 for s in satirlar):
         return [*h, "cümleler eksik ya da 3 kelimeden kısa"]
@@ -78,32 +79,11 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
         h.append("tekrarlanan satır var")
     if any(SEMBOL.search(s) for s in satirlar):
         h.append("anlatıcının okuyamayacağı sembol var")
-    if any(CAGRI.search(s) for s in [baslik or "", *satirlar]):
-        h.append("abone/yorum çağrısı var")
-    kaynak_adi = str((meta.get("paket") or {}).get("anahtar", ""))
-    metinler = [baslik or "", kaynak_adi, str(meta.get("aciklama") or ""), *map(str, meta.get("etiketler") or []),
-                *satirlar]  # fmt: skip
-    if hakaret := {m.lower() for s in metinler for m in HAKARET.findall(s)}:
-        h.append(f"hakaret/küfür var: {', '.join(sorted(hakaret))}")
+    _ortak(meta, [baslik or "", *satirlar], h)
     if meta.get("kanca") != satirlar[0]:
         h.append("kanca ilk satır değil")
-
-    turlar = (meta.get("senaryo") or {}).get("hakem_turlari")
-    if not isinstance(turlar, list) or not turlar or turlar[-1] != []:
-        h.append("senaryo hakemden temiz geçmemiş (son tur boş değil)")
-
     if (meta.get("durum") or {}).get("tutmayan"):
         h.append("hikâyede değişen görünüş karede tutmadı")
-    aciklama = meta.get("aciklama")
-    atif = KAYNAK_ATFI.get(kaynak_adi.partition(":")[0])
-    if not isinstance(aciklama, str) or "https://" not in aciklama or (atif and atif not in aciklama):
-        h.append("açıklamada kaynak atfı yok")
-    elif "Kevin MacLeod" not in aciklama or "creativecommons.org/licenses/by/4.0" not in aciklama:
-        h.append("açıklamada müzik atfı (CC BY 4.0) yok")
-    if not meta.get("etiketler"):
-        h.append("etiket yok")
-    if meta.get("mfk") is not k.mfk:
-        h.append(f"MFK bayrağı ({meta.get('mfk')!r}) kanalla ({k.mfk}) çelişiyor")
 
     altyazi = meta.get("altyazi")
     if not isinstance(altyazi, list) or len(altyazi) != len(satirlar):
@@ -128,7 +108,64 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
     sahneler = sorted(d.glob("sahne_*.jpg"))
     if len(sahneler) != len(satirlar):
         h.append(f"{len(sahneler)} sahne görseli, {len(satirlar)} satır")
+    return _video(d, sure, h, video_bilgisi)
 
+
+def _ortak(meta: dict, metin: list[str], h: list[str]) -> None:
+    """İki biçimde de aynı: çağrı, hakaret, hakem, kaynak ve müzik atfı, etiket, MFK."""
+    k = kanal.aktif()
+    if any(CAGRI.search(s) for s in metin):
+        h.append("abone/yorum çağrısı var")
+    kaynak_adi = str((meta.get("paket") or {}).get("anahtar", ""))
+    metinler = [kaynak_adi, str(meta.get("aciklama") or ""), *map(str, meta.get("etiketler") or []), *metin]
+    if hakaret := {m.lower() for s in metinler for m in HAKARET.findall(s)}:
+        h.append(f"hakaret/küfür var: {', '.join(sorted(hakaret))}")
+    turlar = (meta.get("senaryo") or {}).get("hakem_turlari")
+    if not isinstance(turlar, list) or not turlar or turlar[-1] != []:
+        h.append("senaryo hakemden temiz geçmemiş (son tur boş değil)")
+    aciklama = meta.get("aciklama")
+    atif = KAYNAK_ATFI.get(kaynak_adi.partition(":")[0])
+    if not isinstance(aciklama, str) or "https://" not in aciklama or (atif and atif not in aciklama):
+        h.append("açıklamada kaynak atfı yok")
+    elif "Kevin MacLeod" not in aciklama or "creativecommons.org/licenses/by/4.0" not in aciklama:
+        h.append("açıklamada müzik atfı (CC BY 4.0) yok")
+    if not meta.get("etiketler"):
+        h.append("etiket yok")
+    if meta.get("mfk") is not k.mfk:
+        h.append(f"MFK bayrağı ({meta.get('mfk')!r}) kanalla ({k.mfk}) çelişiyor")
+
+
+KART_SURE = (5.0, 12.0)
+KART_CUMLE = (3, 6)
+KART_KELIME = (38, 58)
+
+
+def _kart(meta: dict, d: Path, h: list[str], video_bilgisi) -> list[str]:
+    """Kart biçimi (K-25): anlatıcı ve altyazı yok; paragraf ekranda, tek görsel. Görsel Wikimedia'dansa açıklama
+    ve kare atfı taşır (CC BY/BY-SA)."""
+    cumleler = meta.get("cumleler")
+    if not isinstance(cumleler, list) or not all(isinstance(s, str) and len(s.split()) >= 3 for s in cumleler):
+        return [*h, "kart cümleleri eksik ya da 3 kelimeden kısa"]
+    if not KART_CUMLE[0] <= len(cumleler) <= KART_CUMLE[1]:
+        h.append(f"{len(cumleler)} cümle; {KART_CUMLE[0]}-{KART_CUMLE[1]} olmalı")
+    if not KART_KELIME[0] <= (n := sum(len(s.split()) for s in cumleler)) <= KART_KELIME[1]:
+        h.append(f"kart {n} kelime; {KART_KELIME[0]}-{KART_KELIME[1]} olmalı")
+    kanca = meta.get("kanca")
+    if not isinstance(kanca, str) or not 2 <= len(kanca.split()) <= 7:
+        h.append(f"kanca 2-7 kelime olmalı: {kanca!r}")
+    _ortak(meta, [meta.get("baslik") or "", str(kanca), *cumleler], h)
+    g = (meta.get("kart") or {}).get("gorsel") or {}
+    if g.get("kaynak") == "wikimedia" and (not g.get("lisans") or "Wikimedia Commons" not in str(meta.get("aciklama"))):
+        h.append("Wikimedia görselinin lisans atfı yok")
+    if not (d / "sahne_0.jpg").exists():
+        h.append("kart görseli yok")
+    sure = meta.get("sure_sn")
+    if not isinstance(sure, (int, float)) or not KART_SURE[0] <= sure <= KART_SURE[1]:
+        h.append(f"süre {sure!r}; {KART_SURE[0]:.0f}-{KART_SURE[1]:.0f} sn olmalı")
+    return _video(d, sure, h, video_bilgisi)
+
+
+def _video(d: Path, sure, h: list[str], video_bilgisi) -> list[str]:
     video = d / "video.mp4"
     if not video.exists() or video.stat().st_size < 200_000:
         h.append("video.mp4 yok ya da çok küçük")
