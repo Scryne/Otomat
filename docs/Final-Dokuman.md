@@ -60,8 +60,16 @@ pistte boş slot (bugün + 2 gün) oldukça, koşu başına en çok 2 video:
     → ses → Whisper hizalama → render → müzik karışımı → yayın kabulü (kabul.py; geçmeyen yayına çıkmaz)
     → 4 dil çeviri (rakam kapısı) → Buffer → YouTube planlama → kayıt
   kota (4006) → slot bir sonraki koşuya kalır; yarının videosu planlıysa alarm yok (K-22)
-çeviri onarımı (kotaya takılıp çevirisiz planlanan videonun eksik dilleri) → haftalık rapor (eksikse) → alarm
+çeviri onarımı (kotaya takılıp çevirisiz planlanan videonun eksik dilleri; 3 tutmayan koşudan sonra vazgeçer)
+→ altyazı onarımı (YouTube kotasına takılan izler kuyrukta, `altyazi_eksik`) → haftalık rapor (hafta bitimi + 3 gün,
+Analytics gecikmesi) → alarm (açık alarmı yalnız alarmsız tam üretim koşusu kapatır, `calisma/temiz`)
 ```
+
+Earth K-25'ten beri kart biçiminde (`otomat/hikaye/kart.py`): kart metni + kod kapısı (sayı, ad, işaret, ekrana
+sığma) + olgu hakemi; makalenin Commons görseli (serbest lisans, NC/ND değil) ya da tek yatay (1344×768) AI
+illüstrasyonu; 8 sn render, müzik −16 LUFS; altyazı izi yok, başlık ve açıklama 4 dile. Yayın sırasında Buffer video
+id'yi verir vermez kayıt yazılır (koşu kesilirse çift gönderi olmasın); otomat-site medya tarihçesi boşaldıkça tek
+commit'e sıkıştırılır.
 
 Kararlar: K-15 (genel kitle, Wikipedia), K-16 (sahne başına illüstrasyon), K-18 (havuz TypeSafe ile bir kez süzülür,
 üretimdeki hakem LLM), K-20 (yeni kanal yok), K-22 (pist: üretim yayından ayrı), K-23 (yapı videodan videoya değişir),

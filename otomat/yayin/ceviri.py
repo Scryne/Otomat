@@ -90,7 +90,8 @@ def _cevir(dil: str, baslik: str, aciklama: str, altyazilar: list[str], tohum: i
     # çökertiyordu)
     if not (isinstance(baslik_c, str) and baslik_c.strip() and isinstance(aciklama_c, str) and aciklama_c.strip()):
         return None
-    if not isinstance(caps, list) or not all(isinstance(c, str) and c.strip() for c in caps):
+    # altyazısız kartta captions yok sayılır: "boş bırak" denen model [""] döndürünce dil kayboluyordu
+    if altyazilar and (not isinstance(caps, list) or not all(isinstance(c, str) and c.strip() for c in caps)):
         return None
     caps = [re.sub(r"^\d+\.\s*", "", c).strip() for c in caps] if altyazilar else []
     if len(caps) != len(altyazilar):

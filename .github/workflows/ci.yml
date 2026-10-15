@@ -21,6 +21,7 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
+          version: "0.13.1"  # sabit: her koşu en yeni uv sürümünü çekiyordu (sırlarla aynı işte koşan araç)
       # üretimle aynı ekler: OCR testi Linux'ta gerçekten koşsun (yazi.py); Dependabot'un kokoro/faster-whisper/
       # onnxruntime yükseltmeleri de en azından import edilerek sınansın
       - run: uv sync --locked --extra ses --extra gorsel

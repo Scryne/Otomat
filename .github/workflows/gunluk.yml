@@ -37,7 +37,8 @@ jobs:
           - { kanal: earth, sir: "", etiket: teslim }
           - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
     concurrency:
-      group: gunluk-${{ matrix.kanal }}
+      # dal denemesi main'in kuyruğunu geciktirmesin, bekleyen main koşusunu da iptal ettirmesin
+      group: gunluk-${{ matrix.kanal }}-${{ github.ref_name }}
       cancel-in-progress: false
     env:
       OTOMAT_KANAL: ${{ matrix.kanal }}
@@ -45,6 +46,8 @@ jobs:
       # yapar: başka dalda elle tetiklenen koşu gerçek sırlarla yayınlayıp durumu o dala yazıyordu (main aynı slotu
       # ikinci kez doldururdu); dal denemesi teslim modunda koşar
       OTOMAT_YAYIN: ${{ github.ref_name == 'main' && (vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN) || 'teslim') || 'teslim' }}
+      # değişken main'de yoksa kanal sessizce teslim moduna düşüp yayını durduruyordu: gunluk.py alarm yazar
+      OTOMAT_YAYIN_TANIMLI: ${{ (vars[format('OTOMAT_YAYIN_{0}', matrix.kanal)] || (matrix.kanal == 'earth' && vars.OTOMAT_YAYIN)) && '1' || '0' }}
     # sırlar yalnız onları kullanan adımda (Üret): checkout, cache, artifact ve gh adımlarına geçmesinler
     steps:
       # dalın o anki ucu: kuyrukta bekleyen koşu öncekinin durum commit'ini görsün
@@ -62,6 +65,7 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         with:
           enable-cache: true
+          version: "0.13.1"  # sabit: her koşu en yeni uv sürümünü çekiyordu (sırlarla aynı işte koşan araç)
       - run: uv sync --locked --extra ses --extra gorsel
         if: steps.kontrol.outputs.atla != '1'
       - name: Model önbelleği
@@ -85,10 +89,12 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         env:
           GH_TOKEN: ${{ github.token }}
-        # son 12 koşu (4 cron ≈ 3 gün = pist; T+2 videosunun klasörü yayınına kadar bulunsun: çeviri onarımı ve
-        # planlama onarımı ona bakar); yeniden denenen koşunun artifact'ı ayrı adlı
+        # son 4 günün koşuları (artifact ömrü 4 gün; T+2 videosunun klasörü yayınına kadar bulunsun: çeviri, altyazı
+        # ve planlama onarımı ona bakar). Eskiden son 12 koşuydu: atlanan, iptal edilen ve elle tetiklenen koşular da
+        # sayıldığı için birkaç elle tetik pencereyi daraltıyordu. Yeniden denenen koşunun artifact'ı ayrı adlı
         run: |
-          for id in $(gh run list --workflow gunluk.yml --branch main -L 12 --json databaseId --jq '.[].databaseId'); do
+          for id in $(gh run list --workflow gunluk.yml --branch main --created ">=$(date -u -d '4 days ago' +%F)" \
+              -L 100 --json databaseId --jq '.[].databaseId'); do
             for ad in $(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id/artifacts" \
                 --jq ".artifacts[] | select(.expired | not) | .name | select(startswith(\"uretim-$OTOMAT_KANAL-\"))"); do
               gh run download "$id" -n "$ad" -D "calisma/onceki/$ad" 2>/dev/null || true
@@ -161,7 +167,9 @@ jobs:
             git push && exit 0
             if ! git pull --rebase; then
               cakisan=$(git diff --name-only --diff-filter=U)
-              if [ -n "$cakisan" ] && ! echo "$cakisan" | grep -qv '^durum/'; then
+              # raporlar/ da: yerelde yeniden yazılmış haftalık rapor rebase'i her denemede düşürüp durumu hiç
+              # kaydettirmiyordu (sonraki koşu aynı videoyu yeniden yayınlardı)
+              if [ -n "$cakisan" ] && ! echo "$cakisan" | grep -qvE '^(durum|raporlar)/'; then
                 git checkout --theirs -- $cakisan && git add -- $cakisan
                 GIT_EDITOR=true git rebase --continue
                 mkdir -p calisma
@@ -180,9 +188,12 @@ jobs:
           SONUC: ${{ job.status }}
           KOSU: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
-          if [ "$SONUC" != "success" ] && [ ! -f calisma/alarm.md ]; then
+          # iş düştüyse Python'un yazdığı alarma da eklenir: "Durumu kaydet" düştüyse sonraki koşu aynı videoyu
+          # yeniden yayınlayabilir, bilinmesi gerekir
+          if [ "$SONUC" != "success" ]; then
             mkdir -p calisma
-            printf 'Günlük koşu %s: iş adımı düştü (%s), Python alarm yazamadan.\n' "$(date -u +%F)" "$SONUC" > calisma/alarm.md
+            [ -f calisma/alarm.md ] || printf 'Günlük koşu %s:\n' "$(date -u +%F)" > calisma/alarm.md
+            printf '\n\n---\n\n**İş düştü (%s):** bir adım başarısız (durum kaydı da olabilir); yeniden tetiklemeden önce koşu kaydına ve `durum/` commitine bak.\n' "$SONUC" >> calisma/alarm.md
           fi
           gh label create alarm --color B60205 --description "Otomat günlük koşu alarmı" --force
           gh label create "kanal:$OTOMAT_KANAL" --color 1D76DB --description "Otomat kanalı" --force
@@ -191,7 +202,9 @@ jobs:
             printf '\n[Koşu kaydı](%s) · @Scryne\n' "$KOSU" >> calisma/alarm.md
             if [ -n "$ACIK" ]; then gh issue comment "$ACIK" --body-file calisma/alarm.md
             else gh issue create --title "Otomat alarmı ($OTOMAT_KANAL)" --label alarm --label "kanal:$OTOMAT_KANAL" --body-file calisma/alarm.md; fi
-          elif [ -n "$ACIK" ]; then
+          # yalnız tam üretim koşusu kapatır (calisma/temiz, gunluk.alarm_yaz): bakım koşusu (rapor, onarım) havuz,
+          # kimlik ve Buffer sınırı denetimlerini yapmıyor, açık alarmı yanlışlıkla kapatıyordu
+          elif [ -n "$ACIK" ] && [ -f calisma/temiz ]; then
             gh issue close "$ACIK" --comment "Temiz koşu ($(date -u +%F)): alarm kapandı. $KOSU"
           fi
 
@@ -224,6 +237,7 @@ jobs:
         if: steps.kontrol.outputs.atla != '1'
         with:
           enable-cache: true
+          version: "0.13.1"  # sabit: her koşu en yeni uv sürümünü çekiyordu (sırlarla aynı işte koşan araç)
       - name: Portföy raporu
         if: steps.kontrol.outputs.atla != '1'
         env:

@@ -12,6 +12,7 @@ import http.client
 import io
 import json
 import os
+import re
 import threading
 import time
 import urllib.error
@@ -34,7 +35,8 @@ KOTA_KODU = b"4006"
 # yeniden denemek boşuna (yetki, model adı). 400 kalıcı değil: Workers AI model tarafı hatalarını da 400 döner
 # ("AiError … InferenceUpstreamError"); kalıcı sayılınca tek seferlik hata bütün koşuyu düşürüyordu
 KALICI = (401, 403, 404)
-DUZ = {"‑": "-", "‐": "-", "–": "-", "—": " - ", "’": "'", "‘": "'",
+# uzun tire virgüle döner: " - " tek başına kelime sayılıyor, altyazıda vurgulanan bir "kelime" oluyordu
+DUZ = {"‑": "-", "‐": "-", "–": "-", "—": ", ", "’": "'", "‘": "'",
        "“": '"', "”": '"', " ": " ", " ": " "}  # fmt: skip
 
 NEURON = {"toplam": 0.0}
@@ -85,7 +87,7 @@ def duzelt(x):
     if isinstance(x, str):
         for a, b in DUZ.items():
             x = x.replace(a, b)
-        return x
+        return re.sub(r" {2,}", " ", re.sub(r"\s+,", ",", x)) if "," in x else x
     if isinstance(x, list):
         return [duzelt(v) for v in x]
     if isinstance(x, dict):
@@ -106,7 +108,7 @@ def _istek(yol: str, govde: bytes, tur: str, zaman_asimi: float = 180) -> dict:
 
 def _bekle(i: int, deneme: int, sure: float) -> None:
     if i < deneme - 1:  # son denemeden sonra uyumak yalnız koşuyu uzatıyordu
-        time.sleep(sure)
+        time.sleep(sure * 2**i)  # üstel: sabit 3-5 sn'lik bekleme kapasite 429'unu ~10 sn'de tüketiyordu
 
 
 def sohbet(istem: str, sema: dict, deneme: int = 3) -> dict:
@@ -163,10 +165,18 @@ def _cok_parcali(alanlar: dict, dosyalar: dict[str, bytes], sinir: str) -> bytes
     return b"".join(parcalar) + f"--{sinir}--\r\n".encode()
 
 
-def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4, referanslar: tuple[Path, ...] = ()) -> Path:
+def gorsel(
+    istem: str,
+    yol: Path,
+    tohum: int,
+    deneme: int = 4,
+    referanslar: tuple[Path, ...] = (),
+    boyut: tuple[int, int] = GORSEL_BOYUT,
+) -> Path:
     """Sahne görselini `yol`a yazar (varsa yeniden üretmez). Güvenlik filtresine takılırsa tohum değişir ve istem
     yumuşatılır; ölüm sahneleri S11'de filtreye takılıyordu. `referanslar`: karakterin önceden çizilmiş karesi gibi
-    girdi görselleri (en çok 4; istem onlara "the reference image" diye atıf yapar)."""
+    girdi görselleri (en çok 4; istem onlara "the reference image" diye atıf yapar). `boyut`: (genişlik, yükseklik);
+    kart yatay ister (dikey kare kartın görsel bandında %70 kırpılıyordu)."""
     if yol.exists():
         return yol
     sinir = "----otomat"
@@ -174,7 +184,7 @@ def gorsel(istem: str, yol: Path, tohum: int, deneme: int = 4, referanslar: tupl
     maliyet = GORSEL_NEURON + REFERANS_NEURON * len(dosyalar)
     son, yumusak = None, ""
     for i in range(deneme):
-        alanlar = {"prompt": (istem + yumusak)[:2000], "width": GORSEL_BOYUT[0], "height": GORSEL_BOYUT[1],
+        alanlar = {"prompt": (istem + yumusak)[:2000], "width": boyut[0], "height": boyut[1],
                    "seed": tohum + i}  # fmt: skip
         try:
             y = _istek(f"run/{GORSEL_MODELI}", _cok_parcali(alanlar, dosyalar, sinir),

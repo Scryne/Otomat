@@ -2,7 +2,9 @@
 
 Üretilen / düşen / yüklenen, kanal sayıları ve öldürme kriterine uzaklık, ödül penceresi ölçülen videoların en iyisi ve
 en kötüsü, haydut durumu, Scryne'ın dokunuş süresi (raporlar/dokunus.jsonl; elle ya da oturumda eklenir).
-Günlük koşu pazartesi günü bir önceki haftanınkini yazar; elle: `python -m otomat.rapor 2026-H41`.
+Günlük koşu haftanın bitiminden RAPOR_GECIKME_GUN sonra (perşembe, UTC) yazar: Analytics 48-72 sa geç dolar,
+pazartesi 00:02 UTC'de yazılan rapor (Kaliforniya'da pazar 17:02) son 2-3 günü eksik sayıyordu ve bir daha
+yazılmıyordu. Elle: `python -m otomat.rapor 2026-H41`.
 """
 
 import datetime as dt
@@ -27,6 +29,7 @@ def dosya(yil: int, hafta: int) -> Path:
 
 GERIYE_HAFTA = 4  # bu kadar eski eksik rapor da yazılır
 ANALITIK_YENIDEN_GUN = 14  # analitiksiz yazılan rapor hafta bitiminden bu kadar gün içinde yeniden denenir
+RAPOR_GECIKME_GUN = 3  # hafta bittikten bu kadar gün sonra yazılır (Analytics gecikmesi; analitik.GECIKME_GUN + 1)
 
 
 def _analitiksiz(yil: int, hafta: int, bugun: dt.date) -> bool:
@@ -47,6 +50,8 @@ def bekleyen(bugun: dt.date) -> tuple[int, int] | None:
     for geri in range(GERIYE_HAFTA, 0, -1):
         yil, hafta, _ = (bugun - dt.timedelta(days=7 * geri)).isocalendar()
         bas, son = hafta_araligi(yil, hafta)
+        if bugun < son + dt.timedelta(days=RAPOR_GECIKME_GUN):
+            continue  # Analytics henüz dolmadı
         if dosya(yil, hafta).exists():
             if not (_analitiksiz(yil, hafta, bugun) and bugun <= son + dt.timedelta(days=ANALITIK_YENIDEN_GUN)):
                 continue
@@ -84,7 +89,8 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
     # aynı slot iki kez "tamam" yazılabiliyor (Plan B'ye düşen video sonraki koşuda hazır üretimle kanala çıktı):
     # üretilen video slot başına bir kez sayılır, harcanan neuron ise her koşunun kendi gerçek harcaması
     tamam = list({k["tarih"]: k for k in tamam_hepsi}.values())
-    dusen = [k for k in kosular if k.get("durum") not in ("tamam", "bos")]
+    # kotaya takılan koşu ayrı satırda sayılır: aynı slot sonra üretildiyse hem üretilen hem düşen görünüyordu
+    dusen = [k for k in kosular if k.get("durum") not in ("tamam", "bos", "kota")]
     cekilen = {v for (v,) in db.execute("SELECT video_id FROM geri_cekilen")}
     yuklenen = [t for t, s in secim.items() if s[3] and s[3] not in cekilen]
     kosu_gunu = {k.get("kosu", k["tarih"]) for k in kosular}
@@ -103,8 +109,10 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
         for k in kosular:
             # satır koşunun kendi kaydından; aynı gün iki koşu olursa seçim tablosunda yalnız sonuncusu durur
             baslik = k.get("baslik", "")
-            konu, kalip = k.get("anahtar", ":").split(":")[0], k.get("kalip", "")
-            _, _, s_baslik, s_vid, _ = secim.get(k["tarih"], ("", "", "", None, None))
+            kalip = k.get("kalip", "")
+            s_konu, _, s_baslik, s_vid, _ = secim.get(k["tarih"], ("", "", "", None, None))
+            # haydudun seçtiği konu (kol); eskiden anahtarın öneki ("wiki", "ezop") yazılıyordu
+            konu = s_konu if baslik and s_baslik == baslik else k.get("anahtar", ":").split(":")[0]
             vid = k.get("video_id") or (s_vid if baslik and s_baslik == baslik else None)
             durum = {"tamam": "✅", "kota": "⏸ kota", "bos": "— boş"}.get(
                 k.get("durum"), "❌ " + k.get("hata", "")[:80]
@@ -181,6 +189,11 @@ def olustur(db: sqlite3.Connection, yil: int, hafta: int, kanal_bu: dict | None,
         for v, g, w, e, y in sirali:
             s.append(f"| {v} | {g} | {_sayi(w)} | {_sayi(e)} | {_oran(e, w)} | {y:.1f} | {odul.get(v, '—')} |")
         s += ["", f"En iyi: {sirali[0][0]} · en kötü: {sirali[-1][0]}", ""]
+        if any(y > 100 for *_, y in sirali):
+            # Shorts görüntülemesi her yeniden oynatmayı sayar (2025-03), engaged saymaz: 8 sn kart döngüye girdikçe
+            # Kalan düşer. Kartta Kalan tek başına pusula değil; İzlenme % 100'ü aşıyorsa izleyici videoyu döndürüyor
+            s += ["İzlenme % 100'ü aşan video döngüye giriyor (kart): görüntüleme her tekrarı saydığı için Kalan "
+                  "olduğundan düşük görünür.", ""]  # fmt: skip
 
     s += ["## Haydut", "", f"Posteriora giren ödül: {len(od)} (son {haydut.PENCERE_GUN} gün).", ""]
     for eksen in ("konu", "kalip"):

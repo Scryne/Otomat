@@ -32,13 +32,20 @@ EN_AZ_METIN = 400  # karakter; daha kısa kaynaktan 75-90 kelimelik hikâye uydu
 # raccoon geçer. "dyke" çıkarıldı (10-13): Hollanda seddi makalelerini render'dan sonra reddediyordu.
 HAKARET = re.compile(
     r"\b(?:wogs?|nigg(?:er|a)s?|coons?|chinks?|gooks?|japs?|kikes?|spics?|wetbacks?|pakis?|ragheads?|redskins?|"
-    r"squaws?|trann(?:y|ies)|retards?|fags?|faggots?|cunts?|fuck\w*|shit\w*)\b",
+    r"squaws?|trann(?:y|ies)|retards?|fags?|faggots?|cunts?|\w*fuck\w*|\w*shit\w*)\b",  # "bullshit" de
     re.I,
 )
 
 
 class KaynakHatasi(RuntimeError):
     """Hikâyenin kaynağı kullanılamıyor (makale silinmiş/taşınmış ya da çok kısa): yalnız bu hikâye düşer."""
+
+
+class KaynakTaze(KaynakHatasi):
+    """Makale son TAZE_DUZENLEME_SA saatte düzenlenmiş: bu koşuda anlatılmaz ama havuzdan da düşmez."""
+
+
+TAZE_DUZENLEME_SA = 24
 
 
 def _kol(bolum: str) -> str:
@@ -146,11 +153,19 @@ def metin(paket: OlguPaketi) -> str:
     if paket.tur == "masal":
         return paket.gorsel["metin"]
     d = _wiki(
-        dict(action="query", titles=paket.gorsel["baslik"], prop="extracts", explaintext=1, exsectionformat="plain",
-             format="json", formatversion=2, redirects=1)
+        dict(action="query", titles=paket.gorsel["baslik"], prop="extracts|revisions", explaintext=1,
+             exsectionformat="plain", rvprop="timestamp", format="json", formatversion=2, redirects=1)
     )["query"]["pages"][0]  # fmt: skip
     if "extract" not in d:
         raise KaynakHatasi(f"makale bulunamadı: {paket.gorsel['baslik']}")
+    # senaryo, kod kapısı ve hakem hep bu metne bakar: dakikalar önceki vandalizm ya da istem enjeksiyonu her
+    # denetimden geçerdi. Yeni düzenlenmiş makale bu koşuda anlatılmaz (havuzdan da düşmez)
+    try:
+        son_duzenleme = dt.datetime.fromisoformat(d["revisions"][0]["timestamp"].replace("Z", "+00:00"))
+    except (KeyError, IndexError, TypeError, ValueError):
+        son_duzenleme = None
+    if son_duzenleme and dt.datetime.now(dt.UTC) - son_duzenleme < dt.timedelta(hours=TAZE_DUZENLEME_SA):
+        raise KaynakTaze(f"makale {son_duzenleme:%Y-%m-%d %H:%M} UTC'de düzenlenmiş: {paket.gorsel['baslik']}")
     # Kaynakça ve dış bağlantılar hikâyeye girmesin
     govde = re.split(BITIS, d["extract"])[0].strip()
     if len(govde) < EN_AZ_METIN:

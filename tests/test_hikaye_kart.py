@@ -206,7 +206,7 @@ def test_kart_uret_gercek_render_kabulden_gecer_dongu_sicramaz(tmp_path, monkeyp
     assert kabul.denetle(dizin / "meta.json") == []
     assert meta["bicim"] == "kart" and meta["altyazi"] == [] and meta["kanca"] == "A deadly wave of molasses"
     assert meta["cumleler"][0] == "On January 15, 1919, a storage tank in Boston's North End burst open."
-    assert "Image: BPL, Public domain, via Wikimedia Commons https://c/File:x" in meta["aciklama"]
+    assert "Image (cropped): BPL, Public domain, via Wikimedia Commons https://c/File:x" in meta["aciklama"]
     assert meta["aciklama"].startswith("On January 15, 1919") and "[[" not in meta["aciklama"]
     assert sorted(p.name for p in dizin.glob("sahne_*")) == ["sahne_0.jpg"]
     assert -18.5 <= _lufs(dizin / "video.mp4") <= -14

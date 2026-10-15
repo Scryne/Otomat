@@ -338,6 +338,9 @@ def senaryo_al(paket: OlguPaketi, kalip: str, dizin: Path) -> tuple[senaryo.Sena
             for i, eski in enumerate(d.get("istemler", [])):
                 if i >= len(istemler) or eski != istemler[i]:  # kanal stili değişmiş: o sahne yeniden çizilir
                     (dizin / f"sahne_{i}.jpg").unlink(missing_ok=True)
+            if d.get("istemler") != istemler:
+                # yeni istemler yazılır: yazılmayınca her sürdürme yeni stille çizilmiş kareleri de yeniden siliyordu
+                yol.write_text(json.dumps({**d, "istemler": istemler}, ensure_ascii=False, indent=1), encoding="utf-8")
             return sc, d.get("kalip", kalip), istemler
     except (OSError, ValueError, KeyError, TypeError):
         pass
@@ -448,6 +451,8 @@ def panelleri_ayikla(sc: senaryo.Senaryo, istemler: list[str], dizin: Path, taba
                 break
         if panel.panelli(yol):
             kayit["son"].append(i)
+        # sonraki yeniden çizimler (görünüş, yazı) da dünya cümlesiz istemle: eski istem panelleri geri getiriyordu
+        istemler[i] = tek[i]
     return kayit
 
 
@@ -519,27 +524,44 @@ def durumlari_denetle(
         sorular = [d for d in degisimler if d["soru"] not in kayit["ayirmayan"]]
         if not sorular or (sahneler is not None and i not in sahneler):
             continue
-        yol, deneme = dizin / f"sahne_{i}.jpg", 0
+        yol, deneme, kusur = dizin / f"sahne_{i}.jpg", 0, None
         while True:
             tutmayan = []
             for d in sorular:
                 c = sor(yol, d["soru"])
                 if c is not None and c[0] != d["beklenen"] and c[1] >= DURUM_GUVEN:
                     tutmayan.append(d["soru"])
-            if not tutmayan:
+            if tutmayan:
+                kayit["tutmayan"][str(i)] = tutmayan
+            else:
                 kayit["tutmayan"].pop(str(i), None)
+            if not tutmayan and not kusur:
                 break
-            kayit["tutmayan"][str(i)] = tutmayan
             if kayit["yeniden"] >= DURUM_YENIDEN:
+                if kusur:  # görünüş tuttu ama kare panelli/yazılı kaldı: video yine çıkar (Drag Nun emsali)
+                    kayit.setdefault("kusurlu", {})[str(i)] = kusur
                 break
             kayit["yeniden"] += 1
             deneme += 1
             yol.unlink()
             # OCR yeniden çizimiyle aynı yazısız istem: yazı taşıyan yan cümle geri gelmesin
             yeniden_ciz(istemler, i, yol, taban + 10 * i + 7 + deneme, dizin, plan)
+            # yeniden çizilen kare panel denetiminden (ve ikinci turda OCR'dan) geçmiyordu
+            kusur = _kare_kusuru(yol, ocr=sahneler is not None)
     if kayit["tutmayan"]:
         raise DurumHatasi(f"değişen görünüş karede tutmadı: {kayit['tutmayan']}")
     return kayit
+
+
+def _kare_kusuru(yol: Path, ocr: bool) -> str | None:
+    try:
+        if panel.panelli(yol):
+            return "yeniden çizim panelli"
+        if ocr and (yazi.oku(yol) or []):
+            return "yeniden çizimde yazı"
+    except OSError:  # okunamayan kare: denetim yapılamadı, görünüş sorusu zaten sorulur
+        return None
+    return None
 
 
 REFERANS_CUMLESI = (
@@ -585,8 +607,11 @@ def sahneleri_ciz(
         for i, istem in enumerate(istemler):
             cumle, ek = _referans_eki(plan, dizin, i)
             isler.append(ex.submit(cf.gorsel, istem + cumle, dizin / f"sahne_{i}.jpg", taban + 10 * i, **ek))
-        # ilk hatada dön: sırayla `result()` beklemek, sıradaki işin hatasını görene kadar kuyruğu çalıştırıyordu
-        wait(isler, return_when=FIRST_EXCEPTION)
+        # ilk hatada dön: sırayla `result()` beklemek, hâlâ çizilen sahneyi beklerken boşalan işçilere kuyruktan yeni
+        # sahne aldırıyordu (filtreye takılan 2. sahnenin ardından 4-6 yine çizildi, ~470 neuron boşa)
+        bitti, _ = wait(isler, return_when=FIRST_EXCEPTION)
+        if hata := next((f.exception() for f in isler if f in bitti and f.exception()), None):
+            raise hata
         return [f.result() for f in isler]
     except BaseException:
         ex.shutdown(wait=True, cancel_futures=True)
@@ -616,7 +641,8 @@ def uret(paket: OlguPaketi, kalip: str, sablon: str, dizin: Path, tohum: str) ->
     durum_kaydi = durumlari_denetle(sc, istemler, dizin, taban, plan)
     yazi_kaydi = yazilari_ayikla(istemler, dizin, taban, plan)
     if yazi_kaydi.get("cizilen") and sc.degisimler:
-        ek = durumlari_denetle(sc, istemler, dizin, taban + 1, plan, set(yazi_kaydi["cizilen"]),
+        # ayrı tohum aralığı: taban + 1 ilk turun tohumlarıyla çakışıp yazı yüzünden atılan kareyi yeniden çizebiliyordu
+        ek = durumlari_denetle(sc, istemler, dizin, taban + 5000, plan, set(yazi_kaydi["cizilen"]),
                                durum_kaydi["ayirmayan"])  # fmt: skip
         for alan in ("soru", "yeniden", "hata"):
             durum_kaydi[alan] += ek[alan]

@@ -51,8 +51,14 @@ METIN_UST = 250  # üstteki ~200 px Shorts arayüzünün (arama, menü) altında
 GORSEL_ALT = 1500  # altındaki ~420 px başlık, kanal adı ve düğmelerin altında kalır
 METIN_ALT = 980  # paragraf bundan aşağı inmez: görsele en az ~520 px kalır
 SAHNE = "sahne_0.jpg"  # yarım üretim ve artifact düzeni sahne dosyası adını bekliyor
+# AI illüstrasyonu yatay: görsel bandı ~1080×500-650. Dikey 768×1344 kare bandın %70'ini dışarıda bırakıyordu (10-17
+# Hobby Lobby kartında konunun kendisi, masadaki tabletler, kırpılmıştı)
+GORSEL_BOYUT = (1344, 768)
+PARAGRAF_BOYLARI = (56, 52, 48, 44, 40, 37, 34)
 VURGU = re.compile(r"\[\[(.+?)\]\]")
-LISANS = re.compile(r"^(?:public domain|pd\b|pd-|cc0|cc[ -]by(?:-sa)?\b|no restrictions|attribution\b)", re.I)
+LISANS = re.compile(r"^(?:public domain|pd\b|pd-|cc0|cc[ -]by(?:-sa)?(?:[ -]\d|$)|no restrictions|attribution$)", re.I)
+# NC/ND serbest değil: "CC BY-NC-SA 4.0" eski desende `\b` yüzünden geçiyordu
+SERBEST_DEGIL = re.compile(r"(?i)\b(?:nc|nd)\b|non-?commercial|no ?deriv")
 BELGE_HARF = 40  # OCR'da bu kadar Latin harf: görsel belge ya da yazı sayfası (Tarrare'nin ana görseli), AI'a düşer
 UA = kaynaklar.UA
 COMMONS = "https://commons.wikimedia.org/w/api.php"
@@ -152,6 +158,9 @@ def isaret_duzelt(metin: str) -> str:
 def kod_kontrolu(k: Kart, kaynak: str) -> list[tuple[int, str]]:
     """Satır 0 başlık, 1 kanca, 2.. cümleler (hakemle aynı numaralar)."""
     sorun = []
+    for i, s in ((0, k.baslik), (1, k.kanca)):
+        if "[" in s or "]" in s:
+            sorun.append((i, "no [[ ]] marks or brackets here"))
     if not senaryo.BASLIK_UZUNLUK[0] <= len(k.baslik.strip()) <= senaryo.BASLIK_UZUNLUK[1]:
         sorun.append((0, f"the title must be {senaryo.BASLIK_UZUNLUK[0]}-{senaryo.BASLIK_UZUNLUK[1]} characters"))
     if not KANCA_KELIME[0] <= len(k.kanca.split()) <= KANCA_KELIME[1]:
@@ -162,8 +171,12 @@ def kod_kontrolu(k: Kart, kaynak: str) -> list[tuple[int, str]]:
             sorun.append((i, f"remove the slur or profanity: {', '.join(bulunan)}"))
         sorun += [(i, h) for h in senaryo.sayi_ad_kapisi(duz(s), kaynak, adlar=i > 1)]
     for i, s in enumerate(k.cumleler, 2):
-        if s.count("[[") != s.count("]]"):
-            sorun.append((i, "unbalanced [[ ]] marks"))
+        # iç içe ya da sırası bozuk işaret ("A [[big [[tank]] burst]]", "b]] [[c") ekrana köşeli parantezle çıkıyordu;
+        # açıklama düz metni gördüğü için kabulden de geçiyordu
+        if "[" in VURGU.sub("", s) or "]" in VURGU.sub("", s) or any("[" in v for v in VURGU.findall(s)):
+            sorun.append((i, "broken [[ ]] marks; mark each phrase once as [[phrase]], never nested"))
+        if len(duz(s).split()) < 3:
+            sorun.append((i, "each sentence needs at least 3 words"))  # kabul render'dan sonra reddediyordu
         for v in VURGU.findall(s):
             if len(v.split()) > VURGU_KELIME:
                 sorun.append((i, f"the marked phrase is too long ({len(v.split())} words); mark 1-5 words"))
@@ -181,6 +194,9 @@ def kod_kontrolu(k: Kart, kaynak: str) -> list[tuple[int, str]]:
         sorun.append((2, f"write {CUMLE[0]}-{CUMLE[1] - 1} sentences (now {len(k.cumleler)})"))
     if not KELIME[0] <= toplam <= KELIME[1]:
         sorun.append((len(satirlar) - 1, f"the card has {toplam} words; it must be 40-55"))
+    elif not yerlesim(duz(k.kanca), k.cumleler)[-1]:
+        # uzun kelimeli paragraf en küçük puntoda da görsele taşıyordu (kabul bakmıyordu)
+        sorun.append((len(satirlar) - 1, "the card is too long to fit on screen; use fewer or shorter words"))
     return sorun
 
 
@@ -220,14 +236,30 @@ def yaz(baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> 
             ),
             ONARIM_SEMA,
         )
-        for d in f["fixes"]:
-            if d["line"] == 0:
-                k.baslik = d["text"].strip()
-            elif d["line"] == 1:
-                k.kanca = d["text"].strip()
-            elif 2 <= d["line"] < len(satirlar):
-                k.cumleler[d["line"] - 2] = isaret_duzelt(d["text"])
+        onarim_uygula(k, f.get("fixes"))
     raise senaryo.SenaryoHatasi(f"kart {senaryo.TUR_SAYISI} turda hakemden geçmedi", k.turlar)
+
+
+def onarim_uygula(k: Kart, fixes) -> None:
+    """Onarım yanıtı karta: başlık ve kanca işaretsiz; cümle satırı değişir, boş metin satırı siler, son satırın bir
+    sonrası yeni cümle ekler (eskiden cümle sayısı onarılamıyordu: iki öğeye sıkışmış kart dört turu boşa yakıp
+    hikâyeyi düşürüyordu). Bozuk öğe (satır no'su ya da metni olmayan) atlanır, bütün koşuyu düşürmez."""
+    cumle_sayisi = len(k.cumleler)
+    yeni = dict(enumerate(k.cumleler, 2))
+    ek = []
+    for d in fixes if isinstance(fixes, list) else []:
+        if not (isinstance(d, dict) and isinstance(d.get("line"), int) and isinstance(d.get("text"), str)):
+            continue
+        satir, metin = d["line"], isaret_duzelt(d["text"])
+        if satir == 0 and metin:
+            k.baslik = duz(metin)
+        elif satir == 1 and metin:
+            k.kanca = duz(metin)
+        elif 2 <= satir < 2 + cumle_sayisi:
+            yeni[satir] = metin
+        elif satir == 2 + cumle_sayisi and metin:
+            ek.append(metin)
+    k.cumleler = [c for _, c in sorted(yeni.items()) if c] + ek
 
 
 # --- görsel ---
@@ -251,9 +283,15 @@ def _yazar(em: dict) -> str:
     authorUnknown author"): bilinmeyen yazar boş döner (atıf satırı lisansla kalır)."""
     ham = em.get("Artist", {}).get("value") or ""
     yazar = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", ham))).strip()
-    if not yazar or re.match(r"(?i)(unknown|anonymous|unbekannt)\b", yazar):
-        return ""
-    return yazar[:60] + ("…" if len(yazar) > 60 else "")
+    # yalnız baştaki "bilinmeyen" kalıbı düşer: "Unknown photographer; restored by Adam Cuerden"de lisans veren
+    # restoratör kalır. < > YouTube metninde 400 verir (videos.update bütün planlamayı düşürür)
+    yazar = BILINMEYEN.sub("", yazar)
+    return yazar.replace("<", "‹").replace(">", "›").strip()
+
+
+BILINMEYEN = re.compile(
+    r"(?i)^(?:(?:unknown|anonymous|unbekannt)(?:\s+(?:author|artist|photographer|painter))?\s*)+[;,.:]?\s*"
+)
 
 
 def wiki_gorseli(baslik: str) -> dict | None:
@@ -274,13 +312,15 @@ def wiki_gorseli(baslik: str) -> dict | None:
     if (
         em.get("NonFree", {}).get("value")
         or not LISANS.match(lisans)
+        or SERBEST_DEGIL.search(lisans)
         or ii.get("mime") not in ("image/jpeg", "image/png")
         or min(w, h) < 400
         or not 0.35 <= w / max(h, 1) <= 2.5
     ):
         return None
+    lisans_url = (em.get("LicenseUrl", {}).get("value") or "").strip()  # CC BY/BY-SA lisansa bağlantı ister
     return {"url": ii.get("thumburl") or ii["url"], "sayfa": ii.get("descriptionurl", ""), "lisans": lisans,
-            "yazar": _yazar(em), "dosya": dosya}  # fmt: skip
+            "lisans_url": lisans_url, "yazar": _yazar(em), "dosya": dosya}  # fmt: skip
 
 
 def _indir(url: str, yol: Path) -> None:
@@ -288,7 +328,11 @@ def _indir(url: str, yol: Path) -> None:
         veri = r.read()
     gecici = yol.with_suffix(".tmp")
     gecici.write_bytes(veri)
-    Image.open(gecici).convert("RGB").save(yol, quality=92)  # bozuk dosya burada düşer
+    img = Image.open(gecici)  # bozuk dosya burada düşer
+    if img.mode in ("RGBA", "LA") or "transparency" in img.info:
+        # saydam PNG (çizim, arma): convert("RGB") saydamı siyaha çeviriyordu, koyu zeminde görünmezdi
+        img = Image.alpha_composite(Image.new("RGBA", img.size, "white"), img.convert("RGBA"))
+    img.convert("RGB").save(yol, quality=92)
     gecici.unlink()
 
 
@@ -319,13 +363,16 @@ def gorsel_al(paket: OlguPaketi, k: Kart, dizin: Path, tohum: int) -> dict:
             hata = "yazı ağırlıklı (belge)"
             yol.unlink()
     k_ = kanal.aktif()
-    istem = f"{k_.stil}. A single full-frame scene, not a comic, no panels. {k.gorsel_tarifi} {uretim_yazisiz()}"
-    cf.gorsel(istem, yol, tohum)
+    istem = (
+        f"{k_.stil}. A single full-frame wide scene, not a comic, no panels; the subject in the middle of the frame. "
+        f"{k.gorsel_tarifi} {uretim_yazisiz()}"
+    )
+    cf.gorsel(istem, yol, tohum, boyut=GORSEL_BOYUT)
     yeniden = 0
     if panel.panelli(yol) or (yazi.oku(yol) or []):
         yeniden = 1
         yol.unlink()
-        cf.gorsel(istem, yol, tohum + 7)
+        cf.gorsel(istem, yol, tohum + 7, boyut=GORSEL_BOYUT)
     return {"kaynak": "ai", "model": cf.GORSEL_MODELI, "wiki": hata or "görsel yok", "yeniden": yeniden}
 
 
@@ -344,21 +391,30 @@ def _font(ad: str, boy: int) -> ImageFont.FreeTypeFont:
 
 
 def kelimeler(cumleler: list[str]) -> list[tuple[str, int]]:
-    """[[vurgu]] işaretli cümleler → (kelime, renk no; -1 düz). Vurgudan sonra gelen noktalama önceki kelimeye
-    yapışır ("died ." değil "died.")."""
-    sonuc: list[tuple[str, int]] = []
+    """[[vurgu]] işaretli cümleler → (kelime, renk no; -1 düz). Kelimeler kaynaktaki boşluklardan bölünür: işarete
+    bitişik yazı ayrılmaz ("[[Hobby Lobby]]'s" → "Lobby's"; eskiden "Lobby 's"), vurguya değen kelime vurgunun rengini
+    alır. Tek başına kalan noktalama önceki kelimeye yapışır ("died ." değil "died.")."""
+    harfler: list[tuple[str, int]] = []
     vno = 0
     for parca in re.split(r"(\[\[.+?\]\])", " ".join(cumleler)):
-        if parca.startswith("[["):
-            sonuc += [(w, vno % len(RENKLER)) for w in parca[2:-2].split()]
+        if m := VURGU.fullmatch(parca):
+            harfler += [(c, vno % len(RENKLER)) for c in m.group(1)]
             vno += 1
+        else:
+            harfler += [(c, -1) for c in parca.replace("[[", "").replace("]]", "")]
+    sonuc: list[tuple[str, int]] = []
+    kelime, renk = "", -1
+    for c, r in [*harfler, (" ", -1)]:
+        if not c.isspace():
+            kelime += c
+            renk = r if renk < 0 else renk
             continue
-        for w in parca.split():
-            if sonuc and re.fullmatch(r"[.,;:!?)’'\"”]+", w):
-                onceki, r = sonuc[-1]
-                sonuc[-1] = (onceki + w, r)
-            else:
-                sonuc.append((w, -1))
+        if kelime and sonuc and re.fullmatch(r"[.,;:!?)’'\"”]+", kelime):
+            onceki, r0 = sonuc[-1]
+            sonuc[-1] = (onceki + kelime, r0)
+        elif kelime:
+            sonuc.append((kelime, renk))
+        kelime, renk = "", -1
     return sonuc
 
 
@@ -372,30 +428,38 @@ def satirla(kel: list[tuple[str, int]], f: ImageFont.FreeTypeFont, genislik: int
     return [*satirlar, satir] if satir else satirlar
 
 
+def yerlesim(kanca: str, cumleler: list[str]) -> tuple[int, list, int, list, bool]:
+    """(kanca boyu, kanca satırları, paragraf boyu, paragraf satırları, sığıyor mu). Kanca en çok iki satır; paragraf
+    METIN_ALT'a sığana kadar küçülür. Kod kapısı da bunu sorar: sığmayan kart render'a gitmez."""
+    for kboy in (92, 84, 76, 68):
+        fh = _font("BarlowCondensed-Bold.ttf", kboy)
+        kanca_satir = satirla([(w, 0) for w in kanca.upper().split()], fh, G - 2 * KENAR)
+        if len(kanca_satir) <= 2:
+            break
+    y = METIN_UST + len(kanca_satir) * int(kboy * 1.05) + 30
+    kel = kelimeler(cumleler)
+    for boy in PARAGRAF_BOYLARI:
+        satirlar = satirla(kel, _font("Barlow-Medium.ttf", boy), G - 2 * KENAR)
+        if y + len(satirlar) * int(boy * 1.22) <= METIN_ALT:
+            return kboy, kanca_satir, boy, satirlar, True
+    return kboy, kanca_satir, boy, satirlar, False
+
+
 def ust_katman(kanca: str, cumleler: list[str], kanal_adi: str) -> tuple[Image.Image, int]:
-    """Sabit katman (kanal adı, kanca, paragraf) ve paragrafın bittiği y. Kanca en çok iki satır; paragraf METIN_ALT'a
-    sığana kadar küçülür."""
+    """Sabit katman (kanal adı, kanca, paragraf) ve paragrafın bittiği y."""
     kat = Image.new("RGBA", (G, Y), (0, 0, 0, 0))
     d = ImageDraw.Draw(kat)
     d.text((G / 2, METIN_UST - 70), kanal_adi.upper(), font=_font("Barlow-Medium.ttf", 34), fill=(170, 170, 170),
            anchor="mm")  # fmt: skip
+    kboy, kanca_satir, boy, satirlar, _ = yerlesim(kanca, cumleler)
+    fh = _font("BarlowCondensed-Bold.ttf", kboy)
     y = METIN_UST
-    for boy in (92, 84, 76, 68):
-        fh = _font("BarlowCondensed-Bold.ttf", boy)
-        kanca_satir = satirla([(w, 0) for w in kanca.upper().split()], fh, G - 2 * KENAR)
-        if len(kanca_satir) <= 2:
-            break
     for satir in kanca_satir:
         d.text((G / 2, y), " ".join(w for w, _ in satir), font=fh, fill=RENKLER[0], anchor="mt", stroke_width=2,
                stroke_fill="black")  # fmt: skip
-        y += int(boy * 1.05)
+        y += int(kboy * 1.05)
     y += 30
-    kel = kelimeler(cumleler)
-    for boy in (56, 52, 48, 44, 40):
-        fp = _font("Barlow-Medium.ttf", boy)
-        satirlar = satirla(kel, fp, G - 2 * KENAR)
-        if y + len(satirlar) * boy * 1.22 <= METIN_ALT:
-            break
+    fp = _font("Barlow-Medium.ttf", boy)
     bosluk = fp.getlength(" ")
     for satir in satirlar:
         x = (G - fp.getlength(" ".join(w for w, _ in satir))) / 2
@@ -417,20 +481,29 @@ def kareler(gorsel: Path, kanca: str, cumleler: list[str], atif: str, kanal_adi:
     gecis = Image.linear_gradient("L").resize((G, 60))
     zemin_seridi = Image.new("RGB", (G, 60), ZEMIN)
     taban = Image.new("RGB", (G, Y), ZEMIN)
-    ImageDraw.Draw(taban).text((G - KENAR, GORSEL_ALT + 32), atif, font=_font("Barlow-Regular.ttf", 24),
-                               fill=(140, 140, 140), anchor="rs")  # fmt: skip
+    # atıf görsel bandının dibinde, karartılmış şeridin üstünde: bandın altı Shorts arayüzünün altında kalıyordu ve
+    # uzun yazar adı soldan kesiliyordu
+    atif_kat = Image.new("RGBA", (G, Y), (0, 0, 0, 0))
+    fa = _font("Barlow-Regular.ttf", 24)
+    while fa.getlength(atif) > G - 2 * KENAR and len(atif) > 20:
+        atif = atif[:-2].rstrip() + "…"
+    ImageDraw.Draw(atif_kat).text((G - KENAR, GORSEL_ALT - 14), atif, font=fa, fill=(190, 190, 190), anchor="rs",
+                                  stroke_width=2, stroke_fill=ZEMIN)  # fmt: skip
+    # dikey görselde (portre) yüz üst üçte birde; yatay sahnede ortanın biraz üstü
+    oran = 0.33 if img.height > img.width * 1.1 else 0.45
     n = round(sure * FPS)
     for i in range(n):
         s = 1.04 + 0.04 * math.cos(2 * math.pi * i / n)  # 1,08 → 1,00 → 1,08
         w, h = alan[0] * 1.08 / s, alan[1] * 1.08 / s
         cx = buyuk.width / 2
-        cy = min(max(h / 2, buyuk.height * 0.45), buyuk.height - h / 2)  # uzun görselde üst-orta (yüzler)
+        cy = min(max(h / 2, buyuk.height * oran), buyuk.height - h / 2)
         parca = buyuk.crop((round(cx - w / 2), round(cy - h / 2), round(cx + w / 2), round(cy + h / 2)))
         kare = taban.copy()
         kare.paste(parca.resize(alan, Image.BILINEAR), (0, ust))
         kare.paste(zemin_seridi, (0, ust), Image.eval(gecis, lambda p: 255 - p))
         kare.paste(zemin_seridi, (0, GORSEL_ALT - 60), gecis)
         kare.paste(kat, (0, 0), kat)
+        kare.paste(atif_kat, (0, 0), atif_kat)
         yield kare
 
 
@@ -458,8 +531,8 @@ def muzikle(sessiz: Path, muzik: Path, cikti: Path, sure: float = SURE) -> Path:
     subprocess.run(
         [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-v", "error", "-i", str(sessiz), "-stream_loop", "-1", "-i",
          str(muzik), "-filter_complex",
-         f"[1:a]atrim=0:{sure + 1:.2f},loudnorm=I={MUZIK_LUFS}:TP=-2:LRA=11,afade=t=in:d=0.2,"
-         f"afade=t=out:st={sure - 0.5:.2f}:d=0.5,aresample=48000[a]",
+         f"[1:a]atrim=0:{sure + 1:.2f},loudnorm=I={MUZIK_LUFS}:TP=-2:LRA=11,afade=t=in:d=0.05,"
+         f"afade=t=out:st={sure - 0.2:.2f}:d=0.2,aresample=48000[a]",
          "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", "-t", f"{sure:.2f}", str(cikti)],
         check=True,
     )  # fmt: skip
@@ -473,7 +546,9 @@ def atif_satiri(g: dict) -> str:
     """Görselin altındaki satır (CC BY/BY-SA atfı videoda da durur)."""
     if g["kaynak"] != "wikimedia":
         return "Illustration: AI"
-    return f"Image: {g['yazar'] + ' · ' if g['yazar'] else ''}{g['lisans']} · Wikimedia Commons"
+    # yazar kısalır, lisans ve kaynak kalır (satır ~85 karakter alıyor)
+    yazar = g["yazar"] if len(g["yazar"]) <= 38 else g["yazar"][:37].rstrip() + "…"
+    return f"Image: {yazar + ' · ' if yazar else ''}{g['lisans']} · Wikimedia Commons"
 
 
 def aciklama(paket: OlguPaketi, k: Kart, g: dict, muzik_adi: str) -> str:
@@ -482,7 +557,9 @@ def aciklama(paket: OlguPaketi, k: Kart, g: dict, muzik_adi: str) -> str:
     etiket = " ".join(dict.fromkeys("#" + "".join(w[:1].upper() + w[1:] for w in e.split()) for e in paket.etiketler))
     ad = paket.gorsel["baslik"]
     if g["kaynak"] == "wikimedia":
-        gorsel = f"Image: {g['yazar'] or 'see file page'}, {g['lisans']}, via Wikimedia Commons {g['sayfa']}"
+        lisans = g["lisans"] + (f" ({g['lisans_url']})" if g.get("lisans_url") else "")
+        # CC BY/BY-SA değişikliğin belirtilmesini ister: görsel kırpılıyor, üstüne yazı geliyor
+        gorsel = f"Image (cropped): {g['yazar'] or 'see file page'}, {lisans}, via Wikimedia Commons {g['sayfa']}"
     else:
         gorsel = "Illustration made with AI."
     return (

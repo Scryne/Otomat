@@ -24,7 +24,7 @@ from pathlib import Path
 
 import yaml
 
-from otomat import kanal
+from otomat import durum, kanal
 from otomat.ayarlar import KOK
 from otomat.rapor import OLDURME  # Faz 8, kanal başına (K-14); tek tanım rapor.py'de
 
@@ -56,10 +56,8 @@ def _sayi(n: float | None) -> str:
 
 
 def _kayitlar(k: kanal.Kanal) -> list[dict]:
-    yol = k.raporlar / "gunluk.jsonl"
-    if not yol.exists():
-        return []
-    return [json.loads(s) for s in yol.read_text(encoding="utf-8").splitlines() if s.strip()]
+    # yarım yazılmış tek satır (iş zaman aşımı) bütün portföy işini düşürüyordu: rapor.py gibi bozuk satır atlanır
+    return durum.jsonl_oku(k.raporlar / "gunluk.jsonl")
 
 
 def _kosu_gunu(r: dict) -> str:
@@ -88,9 +86,14 @@ def _neuron(r: dict) -> int:
 
 
 def _api_birimi(r: dict) -> int:
+    """Koşunun ölçülmüş YouTube birimi (`yt_birim`, 10-15'ten beri); eski kayıtta tahmin. Tahmin her videoya beş
+    altyazı izi sayıyordu: altyazısız kartta (K-25) 2.050 yerine ~50."""
+    if "yt_birim" in r:
+        return r["yt_birim"]
     if not r.get("video_id"):
         return 0
-    return API_VIDEO + API_ALTYAZI * (1 + len(r.get("diller", [])))
+    altyazi = 0 if r.get("sure_sn", 99) <= 12 else 1 + len(r.get("diller", []))  # 8 sn kart: altyazı izi yok
+    return API_VIDEO + API_ALTYAZI * altyazi
 
 
 def ilk_public(k: kanal.Kanal) -> dt.date | None:

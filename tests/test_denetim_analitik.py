@@ -89,7 +89,7 @@ def test_rapor_ayni_slotu_bir_kez_sayar_cekileni_ulasan_saymaz(tmp_path, monkeyp
 
 def test_rapor_bekleyen_eski_eksik_haftayi_ve_analitiksiz_raporu_yeniden_yazar(tmp_path, monkeypatch):
     monkeypatch.setattr(rapor, "RAPORLAR", tmp_path)
-    bugun = dt.date(2026, 10, 27)  # H44 pazartesi
+    bugun = dt.date(2026, 10, 28)  # H43 bitti + 3 gün (Analytics gecikmesi)
     satirlar = [_kosu(t, "tamam") for t in ("2026-10-08", "2026-10-15", "2026-10-22")]  # H41, H42, H43
     (tmp_path / "gunluk.jsonl").write_text("\n".join(satirlar) + "\n", encoding="utf-8")
     assert rapor.bekleyen(bugun) == (2026, 41)  # eskiden yalnız H43'e bakıyordu
@@ -100,6 +100,8 @@ def test_rapor_bekleyen_eski_eksik_haftayi_ve_analitiksiz_raporu_yeniden_yazar(t
     rapor.dosya(2026, 43).with_suffix(".json").write_text(json.dumps({"analitik_hatasi": "invalid_grant"}), "utf-8")
     assert rapor.bekleyen(bugun) == (2026, 43)  # analitiksiz rapor iki hafta içinde yeniden denenir
     assert rapor.bekleyen(dt.date(2026, 11, 20)) is None
+    rapor.dosya(2026, 43).unlink()
+    assert rapor.bekleyen(dt.date(2026, 10, 27)) is None  # pazartesi: Analytics son günleri henüz yazmadı
 
 
 def test_olme_sayaci_format_doneminden_baslar(tmp_path):

@@ -8,6 +8,7 @@ genel kitleye çevirdi (K-24, docs/arastirma/08).
 """
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from otomat.hikaye import cf
@@ -382,15 +383,30 @@ def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
             hata.append(f"number not in source: {n}")
     if not adlar:
         return hata
-    for ad in re.findall(r"(?<![.!?:\"]\s)(?<!^)\b[A-Z][a-z]{2,}\b", metin):
-        if ad in TAKVIM:  # "Monday" kaynakta yazmasa da uydurma ad değil; tarihi hakem denetler
+    k_duz = _aksansiz(k)
+    for m in re.finditer(r"\b[^\W\d_]{3,}\b", metin):
+        ad = m.group()
+        # büyük harfle başlayıp küçükle süren her kelime (Unicode: "Pérez", "Émile", "McDonald" eskiden hiç
+        # denetlenmiyordu); cümle başı ad sayılmaz, unvandan sonrası sayılır ("hired Dr. Grayson")
+        if not (ad[0].isupper() and ad[1].islower()) or ad in TAKVIM:  # gün/ay adını hakem denetler
             continue
-        # kısa ad tam kelime ("Tom" kaynaktaki "tomorrow"dan geçiyordu), uzun ad kelime başında kök (Londoners → london)
-        kok = ad.lower() if len(ad) <= 4 else ad.lower()[: max(5, len(ad) - 3)]
+        once = metin[: m.start()]
+        if (not once.strip() or re.search(r"[.!?:\"“”]\s$", once)) and not UNVAN.search(once):
+            continue
+        # kısa ad tam kelime ("Tom" kaynaktaki "tomorrow"dan geçiyordu), uzun ad kelime başında kök (Londoners →
+        # london); aksan iki yanda da düşer: kaynaktaki "Ténéré" için yazılan "Tenere" uydurma sayılıyordu
+        kok = _aksansiz(ad.lower() if len(ad) <= 4 else ad.lower()[: max(5, len(ad) - 3)])
         kalip = rf"\b{re.escape(kok)}\b" if len(ad) <= 4 else rf"\b{re.escape(kok)}"
-        if not re.search(kalip, k):
+        if not re.search(kalip, k_duz):
             hata.append(f"name not in source: {ad}")
     return hata
+
+
+UNVAN = re.compile(r"\b(?:Mr|Mrs|Ms|Dr|St|Mt|Ft|Capt|Col|Gen|Gov|Lt|Sgt|Rev|Prof|Sr|Jr)\.\s$")
+
+
+def _aksansiz(metin: str) -> str:
+    return "".join(c for c in unicodedata.normalize("NFKD", metin) if not unicodedata.combining(c))
 
 
 def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> list[tuple[int, str]]:

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Otomat — open data shorts</title>
-<meta name="description" content="Otomat is a single-user tool that turns open public datasets into short data-visualization videos for one YouTube channel.">
+<title>Otomat — story shorts</title>
+<meta name="description" content="Otomat is a single-user tool that makes short story videos from public sources and publishes them to its operator's own YouTube channels.">
 <style>
   :root { --surface:#0b1220; --ink:#f2f5f9; --ink2:#a9b4c4; --muted:#6b7890; --primary:#ee5a2a; --edge:#26334a; }
   * { box-sizing: border-box; }
@@ -21,16 +21,21 @@
 <body>
 <main>
   <h1><span class="accent" aria-hidden="true"></span>Otomat</h1>
-  <p>Otomat is a private, single-user tool. It turns open public datasets into short, vertical data-visualization
-    videos and publishes them to one YouTube channel owned by its operator: <strong>Earth in Numbers</strong>.</p>
+  <p>Otomat is a private, single-user tool. It makes short vertical story videos and publishes them to YouTube
+    channels owned by its operator: <strong>Inkwell Oddities</strong> (true, strange stories from history) and
+    <strong>Lanternbug Tales</strong> (Aesop's fables).</p>
 
   <h2>What it does</h2>
   <ul>
-    <li>Reads open data: the U.S. Geological Survey earthquake catalog, World Bank World Development Indicators and
-      Eurostat. Every video credits its source and license on screen and in the description.</li>
-    <li>Renders a map or chart animation from that data, with synthetic narration and captions.</li>
-    <li>Uploads the video to the operator's own channel through the YouTube Data API and reads that channel's own
-      YouTube Analytics to choose future topics.</li>
+    <li>Takes each story from a public source: Wikipedia's list of unusual articles or a public-domain edition of
+      Aesop's fables. The source and its license are credited in every video description.</li>
+    <li>Writes the on-screen text or narration with an AI language model and checks every fact, name and number
+      against the source text before a video is made.</li>
+    <li>Uses an illustration made with an AI image model, or a freely licensed image from Wikimedia Commons with its
+      author and license credited. Narration, where used, is a synthetic voice; music is by Kevin MacLeod (CC BY 4.0).</li>
+    <li>Publishes through the operator's own Buffer account, then uses the YouTube Data API on the operator's own
+      channels to set the title, description, tags, scheduled publish time, translated titles and descriptions and
+      caption tracks, and reads those channels' own YouTube Analytics to choose future stories.</li>
   </ul>
 
   <h2>What it does not do</h2>

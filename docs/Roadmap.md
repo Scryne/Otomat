@@ -19,7 +19,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
 | 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
-| 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
+| 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
@@ -570,6 +570,57 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     aynen, gerisi (million, yer adı) hedef dilde. Canlı es/de/fr denemesi temiz.
   - Bugüne sabitlenmiş pist testi (10-14 slotu) 10-15'te düştü; gerçek saate göreli yapıldı. 260 → 263 test.
 - **Yayında kalan sahneli Earth videoları:** Bartman (10-14), Heraclitus (10-15), Ganesha (10-16). Kıyas tabanı.
+- **Üçüncü denetim (2026-10-15, Scryne: "eksikliklerin ve hataların tamamını çöz"):** dört bağımsız inceleme (kart
+  biçimi, orkestrasyon + iş akışı, hikâye hattı, yayın + analitik), ~46 bulgu; doğrulananlar düzeltildi. 263 → 307
+  test; yeni 44 testin 44'ü eski kodda düşüyor (`tests/test_denetim3*.py`).
+  - Canlı bulgu: Ganesha'nın (`CgRlUjXj9F8`, 10-16) fr/pt altyazıları 10-14'te YouTube kotasına takıldı (iki kanal tek
+    Cloud projesi = günlük 10.000 birim; o gün elle marka işi de vardı); alarm çaldı ama hiçbir koşu yeniden
+    denemiyordu. Artık düşen iz `altyazi_eksik` kuyruğuna girer, kota dolunca kalan diller denenmez, sonraki koşu önce
+    videonun izlerini okuyup (çift iz açmadan) tamamlar; 3 kota dışı hatadan sonra alarmla vazgeçer. Ganesha'nın iki
+    dili kuyruğa elle yazıldı. Alarm satırı HttpError'un nedenini taşır (`HttpError 403 quotaExceeded`; eskiden 200
+    karakterde kesilen URL'ydi). Koşunun ölçülmüş YouTube birimi günlük kayıtta (`yt_birim`), portföy tahmin yerine onu
+    kullanır (tahmin kartta da 5 altyazı sayıyordu).
+  - Kart (10-17 Hobby Lobby karesi incelendi): AI görseli dikey çiziliyor, bant yatay olduğu için %70'i kırpılıyordu;
+    konunun kendisi (masadaki tabletler) karede yoktu → kart görseli yatay 1344×768, istem "konu ortada" (canlı
+    denendi). Atıf satırı görsel bandının içine (eskiden Shorts arayüzünün altında, uzun yazar adı kesik). İşarete
+    bitişik yazı ayrılıyordu ("Lobby 's"); iç içe/bozuk `[[ ]]` ekrana parantezle çıkıp kabulden geçiyordu; onarım cümle
+    ekleyip silemiyordu (iki öğeye sıkışmış kart dört turu boşa yakardı); 3 kelimeden kısa cümle ve ekrana sığmayan
+    paragraf ancak render'dan sonra düşüyordu (artık kod kapısında). Lisans süzgeci CC BY-NC/ND'yi geçiriyordu; atıfta
+    lisans bağlantısı ve "cropped" notu yok, "Unknown photographer; restored by X" yazarı boş kalıyordu; saydam PNG
+    siyaha dönüyordu. Çeviri `captions: [""]` döndürünce kartın dili düşüyordu. Hazır üretim eski biçimin (sahneli)
+    yayınlanmamış videosunu kart deneyine karıştırabiliyordu. Müzik döngüsündeki sönme 0,7 → 0,25 sn.
+  - **Earth `donem` 10-17** (ilk kart): haydut ödülleri ve K-14 sayacı 8 sn kartları 30 sn sahneli videolarla
+    karıştırmasın (Orbit K-24 gibi). **Earth K-14 karar günü buna göre kayar (~12-11).**
+  - **"Kalan" uyarısı:** Shorts görüntülemesi 2025-03'ten beri her yeniden oynatmayı sayar, engaged saymaz; döngüye
+    giren 8 sn kartta Kalan olduğundan düşük görünür. Faz 16 kararı Kalan'la birlikte ortalama izlenme %'sine de bakar
+    (%100'ü aşıyorsa izleyici kartı döndürüyor); rapor bunu tablonun altına yazar.
+  - Orkestrasyon: Üret adımının 33 dk sınırı Buffer beklemesinin ortasına düşerse kayıt yoktu, sonraki koşu aynı videoyu
+    yeniden gönderirdi → Buffer id'yi verir vermez kayıt (+ planlama onarımı işareti), SIGTERM `finally`'leri koşturur,
+    koşu kesilince hikâye harcanır; 12 dk'yı geçen koşu ikinci videoya başlamaz. Bakım koşusu (rapor, onarım) havuz,
+    kimlik ve Buffer sınırına bakmadan açık alarmı kapatıyordu → yalnız alarmsız tam koşu kapatır. Kayıt adımı
+    `raporlar/` çakışmasında hiç kaydetmiyordu. İş düşünce Python'un alarmına iş durumu eklenir. Önceki artifact'lar
+    koşu sayısıyla değil son 4 günle seçilir. Artifact'ı olmayan ya da çevirisi hep düşen video her cron'u yayınına
+    kadar bakım koşusuna çeviriyordu → 3 denemede vazgeçilir. Repo değişkeni yoksa kanal sessizce teslim moduna
+    düşüyordu → alarm. Dal denemesi main'in eşzamanlılık grubunu paylaşıyor ve kanal kimliğini yazıyordu. uv sürümü
+    sabit (0.13.1).
+  - Yayın: medya Pages beklemesinde düşünce public repoda kalıyordu; **otomat-site tarihçesi** her videoyu (geri
+    çekilenler dahil) tutuyordu, 10 günde 294 MB (Pages sınırı 1 GB, ~1 ayda dolacaktı) → medya klasörü boşaldıkça dal
+    tek commit'e sıkıştırılır (kira korumalı force push; gerçek git ile sınandı). Buffer yoklamasında tek GraphQL
+    hıçkırığı gönderiyi "belirsiz" yapıp hikâyeyi harcıyordu (artık üst üste 3). `<` `>` YouTube metninde 400 verip
+    planlamayı düşürürdü (Commons yazar alanı). Haftalık rapor pazartesi yazılıyordu, Analytics son 2-3 günü eksik
+    sayıyordu → hafta bitimi + 3 gün; "Konu" sütunu haydudun kolunu, "düşen" kota koşusunu saymaz. Site sayfaları tek
+    kanal ve veri videoları anlatıyordu (Google API politikası doğru beyan ister) → iki kanal, kaynaklar, AI üretimi,
+    Buffer, kanal ayarları; `yayin-oncesi` taraması temiz.
+  - Hikâye hattı (Orbit): bir sahne filtreye takılınca öbürleri çizilmeye devam ediyordu (~470 neuron boşa); stil
+    değişince sürdürülen senaryo her koşu kareleri yeniden siliyordu; yeniden çizilen kare panel/OCR denetiminden
+    geçmiyor, panel yeniden çiziminin istemi sonraki çizimlerde geri geliyordu, ikinci görünüş turunun tohumları ilkiyle
+    çakışıyordu. Ad kapısı Unicode adları ("Pérez"), unvandan sonrakini ("Dr. X") denetlemiyor, aksanı farklı yazılmış
+    gerçek adı reddediyordu. Son 24 saatte düzenlenmiş makale anlatılmaz (vandalizm/istem enjeksiyonu her denetimden
+    geçerdi), havuzdan da düşmez. "bullshit" gibi bitişik küfür süzgeçten geçiyordu. Uzun tire tek başına kelime
+    oluyordu. Cloudflare yeniden denemesi üstel. Boş cümle listesi kabulü çökertiyordu.
+  - Bilerek açık: YouTube kotasının iki kanal arasında önceden bütçelenmesi (ölçüm artık var; kuyruk ve pist onarımı
+    kota taşmasını karşılıyor); bakım koşularının neuron/Buffer harcaması günlük kayda yazılmıyor; Wikipedia metni
+    revizyona sabitlenmiyor (24 saat süzgeci yetiyor sayıldı).
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

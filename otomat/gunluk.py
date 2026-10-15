@@ -19,6 +19,8 @@ import os
 import random
 import re
 import shutil
+import signal
+import time
 from pathlib import Path
 
 from otomat import analitik, durum, haydut, kanal, rapor
@@ -42,6 +44,12 @@ HIKAYE_TEKRAR_GUN = 3650  # bir hikâye kanalda bir kez anlatılır
 HIKAYE_DENEME = 3  # senaryo hakemden geçmezse o hikâye düşer, sıradaki denenir
 HAVUZ_ESIK = 21  # anlatılmamış hikâye bunun altına inince alarm (havuz genişletme işi ~3 hafta önceden görünsün)
 EN_COK = 2  # buffer/api: bir koşuda en çok video (~2.000 neuron/video; iki kanal günlük 10.000'lik kotayı paylaşır)
+IKINCI_VIDEO_SN = 12 * 60  # koşu bu kadar sürdüyse ikinci video başlamaz (Üret adımının sınırı 33 dk)
+BASLANGIC = time.monotonic()
+
+
+def _kesildi(*_):
+    raise KeyboardInterrupt("SIGTERM")
 
 
 # Arşiv veri motoru (kanallar/veri-*): hikâye kanalları onu hiç çalıştırmaz. Modül düzeyinde import edilince her
@@ -106,6 +114,9 @@ def hazir_uretim(paketler: list[OlguPaketi], db, bugun: dt.date):
             paket = taze.get(meta["paket"]["anahtar"])
         except (OSError, ValueError, KeyError, TypeError):
             continue
+        # biçim değiştiyse (K-25: Earth sahneden karta) eski biçimin yayınlanmamış videosu deneye karışmasın
+        if meta.get("bicim", "sahne") != _K.bicim:
+            continue
         if paket is None or meta["paket"].get("hash") != paket.hash or kabul.denetle(meta_yolu):
             continue
         dizin = _klasor(bugun, paket.anahtar)
@@ -165,7 +176,7 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     """Senaryosu hakemden ve videosu yayın kabulünden (hikaye/kabul.py) geçen ilk hikâye; geçmeyen bir daha
     seçilmesin diye kaydedilir (video yok). Önce hazır üretim aranır, sonra yarım kalmış üretim sürdürülür."""
     from otomat.hikaye import cf, kabul
-    from otomat.hikaye.kaynaklar import KaynakHatasi
+    from otomat.hikaye.kaynaklar import KaynakHatasi, KaynakTaze
     from otomat.hikaye.senaryo import SenaryoHatasi
     from otomat.hikaye.uretim import DurumHatasi
     from otomat.hikaye.uretim import uret as h_uret
@@ -189,6 +200,8 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
             meta = h_uret(paket, kalip, sablon, dizin, bugun.isoformat())
         except cf.KotaHatasi:
             raise  # kota hikâyenin suçu değil: sonraki koşu senaryoyu ve görselleri sürdürür
+        except KaynakTaze as e:  # makale az önce düzenlendi: bu koşuda anlatılmaz, havuzdan da düşmez
+            sorunlar, harca = [str(e)[:200]], False
         except SenaryoHatasi as e:
             sorunlar = e.sorunlar[-1][:5]
         # sahne görseli güvenlik filtresinde (Earth, 10-09); makale yok; değişen görünüş karede tutmadı (Orbit, 10-13)
@@ -213,7 +226,31 @@ def hikaye_uret(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict):
     )
 
 
-def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
+def altyazilari_yukle(video_id: str, srtler: list[Path], yt, db=None) -> list[str]:
+    """Altyazı izleri dil başına (400 birim/dil): biri düşünce öbürleri sürer, proje kotası dolunca kalanlar denenmez
+    (aynı gün hepsi düşerdi). Yüklenemeyen diller `db` verilmişse onarım kuyruğuna (durum.altyazi_eksik) yazılır,
+    sonraki koşunun `altyazi_onarimi` tamamlar. Düşenlerin kısa açıklaması döner."""
+    from otomat.yayin import youtube
+
+    dusen, eksik, kota = [], [], False
+    for srt in srtler:
+        dil = srt.stem.split("_")[-1]
+        if kota:
+            eksik.append(dil)
+            dusen.append(f"{dil}: kota doldu, denenmedi")
+            continue
+        try:
+            youtube.altyazi_ekle(video_id, dil, srt.read_text(encoding="utf-8"), yt=yt)
+        except Exception as e:  # noqa: BLE001
+            kota = youtube.kota_hatasi(e)
+            eksik.append(dil)
+            dusen.append(f"{dil}: {youtube.kisa_hata(e)}"[:200])
+    if eksik and db is not None:
+        durum.altyazi_eksik(db, video_id, eksik)
+    return dusen
+
+
+def yayinla_api(dizin: Path, yayin_ani: dt.datetime, db=None) -> str:
     from otomat.yayin import youtube
 
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
@@ -223,11 +260,8 @@ def yayinla_api(dizin: Path, yayin_ani: dt.datetime) -> str:
         dizin / "video.mp4", meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt
     )
     # video kanala çıktı: altyazı hatası video id'yi kaybettirmesin (hazır üretim aynı videoyu yeniden yüklerdi)
-    for srt in sorted(dizin.glob("*.srt")):
-        try:
-            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
-        except Exception as e:  # noqa: BLE001
-            print(f"altyazı yüklenemedi ({video_id}, {srt.stem}): {type(e).__name__}: {e}")
+    if dusen := altyazilari_yukle(video_id, sorted(dizin.glob("*.srt")), yt, db):
+        print(f"altyazı yüklenemedi ({video_id}): {'; '.join(dusen)}")
     return video_id
 
 
@@ -235,18 +269,24 @@ def yayin_slotu(db, simdi: dt.datetime) -> dt.datetime:
     return durum.yayin_slotu(db, simdi, YAYIN_SAATI_UTC)
 
 
-def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str], db=None) -> str:
+def yayinla_buffer(
+    dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar: list[str], db=None, yuklendi=None
+) -> str:
     """Buffer private yükler; planlı yayın, etiket, yerelleştirme ve altyazı bizim API'mizle. Video kanala çıktıktan
-    sonraki hata yayını geri almaz: alarm yazılır, video id yine döner (seçim kaydı ve analitik için)."""
+    sonraki hata yayını geri almaz: alarm yazılır, video id yine döner (seçim kaydı ve analitik için).
+    `yuklendi(video_id)` Buffer id'yi verir vermez çağrılır: koşu planlamadan önce kesilirse kayıt kaybolmasın."""
     from otomat.yayin import buffer, youtube
 
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
     yerel_yol = dizin / "yerel.json"
     yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))["yerel"] if yerel_yol.exists() else None
     dosya = f"{_K.id}-{ad}.mp4"  # iki kanal aynı site reposunu ve aynı slot gününü paylaşıyor (10-09 çakıştı)
-    url = buffer.medya_koy(dizin / "video.mp4", dosya)
     try:
+        # medya_koy da try içinde: push'tan sonra Pages beklemesi düşerse video public repoda kalıyordu
+        url = buffer.medya_koy(dizin / "video.mp4", dosya)
         video_id = buffer.gonder(url, meta["baslik"], meta["aciklama"])
+        if yuklendi:
+            yuklendi(video_id)
     finally:
         try:
             buffer.medya_kaldir(dosya)
@@ -255,6 +295,9 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
     try:
         yt = youtube.servis()
         youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
+        if db is not None:  # erken kayıt planlanamayan diye yazmıştı: planlandı
+            db.execute("DELETE FROM planlanamayan WHERE video_id = ?", (video_id,))
+            db.commit()
     except Exception as e:  # noqa: BLE001
         if db is not None:
             durum.planlanamadi(db, video_id, yayin_ani)
@@ -263,15 +306,8 @@ def yayinla_buffer(dizin: Path, yayin_ani: dt.datetime | None, ad: str, alarmlar
             + _hata(e)
         )
         return video_id
-    # altyazılar dil başına: biri (kota, geçici hata) düşünce öbürleri sürsün (400 birim/dil; eskiden ilk hata kalanı
-    # atlıyordu)
-    dusen = []
-    for srt in sorted(dizin.glob("*.srt")):
-        try:
-            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
-        except Exception as e:  # noqa: BLE001
-            dusen.append(f"{srt.stem}: {type(e).__name__}: {e}"[:200])
-    if dusen:
+    # düşen altyazı kuyruğa girer, sonraki koşu tamamlar: alarm yalnız kuyruk yoksa (onarım vazgeçerse kendisi çalar)
+    if (dusen := altyazilari_yukle(video_id, sorted(dizin.glob("*.srt")), yt, db)) and db is None:
         liste = "\n".join(f"- {d}" for d in dusen)
         alarmlar.append(f"**Altyazı yüklenemedi** (`{video_id}`, video planlı):\n\n{liste}")
     return video_id
@@ -368,25 +404,19 @@ def uretim_klasoru(anahtar: str) -> Path | None:
     return None
 
 
-def _yeniden_yayinla(video_id: str, yayin_ani: dt.datetime, dizin: Path | None, yt) -> list[str]:
+def _yeniden_yayinla(video_id: str, yayin_ani: dt.datetime, dizin: Path | None, yt, db) -> None:
     """Planlaması düşen videonun metadata'sı, planı (geçmişse hemen public), yerelleştirmesi ve altyazıları; üretim
-    klasörü yoksa yalnız plan (başlık ve açıklamayı Buffer yazmıştı). Yüklenemeyen altyazılar döner."""
+    klasörü yoksa yalnız plan (başlık ve açıklamayı Buffer yazmıştı). Yüklenemeyen altyazı onarım kuyruğuna girer."""
     from otomat.yayin import youtube
 
     if dizin is None:
         youtube.planla(video_id, yayin_ani, yt=yt)
-        return []
+        return
     meta = json.loads((dizin / "meta.json").read_text(encoding="utf-8"))
     yerel_yol = dizin / "yerel.json"
     yerel = json.loads(yerel_yol.read_text(encoding="utf-8"))["yerel"] if yerel_yol.exists() else None
     youtube.duzenle(video_id, meta["baslik"], meta["aciklama"], meta["etiketler"], yayin_ani, yerel, yt=yt)
-    dusen = []
-    for srt in sorted(dizin.glob("*.srt")):
-        try:
-            youtube.altyazi_ekle(video_id, srt.stem.split("_")[-1], srt.read_text(encoding="utf-8"), yt=yt)
-        except Exception as e:  # noqa: BLE001
-            dusen.append(f"{srt.stem}: {type(e).__name__}"[:120])
-    return dusen
+    altyazilari_yukle(video_id, sorted(dizin.glob("*.srt")), yt, db)
 
 
 def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) -> None:
@@ -416,7 +446,7 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
     try:
         durumlar = youtube.durumlar(sorted(set(yakin) | set(bekleyen)), yt)
         anahtar = dict(db.execute("SELECT video_id, anahtar FROM secimler WHERE video_id IS NOT NULL"))
-        onarilan, kayip, plansiz, eksik_altyazi, dusen = [], [], [], [], []
+        onarilan, kayip, plansiz, dusen = [], [], [], []
 
         def coz(v: str) -> None:
             # video başına hemen: döngünün ortasında düşen bir video öncekileri ertesi koşuda yeniden onartmasın
@@ -430,7 +460,7 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
                 coz(v)  # kanalda yok: her koşu yeniden bakım koşusu açıp alarm yazmasın (bir kez söylenir)
             elif st.get("privacyStatus") == "private" and not st.get("publishAt"):
                 try:
-                    eksik_altyazi += _yeniden_yayinla(v, planli.get(v, y), uretim_klasoru(anahtar.get(v, "")), yt)
+                    _yeniden_yayinla(v, planli.get(v, y), uretim_klasoru(anahtar.get(v, "")), yt, db)
                 except Exception as e:  # noqa: BLE001 — bir videonun kalıcı hatası (geçersiz başlık) öbürlerini durdurmasın
                     if durum.planlama_denemesi(db, v) >= PLAN_DENEME:
                         coz(v)
@@ -457,8 +487,6 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
             alarmlar.append("**Plansız video yeniden yayına konamadı:**\n\n" + "\n".join(f"- {d}" for d in dusen))
         if onarilan:
             alarmlar.append(f"**Plansız kalmış video yeniden yayına kondu** (bilgi): {', '.join(onarilan)}")
-        if eksik_altyazi:
-            alarmlar.append("**Onarılan videoda altyazı yüklenemedi:** " + "; ".join(eksik_altyazi))
         if plansiz:
             alarmlar.append(
                 f"**Planlı görünen video kanalda private ve plansız:** {', '.join(plansiz)}. Elle çekildiyse "
@@ -472,6 +500,7 @@ def pist_denetimi(db, yt, simdi: dt.datetime, kayit: dict, alarmlar: list[str]) 
 
 PLAN_DENEME = 3  # planlaması düşmüş video bu kadar koşuda onarılamazsa denetimden çıkar (alarmla)
 CEVIRI_ONARIM = 1  # koşu başına en çok bu kadar video denenir (Cloudflare çevirisi + 400 birim/dil)
+CEVIRI_DENEME = 3  # bir videonun eksik çevirisi bu kadar koşuda tamamlanamazsa vazgeçilir (alarmla)
 
 
 def ceviri_onarimi(db, yt, kayit: dict, alarmlar: list[str]) -> None:
@@ -504,36 +533,121 @@ def ceviri_onarimi(db, yt, kayit: dict, alarmlar: list[str]) -> None:
             continue
         if yerel.get("atlanan") and anahtar in planli and anahtar not in adaylar:
             adaylar[anahtar] = (*planli[anahtar], yerel_yol, yerel["atlanan"])
-    onarilan = []
+    onarilan, vazgecilen = [], []
+
+    def tutmadi(v: str, neden: str) -> None:
+        if durum.ceviri_denemesi(db, v, simdi.date(), CEVIRI_DENEME):
+            vazgecilen.append(f"`{v}`: {neden}")
+
+    # günlük kayda göre çevirisi eksik ama üretim klasörü artifact'larda bulunmayan video: her koşu boşuna bakım
+    # koşusu açmasın, CEVIRI_DENEME koşudan sonra vazgeçilir
+    adayli = {a[0] for a in adaylar.values()}
+    for v in durum.ceviri_bekleyenler(db, RAPOR, simdi):
+        if v not in adayli:
+            tutmadi(v, "üretim klasörü artifact'larda yok")
     neuron = cf.NEURON["toplam"]
     for video_id, _, yerel_yol, atlanan in sorted(adaylar.values(), key=lambda a: a[1])[:CEVIRI_ONARIM]:
         try:
             sonuc = hazirla(yerel_yol.parent)
             yeni = [d for d in atlanan if d in sonuc["yerel"]]
             if not yeni:
+                if not sonuc.get("kota"):  # kota videonun suçu değil: sayılmaz, sonraki koşu yeniden dener
+                    tutmadi(video_id, "çeviri yine tutmadı")
                 continue
             youtube.yerellestir(video_id, sonuc["yerel"], yt=yt)
             # yerelleştirme yazıldı: altyazı düşse de bir daha çevrilmesin (yeniden çeviri kota yakar, yeniden altyazı
             # çift iz açar)
             db.execute("INSERT OR REPLACE INTO ceviri_onarim VALUES (?, ?)", (video_id, simdi.date().isoformat()))
             db.commit()
-            dusen = []
-            # altyazısız kartta (K-25) en.srt yazılmaz, çeviri srt'si de yok: her dil "yüklenemedi" alarmı çalardı
-            for dil in yeni if (yerel_yol.parent / "en.srt").exists() else []:
-                try:
-                    srt = yerel_yol.parent / f"{dil}.srt"
-                    youtube.altyazi_ekle(video_id, dil, srt.read_text(encoding="utf-8"), yt=yt)
-                except Exception as e:  # noqa: BLE001
-                    dusen.append(f"{dil}: {type(e).__name__}: {e}"[:200])
-            if dusen:
-                alarmlar.append(f"**Tamamlanan çeviride altyazı yüklenemedi** (`{video_id}`): " + "; ".join(dusen))
+            # altyazısız kartta (K-25) en.srt yazılmaz, çeviri srt'si de yok: her dil "yüklenemedi" alarmı çalardı.
+            # Düşen iz onarım kuyruğuna girer (altyazi_onarimi)
+            if (yerel_yol.parent / "en.srt").exists():
+                altyazilari_yukle(video_id, [yerel_yol.parent / f"{dil}.srt" for dil in yeni], yt, db)
             onarilan.append({"video_id": video_id, "diller": yeni})
         except Exception as e:  # noqa: BLE001
+            tutmadi(video_id, type(e).__name__)
             alarmlar.append(f"**Eksik çeviri tamamlanamadı** (`{video_id}`, üretim sürdü):\n\n" + _hata(e))
     if onarilan:
         kayit["ceviri_onarimi"] = onarilan
+    if vazgecilen:
+        alarmlar.append(
+            f"**Eksik çeviri {CEVIRI_DENEME} koşuda tamamlanamadı, vazgeçildi** (video o dillerde yerelleştirmesiz "
+            "yayına çıkar):\n\n" + "\n".join(f"- {v}" for v in vazgecilen)
+        )
     if harcanan := round(cf.NEURON["toplam"] - neuron):
         kayit["onarim_neuron"] = kayit.get("onarim_neuron", 0) + harcanan  # raporun neuron toplamına girer
+
+
+ALTYAZI_DENEME = 3  # kota dışı bir hatayla bu kadar koşuda yüklenemeyen iz kuyruktan alarmla düşer
+
+
+def altyazi_onarimi(db, yt, kayit: dict, alarmlar: list[str]) -> None:
+    """Kuyruktaki (durum.altyazi_eksik) altyazı izlerini üretim klasörünün srt'lerinden tamamlar. Önce videonun izleri
+    okunur (50 birim): yüklenmiş ama yanıtı kaybolmuş iz ikinci kez açılmaz. Kota doluysa denenmez ve sayaç artmaz;
+    başka bir hatada ya da srt artifact penceresinden çıkmışsa iz ALTYAZI_DENEME koşudan sonra alarmla düşer."""
+    from otomat.yayin import youtube
+
+    videolar: dict[str, list[str]] = {}
+    for v, d in db.execute(
+        "SELECT video_id, dil FROM altyazi_eksik WHERE video_id NOT IN (SELECT video_id FROM geri_cekilen)"
+        " ORDER BY video_id, dil"
+    ):
+        videolar.setdefault(v, []).append(d)
+    if not videolar:
+        return
+    anahtar = dict(db.execute("SELECT video_id, anahtar FROM secimler WHERE video_id IS NOT NULL"))
+    tamam, birakilan = [], []
+
+    def coz(v: str, d: str) -> None:
+        db.execute("DELETE FROM altyazi_eksik WHERE video_id = ? AND dil = ?", (v, d))
+        db.commit()
+
+    def tutmadi(v: str, d: str, neden: str) -> None:
+        db.execute("UPDATE altyazi_eksik SET deneme = deneme + 1 WHERE video_id = ? AND dil = ?", (v, d))
+        db.commit()
+        if db.execute("SELECT deneme FROM altyazi_eksik WHERE video_id = ? AND dil = ?", (v, d)).fetchone()[0] >= (
+            ALTYAZI_DENEME
+        ):
+            coz(v, d)
+            birakilan.append(f"`{v}` {d}: {neden}")
+
+    kota = False
+    for v, diller in videolar.items():
+        try:
+            mevcut = youtube.altyazi_dilleri(v, yt)
+        except Exception as e:  # noqa: BLE001
+            if kota := youtube.kota_hatasi(e):
+                break
+            for d in diller:
+                tutmadi(v, d, youtube.kisa_hata(e))
+            continue
+        dizin = uretim_klasoru(anahtar.get(v, ""))
+        for d in diller:
+            if d in mevcut:
+                coz(v, d)
+                continue
+            srt = dizin / f"{d}.srt" if dizin else None
+            if srt is None or not srt.exists():
+                tutmadi(v, d, "srt yok (üretim klasörü artifact penceresinden çıkmış olabilir)")
+                continue
+            try:
+                youtube.altyazi_ekle(v, d, srt.read_text(encoding="utf-8"), yt=yt)
+            except Exception as e:  # noqa: BLE001
+                if kota := youtube.kota_hatasi(e):
+                    break
+                tutmadi(v, d, youtube.kisa_hata(e))
+                continue
+            coz(v, d)
+            tamam.append({"video_id": v, "dil": d})
+        if kota:
+            break
+    if tamam:
+        kayit["altyazi_onarimi"] = tamam
+    if birakilan:
+        alarmlar.append(
+            f"**Altyazı izi {ALTYAZI_DENEME} koşuda yüklenemedi, onarımdan çıktı** (video yayında altyazısız o dilde; "
+            "elle Studio'dan eklenebilir):\n\n" + "\n".join(f"- {b}" for b in birakilan)
+        )
 
 
 BUFFER_SINIR = 3000  # istek / 30 gün, anahtar başına; tüm kanallar paylaşır
@@ -580,11 +694,17 @@ def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, ala
         )
 
 
-def alarm_yaz(bugun: dt.date, alarmlar: list[str]) -> None:
+def alarm_yaz(bugun: dt.date, alarmlar: list[str], tam: bool = False) -> None:
+    """`calisma/alarm.md` (Actions issue'ya çevirir). `tam`: bütün denetimlerin koştuğu üretim koşusu; alarmsızsa
+    `calisma/temiz` yazılır, açık alarm yalnız o zaman kapanır (bakım koşusu havuz/kimlik/Buffer sınırına bakmaz)."""
+    temiz = ALARM.with_name("temiz")  # alarmın yanında (testler ALARM'ı geçici klasöre taşır)
     ALARM.unlink(missing_ok=True)
+    temiz.unlink(missing_ok=True)
+    ALARM.parent.mkdir(parents=True, exist_ok=True)
     if alarmlar:
-        ALARM.parent.mkdir(parents=True, exist_ok=True)
         ALARM.write_text(f"Günlük koşu {bugun.isoformat()}:\n\n" + "\n\n---\n\n".join(alarmlar) + "\n", "utf-8")
+    elif tam:
+        temiz.write_text(bugun.isoformat() + "\n", encoding="utf-8")
 
 
 def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayit: dict, alarmlar: list[str]):
@@ -603,12 +723,30 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
     video_id = None
     belirsiz = False
     if mod == "api":
-        video_id = yayinla_api(dizin, yayin_ani)
+        video_id = yayinla_api(dizin, yayin_ani, db)
     elif mod == "buffer":
         from otomat.yayin import buffer
 
+        kayitli = []
+
+        def yuklendi(vid: str) -> None:
+            # Buffer video id'yi verdi: koşu planlamadan ya da altyazıdan önce kesilse de (33 dk adım sınırı) hikâye
+            # harcanmış, slot dolu ve plan onarımı bekliyor olsun. Eskiden kayıt yayinla_buffer dönünce yazılıyordu;
+            # kesilen koşunun videosunu sonraki koşu hazır üretimden ikinci kez gönderirdi
+            durum.kaydet(db, paket, gun, vid)
+            durum.secim_kaydet(db, gun, paket, kalip, sablon, meta["baslik"], yayin_ani, vid, secim_logu)
+            durum.planlanamadi(db, vid, yayin_ani)
+            kayitli.append(vid)
+
         try:
-            video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar, db=db)
+            video_id = yayinla_buffer(dizin, yayin_ani, gun.isoformat(), alarmlar, db=db, yuklendi=yuklendi)
+        except (KeyboardInterrupt, SystemExit):
+            if not kayitli:
+                # koşu Buffer'la konuşurken kesildi: gönderi açılmış olabilir (GonderiBelirsiz gibi). Hikâye harcanır,
+                # seçim videosuz yazılır; Buffer yüklediyse sonraki koşunun analitiği başlıkla bulup planlar
+                durum.kaydet(db, paket, gun, None)
+                durum.secim_kaydet(db, gun, paket, kalip, sablon, meta["baslik"], yayin_ani, None, secim_logu)
+            raise
         except buffer.GonderiBelirsiz as e:
             belirsiz = True
             alarmlar.append(
@@ -655,6 +793,10 @@ def bir_video(paketler, db, gun: dt.date, yayin_ani: dt.datetime, mod: str, kayi
         ),
         haydut={"degisti": secim_logu["degisti"], "odul_sayisi": secim_logu["odul_sayisi"]},
     )
+    if video_id and (
+        eksik := [d for (d,) in db.execute("SELECT dil FROM altyazi_eksik WHERE video_id = ?", (video_id,))]
+    ):
+        kayit["altyazi_eksik"] = eksik  # onarım kuyruğunda: sonraki koşu tamamlar
 
 
 def main() -> None:
@@ -663,6 +805,9 @@ def main() -> None:
     yazılır (o da yoksa koşu hiçbir şey yapmadan biter)."""
     from otomat.hikaye.cf import KotaHatasi
 
+    # Actions adım süresini aşınca ya da koşu iptal edilince süreç sinyalle kesilir: SIGTERM varsayılanı Python'u
+    # finally blokları koşmadan öldürür (günlük satırı, alarm, erken kayıt). KeyboardInterrupt'a çevrilir.
+    signal.signal(signal.SIGTERM, _kesildi)
     simdi = dt.datetime.now(dt.UTC)
     bugun = simdi.date()
     mod = os.environ.get("OTOMAT_YAYIN", "teslim")
@@ -670,6 +815,12 @@ def main() -> None:
     genel: dict = {"tarih": bugun.isoformat(), "mod": mod, "kosu_ani": simdi.isoformat(timespec="minutes")}
     kayitlar: list[dict] = []
     alarmlar: list[str] = []
+    if os.environ.get("OTOMAT_YAYIN_TANIMLI") == "0" and os.environ.get("GITHUB_REF_NAME") == "main":
+        alarmlar.append(
+            f"**Yayın modu değişkeni yok:** `OTOMAT_YAYIN_{_K.id}` repo değişkeni tanımlı değil; kanal teslim modunda "
+            "(Plan B) koştu, kanala video çıkmıyor. Bilerek değilse: "
+            f"`gh variable set OTOMAT_YAYIN_{_K.id} --body buffer`."
+        )
     db = durum.baglan()
     durum.gecmisi_doldur(db, RAPOR)
     if durum.pist_dolu(db, simdi, mod):
@@ -678,18 +829,21 @@ def main() -> None:
         # planlı video; üretim kaydı (gunluk.jsonl) yazılmaz
         bakim = pist and durum.planlanamayan_var(db)
         ceviri = pist and HIKAYE and durum.ceviri_bekliyor(db, RAPOR, simdi)
-        if rapor.bekleyen(bugun) is not None or bakim or ceviri:
+        altyazi = pist and durum.altyazi_bekliyor(db)
+        if rapor.bekleyen(bugun) is not None or bakim or ceviri or altyazi:
             yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
             if pist and yt is not None:
                 pist_denetimi(db, yt, simdi, genel, alarmlar)
                 if ceviri:
                     ceviri_onarimi(db, yt, genel, alarmlar)
+                altyazi_onarimi(db, yt, genel, alarmlar)
             rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
             alarm_yaz(bugun, alarmlar)
             print(json.dumps(genel, ensure_ascii=False, indent=1))
         return
     yt, ya = analitik_adimi(db, bugun, genel, alarmlar)
-    if HIKAYE and yt is not None:
+    # kanal kimliği yalnız main'den: dal denemesi gerçek token'la kanalın adını ve açıklamasını değiştirmesin
+    if HIKAYE and yt is not None and os.environ.get("GITHUB_REF_NAME", "main") == "main":
         marka_adimi(yt, genel, alarmlar)
     if pist and yt is not None:
         pist_denetimi(db, yt, simdi, genel, alarmlar)
@@ -715,7 +869,11 @@ def main() -> None:
             alarmlar.append(
                 "**Veri kaynağı hatası** (o kol bugün dışarıda kaldı):\n\n" + "\n".join(f"- {h}" for h in hatalar)
             )
-        for _ in range(EN_COK if pist else 1):
+        for sira in range(EN_COK if pist else 1):
+            if sira and time.monotonic() - BASLANGIC > IKINCI_VIDEO_SN:
+                # ikinci video 33 dk adım sınırını aşabilir (üretim 6-19 dk + Pages 10 dk + Buffer 15 dk bekleme):
+                # kesilen yayın kaydını kaybederdi. Boş slotu sonraki koşu doldurur
+                break
             if pist:
                 yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
                 if yayin_ani.date() > bugun + dt.timedelta(days=durum.PIST_GUN):
@@ -753,6 +911,8 @@ def main() -> None:
         # üretimden sonra: kota önce yeni videonun. Kota bu koşuda dolduysa boşuna istek atılmaz
         if HIKAYE and pist and yt is not None and not kota_doldu:
             ceviri_onarimi(db, yt, kayitlar[-1] if kayitlar else genel, alarmlar)
+        if pist and yt is not None:  # YouTube kotası: Cloudflare'inkinden bağımsız
+            altyazi_onarimi(db, yt, kayitlar[-1] if kayitlar else genel, alarmlar)
     except Exception as e:
         from otomat.yayin.youtube import YetkiHatasi
 
@@ -763,7 +923,19 @@ def main() -> None:
         if not (isinstance(e, YetkiHatasi) and any(YETKI_COZUMU in a for a in alarmlar)):
             alarmlar.append("**Günün videosu üretilemedi:**\n\n" + _hata(e))
         raise
+    except KeyboardInterrupt:
+        alarmlar.append(
+            "**Koşu kesildi** (adım süresi ya da iptal): yarım kalan yayın kaydedildi; Buffer'a gitmiş olabilecek "
+            "video sonraki koşunun analitiği ve pist denetimiyle bulunur."
+        )
+        raise
     finally:
+        from otomat.yayin import youtube
+
+        # ölçülmüş YouTube birimi (portföy tahmini yerine): koşunun toplamı son satırda, öbürleri 0 (çift sayılmasın)
+        for k in kayitlar or [genel]:
+            k["yt_birim"] = 0
+        (kayitlar[-1] if kayitlar else genel)["yt_birim"] = youtube.BIRIM["toplam"]
         if mod == "buffer":
             from otomat.yayin import buffer
 
@@ -774,7 +946,7 @@ def main() -> None:
                     "Aşılırsa Buffer yayını durur (video kanala çıkmaz; pist tamponu biter, slot boş kalır)."
                 )
         rapor_adimi(db, bugun, yt, ya, genel, alarmlar)
-        alarm_yaz(bugun, alarmlar)
+        alarm_yaz(bugun, alarmlar, tam=True)
         if not kayitlar:
             # üretim döngüsü hiç girmedi (slot hesabı ile pist denetimi arasında saat döndü): satırın durumu olsun
             genel.setdefault("durum", "bos")

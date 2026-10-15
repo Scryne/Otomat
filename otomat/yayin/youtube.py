@@ -76,10 +76,41 @@ def yetki_al() -> Path:
     return yol
 
 
+# Data API birim maliyeti (yöntem kimliğinin son iki parçası; developers.google.com/youtube/v3/determine_quota_cost):
+# yazma 50, altyazı yükleme 400, okuma 1. İki kanal tek Cloud projesini, yani günlük 10.000 birimi paylaşır.
+MALIYET = {"captions.insert": 400, "captions.update": 450, "captions.list": 50, "videos.insert": 1600}
+BIRIM = {"toplam": 0}  # bu süreçte harcanan (günlük rapor, portföy)
+
+
+def _maliyet(yontem: str) -> int:
+    kisa = ".".join(yontem.split(".")[-2:])
+    if kisa in MALIYET:
+        return MALIYET[kisa]
+    return 1 if kisa.rsplit(".", 1)[-1] == "list" else 50
+
+
+def _sayacli_istek():
+    """Her yürütmede birimi sayan HttpRequest (yeniden deneme de API'de yeniden harcanır)."""
+    from googleapiclient.http import HttpRequest
+
+    class SayacliIstek(HttpRequest):
+        def execute(self, http=None, num_retries=0):
+            BIRIM["toplam"] += _maliyet(self.methodId or "")
+            return super().execute(http=http, num_retries=num_retries)
+
+        def next_chunk(self, http=None, num_retries=0):
+            if not getattr(self, "_sayildi", False):  # devam ettirilebilir yükleme: parça başına değil, bir kez
+                self._sayildi = True
+                BIRIM["toplam"] += _maliyet(self.methodId or "")
+            return super().next_chunk(http=http, num_retries=num_retries)
+
+    return SayacliIstek
+
+
 def servis(k=None):
     from googleapiclient.discovery import build
 
-    yt = build("youtube", "v3", credentials=k or kimlik(), cache_discovery=False)
+    yt = build("youtube", "v3", credentials=k or kimlik(), cache_discovery=False, requestBuilder=_sayacli_istek())
     kanal_dogrula(yt)
     return yt
 
@@ -104,6 +135,11 @@ def kanal_dogrula(yt) -> None:
     _DOGRULANDI.add(beklenen)
 
 
+def temiz(metin: str) -> str:
+    """YouTube başlık/açıklama/yerelleştirmede < ve > kabul etmez (400: bütün videos.update ve planlama düşer)."""
+    return metin.replace("<", "‹").replace(">", "›")
+
+
 def _govde(
     baslik: str,
     aciklama: str,
@@ -113,8 +149,8 @@ def _govde(
 ) -> tuple[dict, str]:
     govde = {
         "snippet": {
-            "title": baslik[:100],
-            "description": aciklama[:5000],
+            "title": temiz(baslik)[:100],
+            "description": temiz(aciklama)[:5000],
             "tags": etiketler[:15],
             "categoryId": KATEGORI,
             "defaultLanguage": "en",
@@ -132,11 +168,16 @@ def _govde(
         govde["status"]["publishAt"] = yayin_ani.astimezone(dt.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     parcalar = "snippet,status"
     if yerellestirme:
-        govde["localizations"] = {
-            d: {"title": v["title"][:100], "description": v["description"][:5000]} for d, v in yerellestirme.items()
-        }
+        govde["localizations"] = _yerel(yerellestirme)
         parcalar += ",localizations"
     return govde, parcalar
+
+
+def _yerel(yerellestirme: dict[str, dict]) -> dict:
+    return {
+        d: {"title": temiz(v["title"])[:100], "description": temiz(v["description"])[:5000]}
+        for d, v in yerellestirme.items()
+    }
 
 
 def yukle(
@@ -250,11 +291,39 @@ def yerellestir(video_id: str, yerellestirme: dict[str, dict], yt=None) -> None:
     yt = yt or servis()
     govde = {
         "id": video_id,
-        "localizations": {
-            d: {"title": v["title"][:100], "description": v["description"][:5000]} for d, v in yerellestirme.items()
-        },
+        "localizations": _yerel(yerellestirme),
     }
     yt.videos().update(part="localizations", body=govde).execute(num_retries=DENEME)
+
+
+KOTA_NEDENLERI = {"quotaExceeded", "dailyLimitExceeded"}
+
+
+def hata_nedeni(e: BaseException) -> str | None:
+    """HttpError'un API nedeni (`quotaExceeded`, `forbidden`…); başka hata türünde None."""
+    try:
+        return json.loads(e.content)["error"]["errors"][0]["reason"]
+    except (AttributeError, ValueError, KeyError, IndexError, TypeError):
+        return None
+
+
+def kota_hatasi(e: BaseException) -> bool:
+    """Proje günlük kotası doldu: aynı gün kalan çağrılar da düşer (kota 07:00 UTC'de, Pasifik gece yarısı açılır)."""
+    return hata_nedeni(e) in KOTA_NEDENLERI
+
+
+def kisa_hata(e: BaseException) -> str:
+    """Alarm satırı: HttpError'un ham metni uzun URL'yle başlıyor, 200 karakterde asıl neden kesiliyordu (10-14)."""
+    if neden := hata_nedeni(e):
+        return f"HttpError {getattr(getattr(e, 'resp', None), 'status', '?')} {neden}"
+    return f"{type(e).__name__}: {e}"
+
+
+def altyazi_dilleri(video_id: str, yt=None) -> set[str]:
+    """Videodaki altyazı izlerinin dilleri (YouTube'un otomatik izi hariç; 50 birim)."""
+    yt = yt or servis()
+    y = yt.captions().list(part="snippet", videoId=video_id).execute(num_retries=DENEME)
+    return {i["snippet"]["language"] for i in y.get("items", []) if i["snippet"].get("trackKind") != "asr"}
 
 
 def altyazi_ekle(video_id: str, dil: str, srt_metni: str, yt=None) -> None:

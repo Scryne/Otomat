@@ -71,7 +71,11 @@ def denetle(meta_yolu: Path, video_bilgisi=_ffprobe, dizin: Path | None = None) 
     if meta.get("bicim") == "kart":
         return _kart(meta, d, h, video_bilgisi)
     satirlar = meta.get("cumleler")
-    if not isinstance(satirlar, list) or not all(isinstance(s, str) and len(s.split()) >= 3 for s in satirlar):
+    if (
+        not isinstance(satirlar, list)
+        or not satirlar
+        or not all(isinstance(s, str) and len(s.split()) >= 3 for s in satirlar)
+    ):  # boş liste `all`'dan geçip satirlar[0]'da IndexError veriyordu
         return [*h, "cümleler eksik ya da 3 kelimeden kısa"]
     if not SATIR[0] <= len(satirlar) <= SATIR[1]:
         h.append(f"{len(satirlar)} satır; {SATIR[0]}-{SATIR[1]} olmalı")
@@ -144,7 +148,11 @@ def _kart(meta: dict, d: Path, h: list[str], video_bilgisi) -> list[str]:
     """Kart biçimi (K-25): anlatıcı ve altyazı yok; paragraf ekranda, tek görsel. Görsel Wikimedia'dansa açıklama
     ve kare atfı taşır (CC BY/BY-SA)."""
     cumleler = meta.get("cumleler")
-    if not isinstance(cumleler, list) or not all(isinstance(s, str) and len(s.split()) >= 3 for s in cumleler):
+    if (
+        not isinstance(cumleler, list)
+        or not cumleler
+        or not all(isinstance(s, str) and len(s.split()) >= 3 for s in cumleler)
+    ):
         return [*h, "kart cümleleri eksik ya da 3 kelimeden kısa"]
     if not KART_CUMLE[0] <= len(cumleler) <= KART_CUMLE[1]:
         h.append(f"{len(cumleler)} cümle; {KART_CUMLE[0]}-{KART_CUMLE[1]} olmalı")

@@ -231,7 +231,8 @@ def test_ceviri_onarimi_en_yakin_yayini_once_alir_altyazi_duserse_yine_kaydeder(
     assert yerellesen == ["v_yakin"] and kayit["ceviri_onarimi"] == [{"video_id": "v_yakin", "diller": ["es"]}]
     # yerelleştirme yazıldı: altyazı düştü diye bir daha çevrilmez (yeniden çeviri kota, yeniden altyazı çift iz)
     assert {v for (v,) in db.execute("SELECT video_id FROM ceviri_onarim")} == {"v_yakin"}
-    assert any("quotaExceeded" in a for a in alarmlar)
+    # düşen iz alarm değil onarım kuyruğu: sonraki koşunun altyazi_onarimi tamamlar (10-15 üçüncü denetim)
+    assert alarmlar == [] and db.execute("SELECT video_id, dil FROM altyazi_eksik").fetchall() == [("v_yakin", "es")]
 
 
 def test_ceviri_bekliyor_pist_dolu_gunde_bakim_kosusu_acar(tmp_path):
@@ -451,7 +452,9 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
 
     monkeypatch.setattr(gunluk, "hazirla", hazirla)
     yayinlanan = []
-    monkeypatch.setattr(gunluk, "yayinla_buffer", lambda d, an, ad, al, db=None: yayinlanan.append(an) or f"v{ad}")
+    monkeypatch.setattr(
+        gunluk, "yayinla_buffer", lambda d, an, ad, al, db=None, yuklendi=None: yayinlanan.append(an) or f"v{ad}"
+    )
     onarim = []
     monkeypatch.setattr(gunluk, "ceviri_onarimi", lambda db_, yt, kayit, al: onarim.append(kayit["video_id"]))
 

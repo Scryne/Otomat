@@ -27,8 +27,10 @@ from otomat.ayarlar import KOK
 API = "https://api.buffer.com"
 SITE_REPO = "Scryne/otomat-site"
 SITE_URL = "https://scryne.github.io/otomat-site"
+SITE_GIT = ""  # boşsa GitHub (testte yerel çıplak repo)
 KANAL = kanal.aktif().ad
 YOKLAMA_SN = 45  # ücretsiz API 30 günde 3.000 istek (anahtar başına, tüm kanallar): gönderi başı en çok ~20 yoklama
+YOKLAMA_HATA = 3  # gönderi durumu üst üste bu kadar okunamazsa sonuç belirsiz sayılır
 # public repo: kişisel e-posta girmez (gunluk.yml'deki bot kimliği)
 KIMLIK = ["-c", "user.name=otomat-bot", "-c", "user.email=41898282+github-actions[bot]@users.noreply.github.com"]
 DENEME = 4
@@ -109,11 +111,11 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
         "schedulingType": "automatic",
         "mode": "shareNow",
         "needsApproval": False,
-        "text": aciklama,
+        "text": aciklama.replace("<", "‹").replace(">", "›"),  # YouTube < > reddeder (youtube.temiz)
         "assets": [{"video": {"url": video_url}}],
         "metadata": {
             "youtube": {
-                "title": baslik[:100],
+                "title": baslik.replace("<", "‹").replace(">", "›")[:100],
                 "privacy": "private",
                 "categoryId": kanal.aktif().kategori,
                 # kanalın MFK ayarı (K-24'ten beri iki kanal da genel kitle): yükleme anından itibaren doğru kitle
@@ -139,13 +141,21 @@ def gonder(video_url: str, baslik: str, aciklama: str, bekle_sn: int = 900) -> s
     except (KeyError, TypeError) as e:
         raise GonderiBelirsiz(f"createPost gönderi kimliği okunamadı: {sonuc!r}"[:300]) from e
     son = time.monotonic() + bekle_sn
+    okunamayan = 0
     while True:
-        # gönderi açıldı: bundan sonra her hata (ağ, bozuk yanıt, `post: null`) belirsizdir, kesin red değil
+        # gönderi açıldı: bundan sonra her hata (ağ, bozuk yanıt, `post: null`) belirsizdir, kesin red değil. Tek bir
+        # GraphQL hıçkırığı (HTTP 200 + errors) iyi giden gönderiyi "belirsiz" yapıp hikâyeyi harcıyor, planlamayı da
+        # sonraki koşuya (çoğu zaman slottan sonraya) bırakıyordu: üst üste YOKLAMA_HATA okuma hatası gerekir
         try:
             p = sorgu(DURUM, {"p": post_id})["post"]
             durum_ = p["status"]
         except Exception as e:  # noqa: BLE001
-            raise GonderiBelirsiz(f"gönderi {post_id} durumu okunamadı: {type(e).__name__}: {e}") from e
+            okunamayan += 1
+            if okunamayan >= YOKLAMA_HATA or time.monotonic() > son:
+                raise GonderiBelirsiz(f"gönderi {post_id} durumu okunamadı: {type(e).__name__}: {e}") from e
+            time.sleep(YOKLAMA_SN)
+            continue
+        okunamayan = 0
         if durum_ == "sent" and p.get("externalLink"):
             if m := re.search(r"(?:v=|youtu\.be/|shorts/)([\w-]{11})", p["externalLink"]):
                 return m[1]
@@ -167,11 +177,12 @@ def _git(*arg: str, cwd: Path | None = None, env: dict | None = None) -> None:
 PUSH_DENEME = 4
 
 
-def _site(islem) -> None:
-    """otomat-site'ın sığ kopyasında işlem(kopya) yapar, değişikliği commit'leyip push'lar."""
+def _site(islem, sikistir: bool = False) -> None:
+    """otomat-site'ın sığ kopyasında işlem(kopya) yapar, değişikliği commit'leyip push'lar. `sikistir`: medya klasörü
+    boşaldıysa dal tek commit'e indirilir (bkz. medya_kaldir)."""
     with tempfile.TemporaryDirectory() as gecici:
         env = dict(os.environ)
-        uzak = f"https://github.com/{SITE_REPO}.git"
+        uzak = SITE_GIT or f"https://github.com/{SITE_REPO}.git"
         if ozel := os.environ.get("OTOMAT_SITE_ANAHTAR"):
             dosya = Path(gecici) / "anahtar"
             dosya.write_text(ozel.strip() + "\n", encoding="utf-8")
@@ -182,6 +193,8 @@ def _site(islem) -> None:
         _git("clone", "--depth", "1", uzak, str(kopya), env=env)
         mesaj = islem(kopya)
         _git("add", "-A", cwd=kopya, env=env)
+        if sikistir and not any((kopya / "media").glob("*")) and _sikistir(kopya, mesaj, env):
+            return
         if subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=kopya).returncode:
             _git("commit", "-m", mesaj, cwd=kopya, env=env)
             # iki kanal işi aynı anda aynı repoya yazıyor: ikinci push non-fast-forward'la reddediliyordu (Plan B'ye
@@ -195,6 +208,21 @@ def _site(islem) -> None:
                         raise
                     _git("pull", "--rebase", cwd=kopya, env=env)
                     time.sleep(3 * (i + 1))
+
+
+def _sikistir(kopya: Path, mesaj: str, env: dict) -> bool:
+    """Dalı tek commit'e indirip zorla push'lar: silinen her video public repo tarihçesinde kalıyordu (10 günde 294 MB,
+    Pages repo sınırı 1 GB; geri çekilen videolar da tarihçeden açılabiliyordu). Kira (`--force-with-lease`) klonlanan
+    uca bağlı: arada öbür kanal medya koyduysa push reddedilir, olağan silme commit'ine dönülür (False)."""
+    uc = subprocess.run(["git", "rev-parse", "HEAD"], cwd=kopya, capture_output=True, text=True, check=True).stdout
+    try:
+        _git("checkout", "--orphan", "sikistirilmis", cwd=kopya, env=env)
+        _git("commit", "-m", f"{mesaj} (medya tarihçesi sıkıştırıldı)", cwd=kopya, env=env)
+        _git("push", f"--force-with-lease=main:{uc.strip()}", "origin", "sikistirilmis:main", cwd=kopya, env=env)
+    except BufferHatasi:
+        _git("checkout", "main", cwd=kopya, env=env)
+        return False
+    return True
 
 
 def medya_koy(video: Path, ad: str, bekle_sn: int = 600) -> str:
@@ -222,10 +250,10 @@ def medya_koy(video: Path, ad: str, bekle_sn: int = 600) -> str:
 
 
 def medya_kaldir(ad: str) -> None:
-    """Buffer videoyu aldıktan sonra: site reposu her gün büyümesin."""
+    """Buffer videoyu aldıktan sonra: site reposu her gün büyümesin. Medya klasörü boşaldıysa tarihçe sıkıştırılır."""
 
     def kaldir(kopya: Path) -> str:
         (kopya / "media" / ad).unlink(missing_ok=True)
         return f"Medya kaldırıldı: {ad}"
 
-    _site(kaldir)
+    _site(kaldir, sikistir=True)

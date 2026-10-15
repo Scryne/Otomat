@@ -14,7 +14,10 @@ def kanallar(tmp_path, monkeypatch):
     """Gerçek profiller, test klasörüne yönlendirilmiş rapor ve durum yollarıyla."""
     sonuc = []
     for kimlik in ("earth", "uzay"):
-        k = dataclasses.replace(kanal.yukle(kimlik), raporlar=tmp_path / kimlik, durum=tmp_path / f"{kimlik}.db")
+        # dönem sabit: profilin `donem`i biçim değiştikçe kayıyor (Earth K-25'te 10-17'ye), test verisi 10-10'dan
+        k = dataclasses.replace(
+            kanal.yukle(kimlik), raporlar=tmp_path / kimlik, durum=tmp_path / f"{kimlik}.db", donem="2026-10-01"
+        )
         k.raporlar.mkdir()
         sonuc.append(k)
     monkeypatch.setattr(portfoy, "aktif_kanallar", lambda: sonuc)

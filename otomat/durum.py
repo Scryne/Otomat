@@ -59,6 +59,19 @@ CREATE TABLE IF NOT EXISTS ceviri_onarim (
     video_id TEXT PRIMARY KEY,
     tarih TEXT NOT NULL
 );
+-- Tutmayan çeviri onarımı denemeleri (sınırda video onarılmış sayılır; durum.ceviri_denemesi).
+CREATE TABLE IF NOT EXISTS ceviri_deneme (
+    video_id TEXT PRIMARY KEY,
+    deneme INTEGER NOT NULL DEFAULT 0
+);
+-- Yüklenemeyen altyazı izleri (kota, geçici hata): gunluk.altyazi_onarimi sonraki koşularda tamamlar. 10-14 Ganesha'nın
+-- fr/pt izleri YouTube kotasına takıldı; alarm çaldı ama hiçbir koşu yeniden denemiyordu.
+CREATE TABLE IF NOT EXISTS altyazi_eksik (
+    video_id TEXT NOT NULL,
+    dil TEXT NOT NULL,
+    deneme INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY (video_id, dil)
+);
 -- Ödül penceresi ölçümü: yayın günü + 2 gün (Analytics), bir kez yazılır.
 CREATE TABLE IF NOT EXISTS olcumler (
     video_id TEXT PRIMARY KEY,
@@ -107,9 +120,25 @@ def geri_cek(db: sqlite3.Connection, video_idler: list[str], bugun: dt.date, ned
         "INSERT OR REPLACE INTO geri_cekilen (video_id, tarih, neden) VALUES (?, ?, ?)",
         [(v, bugun.isoformat(), neden) for v in video_idler],
     )
-    # geri çekilen video artık onarılacak bir plan değil
+    # geri çekilen video artık onarılacak bir plan değil, eksik altyazısı da tamamlanmaz
     db.executemany("DELETE FROM planlanamayan WHERE video_id = ?", [(v,) for v in video_idler])
+    db.executemany("DELETE FROM altyazi_eksik WHERE video_id = ?", [(v,) for v in video_idler])
     db.commit()
+
+
+def altyazi_eksik(db: sqlite3.Connection, video_id: str, diller: list[str]) -> None:
+    """Yüklenemeyen altyazı dillerini onarım kuyruğuna yazar (deneme sayacı korunur)."""
+    db.executemany("INSERT OR IGNORE INTO altyazi_eksik (video_id, dil) VALUES (?, ?)", [(video_id, d) for d in diller])
+    db.commit()
+
+
+def altyazi_bekliyor(db: sqlite3.Connection) -> bool:
+    return (
+        db.execute(
+            "SELECT 1 FROM altyazi_eksik WHERE video_id NOT IN (SELECT video_id FROM geri_cekilen) LIMIT 1"
+        ).fetchone()
+        is not None
+    )
 
 
 def planlanamayan_var(db: sqlite3.Connection) -> bool:
@@ -147,22 +176,44 @@ def jsonl_oku(yol: Path) -> list[dict]:
     return satirlar
 
 
-def ceviri_bekliyor(db: sqlite3.Connection, rapor: Path, simdi: dt.datetime) -> bool:
-    """Çevirisi atlanmış (kota) ve hâlâ planlı, onarılmamış video var mı (gunluk.ceviri_onarimi). Pist dolu günlerde
-    koşu ilk adımda bittiği için onarım hiç yapılmıyordu; video yayına çevirisiz çıkıyordu."""
+def ceviri_bekleyenler(db: sqlite3.Connection, rapor: Path, simdi: dt.datetime) -> list[str]:
+    """Çevirisi atlanmış (kota) ve hâlâ planlı, onarılmamış videolar (gunluk.ceviri_onarimi)."""
     yapilan = {v for (v,) in db.execute("SELECT video_id FROM ceviri_onarim UNION SELECT video_id FROM geri_cekilen")}
     sinir = simdi + dt.timedelta(minutes=30)
+    sonuc = []
     for k in jsonl_oku(rapor):
         # `ceviri_atlanan` 10-13'ten önce yazılmıyordu: o kayıtlarda boş `diller` dört dilin de atlandığını gösterir
         eksik = k.get("ceviri_atlanan") or ("diller" in k and not k["diller"])
-        if not (eksik and k.get("video_id")) or k["video_id"] in yapilan:
+        if not (eksik and k.get("video_id")) or k["video_id"] in yapilan or k["video_id"] in sonuc:
             continue
         try:
             if dt.datetime.fromisoformat(k["yayin_ani"]).astimezone(dt.UTC) > sinir:
-                return True
+                sonuc.append(k["video_id"])
         except (KeyError, TypeError, ValueError):
             continue
-    return False
+    return sonuc
+
+
+def ceviri_bekliyor(db: sqlite3.Connection, rapor: Path, simdi: dt.datetime) -> bool:
+    """Pist dolu günlerde koşu ilk adımda bittiği için onarım hiç yapılmıyordu; video yayına çevirisiz çıkıyordu."""
+    return bool(ceviri_bekleyenler(db, rapor, simdi))
+
+
+def ceviri_denemesi(db: sqlite3.Connection, video_id: str, bugun: dt.date, sinir: int) -> bool:
+    """Tutmayan çeviri onarımını sayar; `sinir`e ulaşınca video onarılmış sayılır (ceviri_onarim) ve True döner.
+    Artifact'ı pencereden çıkmış ya da çevirisi hep düşen video her cron'u yayınına kadar boşuna bakım koşusuna
+    çeviriyordu (günde 4, iki kanal; her biri Cloudflare kotası da harcıyordu)."""
+    db.execute(
+        "INSERT INTO ceviri_deneme (video_id, deneme) VALUES (?, 1)"
+        " ON CONFLICT(video_id) DO UPDATE SET deneme = deneme + 1",
+        (video_id,),
+    )
+    db.commit()
+    if db.execute("SELECT deneme FROM ceviri_deneme WHERE video_id = ?", (video_id,)).fetchone()[0] < sinir:
+        return False
+    db.execute("INSERT OR REPLACE INTO ceviri_onarim VALUES (?, ?)", (video_id, bugun.isoformat()))
+    db.commit()
+    return True
 
 
 def yayin_slotu(db: sqlite3.Connection, simdi: dt.datetime, saat: int | None = None) -> dt.datetime:
@@ -268,5 +319,6 @@ if __name__ == "__main__":
         and rapor.bekleyen(simdi.date()) is None
         and not (pist and planlanamayan_var(db))  # planlaması düşmüş video bakım bekliyor
         and not (pist and ceviri_bekliyor(db, kanal.aktif().raporlar / "gunluk.jsonl", simdi))
+        and not (pist and altyazi_bekliyor(db))  # kotaya takılmış altyazı izi tamamlanmayı bekliyor
     )
     sys.exit(0 if is_yok else 1)
