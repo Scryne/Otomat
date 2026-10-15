@@ -518,7 +518,8 @@ def ceviri_onarimi(db, yt, kayit: dict, alarmlar: list[str]) -> None:
             db.execute("INSERT OR REPLACE INTO ceviri_onarim VALUES (?, ?)", (video_id, simdi.date().isoformat()))
             db.commit()
             dusen = []
-            for dil in yeni:
+            # altyazısız kartta (K-25) en.srt yazılmaz, çeviri srt'si de yok: her dil "yüklenemedi" alarmı çalardı
+            for dil in yeni if (yerel_yol.parent / "en.srt").exists() else []:
                 try:
                     srt = yerel_yol.parent / f"{dil}.srt"
                     youtube.altyazi_ekle(video_id, dil, srt.read_text(encoding="utf-8"), yt=yt)

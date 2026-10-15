@@ -204,6 +204,7 @@ def _ceviri_klasoru(tmp_path, ad, anahtar):
     k.mkdir(parents=True)
     (k / "meta.json").write_text(json.dumps({"paket": {"anahtar": anahtar}}), encoding="utf-8")
     (k / "yerel.json").write_text(json.dumps({"yerel": {}, "atlanan": ["es"]}), encoding="utf-8")
+    (k / "en.srt").write_text("1", encoding="utf-8")  # sahneli üretim; kart biçiminde srt hiç yok
     (k / "es.srt").write_text("1", encoding="utf-8")
     return k
 

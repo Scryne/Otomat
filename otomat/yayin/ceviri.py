@@ -64,12 +64,20 @@ def _cevir(dil: str, baslik: str, aciklama: str, altyazilar: list[str], tohum: i
         "required": ["title", "description", "captions"],
     }
     numarali = "\n".join(f"{i + 1}. {m}" for i, m in enumerate(altyazilar))
-    istem = (
-        f"Translate this YouTube Shorts metadata from English to {DILLER[dil]}. Keep every number, place name and "
-        "hashtag exactly as written (do not convert number formats). Keep the meaning exact; add nothing.\n\n"
-        f"TITLE: {baslik}\n\nDESCRIPTION:\n{aciklama}\n\n"
+    # altyazısız kartta (K-25) cümle bölümü hiç sorulmaz: "return exactly 0 items" modeli şaşırtıyordu
+    cumleler = (
         f"SENTENCES (translate each separately, return exactly {len(altyazilar)} items):\n{numarali}\n\n"
-        "Return JSON with title, description and captions (array of strings, no numbering)."
+        if altyazilar
+        else ""
+    )
+    istem = (
+        f"Translate this YouTube Shorts metadata from English to {DILLER[dil]}. Keep every number and hashtag exactly "
+        "as written (do not convert number formats). Translate every other word, including number words like million "
+        "and common nouns next to names (dealers, customs, tiles); write place names in their usual "
+        f"{DILLER[dil]} form. Keep the meaning exact; add nothing.\n\n"
+        f"TITLE: {baslik}\n\nDESCRIPTION:\n{aciklama}\n\n{cumleler}"
+        "Return JSON with title, description and captions (array of strings, no numbering"
+        f"{'' if altyazilar else '; leave it empty'})."
     )
     try:
         y = _uret(istem, sema, tohum)
@@ -84,7 +92,7 @@ def _cevir(dil: str, baslik: str, aciklama: str, altyazilar: list[str], tohum: i
         return None
     if not isinstance(caps, list) or not all(isinstance(c, str) and c.strip() for c in caps):
         return None
-    caps = [re.sub(r"^\d+\.\s*", "", c).strip() for c in caps]
+    caps = [re.sub(r"^\d+\.\s*", "", c).strip() for c in caps] if altyazilar else []
     if len(caps) != len(altyazilar):
         return None
     if rakamlar(baslik_c) != rakamlar(baslik) or rakamlar(" ".join(caps)) != rakamlar(" ".join(altyazilar)):
@@ -92,8 +100,9 @@ def _cevir(dil: str, baslik: str, aciklama: str, altyazilar: list[str], tohum: i
     if rakamlar(aciklama_c) != rakamlar(aciklama):
         return None
     # çevrilmemiş çıktı (model metni aynen döndü) rakam kapısından kendiliğinden geçiyordu: İngilizce, İspanyolca
-    # yerelleştirme ve altyazı izi olarak yayına çıkardı
-    if [_norm(c) for c in caps] == [_norm(a) for a in altyazilar] or (
+    # yerelleştirme ve altyazı izi olarak yayına çıkardı. Altyazısız kartta iki liste de boş ve [] == [] her çeviriyi
+    # reddediyordu (10-17 Hobby Lobby kartı dört dilin dördünde çevirisiz kaldı)
+    if (altyazilar and [_norm(c) for c in caps] == [_norm(a) for a in altyazilar]) or (
         _norm(baslik_c) == _norm(baslik) and _norm(aciklama_c) == _norm(aciklama)
     ):
         return None

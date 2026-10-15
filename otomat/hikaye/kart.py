@@ -140,7 +140,13 @@ class Kart:
 
 def duz(metin: str) -> str:
     """Vurgu işaretleri olmadan metin (hakem, kapılar, açıklama ve çeviri bunu görür)."""
-    return VURGU.sub(r"\1", metin).replace("[[", "").replace("]]", "")
+    return re.sub(r" {2,}", " ", VURGU.sub(r"\1", metin).replace("[[", "").replace("]]", "")).strip()
+
+
+def isaret_duzelt(metin: str) -> str:
+    """İşaretin iç kenar boşluğu atılır: model "bought [[ $1.6 million]]" yazıyor, düz metinde çift boşluk kalıyordu
+    (10-17 kartının açıklaması)."""
+    return re.sub(r" {2,}", " ", VURGU.sub(lambda m: f"[[{m.group(1).strip()}]]", metin)).strip()
 
 
 def kod_kontrolu(k: Kart, kaynak: str) -> list[tuple[int, str]]:
@@ -194,7 +200,7 @@ def yaz(baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> 
     kisa = senaryo.kisalt(kaynak)
     istem = ISTEM.format(baslik=baslik, metin=kisa, konu=konu, kalip=senaryo.KALIPLAR[kalip])
     s = cf.sohbet(istem, sema(moodlar))
-    k = Kart(s["title"].strip(), s["hook"].strip(), [c.strip() for c in s["sentences"] if c.strip()],
+    k = Kart(s["title"].strip(), s["hook"].strip(), [isaret_duzelt(c) for c in s["sentences"] if c.strip()],
              s["image"].strip(), s["mood"])  # fmt: skip
     for tur_no in range(senaryo.TUR_SAYISI):
         sorun = kod_kontrolu(k, kaynak)
@@ -220,7 +226,7 @@ def yaz(baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> 
             elif d["line"] == 1:
                 k.kanca = d["text"].strip()
             elif 2 <= d["line"] < len(satirlar):
-                k.cumleler[d["line"] - 2] = d["text"].strip()
+                k.cumleler[d["line"] - 2] = isaret_duzelt(d["text"])
     raise senaryo.SenaryoHatasi(f"kart {senaryo.TUR_SAYISI} turda hakemden geçmedi", k.turlar)
 
 

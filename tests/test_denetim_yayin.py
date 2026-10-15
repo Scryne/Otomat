@@ -71,17 +71,18 @@ def test_token_dusmusse_uretime_girmez_hikaye_harcamaz(tmp_path, monkeypatch):
 
 def test_pist_denetimi_plansizi_yeniden_planlar_kayibi_bildirir(tmp_path, monkeypatch):
     db = durum.baglan(tmp_path / "d.db")
-    simdi = dt.datetime(2026, 10, 13, 18, tzinfo=UTC)
-    _secim(db, "2026-10-14", "2026-10-14T14:00:00+00:00", "plansiz")
-    _secim(db, "2026-10-15", "2026-10-15T14:00:00+00:00", "kayip")
-    _secim(db, "2026-10-16", "2026-10-16T14:00:00+00:00", "planli")
-    _secim(db, "2026-10-12", "2026-10-12T14:00:00+00:00", "gecmis")  # yayınlanmış: denetlenmez
-    _secim(db, "2026-10-17", "2026-10-17T14:00:00+00:00", "cekilen")
-    _secim(db, "2026-10-18", "2026-10-18T14:00:00+00:00", "elle")  # Studio'dan elle private: dokunulmaz
+    # gerçek saate göreli: youtube.planla geçmiş anı hemen public yapar, sabit 10-14 slotu 10-15'te publishAt'siz kaldı
+    simdi = dt.datetime.now(UTC)
+
+    def an(g: int) -> dt.datetime:
+        return dt.datetime.combine(simdi.date() + dt.timedelta(days=g), dt.time(gunluk.YAYIN_SAATI_UTC), UTC)
+
+    for g, v in ((1, "plansiz"), (2, "kayip"), (3, "planli"), (-1, "gecmis"), (4, "cekilen"), (5, "elle")):
+        _secim(db, an(g).date().isoformat(), an(g).isoformat(), v)  # gecmis yayınlanmış, elle Studio'dan private
     durum.geri_cek(db, ["cekilen"], simdi.date(), "kalite")
-    durum.planlanamadi(db, "plansiz", dt.datetime(2026, 10, 14, 14, tzinfo=UTC))  # Buffer yükledi, planlama düştü
+    durum.planlanamadi(db, "plansiz", an(1))  # Buffer yükledi, planlama düştü
     yt = _Yt({"plansiz": {"privacyStatus": "private", "selfDeclaredMadeForKids": False},
-              "planli": {"privacyStatus": "private", "publishAt": "2026-10-16T14:00:00Z"},
+              "planli": {"privacyStatus": "private", "publishAt": an(3).strftime("%Y-%m-%dT%H:%M:%SZ")},
               "elle": {"privacyStatus": "private"}})  # fmt: skip
     kayit, alarmlar = {}, []
     monkeypatch.setattr(gunluk, "uretim_dosyalari", lambda ad: [])  # üretim klasörü yok: yalnız plan
@@ -89,7 +90,7 @@ def test_pist_denetimi_plansizi_yeniden_planlar_kayibi_bildirir(tmp_path, monkey
     assert kayit["pist"] == {"denetlenen": 4, "onarilan": ["plansiz"], "kayip": ["kayip"], "plansiz": ["elle"]}
     assert len(yt.guncellenen) == 1  # yalnız kaydedilmiş başarısızlık
     part, govde = yt.guncellenen[0]
-    assert govde["id"] == "plansiz" and govde["status"]["publishAt"] == "2026-10-14T14:00:00.000Z"
+    assert govde["id"] == "plansiz" and govde["status"]["publishAt"] == an(1).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     assert govde["status"]["publicStatsViewable"] is True and govde["status"]["selfDeclaredMadeForKids"] is False
     assert len(alarmlar) == 3 and any("kayip" in a for a in alarmlar) and any(":** elle." in a for a in alarmlar)
     assert db.execute("SELECT count(*) FROM planlanamayan").fetchone()[0] == 0  # onarılan kayıttan düşer
@@ -240,6 +241,7 @@ def test_ceviri_onarimi_planli_videonun_eksik_dillerini_tamamlar(tmp_path, monke
     klasor.mkdir(parents=True)
     (klasor / "meta.json").write_text(json.dumps({"paket": {"anahtar": "wiki:Heraclitus"}}), encoding="utf-8")
     (klasor / "yerel.json").write_text(json.dumps({"yerel": {}, "atlanan": ["es", "de"], "kota": True}), "utf-8")
+    (klasor / "en.srt").write_text("1\nen", encoding="utf-8")
     (klasor / "es.srt").write_text("1\nes", encoding="utf-8")
     monkeypatch.setattr(gunluk, "uretim_dosyalari", lambda ad: [klasor / ad])
     monkeypatch.setattr(gunluk, "hazirla", lambda d: {"yerel": {"es": {"title": "T", "description": "D"}},
@@ -255,6 +257,28 @@ def test_ceviri_onarimi_planli_videonun_eksik_dillerini_tamamlar(tmp_path, monke
     kayit = {}
     gunluk.ceviri_onarimi(db, object(), kayit, alarmlar)
     assert len(yerel) == 1 and "ceviri_onarimi" not in kayit
+
+
+def test_ceviri_onarimi_altyazisiz_kartta_srt_aramaz(tmp_path, monkeypatch):
+    """10-17 Hobby Lobby kartı (K-25): srt yok; onarım her dil için "altyazı yüklenemedi" alarmı çalıyordu."""
+    db = durum.baglan(tmp_path / "d.db")
+    ileri = (dt.datetime.now(UTC) + dt.timedelta(days=2)).replace(microsecond=0)
+    _secim(db, ileri.date().isoformat(), ileri.isoformat(), "vid")
+    db.execute("UPDATE secimler SET anahtar = 'wiki:Hobby'")
+    klasor = tmp_path / "2026-10-17" / "wiki_Hobby"
+    klasor.mkdir(parents=True)
+    (klasor / "meta.json").write_text(json.dumps({"paket": {"anahtar": "wiki:Hobby"}}), encoding="utf-8")
+    (klasor / "yerel.json").write_text(json.dumps({"yerel": {}, "atlanan": ["es", "de"]}), "utf-8")
+    monkeypatch.setattr(gunluk, "uretim_dosyalari", lambda ad: [klasor / ad])
+    monkeypatch.setattr(gunluk, "hazirla", lambda d: {"yerel": {"es": {"title": "T", "description": "D"},
+                                                                "de": {"title": "T", "description": "D"}},
+                                                       "atlanan": [], "kota": False})  # fmt: skip
+    yerel, altyazi = [], []
+    monkeypatch.setattr(youtube, "yerellestir", lambda v, y, yt=None: yerel.append((v, sorted(y))))
+    monkeypatch.setattr(youtube, "altyazi_ekle", lambda v, d, m, yt=None: altyazi.append((v, d)))
+    kayit, alarmlar = {}, []
+    gunluk.ceviri_onarimi(db, object(), kayit, alarmlar)
+    assert yerel == [("vid", ["de", "es"])] and altyazi == [] and alarmlar == []
 
 
 def test_ceviri_onarimi_tutmayan_deneme_de_sayilir(tmp_path, monkeypatch):

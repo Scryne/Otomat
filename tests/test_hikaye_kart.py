@@ -259,3 +259,30 @@ def test_hazirla_altyazisiz_kartta_srt_yazmaz_basligi_cevirir(tmp_path, monkeypa
     # aynı metin ikinci kez: srt yok diye yeniden çevrilmez (kota)
     hazirla.hazirla(tmp_path)
     assert len(cagri) == len(earth.diller)
+
+
+def test_cevir_altyazisiz_kartta_gercek_ceviriyi_kabul_eder(monkeypatch, earth):
+    # 10-17 kartı: altyazı listesi boş, "çevrilmemiş çıktı" kontrolü [] == [] ile her çeviriyi reddediyordu
+    from otomat.yayin import ceviri
+
+    istemler = []
+
+    def uret(istem, sema, tohum):
+        istemler.append(istem)
+        return {"title": "Botín antiguo de 1.6 millones", "description": "Pagó 1.6 millones en 2010.", "captions": []}
+
+    monkeypatch.setattr(ceviri, "_uret", uret)
+    s = ceviri.cevir("es", "Ancient Loot for $1.6M", "It paid $1.6 million in 2010.\n\nSource: x", [])
+    assert s and s["title"].startswith("Botín") and s["description"].endswith("Source: x")
+    assert "SENTENCES" not in istemler[0]
+    # aynen dönen metin yine reddedilir
+    monkeypatch.setattr(ceviri, "_uret", lambda i, s, t: {"title": "Ancient Loot for $1.6M",
+                                                          "description": "It paid $1.6 million in 2010.",
+                                                          "captions": []})  # fmt: skip
+    assert ceviri.cevir("es", "Ancient Loot for $1.6M", "It paid $1.6 million in 2010.\n\nSource: x", []) is None
+
+
+def test_isaret_ici_bosluk_duz_metne_cift_bosluk_birakmaz():
+    c = kart.isaret_duzelt("In 2010 it bought [[ $1.6 million]] of items, a [[ $3 million fine ]].")
+    assert c == "In 2010 it bought [[$1.6 million]] of items, a [[$3 million fine]]."
+    assert "  " not in kart.duz(c) and kart.duz(c).endswith("fine.")

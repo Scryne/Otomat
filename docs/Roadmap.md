@@ -558,9 +558,17 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Test izolasyonu açığı: senaryosu sahtelenmiş bir test kart yoluna sapıp yerelde gerçek Cloudflare'e istek attı
     (`cf.kimlik` `sirlar/cloudflare.json`'a düşüyordu; CI'da dosya yok). `conftest` artık Cloudflare, YouTube ve
     Buffer kimliklerini testte kapatıyor.
-- **Açık:** kart metni gerçek modelle henüz koşmadı (10-14 kota doluydu); ilk kart 10-15 koşusunda (10-17 slotu)
-  üretilir, pistin 3. günü olduğu için düşerse alarm çalmaz, sonraki koşu yeniden dener. İlk kartlar kare kare
-  incelenecek.
+- **İlk kart (10-15 koşusu, 10-17 slotu, `BpF0N2oblvg`):** Hobby Lobby kaçakçılık skandalı; kod kapısı ve hakem ilk
+  turda temiz, olgular Wikipedia'yla tutarlı, 8 sn. Makalenin Commons görseli yok, AI illüstrasyonu (mağaza koridoru;
+  tarifteki tabletler çizilmemiş, bir kez yeniden çizildi). Bulunan üç hata düzeltildi:
+  - Çeviri kartta hiç çalışmıyordu: altyazı listesi boş, "çevrilmemiş çıktı" kontrolü `[] == []` ile dört dilin
+    dördünü reddetti. Boş listede kontrol yalnız başlık/açıklamaya bakar; istem cümle bölümünü sormaz.
+  - Çeviri onarımı kartta her dil için srt arayıp "altyazı yüklenemedi" alarmı çalacaktı; `en.srt` yoksa srt
+    adımı atlanır. 10-17 videosunun dört dili bir sonraki koşuda bu yoldan tamamlanır.
+  - Model `[[ $1.6 million]]` yazıyor, açıklamada çift boşluk kalıyordu: işaret içi kenar boşluğu atılır.
+  - Çeviri istemi: "yer adlarını aynen koru" Almancada "UAE dealers", "US customs" bırakıyordu; rakam ve hashtag
+    aynen, gerisi (million, yer adı) hedef dilde. Canlı es/de/fr denemesi temiz.
+  - Bugüne sabitlenmiş pist testi (10-14 slotu) 10-15'te düştü; gerçek saate göreli yapıldı. 260 → 263 test.
 - **Yayında kalan sahneli Earth videoları:** Bartman (10-14), Heraclitus (10-15), Ganesha (10-16). Kıyas tabanı.
 
 ### Faz 7: Gerçek kullanım
