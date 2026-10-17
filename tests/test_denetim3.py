@@ -272,3 +272,23 @@ def test_hazir_uretim_eski_bicimin_videosunu_almaz(tmp_path, monkeypatch):
 
     monkeypatch.setattr("otomat.hikaye.kabul.denetle", lambda y: pytest.fail("biçimi tutmayan üretim denetlendi"))
     assert gunluk._K.bicim == "sahne" and gunluk.hazir_uretim([P()], None, dt.date(2026, 10, 15)) is None
+
+
+@pytest.mark.parametrize(
+    "cumle,isaretli",
+    [
+        ("The article speculated it was a secret experiment from the nearby lab.", True),  # Montauk kartı, 10-19
+        ("According to Wikipedia, the flood smelled of molasses for decades.", True),
+        ("A local newspaper article called it a monster, and the article spread fast.", False),
+        ("The story spread fast, and a piece of the tank landed blocks away.", False),
+    ],
+)
+def test_kaynaga_gonderme_kapida_kalir(cumle, isaretli):
+    """Montauk kartı "The article speculated..." dedi; makale hiç anılmamıştı (Wikipedia'daki gazete yazısı)."""
+    from test_hikaye_kart import IYI
+
+    from otomat.hikaye import kart, senaryo
+
+    k = _kart(sentences=[*IYI["sentences"][:3], cumle])
+    assert any("source document" in r or "never introduced" in r for _, r in kart.kod_kontrolu(k, "")) is isaretli
+    assert bool(senaryo.kaynak_gondermesi(["Title", cumle])) is isaretli

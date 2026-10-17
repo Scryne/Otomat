@@ -170,6 +170,7 @@ def kod_kontrolu(k: Kart, kaynak: str) -> list[tuple[int, str]]:
         if bulunan := kaynaklar.HAKARET.findall(s):
             sorun.append((i, f"remove the slur or profanity: {', '.join(bulunan)}"))
         sorun += [(i, h) for h in senaryo.sayi_ad_kapisi(duz(s), kaynak, adlar=i > 1)]
+    sorun += senaryo.kaynak_gondermesi([duz(s) for s in satirlar])
     for i, s in enumerate(k.cumleler, 2):
         # iç içe ya da sırası bozuk işaret ("A [[big [[tank]] burst]]", "b]] [[c") ekrana köşeli parantezle çıkıyordu;
         # açıklama düz metni gördüğü için kabulden de geçiyordu

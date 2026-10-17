@@ -403,6 +403,27 @@ def sayi_ad_kapisi(metin: str, kaynak: str, adlar: bool = True) -> list[str]:
 
 
 UNVAN = re.compile(r"\b(?:Mr|Mrs|Ms|Dr|St|Mt|Ft|Capt|Col|Gen|Gov|Lt|Sgt|Rev|Prof|Sr|Jr)\.\s$")
+# Model kaynağın kendi cümlesini taşıyordu: Montauk kartı (10-19) "The article speculated it might be a secret
+# experiment" dedi; Wikipedia'daki "The light-hearted article" bir gazete yazısıydı, izleyici hangi makale olduğunu
+# bilmiyor. Hakem bunu olgu olarak doğru buldu. "the article" ancak önce bir yazı anıldıysa serbest.
+KAYNAK_ADI = re.compile(r"\b(?:wikipedia|this (?:article|entry)|the (?:wiki|source) (?:says|states|notes)|"
+                        r"according to the (?:source|article))\b", re.I)  # fmt: skip
+# "the story"/"the piece" anlatımın kendisinde geçiyor ("The story spread", "a piece of wood"), yazı sayılmaz
+ASILI_YAZI = re.compile(r"\bthe (?:article|report)\b", re.I)
+YAZI_ANILDI = re.compile(
+    r"\b(?:an?|newspaper|magazine|news|local|its|his|her|their)\s+(?:[\w'-]+\s+)?(?:article|report)\b", re.I
+)
+
+
+def kaynak_gondermesi(satirlar: list[str]) -> list[tuple[int, str]]:
+    """(satır sırası, sorun): metin kaynak belgeye ya da hiç anılmamış bir yazıya gönderme yapıyor."""
+    sorun = []
+    for i, s in enumerate(satirlar):
+        if m := KAYNAK_ADI.search(s):
+            sorun.append((i, f'do not refer to the source document ("{m.group()}"); tell the story itself'))
+        elif (m := ASILI_YAZI.search(s)) and not YAZI_ANILDI.search(" ".join([*satirlar[:i], s[: m.start()]])):
+            sorun.append((i, f'"{m.group()}" was never introduced; say whose it was (e.g. "a local newspaper")'))
+    return sorun
 
 
 def _aksansiz(metin: str) -> str:
@@ -427,6 +448,7 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
         if len(sayili) > SAYI_SINIRI:
             sorun += [(n, f"the script has {len(sayili)} numbers but may hold only {SAYI_HEDEF}; tell this line "
                           "without its number") for n in dict.fromkeys(sayili[SAYI_HEDEF:])]  # fmt: skip
+    sorun += kaynak_gondermesi([baslik, *satirlar])
     for i, s in enumerate(satirlar, 1):  # anlatıcı sembolü okuyamıyor ("40°F")
         if sembol := SEMBOL.findall(s):
             sorun.append((i, f"spell out symbols as words for the narrator: {' '.join(sembol)}"))

@@ -621,6 +621,20 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Bilerek açık: YouTube kotasının iki kanal arasında önceden bütçelenmesi (ölçüm artık var; kuyruk ve pist onarımı
     kota taşmasını karşılıyor); bakım koşularının neuron/Buffer harcaması günlük kayda yazılmıyor; Wikipedia metni
     revizyona sabitlenmiyor (24 saat süzgeci yetiyor sayıldı).
+- **Yayın öncesi kart incelemesi (2026-10-17):** 10-16 ve 10-17 koşuları (iki kanal, 4 koşu) alarmsız; iki kanalda
+  pist 10-19'a kadar dolu, hepsi 4 dilli. Hobby Lobby (`BpF0N2oblvg`) 14:00'te yayında, 5 dil
+  yerelleştirmesi canlıda doğrulandı. Zelda (10-18, ilk Commons görselli kart: yatay bant ve bant içi atıf doğru) ve
+  Montauk (10-19) karesi ve olguları Wikipedia'yla karşılaştırıldı, tutarlı.
+  - Bulgu: Montauk kartı "**The article** speculated…" diyor; makalenin kendi cümlesi ("The light-hearted article",
+    bir gazete yazısı) taşınmış, izleyici hangi yazı olduğunu bilmiyor. Hakem olgu olarak doğru buldu. Kod kapısına
+    `senaryo.kaynak_gondermesi` (kart + sahneli): "Wikipedia", "this article", "according to the source" ve önce bir
+    yazı anılmadan "the article/report". Eldeki 16 geçmiş senaryoda yalnız Montauk'u işaretliyor. Video bırakıldı
+    (kusur anlamı bozmuyor; geri çekmek deneyden bir slot alırdı). 307 → 311 test.
+  - Gözlem: anlatıcısız kartta YouTube'un otomatik altyazısı müziği Vietnamca sanıyor (`asr`, `vi`); videonun
+    `defaultAudioLanguage` değeri `en`. Silinemez (asr), etkisi altyazıyı açan izleyiciyle sınırlı; dokunulmadı.
+  - **Takvim:** ölçüm penceresi yayın günü + 2 gün, üstüne 2 gün Analytics gecikmesi. 10-17 kartı 10-22'de, beşinci
+    kart (10-21) 10-26'da ölçülür; **Faz 16 kararı ~10-26.** Kıyas tabanı canlıda: Bartman (sahneli) 3 günlük
+    pencerede 200 görüntüleme, %31,5 Kalan, %50,5 izlenme.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
