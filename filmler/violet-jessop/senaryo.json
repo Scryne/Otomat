@@ -1,0 +1,888 @@
+{
+  "slug": "violet-jessop",
+  "baslik": "Titanic Was Only Her Second Disaster at Sea",
+  "kapak_yazi": "UNSINKABLE.",
+  "kapak_sahne": "Close-up of the woman from the reference image in her stewardess uniform, soaking wet, staring straight ahead with a calm, unbreakable expression, a huge ship sinking far behind her in the dark, icy blue light on one side of her face and warm amber light on the other.",
+  "kapak_kim": [
+    "violet"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Violet Jessop",
+      "url": "https://en.wikipedia.org/wiki/Violet_Jessop",
+      "revid": 1376997573
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "violet": "one young woman, a 1912 ship stewardess: short dark brown hair in a low bun, small dark cap, long black dress with white apron and white collar",
+    "violet_kiz": "one little girl about seven years old: dark brown hair in two short braids, simple faded blue dress, bare feet",
+    "violet_hemsire": "one young woman, a 1916 Red Cross volunteer nurse: dark brown hair hidden under a white nurse headscarf, grey-blue long dress, white apron with a small red cross on the chest",
+    "violet_yasli": "one elderly woman about seventy years old: grey hair in a low bun, small round glasses, brown knitted cardigan over a dark dress",
+    "moody": "one young ship officer in 1912: dark navy double-breasted uniform with gold buttons, white peaked officer cap, serious face",
+    "anne": "one woman about forty years old in 1904: dark hair in a bun, long dark grey dress with white apron, tired kind face"
+  },
+  "bolumler": [
+    {
+      "ad": "The jump",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "November 1916. The Aegean Sea. A lifeboat full of people is being dragged toward the spinning propellers of a sinking ship.",
+          "sahneler": [
+            {
+              "tarif": "A huge four-funnel ship painted white with a green stripe lists in a calm blue-grey sea under a pale morning sky, small lifeboats around it.",
+              "hareket": "iceri",
+              "yazi": "AEGEAN SEA — NOVEMBER 1916"
+            },
+            {
+              "tarif": "Underwater view of a gigantic ship propeller turning in murky green water, bubbles streaming, ominous.",
+              "hareket": "i2v",
+              "i2v": "The giant propeller spins slowly, bubbles stream and swirl, murky water. Static camera."
+            },
+            {
+              "tarif": "A small wooden lifeboat crowded with people with round cream heads, all looking back in fear at something huge off-frame.",
+              "kim": [],
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "One of the women in that boat has a choice to make, and about two seconds to make it. She jumps.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image sits in the crowded lifeboat, eyes wide, gripping the edge of the boat, morning light.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "i2v",
+              "i2v": "The woman grips the boat edge, her eyes dart sideways, she takes a sharp breath and leans forward. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The woman from the reference image leaps from a lifeboat into grey-blue sea water, splash frozen mid-air, side view, dramatic.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Here is the strange part. This is not the first time a giant ship has sunk underneath her. It is the second. And five years before that, she was on its sister ship when it crashed into a warship.",
+          "sahneler": [
+            {
+              "tarif": "Three identical giant four-funnel ocean liners side by side seen from the front in a dark void, the first one black, the second one black, the third one white, dramatic rim light.",
+              "hareket": "disari"
+            },
+            {
+              "tarif": "The woman from the reference image floats in grey water, only her head and shoulders above the surface, looking up, a huge dark hull towering behind her.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Her name was Violet Jessop. People would later call her Miss Unsinkable. And her story begins about as far from the sea as you can get.",
+          "sahneler": [
+            {
+              "tarif": "Portrait of the woman from the reference image in her stewardess uniform standing in a pool of warm amber light in total darkness, calm and proud.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri",
+              "yazi": "VIOLET JESSOP"
+            },
+            {
+              "tarif": "Endless flat grassland under a huge starry night sky, a single tiny farmhouse with a lit window far away.",
+              "hareket": "sol"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "A girl from the Pampas",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Violet was born on the second of October, 1887, on the Pampas near Bahía Blanca, in Argentina. Her parents were Irish immigrants. Her father farmed sheep.",
+          "sahneler": [
+            {
+              "tarif": "Golden grassland at sunset, a flock of round fluffy white sheep, a small farmhouse and a windmill in the distance, warm amber sky.",
+              "hareket": "sag",
+              "yazi": "PAMPAS, ARGENTINA — 1887"
+            },
+            {
+              "tarif": "The little girl from the reference image stands among fluffy white sheep in tall golden grass, looking at the horizon.",
+              "kim": [
+                "violet_kiz"
+              ],
+              "hareket": "i2v",
+              "i2v": "The grass sways in the wind, the girl brushes hair from her face and looks around, sheep slowly move. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "She was the first of nine children. Only six of them survived. And Violet, the eldest, spent much of her childhood looking after the younger ones.",
+          "sahneler": [
+            {
+              "tarif": "The little girl from the reference image holds a baby in a blanket while three small children cling to her dress inside a dim farmhouse kitchen lit by an oil lamp.",
+              "kim": [
+                "violet_kiz"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A row of nine small simple candles on a dark wooden table, three of them blown out with thin smoke rising, the other six glowing.",
+              "hareket": "i2v",
+              "i2v": "Six candle flames flicker gently, thin smoke curls up from the three dark candles. Static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Then she got sick. Very sick. The doctors believed it was tuberculosis, and they told the family the illness would kill her.",
+          "sahneler": [
+            {
+              "tarif": "The little girl from the reference image lies pale in a small bed under a thin blanket, a single candle beside her, deep shadows.",
+              "kim": [
+                "violet_kiz"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Silhouette of a doctor with a top hat and a leather bag standing in a doorway, backlit, facing a worried mother in the dark room.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "It didn't. Violet survived. Keep that in mind, because surviving things that should have killed her is going to become a habit.",
+          "sahneler": [
+            {
+              "tarif": "Morning sunlight pours through a window onto the little girl from the reference image, sitting up in bed, smiling weakly.",
+              "kim": [
+                "violet_kiz"
+              ],
+              "hareket": "i2v",
+              "i2v": "Sunlight slowly grows brighter, dust floats in the light, the girl blinks and smiles. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "When Violet was sixteen, her father died from complications after surgery. The family left Argentina and moved to England.",
+          "sahneler": [
+            {
+              "tarif": "A lonely grave with a simple wooden cross on a windy hill in the grassland, grey overcast sky.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "A small steamship sailing away across a dark ocean at dusk, a thin trail of smoke from its single funnel.",
+              "hareket": "sag",
+              "yazi": "ENGLAND — 1904"
+            }
+          ]
+        },
+        {
+          "anlatim": "There, Violet went to a convent school and cared for her youngest sister, while her mother went to sea, working as a stewardess on ocean liners.",
+          "sahneler": [
+            {
+              "tarif": "A teenage version of the woman from the reference image in a plain school uniform walks along a grey English street holding a small girl by the hand, rain, gas lamps.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "sag"
+            },
+            {
+              "tarif": "The woman from the reference image, a stewardess, stands at the rail of a steamship at night, looking back toward land.",
+              "kim": [
+                "anne"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "And when her mother fell ill, Violet left school and followed her mother's footsteps. She applied to work at sea.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image lies ill in bed in a small London room, her teenage daughter seen from behind sitting at the bedside.",
+              "kim": [
+                "anne"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young woman from the reference image stands at the bottom of a steep gangway leading up into an enormous dark ship hull, looking up.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "There was one catch. To get hired, she had to dress down, to make herself look less attractive. It worked.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image looks at herself in a small cracked mirror, frowning, pulling her hair into a severe tight bun, plain dark dress.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "The woman tightens her hair bun with both hands and frowns at the mirror, then nods once. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young woman from the reference image stands very straight in front of a stern old man behind a desk, who looks her up and down suspiciously.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1908, at twenty-one, Violet got her first job as a stewardess, with the Royal Mail Line, aboard a ship called the Orinoco. She was finally at sea.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image carries a tray of teacups along a narrow wood-panelled ship corridor lit by small warm lamps.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "sol",
+              "yazi": "1908"
+            },
+            {
+              "tarif": "A modest steamship with two masts and one funnel crossing a calm sea on a bright day, seagulls.",
+              "hareket": "sag"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Ship one: Olympic",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "In 1911, she moved to the White Star Line, and to a ship that was the talk of the world. The RMS Olympic. At the time, the largest civilian liner on the planet.",
+          "sahneler": [
+            {
+              "tarif": "A colossal four-funnel ocean liner with a black hull and white upper decks in a harbor, tiny people on the dock below for scale, golden light.",
+              "hareket": "disari",
+              "yazi": "RMS OLYMPIC"
+            },
+            {
+              "tarif": "The young woman from the reference image stands small at the bottom of a grand wooden staircase with a glass dome above, warm chandeliers, looking around in amazement.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "On the twentieth of September, 1911, Olympic left Southampton. And not long after, she collided with a British warship, HMS Hawke.",
+          "sahneler": [
+            {
+              "tarif": "A huge four-funnel ocean liner sailing out of a harbor on a grey afternoon, a long low grey warship approaching from the side.",
+              "hareket": "sag",
+              "yazi": "SOUTHAMPTON — 20 SEPTEMBER 1911"
+            },
+            {
+              "tarif": "Close view of the pointed bow of a grey warship crunching into the side of a huge black hull, torn steel plates, spray.",
+              "hareket": "i2v",
+              "i2v": "The warship bow pushes into the hull, steel bends, water sprays, the camera shakes slightly. Flat 2D cartoon animation."
+            }
+          ]
+        },
+        {
+          "anlatim": "The warship's bow tore into Olympic's hull. And yet, nobody died. Despite the damage, the great ship made it back to port on her own.",
+          "sahneler": [
+            {
+              "tarif": "A huge black hull with a large jagged hole near the stern, viewed from the water, sailors in small boats looking at it.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The huge four-funnel ship slowly sails back into a harbor at dusk, lights coming on, calm water.",
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "Strangely, Violet never wrote about this crash in her memoirs. Maybe it didn't seem worth mentioning. Compared to what came next, she might have been right.",
+          "sahneler": [
+            {
+              "tarif": "An old leather-bound notebook lies open on a dark wooden table under a lamp, its pages blank, a fountain pen beside it.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young woman from the reference image looks out of a round porthole at a dark sea, her face lit by moonlight, thoughtful.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "Moonlight ripples on her face, she blinks slowly and looks down. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Because in April 1912, Violet was transferred to Olympic's brand new sister ship. You know the name.",
+          "sahneler": [
+            {
+              "tarif": "Two identical gigantic four-funnel ocean liners docked side by side at night, the second one brand new and glowing with lights.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "Extreme close-up of a ship's lifebuoy ring hanging on a dark railing, lit from above, the ring is plain with no writing.",
+              "hareket": "iceri",
+              "yazi": "TITANIC"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Ship two: Titanic",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Violet boarded the Titanic as a stewardess on the tenth of April, 1912. She was twenty-four years old.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image walks up a gangway into an enormous gleaming ship, crowds on the dock behind, morning light.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "yukari",
+              "yazi": "10 APRIL 1912"
+            },
+            {
+              "tarif": "The young woman from the reference image folds white linen in a small first-class cabin with wood panels and a brass lamp, smiling.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "She shakes out the white linen and folds it neatly, the lamp light glows. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Four days later, late on the night of the fourteenth, in the North Atlantic, the ship struck an iceberg.",
+          "sahneler": [
+            {
+              "tarif": "A massive pale iceberg emerging from total darkness on a flat black sea under stars, eerie blue glow.",
+              "hareket": "iceri",
+              "yazi": "NORTH ATLANTIC — 14 APRIL 1912"
+            },
+            {
+              "tarif": "The bow of a huge ship scraping along the side of an iceberg at night, ice chunks falling onto the deck.",
+              "hareket": "i2v",
+              "i2v": "The ship slides past the iceberg, chunks of ice fall onto the deck. Flat 2D cartoon animation, slow camera pan."
+            }
+          ]
+        },
+        {
+          "anlatim": "From the moment of the impact, Titanic had about two hours and forty minutes left above water.",
+          "sahneler": [
+            {
+              "tarif": "A simple brass ship clock on a dark wood-panelled wall, its hands near midnight, lit by a single lamp.",
+              "hareket": "i2v",
+              "i2v": "The second hand ticks forward, lamp light flickers slightly. Static camera."
+            },
+            {
+              "tarif": "Seawater flooding into a long lit corridor of a ship, doors on both sides, water rushing along the floor.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Violet was ordered up on deck. Her job now was simple and terrifying. Many passengers spoke no English and couldn't follow the crew's instructions. So she was told to stand there calmly, as an example of how to behave.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image stands very still and calm on a crowded tilted deck at night, wearing a white life jacket over her uniform, passengers around her confused.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A crowd of frightened passengers with round cream heads, shawls and caps, huddling on a dark ship deck, looking in different directions.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "Close-up of the woman from the reference image, forcing a calm expression while her eyes show fear, cold night light.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "She swallows, her eyebrows tremble slightly, she keeps a calm face and breathes. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "She watched the crew load the lifeboats. Then she was ordered into one of them. Lifeboat sixteen.",
+          "sahneler": [
+            {
+              "tarif": "Crew members lowering a wooden lifeboat on ropes down the side of a huge lit ship at night, people inside.",
+              "hareket": "i2v",
+              "i2v": "The lifeboat slowly descends on its ropes along the hull, people inside look up. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young woman from the reference image steps down into a wooden lifeboat at night, holding the rail, looking back at the ship.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri",
+              "yazi": "LIFEBOAT 16"
+            }
+          ]
+        },
+        {
+          "anlatim": "As the boat was being lowered, one of the ship's officers, Sixth Officer James Moody, leaned over and handed her a baby. A stranger's baby. Her job now was to keep it alive.",
+          "sahneler": [
+            {
+              "tarif": "The young officer from the reference image leans over a ship railing at night, holding out a small baby wrapped in a white blanket.",
+              "kim": [
+                "moody"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young woman from the reference image sits in a lifeboat holding a small baby wrapped in a white blanket close to her chest, looking down at it, night.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "She rocks the baby gently and pulls the blanket tighter, her breath visible in the cold air. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Out on the black water, the survivors waited through the night. The next morning, the RMS Carpathia arrived and pulled them aboard.",
+          "sahneler": [
+            {
+              "tarif": "Small lifeboats scattered on a flat black ocean under a sky full of stars, no ship in sight, total silence.",
+              "hareket": "disari"
+            },
+            {
+              "tarif": "Dawn breaking pink and gold over a calm ocean, floating ice, a single steamship with one tall funnel approaching from the horizon.",
+              "hareket": "i2v",
+              "i2v": "The sun slowly rises, light spreads across the water, the ship grows a little closer. Static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And on the Carpathia, something happened that Violet never forgot. A woman, presumably the baby's mother, rushed up, grabbed the baby from her arms, and ran off crying. Without saying a single word.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image, wrapped in a grey blanket, sits on the deck of a rescue ship in the morning, still holding the small baby.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A woman in a dark shawl running away down a ship deck clutching a baby wrapped in white, seen from behind, motion blur.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "The young woman from the reference image sits alone with her arms still curled as if holding something, staring at her empty arms, blanket over her shoulders.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "The survivors reached New York on the eighteenth of April. Violet later went home to Southampton. And she went back to sea.",
+          "sahneler": [
+            {
+              "tarif": "A rescue steamship arriving in New York harbor at night in the rain, city lights glowing on the water.",
+              "hareket": "sag",
+              "yazi": "NEW YORK — 18 APRIL 1912"
+            },
+            {
+              "tarif": "The young woman from the reference image stands at a ship railing looking at the ocean again, wind in her hair, determined.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "Wind moves her hair and apron, she grips the railing and lifts her chin. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Ship three: Britannic",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Then came the First World War. Violet became a nurse with the Voluntary Aid Detachment, caring for the wounded.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image in her nurse uniform walks between rows of hospital beds with bandaged soldiers, lamplight.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "sag",
+              "yazi": "1916"
+            },
+            {
+              "tarif": "The woman from the reference image wraps a bandage around the arm of a tired soldier sitting on a cot.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "i2v",
+              "i2v": "She wraps the bandage carefully around his arm, he winces then nods. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And her post was a hospital ship. The HMHS Britannic. The younger sister of Olympic and Titanic.",
+          "sahneler": [
+            {
+              "tarif": "A huge four-funnel ship painted white with a green stripe along its side and large red crosses, sailing on a calm blue sea under a clear sky.",
+              "hareket": "disari",
+              "yazi": "HMHS BRITANNIC"
+            },
+            {
+              "tarif": "The woman from the reference image stands on the deck of a white hospital ship and slowly looks up at its four tall funnels, uneasy.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "On the morning of the twenty-first of November, 1916, in the Aegean Sea, Britannic struck a German naval mine.",
+          "sahneler": [
+            {
+              "tarif": "A spiked round black naval mine floating just under the surface of blue water, sunlight rays from above.",
+              "hareket": "iceri",
+              "yazi": "21 NOVEMBER 1916"
+            },
+            {
+              "tarif": "A large explosion of white water bursting up against the side of a white hospital ship, debris in the air.",
+              "hareket": "i2v",
+              "i2v": "A column of white water erupts and falls back, the ship shudders. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Titanic took two hours and forty minutes to sink. Britannic was gone in fifty-five minutes.",
+          "sahneler": [
+            {
+              "tarif": "Split composition: on the left a dark night sea with a large ship, on the right a bright morning sea with a white ship, both tilting, minimal and symbolic.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A brass pocket watch lying open on wet wooden planks, its hands ticking.",
+              "hareket": "i2v",
+              "i2v": "The watch hands tick forward, water droplets slide across the glass. Static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "But the ship's propellers were still turning. Lifeboats that drifted into them were torn apart. And Violet's boat was being drawn straight toward them.",
+          "sahneler": [
+            {
+              "tarif": "The stern of a huge white ship rising out of the sea, its enormous propellers half out of the water and churning white foam.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "A wooden lifeboat full of terrified people being pulled through churning white water toward a giant propeller.",
+              "hareket": "i2v",
+              "i2v": "The lifeboat drifts closer to the churning water, people inside lean back in fear. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "So she jumped. The jump left her with a traumatic head injury. She survived it anyway.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image leaps from the edge of a lifeboat into the sea, side view, her headscarf flying.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Underwater view looking up at the bright surface, shadows of a boat hull and debris above, a hand reaching up toward the light.",
+              "hareket": "i2v",
+              "i2v": "Light ripples through the water, bubbles rise, the hand moves slowly upward. Static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The woman from the reference image wrapped in a blanket on a rescue boat, a bandage around her head, eyes half closed but alive.",
+              "kim": [
+                "violet_hemsire"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Thirty of the one thousand and sixty-six people aboard were killed. Later, Violet described the ship's last moments in her memoirs.",
+          "sahneler": [
+            {
+              "tarif": "Many small lifeboats spread across a calm blue-grey sea, people looking toward an empty patch of water with floating debris.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "She dipped her head a little, then a little lower and still lower. All the deck machinery fell into the sea like a child's toys. Then she took a fearful plunge, her stern rearing hundreds of feet into the air, until with a final roar, she disappeared into the depths.",
+          "sahneler": [
+            {
+              "tarif": "A huge white ship with its bow dipping under the sea, deck cranes and machinery sliding off into the water, morning light.",
+              "hareket": "i2v",
+              "i2v": "The bow dips lower into the water, small objects slide off the deck and splash. Flat 2D cartoon animation, slow camera."
+            },
+            {
+              "tarif": "The stern of a huge white ship standing almost vertical out of the sea against a pale sky, tiny lifeboats far below.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "A wide calm sea with a ring of foam and bubbles where a ship just disappeared, empty horizon.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Back to sea",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Three sister ships. One collision. Two sinkings. After all that, you might expect Violet to stay on dry land for the rest of her life.",
+          "sahneler": [
+            {
+              "tarif": "Three identical giant four-funnel ships in a row seen from the side in a dark void, the first with a hole in its hull, the second sinking bow-first into black water, the third white ship sinking, symbolic minimal composition.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "She did not. In 1920, she went back to work for the White Star Line. Then she joined the Red Star Line, and later the Royal Mail Line again.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image, a few years older, walks confidently up a gangway onto a large two-funnel liner on a sunny day.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "yukari",
+              "yazi": "1920"
+            },
+            {
+              "tarif": "The woman from the reference image smiling as she serves tea to passengers in a bright ship dining room with round windows.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "With Red Star, she sailed around the entire world. Twice. Aboard the company's flagship, the Belgenland.",
+          "sahneler": [
+            {
+              "tarif": "A large ocean liner with three funnels sailing past palm trees and a tropical island at sunset.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "A simple vintage globe on a dark table with a dotted line circling around it twice, warm lamp light.",
+              "hareket": "i2v",
+              "i2v": "The globe slowly rotates, lamp light glows. Static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "At thirty-six, she married a fellow White Star steward, John James Lewis. They divorced about a year later. The ocean, it seems, was the more reliable partner.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image and a man in a steward's white jacket standing side by side, both looking slightly awkward, simple wedding flowers.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The woman from the reference image alone at a ship railing at sunset, looking at the sea, relaxed and content.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1950, Violet finally retired, to a quiet village called Great Ashfield, in Suffolk, England.",
+          "sahneler": [
+            {
+              "tarif": "A small thatched English cottage in a green village, a garden with chickens, soft grey sky.",
+              "hareket": "sag",
+              "yazi": "GREAT ASHFIELD, SUFFOLK — 1950"
+            },
+            {
+              "tarif": "The elderly woman from the reference image sits in a garden chair with a cup of tea, chickens around her feet.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "i2v",
+              "i2v": "She sips her tea, a chicken pecks the ground, a light breeze moves the leaves. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The phone call",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "And this is where the story gets strange. Years after her retirement, Violet said she got a phone call. On a stormy night.",
+          "sahneler": [
+            {
+              "tarif": "The small thatched cottage at night in heavy rain, one window glowing warm, lightning far away.",
+              "hareket": "i2v",
+              "i2v": "Rain pours, a flash of lightning briefly lights the sky, the window glows. Static camera."
+            },
+            {
+              "tarif": "An old black rotary telephone on a small wooden table in a dim room, lit by a lamp.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "A woman's voice asked her: did you save a baby, on the night the Titanic sank? Yes, Violet said.",
+          "sahneler": [
+            {
+              "tarif": "The elderly woman from the reference image holds a black telephone receiver to her ear in a dim room, puzzled expression, rain on the window behind her.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "And the voice said: I was that baby. Then it laughed, and hung up.",
+          "sahneler": [
+            {
+              "tarif": "Extreme close-up of the elderly woman from the reference image, eyes wide behind round glasses, the telephone receiver at her ear.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "i2v",
+              "i2v": "Her eyes widen slowly, her eyebrows rise, rain light flickers on her face. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A black telephone receiver hanging off a small table by its cord, swinging, in a dark room.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Her friend and biographer, John Maxtone-Graham, thought it was probably some children in the village playing a joke. Violet answered: No, John. I had never told that story to anyone before I told you now.",
+          "sahneler": [
+            {
+              "tarif": "The elderly woman from the reference image sits across a small table from a man in a tweed jacket taking notes, cups of tea between them, warm lamp light.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Close-up of the elderly woman from the reference image looking straight ahead, serious and certain.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Here is the twist. Records show the only baby in lifeboat sixteen was a little boy named Assad Thomas. He was reunited with his mother on the Carpathia. And he died in 1931. Decades before that phone call could ever have happened.",
+          "sahneler": [
+            {
+              "tarif": "An old ledger book open under a lamp, columns of tiny unreadable scribbles, a magnifying glass resting on the page.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A young mother in a dark shawl hugging a baby boy tightly on the deck of a ship at dawn, tears of relief.",
+              "hareket": "i2v",
+              "i2v": "The mother rocks the baby and presses her cheek to his head. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "A single small white flower lying on dark ground in a beam of light.",
+              "hareket": "iceri",
+              "yazi": "1931"
+            }
+          ]
+        },
+        {
+          "anlatim": "So who called Violet Jessop that night? Nobody knows.",
+          "sahneler": [
+            {
+              "tarif": "The old black telephone alone on the small table in total darkness, a thin beam of moonlight across it.",
+              "hareket": "iceri"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Miss Unsinkable",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Violet Jessop died in 1971, of heart failure, at the age of eighty-three. A girl the doctors gave up on. A woman who served aboard all three sisters, and walked away from every one of them.",
+          "sahneler": [
+            {
+              "tarif": "The elderly woman from the reference image sitting by a window at dusk looking at the distant sea, peaceful.",
+              "kim": [
+                "violet_yasli"
+              ],
+              "hareket": "disari"
+            },
+            {
+              "tarif": "Three tiny model ships of identical four-funnel liners lined up on a windowsill at sunset.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Miss Unsinkable. If you had survived even one of those ships, would you ever have set foot on a boat again?",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image in her stewardess uniform standing at the bow of a ship heading into a golden sunrise, seen from behind.",
+              "kim": [
+                "violet"
+              ],
+              "hareket": "i2v",
+              "i2v": "Wind moves her apron and hair, the sun rises ahead, gentle waves. Flat 2D cartoon animation, slow camera push."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
