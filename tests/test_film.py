@@ -147,6 +147,9 @@ def test_aciklama_bolumleri_youtube_kuralina_uyar():
     satirlar = [s for s in metin.splitlines() if s[:2].isdigit() and s[2] == ":"]
     assert satirlar[0].startswith("00:00") and len(satirlar) >= 3
     assert "wikipedia.org/wiki/Violet_Jessop" in metin and "Creative Commons" in metin
+    assert metin.startswith(f.baslik)  # özet yoksa başlık
+    klondike = senaryo.oku(PILOT.parents[1] / "klondike" / "senaryo.json")
+    assert aciklama(klondike, bas, muzik_plani(klondike)).startswith("July 1897.")  # aramada görünen satır özet
 
 
 def test_insansiz_sahneye_karakter_tasarimi_gitmez(tmp_path):

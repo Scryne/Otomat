@@ -159,7 +159,7 @@ def aciklama(film: senaryo.Film, bolum_bas: list[float], muzik: list[str]) -> st
     kaynaklar = "\n".join(f"- {k['ad']}: {k['url']}" for k in film.kaynaklar)
     atif = "\n".join(MUZIK_ATIF.format(ad) for ad in dict.fromkeys(muzik))
     return (
-        f"{film.baslik}\n\nChapters\n{bolumler}\n\nSources\n{kaynaklar}\n\nMusic\n{atif}\n\n"
+        f"{film.ozet or film.baslik}\n\nChapters\n{bolumler}\n\nSources\n{kaynaklar}\n\nMusic\n{atif}\n\n"
         "Illustrations, animation and narration were made with AI tools; the story and every fact in it follow the "
         "sources above.\n"
     )

@@ -59,6 +59,7 @@ class Film:
     karakterler: dict[str, str]
     bolumler: tuple[Bolum, ...]
     kaynaklar: tuple[dict, ...] = field(default_factory=tuple)
+    ozet: str = ""  # açıklamanın ilk satırları (aramada görünen kısım); yoksa başlık
 
     def bloklar(self) -> list[tuple[int, Blok]]:
         return [(i, b) for i, bo in enumerate(self.bolumler) for b in bo.bloklar]
@@ -122,6 +123,7 @@ def oku(yol: Path) -> Film:
         kapak_kim=kapak_kim, stil=d["stil"], insan=d["insan"], ses=d.get("ses", "bm_george"),
         hiz=float(d.get("hiz", 1.0)),
         karakterler=karakterler, bolumler=tuple(bolumler), kaynaklar=tuple(d.get("kaynaklar", ())),
+        ozet=d.get("ozet", "").strip(),
     )  # fmt: skip
 
 
