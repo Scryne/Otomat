@@ -111,6 +111,12 @@ lisans, 20 GB+ indirme) şimdilik denenmedi.
   Görsel dil bizim kalır (koyu sinematik); konu, karakter ve parlak arka planları kopyalanmaz. Ana karakter "sen"
   olduğundan gerçek kişinin yüzüne benzetme sorunu da kalkar.
 
+- **K-32 Ayrı kanal (10-18, K-29'u değiştirir):** filmler Inkwell Oddities'e değil, yeni **One Ticket Back**
+  (@OneTicketBack) kanalına gider. Gerekçe: YPP kanal düzeyinde incelenir ve Inkwell her gün şablonla üretilen Shorts
+  yayınlıyor (inauthentic content'in hedeflediği tür), filmler onunla aynı incelemeye girmesin; Inkwell'in taşınacak
+  kitlesi yok; uzun videoda izleyici bir vaade abone olur ("o çağda sen"). Ad Scryne'ın seçimi (dört boş ad arasından).
+  Kimlik `docs/marka/oneticketback/`. Kanalı Scryne açar; ilk video Klondike (biçimi tanımlar), sonra pilot.
+
 ## Pilot: Violet Jessop (10-17…10-18) [Ö]
 
 Senaryo `filmler/violet-jessop/senaryo.json` (Wikipedia revid 1376997573): 8 bölüm, 47 blok, 1.150 kelime, 96 sahne.
