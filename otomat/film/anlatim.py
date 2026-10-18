@@ -109,6 +109,9 @@ def kelimeler(s: str) -> list[str]:
     # Whisper "a dollar" → "$1", "three dollars" → "$3" yazıyor ($ düşer): kelime karşılaştırmadan çıkar (Klondike)
     s = re.sub(r"\ban? dollar\b", "1", s)
     s = re.sub(r"\bdollars?\b", "", s)
+    # ondalık: "12.5" ve "twelve and a half" → "12p5" (nokta sayıyı ikiye bölüp yanlış alarm veriyordu, Lowell)
+    s = re.sub(r"(\d+)\.(\d+)", r"\1p\2", s)
+    s = re.sub(r"\band a half\b", "p5", s)
     cikti: list[str] = []
     toplam = simdiki = None
     onceki = ""
@@ -141,6 +144,9 @@ def kelimeler(s: str) -> list[str]:
             cikti.append(str(toplam + simdiki))
             toplam = simdiki = None
         if k:
+            if re.fullmatch(r"p\d+", k) and cikti and cikti[-1].isdigit():
+                cikti[-1] += k  # "twelve" + "p5"
+                continue
             cikti.append(k)
     for i in range(len(cikti) - 2):  # "thirty to forty thousand" = 30000 to 40000 (Whisper aralığı açık yazıyor)
         a, ara, b = cikti[i : i + 3]
@@ -152,7 +158,7 @@ def kelimeler(s: str) -> list[str]:
 
 
 def sayilar(s: str) -> list[str]:
-    return sorted(k for k in kelimeler(s) if k.isdigit())
+    return sorted(k for k in kelimeler(s) if re.fullmatch(r"\d+(p\d+)?", k))
 
 
 def fark(metin: str, duyulan: str) -> float:

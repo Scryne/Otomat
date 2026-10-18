@@ -99,6 +99,9 @@ def test_fark_ve_soylenis():
         ("Of the thirty to forty thousand people, only fifteen to twenty thousand went.",
          "Of the 30,000 to 40,000 people, only 15,000 to 20,000 went."),
         ("And seven thousand, one hundred and twenty-four boats set off.", "And 7,124 boats set off."),
+        # Lowell: ondalık
+        ("In 1834, the mills announced a twelve and a half percent pay cut.",
+         "In 1834, the mills announced a 12.5 percent pay cut."),
     ],
 )  # fmt: skip
 def test_sayi_sozu_rakamla_esit(metin, duyulan):
