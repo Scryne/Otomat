@@ -103,6 +103,50 @@ lisans, 20 GB+ indirme) şimdilik denenmedi.
   (ayrı gün, hesap kilidi temkini; private kalırsa kilit sürüyor demektir), (2) olmazsa Zernio/Upload-Post denemesi,
   (3) o arada Scryne Studio'dan yükler (video başına ~3 dk: dosya, başlık, açıklama, kapak, bitiş ekranı).
 
-## Pilot: Violet Jessop
+- **K-31 İkinci biçim ve dil (10-18):** Scryne'ın gösterdiği Senin Devrin (@SeninDevrin, Türkçe; açılış 10-03, 15 günde
+  4 video, 14,1 bin abone; "Eğer 1964'te Almanya'ya işçi olarak gitseydin?" 1,06 milyon izlenme, 865 yorum) "Your life
+  as…" çerçevesinin en güçlü kanıtı: ikinci tekil şahıs, şimdiki zaman, ~1.100 kelime / 8-10 dk, kuru mizah, sonda
+  izleyicinin kendi ailesine soru ("Senin ailende Almanya'ya giden var mı?"). Karar: ikinci film bu çerçevede ("What if
+  you were … in …?") ama **İngilizce** ve Inkwell Oddities'te (Scryne: İngilizce izleyici daha çok kazandırıyor).
+  Görsel dil bizim kalır (koyu sinematik); konu, karakter ve parlak arka planları kopyalanmaz. Ana karakter "sen"
+  olduğundan gerçek kişinin yüzüne benzetme sorunu da kalkar.
 
-(Pilot üretiminin ölçümleri aşağıda.)
+## Pilot: Violet Jessop (10-17…10-18) [Ö]
+
+Senaryo `filmler/violet-jessop/senaryo.json` (Wikipedia revid 1376997573): 8 bölüm, 47 blok, 1.150 kelime, 96 sahne.
+Çıktı `calisma/film/violet-jessop/` (git dışı): `video.mp4`, `kapak.jpg`, `aciklama.txt`.
+
+| Ölçü | Değer |
+| --- | --- |
+| Süre | 7:42 (anlatım 7:32 + 10 sn bitiş ekranı payı); K-26'nın 8 dk alt sınırının altında: 10 dk için ~1.500 kelime |
+| Ses | -14,4 LUFS, LRA 2,6; müzik yatağı -27 LUFS, 7 parça |
+| Görüntü | 1920×1080 24 fps, H.264 crf 18, 234 MB |
+| Hareket | 21 Wan klibi / 96 sahne (%22); 28 planlandı, 7'si kameraya döndü (aşağıda) |
+| Süre (duvar) | sahne ~21 dk (96 × ~13 sn), Wan ~30 dk (~65 sn/klip), anlatım ~10 dk, kare render ~20 dk (CPU, PIL) |
+| Bellek | Wan fp8 ile en düşük boş RAM 6,0 GB (24 GB'ta) |
+| Uçtan uca denetim | bitmiş videonun sesi (müzikle) Whisper small.en'den geçti: kelime farkı %0,8, senaryodaki **bütün sayılar** duyuldu; kalan farklar eşsesli (Jessop/Jessup, Assad/Asad) |
+
+Üretimde bulunan ve kalıcı düzeltilen kusurlar:
+- **Bellek:** 10-17'de ComfyUI'yi sistem kapattı: önbellekteki FLUX + Qwen (11 GB) üstüne Wan fp16 + UMT5 (15 GB). Wan
+  yüklenirken fp8'e iner (`comfy.i2v_grafi`), i2v adımının öncesinde ve sonrasında modeller boşaltılır (`uretim.main`).
+- **Wan yüz bozuyor:** göz/kaş/gülümseme hareketi istenen klipte nokta gözler siliniyordu. A/B (sahne 3, aynı tohum):
+  fp16-10 adım ve fp8-20 adım eski istemle bozuk, fp8-10 adım yüzsüz istemle temiz → sebep istem. Senaryo denetimi
+  i2v isteminde yüz hareketini reddeder (`senaryo.YUZ_HAREKETI`), istem yüzün sabit kaldığını söyler (`i2v_istemi`).
+- **Wan kadraja bir şey sokuyor:** "the second hand ticks" bir insan eli getirdi (40, 63), ayrıca lazer çizgileri, uçan
+  sallar, çaydanlık. İnsansız sahnenin istemi "No people and no hands appear. Nothing new enters the frame." der. Klip
+  incelemesi (her klipten 0/12/24/36/48. kare) ilk turda 28'in 10'unu, istem düzeltmesinden sonra 10'un 6'sını, son
+  videoda 1'ini daha (67, suda beliren nesne) bozuk buldu; bu 7 sahne kamera hareketine döndü. **Ders: Wan 5B'de
+  hareket kalitesi tohum ve isteme çok bağlı; ~%25 bozuk klip beklenmeli, klip incelemesi üretimin parçası.**
+- **Yan karakterler gerçekçi çiziliyordu:** referans yalnız kendi karakterini bağlıyor; masa başındaki yaşlı adam, kalabalık
+  ve yolcular burunlu, yarı gerçekçi çıktı (23, 36, 42, 75, 87). Referanslı sahne istemi "every other person … same round
+  cream-white head, dot eyes, no nose" der; 23 ancak adamın tarifi açıkça yazılınca düzeldi. Ayna ve lombozdan bakış
+  kompozisyonu iki ayrı kişi üretti (22, 33): tarif aynasız/yandan yazıldı.
+- **TTS yılı yanlış okudu:** Chatterbox "November 1916"yı "1906" söyledi (Whisper small ve medium aynı duydu). Kelime
+  oranlı kapı bunu 0,048 farkla geçirdi. Artık yıllar TTS'e yazıyla gider ("nineteen sixteen"), karşılaştırmada sayı
+  sözleri ve rakamlar aynı biçime iner ve sayısı tutmayan parça düşer (`anlatim.fark`); üç denemede düzelmezse üretim
+  durur. Aynı düzeltme sahte alarmı da bitirdi: "two hours and forty minutes" ↔ "2 hours and 40 minutes" 0,22 fark alıp
+  boşuna üç kez üretiliyordu. Parça dosyası metnin özetini taşır; metin değişince eski ses kullanılmaz.
+- **Tarih damgası** açık gökyüzünde okunmuyordu: koyu kontur ve arkasında yumuşak koyu leke.
+
+Açık kalan: 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
+video yükleme yolu (K-30) denenmedi.

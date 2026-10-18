@@ -2,6 +2,7 @@
 kusurlu senaryo GPU saatini yakmadan düşer."""
 
 import json
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -11,6 +12,10 @@ MOODLAR = {"tragic", "mysterious", "epic", "funny"}
 # Karakter tasarımı istemde dururken model nesnelere de yüz çiziyor: gemi, pervane, mum, buzdağı, saat (pilot, 10-17).
 # "Yüzsüz" cümlesi tek başına yetmedi (baca, lamba, mum yine yüzlü); insansız sahneye tasarım hiç gönderilmez.
 YUZSUZ = "Ships, objects, machines, animals, plants, buildings and landscapes have no faces, no eyes and no mouths"
+# Wan'a yüz hareketi (göz, kaş, gülümseme) istenince nokta gözler siliniyor (10-18 A/B): hareket bedende ve ortamda olur
+YUZ_HAREKETI = re.compile(
+    r"\b(eyes?|eyebrows?|blink\w*|wink\w*|frown\w*|smil\w*|winc\w*|grin\w*|mouth|lips|expression|swallow\w*)\b", re.I
+)
 
 
 class SenaryoHatasi(ValueError):
@@ -76,6 +81,8 @@ def _sahne(s: dict, karakterler: dict, yer: str) -> Sahne:
         raise SenaryoHatasi(f"{yer}: en çok {EN_COK_REFERANS} karakter referansı")
     if hareket == "i2v" and not s.get("i2v", "").strip():
         raise SenaryoHatasi(f"{yer}: i2v sahnesinin hareket istemi yok")
+    if hareket == "i2v" and (m := YUZ_HAREKETI.search(s["i2v"])):
+        raise SenaryoHatasi(f"{yer}: i2v istemi yüz hareketi istiyor ({m.group(0)}); hareketi bedene ver")
     if kim and "reference image" not in s["tarif"]:
         # model referansı ancak istemde anılınca karaktere bağlıyor (spike 10-17)
         raise SenaryoHatasi(f"{yer}: referanslı sahnenin tarifi 'reference image' demiyor")
@@ -126,6 +133,23 @@ def karakter_istemi(film: Film, ad: str) -> str:
 
 
 def sahne_istemi(film: Film, s: Sahne) -> str:
+    if s.kim:
+        # referans yalnız kendi karakterini bağlıyor; yanındaki kalabalık ve yan karakterler burunlu, yarı gerçekçi
+        # çıktı (pilot 23, 36, 42, 75, 87)
+        return (
+            f"{film.stil}. {film.insan}. Every other person in the scene is drawn in exactly the same simple style as "
+            f"the reference character, with the same round cream-white head, dot eyes and no nose. {YUZSUZ}. {s.tarif}"
+        )
     if s.kisi:
         return f"{film.stil}. {film.insan}. {YUZSUZ}. {s.tarif}"
     return f"{film.stil}. An empty scene with no people and no characters. {YUZSUZ}. {s.tarif}"
+
+
+def i2v_istemi(s: Sahne) -> str:
+    """Wan göz/kaş hareketi istenince nokta gözleri siliyor (10-18 A/B, sahne 3): yüz sabit, hareket bedende. İnsansız
+    sahnede "the second hand ticks" bir insan eli getirdi (pilot 40, 63); kadraja yeni bir şey girmez."""
+    if s.kisi:
+        ek = " Faces keep the same simple dot eyes and eyebrows. Nothing new enters the frame."
+    else:
+        ek = " No people and no hands appear. Nothing new enters the frame."
+    return f"{s.i2v}{ek} Minimalist flat 2D cartoon animation, clean outlines, consistent character design."

@@ -107,7 +107,8 @@ def gorsel_grafi(istem: str, w: int, h: int, tohum: int, referanslar: list[str])
 
 def i2v_grafi(gorsel_adi: str, istem: str, w: int, h: int, kare: int, adim: int, tohum: int) -> dict:
     return {
-        "unet": {"class_type": "UNETLoader", "inputs": {"unet_name": WAN["unet"], "weight_dtype": "default"}},
+        # fp16 dosya yüklenirken fp8'e iner: RAM'de 9,3 → ~4,7 GB (10-17'de fp16 + önbellekteki FLUX belleği bitirdi)
+        "unet": {"class_type": "UNETLoader", "inputs": {"unet_name": WAN["unet"], "weight_dtype": "fp8_e4m3fn"}},
         "ms": {"class_type": "ModelSamplingSD3", "inputs": {"model": ["unet", 0], "shift": 8.0}},
         "clip": {"class_type": "CLIPLoader", "inputs": {"clip_name": WAN["clip"], "type": "wan", "device": "default"}},
         "vae": {"class_type": "VAELoader", "inputs": {"vae_name": WAN["vae"]}},

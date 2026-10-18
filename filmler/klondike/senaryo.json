@@ -1,0 +1,919 @@
+{
+  "slug": "klondike",
+  "baslik": "What If You Joined the Klondike Gold Rush in 1897?",
+  "kapak_yazi": "ONE TON.",
+  "kapak_sahne": "The young man from the reference image bent under an enormous towering backpack, climbing a steep staircase cut into blue ice, looking straight at the viewer exhausted, a long line of tiny climbers behind him on the white mountain, warm lantern light on his face and cold blue light on the snow.",
+  "kapak_kim": [
+    "sen_iz"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Klondike Gold Rush",
+      "url": "https://en.wikipedia.org/wiki/Klondike_Gold_Rush",
+      "revid": 1379892520
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "sen": "one young man in his twenties, an 1897 city clerk: short neat brown hair, clean-shaven, small round wire spectacles, white shirt with a thin black tie, brown waistcoat, grey trousers",
+    "sen_iz": "the same young man in trail clothes: small round wire spectacles, brown fur trapper hat with ear flaps, thick red-and-black checked wool coat, heavy brown trousers, big leather boots",
+    "sen_dawson": "the same young man after a year in the north: scruffy short brown beard, small round wire spectacles, battered brown felt hat, patched red-and-black checked wool shirt, braces, muddy trousers",
+    "soapy": "one smooth middle-aged con man: neat black beard, black bowler hat, black suit, gold watch chain",
+    "mountie": "one 1898 mounted police officer: scarlet red tunic, brown wide-brimmed campaign hat, neat moustache, dark blue trousers with a yellow stripe, brown leather belt"
+  },
+  "bolumler": [
+    {
+      "ad": "Klondicitis",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "July 1897. Seattle. You are a clerk. You spend your days at a desk, and lately the news has been nothing but bank failures and lost jobs.",
+          "sahneler": [
+            {
+              "tarif": "Wide view of a rainy 1897 harbor city with wooden buildings, steep streets and ship masts, grey dawn light.",
+              "hareket": "sag",
+              "yazi": "SEATTLE — JULY 1897"
+            },
+            {
+              "tarif": "The young man from the reference image sits hunched at a tall wooden desk in a dim office, copying numbers into a huge ledger under a green lamp, piles of paper around him.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "He writes slowly in the ledger, the lamp light flickers slightly, dust floats in the air. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Then a steamship called the Portland ties up in the harbor, carrying miners from a place almost nobody has heard of: the Klondike. And they are carrying gold. A lot of gold.",
+          "sahneler": [
+            {
+              "tarif": "A small black steamship with one tall funnel arriving at a crowded wooden pier through morning fog, smoke trailing.",
+              "hareket": "i2v",
+              "i2v": "The steamship glides slowly toward the pier, smoke drifts from the funnel, gentle waves. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Close view of heavy leather sacks and a wooden crate overflowing with glowing gold nuggets and gold dust on a ship deck, warm amber glow.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A crowd of people with round cream heads, hats and caps, packed on a wooden pier, all leaning toward a ship, some climbing on crates to see.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The newspapers report more than a million dollars' worth of gold on the first ships to reach San Francisco and Seattle. Later, it turns out that was an underestimate.",
+          "sahneler": [
+            {
+              "tarif": "A newspaper boy with a round cream head holding up a newspaper on a busy street corner, a crowd reaching for copies, gas lamps.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "A tall stack of newspapers tied with string on a wet cobblestone street, lit by a single gas lamp, the pages blank and unreadable.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Congratulations. You have just caught Klondicitis. That is what the papers are calling it. Your city's own mayor resigns and goes into the Klondike business. So do twelve policemen, and a good share of the streetcar drivers.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image stands up from his desk, staring out of a rain-streaked office window at the harbor, his pen still in his hand.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "He slowly rises from the chair and puts the pen down, rain streaks run down the window. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A row of twelve police helmets hanging on hooks in an empty police station, one lamp burning.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "An empty streetcar standing alone on its rails in a city street at dusk, its door open, no driver.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Most of the people rushing to the docks have never mined anything in their lives. They are clerks and salesmen. Like you. About one hundred thousand people will set out for the Klondike. Only a few hundred of them will come back rich. But nobody tells you that part.",
+          "sahneler": [
+            {
+              "tarif": "A long line of men with round cream heads in office suits and bowler hats carrying suitcases toward the ships at a harbor, seen from above.",
+              "hareket": "i2v",
+              "i2v": "The line of people slowly walks forward toward the ships, coats sway, gulls circle above. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image in his office clothes stands in the crowd on the pier holding a small suitcase, looking up at a huge steamship, hopeful.",
+              "hareket": "yukari",
+              "kim": [
+                "sen"
+              ]
+            },
+            {
+              "tarif": "A single gold coin lying on a dark wooden table under a lamp, surrounded by a hundred empty dark circles drawn on the table.",
+              "hareket": "iceri"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "One ton",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "First problem. The Klondike is in Canada's Yukon, deep in the far north-west, and the only way in is the Yukon River.",
+          "sahneler": [
+            {
+              "tarif": "A simple dark map-like landscape seen from high above: a long winding river through snowy mountains and forests, a tiny glowing dot far up the river, no text.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A wide frozen river winding between dark mountains under a pale sky, tiny pine trees, total silence.",
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "The rich take the all-water route: four thousand seven hundred miles by sea and river. Of about eighteen hundred people who try it in 1897, only forty-three reach the Klondike before the river freezes.",
+          "sahneler": [
+            {
+              "tarif": "A small paddle-wheel riverboat stuck in thick river ice, smoke from its funnel, a snowy riverbank, evening light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A riverboat frozen in place in a white river at night, small figures with round cream heads standing on the ice beside it, warm lamp light from the cabin windows.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "You are not rich. You buy a ticket to a small Alaskan port called Dyea. A cabin costs forty dollars at first, but soon people are paying premiums of a hundred dollars, and the steamship companies stop posting their prices in advance.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image in his office clothes at a crowded ticket window, counting coins into the hand of a stern ticket seller, a long line behind him.",
+              "hareket": "sag",
+              "kim": [
+                "sen"
+              ]
+            },
+            {
+              "tarif": "A blank wooden price board at a shipping office being wiped clean with a cloth by a hand, chalk dust in the lamp light.",
+              "hareket": "i2v",
+              "i2v": "The cloth wipes across the blank board, chalk dust drifts in the lamp light. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Your ship is overloaded. So is every other ship heading north: old paddle wheelers, fishing boats, coal ships still black with coal dust. Many of them sink.",
+          "sahneler": [
+            {
+              "tarif": "An old overloaded steamship riding low in a grey sea, its deck crammed with crates, horses and people with round cream heads, smoke pouring from the funnel.",
+              "hareket": "i2v",
+              "i2v": "The overloaded ship rolls slowly on the grey swell, smoke streams from the funnel, waves splash. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image squeezed between sacks of coal and crates below deck, face smudged with black coal dust, a swinging lantern.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Second problem. The Canadian authorities will not let you into the Yukon without a year's supply of food. That is about eleven hundred and fifty pounds of it. Add a tent, tools and everything else, and you are now responsible for almost a ton of stuff.",
+          "sahneler": [
+            {
+              "tarif": "A mountain of supplies piled on a beach: flour sacks, bacon, beans, crates, a tent, shovels, pans, a small iron stove, towering over a single tiny person.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image in his office clothes standing next to the towering pile of sacks and crates, looking up at it, his small suitcase still in his hand.",
+              "hareket": "disari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "A railroad company prints a handy list of everything you will need for a year. Estimated cost: one hundred and forty dollars. Estimated weight: about one ton. It does not say who is supposed to carry it. Spoiler: you are.",
+          "sahneler": [
+            {
+              "tarif": "A long paper list unrolling down a table and onto the floor, covered in tiny unreadable scribbles, a lamp beside it.",
+              "hareket": "i2v",
+              "i2v": "The long paper list slowly unrolls further across the floor, lamp light glows. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image, now in a red-and-black checked wool coat and a fur hat, bent almost double under a huge backpack, on a muddy beach.",
+              "hareket": "sol",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Dyea and Skagway",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Dyea has no dock. The ship unloads your year of food straight onto the beach, and you race the tide to drag it all above the waterline. Not everyone wins that race.",
+          "sahneler": [
+            {
+              "tarif": "Ships anchored off a grey beach below dark mountains, small boats ferrying crates to shore, piles of goods on the sand, people with round cream heads hauling sacks.",
+              "hareket": "i2v",
+              "i2v": "Small boats rock as people drag sacks up the sand, waves roll in toward the piles of goods. Flat 2D cartoon animation, static camera.",
+              "yazi": "DYEA, ALASKA — 1897",
+              "kisi": true
+            },
+            {
+              "tarif": "Abandoned crates and flour sacks half swallowed by the rising tide on a dark beach, foam swirling around them.",
+              "hareket": "i2v",
+              "i2v": "The tide rises around the crates, foam swirls, a sack slowly floats away. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Next door is Skagway. Before the rush, it was a single log cabin. Now it is tents, saloons and mud. The writer John Muir calls it a nest of ants, stirred up with a stick.",
+          "sahneler": [
+            {
+              "tarif": "A single lonely log cabin on an empty flat valley floor below huge mountains, calm, pale light.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "The same valley packed with hundreds of tents, wooden saloons and muddy streets full of tiny people with round cream heads, smoke rising from chimneys.",
+              "hareket": "i2v",
+              "i2v": "Tiny people hurry along the muddy streets, chimney smoke rises, flags flutter. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "A horse would help. Back in Dyea, even a poor one costs up to seven hundred dollars, or forty dollars a day to rent.",
+          "sahneler": [
+            {
+              "tarif": "A thin tired old horse standing in the mud in front of a wooden stable with a big empty sign board, a smug dealer in a bowler hat beside it.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "You want to tell your family you made it, so you step into the telegraph office and pay to send a message home. You even get a reply. There is just one problem. The office is fake. It belongs to a con man called Soapy Smith, whose gang of two to three hundred men is robbing travelers just like you.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image in his checked wool coat hands coins across a counter in a small wooden office with a brass telegraph key, a smiling clerk behind it.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_iz"
+              ]
+            },
+            {
+              "tarif": "Behind a wooden office wall, a telegraph wire that simply ends, its cut end hanging in the air, connected to nothing.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The man from the reference image leaning in a saloon doorway at night, counting a thick roll of money, lamp light from behind.",
+              "hareket": "i2v",
+              "kim": [
+                "soapy"
+              ],
+              "i2v": "He slowly counts the money and tucks it into his coat, lamp light flickers behind him. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "A visiting Mountie officer, Sam Steele, will call Skagway little better than a hell on earth. You decide not to stay. You take the Chilkoot Trail. Around twenty-two thousand people will cross it during the rush.",
+          "sahneler": [
+            {
+              "tarif": "The man from the reference image standing very straight in a muddy street at night, looking around with disapproval, saloons glowing behind him.",
+              "hareket": "sol",
+              "kim": [
+                "mountie"
+              ]
+            },
+            {
+              "tarif": "The young man from the reference image with his huge backpack walking out of the tent town toward a narrow trail that leads into dark snowy mountains, seen from behind.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The Golden Steps",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Winter is coming, and up here winter is serious. Temperatures can drop below minus fifty degrees Celsius. That is minus fifty-eight Fahrenheit.",
+          "sahneler": [
+            {
+              "tarif": "A narrow trail through a dark snowy forest under heavy falling snow, blue cold light.",
+              "hareket": "i2v",
+              "i2v": "Heavy snow falls steadily, pine branches sway, snow drifts across the trail. Flat 2D cartoon animation, static camera.",
+              "yazi": "CHILKOOT TRAIL — WINTER"
+            },
+            {
+              "tarif": "A small thermometer hanging on a frosted tree trunk, its glass tube almost empty, icicles around it, the scale blank.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "You can't carry a ton in one go, so you split it into packs of about sixty-five pounds and carry them forward one at a time. Then you walk back for the next one. And the next one.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image carrying a single heavy sack on his back up a snowy trail, his pile of other sacks waiting behind him.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_iz"
+              ],
+              "i2v": "He trudges slowly up the snowy trail with the sack, snow falls, his breath steams. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image walking back down the same trail with an empty back, past a long row of identical sacks lined up in the snow.",
+              "hareket": "sag",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "On the neighboring White Pass trail, moving all your supplies this way takes about thirty round trips: at least two thousand five hundred miles of walking.",
+          "sahneler": [
+            {
+              "tarif": "A narrow rocky mountain path along a cliff, as narrow as two feet, littered with boulders, a fallen pack horse silhouette in the snow far below.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "Thirty small flags planted in a long zigzag line up a snowy mountainside, each marking a stop, dusk.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "At the foot of the final climb is a flat ledge called the Scales. Here your goods are weighed before you officially enter Canada. The Mounties check that you have your year of food, look for illegal weapons, and collect customs duty: on average, a quarter of the value of your goods.",
+          "sahneler": [
+            {
+              "tarif": "A flat snowy ledge crowded with tents, huge wooden weighing scales piled with sacks, people with round cream heads queueing, a steep white slope rising behind.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "The man from the reference image weighing a sack on a big wooden scale in the snow, writing in a small notebook, serious.",
+              "hareket": "iceri",
+              "kim": [
+                "mountie"
+              ]
+            },
+            {
+              "tarif": "The young man from the reference image handing over coins to an outstretched gloved hand in the snow, his pile of sacks beside him.",
+              "hareket": "sol",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Some of your fellow travelers try to smuggle silk and whiskey across, hidden in tins and in bales of hay.",
+          "sahneler": [
+            {
+              "tarif": "A bale of hay broken open in the snow revealing a hidden whiskey bottle and a roll of shiny silk, lantern light.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Then the climb. A thousand feet of ice, too steep for animals. Someone has cut fifteen hundred steps into it, and charges a daily fee to use them. People call them the Golden Steps.",
+          "sahneler": [
+            {
+              "tarif": "A huge steep white mountain slope with an endless single-file line of tiny dark figures climbing straight up a staircase cut into the ice, grey sky.",
+              "hareket": "i2v",
+              "i2v": "The long line of tiny figures slowly climbs the icy steps, snow blows across the slope. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "Close view of rough steps cut into blue ice, each one worn and glistening, a coiled rope beside them.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "It can take a whole day to reach the top. With one pack. And you have about thirty of them.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image climbing the icy steps bent under a huge pack, people above and below him in the line, blowing snow.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_iz"
+              ],
+              "i2v": "He climbs one step up with the heavy pack, snow blows past, the line moves slowly. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image collapsed on top of a sack at the summit at sunset, exhausted, a huge view of mountains behind him.",
+              "hareket": "disari",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "If you have cash, local packers, many of them Tlingit, will carry for you, at up to a dollar a pound. Later there are rope tramways, at eight to thirty cents a pound.",
+          "sahneler": [
+            {
+              "tarif": "Packers with round cream heads carrying enormous loads on their backs with head straps, walking steadily up a snowy trail.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "A wooden tramway pulling a loaded sled up a steep snowy slope on a long rope, a big wheel at the bottom turned by a horse.",
+              "hareket": "i2v",
+              "i2v": "The rope pulls the sled slowly up the slope, the wheel turns, snow falls. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "On April the third, 1898, an avalanche on the Chilkoot Pass kills more than sixty people.",
+          "sahneler": [
+            {
+              "tarif": "A giant wall of white snow pouring down a dark mountainside toward a tiny trail, silent and enormous.",
+              "hareket": "i2v",
+              "i2v": "The avalanche of snow pours down the mountainside, clouds of powder billow. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A single abandoned backpack half buried in deep fresh snow on a silent mountain slope, pale light.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Build a boat",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Over the top, the trail drops down to Lake Lindeman and Lake Bennett. Here the road ends. The rest of the way is five hundred miles of river. You don't have a boat. So you build one.",
+          "sahneler": [
+            {
+              "tarif": "A huge frozen lake surrounded by snowy forest and a vast tent camp along the shore, smoke rising, evening light.",
+              "hareket": "sol",
+              "yazi": "LAKE BENNETT — SPRING 1898"
+            },
+            {
+              "tarif": "The young man from the reference image sawing a log on a sawpit in the snow beside a half-built wooden boat, wood shavings everywhere.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_iz"
+              ],
+              "i2v": "He pulls the saw back and forth through the log, sawdust falls, the camp smoke drifts. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "So does everybody else. By spring, the forests around the lakes have been mostly cut down for timber.",
+          "sahneler": [
+            {
+              "tarif": "A lakeshore hillside covered with hundreds of tree stumps, only a few lonely trees left standing, rows of half-built boats below.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "At the end of May, the ice breaks up, and seven thousand, one hundred and twenty-four boats set off for Dawson City.",
+          "sahneler": [
+            {
+              "tarif": "A huge lake filled with thousands of small wooden boats, rafts and scows with little sails, all heading the same way across the water, bright morning.",
+              "hareket": "i2v",
+              "i2v": "Thousands of small boats drift forward across the lake, little sails fill with wind, water ripples. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image standing in his small homemade boat holding a long oar, his supplies piled behind him, sunlight on the water.",
+              "hareket": "sag",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Then come the rapids of Miles Canyon and White Horse. Many boats are wrecked, and several hundred people die, before the Mounties step in. Now every boat is inspected, women and children may not ride through the rapids, and a passenger boat needs a licensed pilot, usually for twenty-five dollars.",
+          "sahneler": [
+            {
+              "tarif": "A narrow dark rock canyon with white foaming rapids, a small wooden boat tossed between the rocks.",
+              "hareket": "i2v",
+              "i2v": "The boat is tossed through the white rapids, water sprays against the rocks. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Broken boat planks and floating sacks caught against rocks at the edge of a rushing river, grey light.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "The man from the reference image standing on a riverbank inspecting a small wooden boat, writing in a notebook, a line of boats waiting.",
+              "hareket": "iceri",
+              "kim": [
+                "mountie"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Some travelers save the money. They unpack, push the empty boat into the rapids, and walk down to catch it on the other side.",
+          "sahneler": [
+            {
+              "tarif": "An empty small wooden boat spinning alone through white rapids, no one on board.",
+              "hareket": "i2v",
+              "i2v": "The empty boat spins and bobs through the rapids, water splashes. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image walking along a rocky riverbank carrying a sack, looking anxiously downstream.",
+              "hareket": "sag",
+              "kim": [
+                "sen_iz"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Dawson City",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "Summer, 1898. After almost a year on the road, you arrive in Dawson City. Two years ago, this was a mudflat. Now around seventeen thousand people live here.",
+          "sahneler": [
+            {
+              "tarif": "A sprawling wooden boom town of tents, log cabins and false-front buildings on a flat riverbank where two rivers meet, hundreds of boats tied along the shore, golden evening light.",
+              "hareket": "sag",
+              "yazi": "DAWSON CITY — SUMMER 1898"
+            },
+            {
+              "tarif": "The young man from the reference image, now with a scruffy short beard, stepping off his boat onto the muddy shore of the busy town, looking around.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "There's no running water and no sewer. In spring the streets turn into deep mud, and in summer the whole town smells, and the flies and mosquitoes are everywhere.",
+          "sahneler": [
+            {
+              "tarif": "A main street of deep brown mud with wooden planks laid across it, people with round cream heads struggling through, a wagon stuck.",
+              "hareket": "i2v",
+              "i2v": "People wade slowly through the deep mud, the stuck wagon wheel turns, flies buzz in the air. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image swatting at a cloud of mosquitoes around his head on a muddy street.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Land is expensive. A plot can cost ten thousand dollars, and even a small log cabin rents for a hundred dollars a month.",
+          "sahneler": [
+            {
+              "tarif": "A tiny crooked log cabin with a moss roof squeezed between two big wooden buildings, a blank wooden sign hanging on its door.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "So is food. This spring, eggs sell for three dollars each. Apples for a dollar. Last winter, nails cost twenty-eight dollars a pound, and salt was worth its weight in gold.",
+          "sahneler": [
+            {
+              "tarif": "A single egg sitting on a small velvet cushion in a shop window, lit like a jewel, warm light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A merchant's brass scale with a small pile of salt on one side and gold dust on the other, perfectly balanced, lamp light.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "The richest miners don't mind. They drink champagne at sixty dollars a bottle and bet a thousand dollars on a roll of dice. So much gold dust gets spilled in the saloons that you could make a profit just by sweeping the floor.",
+          "sahneler": [
+            {
+              "tarif": "A glittering saloon with mirrors and chandeliers, miners with round cream heads crowded around a dice table piled with gold, champagne bottles.",
+              "hareket": "i2v",
+              "i2v": "Dice tumble across the table, people lean in, chandelier light sparkles. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image sweeping a saloon floor with a broom at closing time, the dust glittering gold in the lamp light.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_dawson"
+              ],
+              "i2v": "He sweeps the broom across the floor, glittering gold dust swirls in the lamp light. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Meanwhile, nobody has any news. People read the labels on their cans until they know them by heart. When a single Seattle newspaper is auctioned off, its buyer charges a dollar a head to read it out loud.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image sitting on a crate in a dim cabin, intently studying the paper label of a tin can.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            },
+            {
+              "tarif": "A man with a round cream head standing on a small stage in a packed hall reading a newspaper aloud, the crowd silent and leaning forward.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Letters from home take months. To collect one, you may stand in line outside the post office for up to three days.",
+          "sahneler": [
+            {
+              "tarif": "An extremely long line of people with round cream heads outside a small wooden post office, stretching down the street and around the corner, night and day.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image asleep standing up in the line, leaning against the man in front of him, early morning light.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "One more thing about Dawson. It's surprisingly safe. The Mounties run the town. In 1898, there isn't a single murder. Saloons close at midnight on Saturday, and if you are caught working on a Sunday, you get a fine, or you get sent to chop firewood for the police.",
+          "sahneler": [
+            {
+              "tarif": "The man from the reference image walking calmly down a quiet wooden boardwalk at night, saloons with their doors closing.",
+              "hareket": "sag",
+              "kim": [
+                "mountie"
+              ]
+            },
+            {
+              "tarif": "The young man from the reference image chopping a huge pile of firewood behind a police post under a grey Sunday sky.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_dawson"
+              ],
+              "i2v": "He swings the axe down onto a log, wood chips fly, the pile of logs waits. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The Hän people, who lived here first, did not get a choice. Their village was moved downriver to a small reserve, below the town's polluted water.",
+          "sahneler": [
+            {
+              "tarif": "A small quiet riverside village of log houses and fish-drying racks, downriver from a smoky town in the distance, grey water.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The claim",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Now, the gold. You buy your mining licence, walk out to the famous creeks, Bonanza and Eldorado, and get the bad news. Every one of them was claimed long before you arrived. By July, almost ten thousand claims have been recorded.",
+          "sahneler": [
+            {
+              "tarif": "A narrow creek valley completely covered in wooden stakes, sluice boxes, tents and piles of dug earth, every square foot taken.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The young man from the reference image standing at the edge of the crowded creek valley, holding a shovel and a folded licence paper, shoulders dropping.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "You could buy a claim. An unproven one on a good creek costs around five thousand dollars. A proven one, fifty thousand. You have, let's say, considerably less.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image emptying a small leather pouch into his palm: three coins and a button.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "So you head into the hills to find your own spot. You hammer stakes into the ground, then hurry back to Dawson to register it, for fifteen dollars, normally within three days.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image hammering a wooden stake into the ground on a lonely hillside with a mallet.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_dawson"
+              ],
+              "i2v": "He swings the mallet down onto the stake, the stake sinks, grass sways. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A tiny figure running down a long trail through hills toward a distant town, long shadows, evening.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And then you dig. Six feet down, the ground is frozen solid all year. So you build a fire, let it thaw about fourteen inches of earth, dig that out, and build another fire. Again. And again.",
+          "sahneler": [
+            {
+              "tarif": "A narrow square mine shaft in frozen ground with a wood fire burning at its bottom, smoke rising out, night.",
+              "hareket": "i2v",
+              "i2v": "The fire burns at the bottom of the shaft, smoke curls upward, sparks rise. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image at the bottom of a deep narrow shaft digging into smoking thawed earth with a pick, lit by a candle.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_dawson"
+              ],
+              "i2v": "He swings the pick into the earth, chunks of soil fall, the candle flame flickers. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The frozen dirt you pull up has to wait until summer, when there's water to wash it through long wooden sluice boxes. Only then do you find out whether there was any gold in it.",
+          "sahneler": [
+            {
+              "tarif": "A tall frozen pile of dirt next to a small cabin in deep winter snow, a bucket and rope above a shaft.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "A long line of wooden sluice boxes on stilts with water rushing through them in summer, gravel washing along.",
+              "hareket": "i2v",
+              "i2v": "Water rushes through the sluice boxes, gravel tumbles along, sunlight glitters. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A gold pan held in two hands in shallow water, a few tiny specks glinting in the black sand.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Of the thirty to forty thousand people who reached Dawson, only fifteen to twenty thousand ever went prospecting. No more than four thousand of them found gold. Only a few hundred became rich.",
+          "sahneler": [
+            {
+              "tarif": "A vast crowd of tiny figures with round cream heads filling a valley, shrinking in the distance, golden dusk.",
+              "hareket": "disari",
+              "kisi": true
+            },
+            {
+              "tarif": "A small group of only a few figures with round cream heads standing in a beam of golden light in an otherwise dark empty valley.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The rest take whatever work they can find. The usual pay is fifteen dollars a day. That sounds like a lot, until you remember the three-dollar eggs.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image carrying heavy buckets of gravel for someone else at a busy mine, tired.",
+              "hareket": "sol",
+              "kim": [
+                "sen_dawson"
+              ]
+            },
+            {
+              "tarif": "The young man from the reference image at a shop counter holding up a single egg, looking at it, then at his small pay.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_dawson"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Go to the Klondike",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "By then, the newspapers that sent you here have moved on. Since the spring of 1898, the headlines have been about the Spanish-American War. Back home, Ah, go to the Klondike, has become a popular phrase of disgust.",
+          "sahneler": [
+            {
+              "tarif": "A stack of fresh newspapers on a city street corner with a picture of warships on the front page, no readable text, a forgotten old newspaper in the gutter.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A shop window in a rainy city with a pile of unwanted goods marked down, snowshoes, fur hats and gold pans, dusty.",
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "Then gold is found at Nome, in western Alaska. In 1899, thousands pack up and leave Dawson for the new gold fields. Just like that, the Klondike Gold Rush is over.",
+          "sahneler": [
+            {
+              "tarif": "A crowded steamboat pulling away from the Dawson riverbank, packed with people with round cream heads, the town behind it half empty.",
+              "hareket": "i2v",
+              "i2v": "The crowded steamboat pulls away from the shore, smoke trails, the river flows. Flat 2D cartoon animation, static camera.",
+              "yazi": "DAWSON CITY — 1899",
+              "kisi": true
+            },
+            {
+              "tarif": "An empty muddy street of a boom town with boarded-up buildings and a loose door swinging, dusk.",
+              "hareket": "i2v",
+              "i2v": "A loose door swings in the wind, scraps of paper blow along the empty street. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Here's the final math. Most stampeders spent about a thousand dollars just getting to the Klondike. All together, that was more than all the gold the fields produced from 1897 to 1901.",
+          "sahneler": [
+            {
+              "tarif": "A large old-fashioned balance scale: on one side a mountain of coins and paper money, on the other a smaller pile of gold nuggets, the money side heavier, dark background, warm light.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Even many of the lucky ones lost everything later. Alex McDonald, the King of the Klondike, kept buying land until his money ran out, and died poor, still prospecting.",
+          "sahneler": [
+            {
+              "tarif": "A lonely old prospector with a round cream head and a white beard, panning in a small stream at dusk, his clothes patched.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "But one young man got something better than gold out of it. He never struck it rich. Scurvy ended his mining career, and he made his money mostly by working for other prospectors. His name was Jack London. A few years later, he wrote The Call of the Wild.",
+          "sahneler": [
+            {
+              "tarif": "A young man with a round cream head writing by candlelight in a log cabin, a sled dog sleeping at his feet.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "A lone sled dog standing on a snowy ridge under northern lights, looking out over the wilderness.",
+              "hareket": "i2v",
+              "i2v": "Green northern lights ripple across the sky, snow blows gently off the ridge. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "So, honest question. Knowing what you know now, would you have gone? And where would you have turned back: the beach, the Golden Steps, the rapids, or the frozen hole in the ground? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image in his checked wool coat sitting by a small campfire on a mountain ridge at night, looking back at the long trail behind him.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_iz"
+              ],
+              "i2v": "The campfire flickers, sparks rise into the night, snow falls gently. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The young man from the reference image in his office clothes standing on the Seattle pier at sunrise, suitcase in hand, looking north across the water, seen from behind.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

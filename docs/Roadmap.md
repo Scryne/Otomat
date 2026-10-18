@@ -637,6 +637,21 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     kart (10-21) 10-26'da ölçülür; **Faz 16 kararı ~10-26.** Kıyas tabanı canlıda: Bartman (sahneli) 3 günlük
     pencerede 200 görüntüleme, %31,5 Kalan, %50,5 izlenme.
 
+### Faz 17: Uzun animasyonlu hikâye (2026-10-17)
+- **Neden:** Scryne: "shorts yerine bu tarzda [Day One Films] bir kanal büyütsek… normal videolar… çok profesyonel olmalı;
+  tarihi figürler, yaşanmış ilginç olaylar, bir karakterin macerası." Araştırma, kararlar (K-26…K-30) ve pilot ölçümleri:
+  `docs/arastirma/11-uzun-video.md`.
+- **Yapılan (10-17…10-18):** `otomat/film/` (Shorts motorundan bağımsız, yerel GPU): senaryo JSON'u ve denetimi, FLUX.2
+  klein karakter kartı + `ReferenceLatent` sahneleri, Wan 2.2 TI2V-5B klipleri, Chatterbox anlatım (Kokoro'dan sentetik
+  referans ses) + parça başına Whisper kapısı, PIL/ffmpeg kurgu (kamera, tarih damgası, bölüm kartı, bitiş payı, müzik
+  yatağı), kapak, bölümlü açıklama. `tests/test_film.py` 23 test; toplam 330 → 334.
+- **Pilot (Violet Jessop) ✅ üretildi ve doğrulandı (10-18):** 7:42, -14,4 LUFS; bitmiş videonun sesi Whisper'da %0,8
+  kelime farkı, bütün sayılar tutuyor; 96 sahnenin hepsi ve 21 klibin hepsi kare kare incelendi. Üretimde bulunan altı
+  kusur sınıfı (bellek, Wan'ın yüz bozması ve kadraja nesne sokması, yan karakterlerin gerçekçi çizilmesi, TTS'in yılı
+  yanlış okuması, okunmayan damga) kalıcı düzeltildi; ayrıntı araştırma notunda.
+- **Kalan (Bitti kriteri):** K-30 yükleme denemesi (ayrı gün, hesap temkini); pilotun yayını; ikinci ve üçüncü film
+  farklı yapıda. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
+
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
 - **Sayaç:** Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar. (10-14 sabahı "Faz 14 kapanınca başlar"

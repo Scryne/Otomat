@@ -60,7 +60,7 @@
                 "violet_hemsire"
               ],
               "hareket": "i2v",
-              "i2v": "The woman grips the boat edge, her eyes dart sideways, she takes a sharp breath and leans forward. Flat 2D cartoon animation, static camera."
+              "i2v": "The woman holds the boat edge and leans forward slightly; the passengers behind her shiver. The boat stays still. Flat 2D cartoon animation, static camera."
             },
             {
               "tarif": "The woman from the reference image leaps from a lifeboat into grey-blue sea water, splash frozen mid-air, side view, dramatic.",
@@ -124,7 +124,7 @@
                 "violet_kiz"
               ],
               "hareket": "i2v",
-              "i2v": "The grass sways in the wind, the girl brushes hair from her face and looks around, sheep slowly move. Flat 2D cartoon animation, static camera."
+              "i2v": "The grass sways in the wind, the girl's hair and dress flutter, sheep slowly move across the field. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -171,7 +171,7 @@
                 "violet_kiz"
               ],
               "hareket": "i2v",
-              "i2v": "Sunlight slowly grows brighter, dust floats in the light, the girl blinks and smiles. Flat 2D cartoon animation, static camera."
+              "i2v": "Sunlight slowly grows brighter, dust floats in the light, the girl slowly sits up straighter. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -231,15 +231,14 @@
           "anlatim": "There was one catch. To get hired, she had to dress down, to make herself look less attractive. It worked.",
           "sahneler": [
             {
-              "tarif": "The young woman from the reference image looks at herself in a small cracked mirror, frowning, pulling her hair into a severe tight bun, plain dark dress.",
+              "tarif": "The young woman from the reference image stands in a small dim room, frowning, pulling her hair into a severe tight bun with both hands, plain dark dress.",
               "kim": [
                 "violet"
               ],
-              "hareket": "i2v",
-              "i2v": "The woman tightens her hair bun with both hands and frowns at the mirror, then nods once. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             },
             {
-              "tarif": "The young woman from the reference image stands very straight in front of a stern old man behind a desk, who looks her up and down suspiciously.",
+              "tarif": "The young woman from the reference image stands very straight in front of a desk; behind it sits a stern old man drawn as a simple cartoon with a big round cream-white head, small dot eyes, thick white eyebrows, a white moustache and no nose, looking her up and down suspiciously.",
               "kim": [
                 "violet"
               ],
@@ -324,12 +323,12 @@
               "hareket": "iceri"
             },
             {
-              "tarif": "The young woman from the reference image looks out of a round porthole at a dark sea, her face lit by moonlight, thoughtful.",
+              "tarif": "Side view of the young woman from the reference image standing inside a dark ship cabin next to a round porthole in the wall, cold moonlight from the porthole lighting her face, thoughtful.",
               "kim": [
                 "violet"
               ],
               "hareket": "i2v",
-              "i2v": "Moonlight ripples on her face, she blinks slowly and looks down. Flat 2D cartoon animation, static camera."
+              "i2v": "Moonlight ripples on the cabin wall, she slowly lowers her head. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -394,8 +393,7 @@
           "sahneler": [
             {
               "tarif": "A simple brass ship clock on a dark wood-panelled wall, its hands near midnight, lit by a single lamp.",
-              "hareket": "i2v",
-              "i2v": "The second hand ticks forward, lamp light flickers slightly. Static camera."
+              "hareket": "iceri"
             },
             {
               "tarif": "Seawater flooding into a long lit corridor of a ship, doors on both sides, water rushing along the floor.",
@@ -424,7 +422,7 @@
                 "violet"
               ],
               "hareket": "i2v",
-              "i2v": "She swallows, her eyebrows tremble slightly, she keeps a calm face and breathes. Flat 2D cartoon animation, static camera."
+              "i2v": "She stands very still, her shoulders slowly rise and fall with each breath, cold light flickers. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -463,7 +461,7 @@
                 "violet"
               ],
               "hareket": "i2v",
-              "i2v": "She rocks the baby gently and pulls the blanket tighter, her breath visible in the cold air. Flat 2D cartoon animation, static camera."
+              "i2v": "She gently rocks the baby in her arms, her breath steams in the cold air. The boat stays still. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -546,7 +544,7 @@
                 "violet_hemsire"
               ],
               "hareket": "i2v",
-              "i2v": "She wraps the bandage carefully around his arm, he winces then nods. Flat 2D cartoon animation, static camera."
+              "i2v": "She wraps the bandage carefully around his arm, he flinches slightly then nods. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -591,8 +589,7 @@
             },
             {
               "tarif": "A brass pocket watch lying open on wet wooden planks, its hands ticking.",
-              "hareket": "i2v",
-              "i2v": "The watch hands tick forward, water droplets slide across the glass. Static camera."
+              "hareket": "yukari"
             }
           ]
         },
@@ -622,9 +619,8 @@
               "hareket": "iceri"
             },
             {
-              "tarif": "Underwater view looking up at the bright surface, shadows of a boat hull and debris above, a hand reaching up toward the light.",
-              "hareket": "i2v",
-              "i2v": "Light ripples through the water, bubbles rise, the hand moves slowly upward. Static camera.",
+              "tarif": "Underwater view looking up at the bright surface, the dark shape of a lifeboat hull above, a single small cartoon hand and arm reaching up from below toward the light, nothing else in the water.",
+              "hareket": "yukari",
               "kisi": true
             },
             {
@@ -640,7 +636,7 @@
           "anlatim": "Thirty of the one thousand and sixty-six people aboard were killed. Later, Violet described the ship's last moments in her memoirs.",
           "sahneler": [
             {
-              "tarif": "Many small lifeboats spread across a calm blue-grey sea, people looking toward an empty patch of water with floating debris.",
+              "tarif": "Wide view from far away: many small lifeboats with tiny people spread across a calm blue-grey sea, all facing an empty patch of water with floating debris.",
               "hareket": "disari",
               "kisi": true
             }
@@ -651,8 +647,7 @@
           "sahneler": [
             {
               "tarif": "A huge white ship with its bow dipping under the sea, deck cranes and machinery sliding off into the water, morning light.",
-              "hareket": "i2v",
-              "i2v": "The bow dips lower into the water, small objects slide off the deck and splash. Flat 2D cartoon animation, slow camera."
+              "hareket": "sol"
             },
             {
               "tarif": "The stern of a huge white ship standing almost vertical out of the sea against a pale sky, tiny lifeboats far below.",
@@ -745,8 +740,7 @@
               "kim": [
                 "violet_yasli"
               ],
-              "hareket": "i2v",
-              "i2v": "She sips her tea, a chicken pecks the ground, a light breeze moves the leaves. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             }
           ]
         }
@@ -791,7 +785,7 @@
                 "violet_yasli"
               ],
               "hareket": "i2v",
-              "i2v": "Her eyes widen slowly, her eyebrows rise, rain light flickers on her face. Flat 2D cartoon animation, static camera."
+              "i2v": "Rain light flickers across the scene, she holds the receiver still at her ear. Flat 2D cartoon animation, static camera."
             },
             {
               "tarif": "A black telephone receiver hanging off a small table by its cord, swinging, in a dark room.",
@@ -877,8 +871,7 @@
               "kim": [
                 "violet"
               ],
-              "hareket": "i2v",
-              "i2v": "Wind moves her apron and hair, the sun rises ahead, gentle waves. Flat 2D cartoon animation, slow camera push."
+              "hareket": "iceri"
             }
           ]
         }

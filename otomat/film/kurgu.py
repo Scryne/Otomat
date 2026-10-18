@@ -100,18 +100,24 @@ def _font(ad: str, boy: int) -> ImageFont.FreeTypeFont:
 
 
 def damga(kare: Image.Image, yazi: str, saydam: float) -> None:
-    """Sol üstte tarih/yer damgası: aralıklı büyük harf, krem, ince gölge."""
+    """Sol üstte tarih/yer damgası: aralıklı büyük harf, krem, koyu kontur ve arkasında yumuşak koyu leke. Yalnız
+    gölgeyle açık gökyüzünde okunmuyordu (pilot, ilk çekim)."""
     if saydam <= 0:
         return
-    f = _font("SpaceGrotesk-Medium.ttf", 34)
+    f = _font("SpaceGrotesk-Medium.ttf", 36)
+    x0, y = 84, 70
+    genislik = sum(f.getlength(h) + 5 for h in yazi.upper())
+    leke = Image.new("L", kare.size, 0)
+    ImageDraw.Draw(leke).rounded_rectangle((x0 - 30, y - 22, x0 + genislik + 30, y + 62), 30, fill=int(130 * saydam))
+    kare.paste(Image.new("RGB", kare.size), (0, 0), leke.filter(ImageFilter.GaussianBlur(18)))
     katman = Image.new("RGBA", kare.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(katman)
-    x, y = 84, 70
+    x = x0
     for harf in yazi.upper():
-        d.text((x + 2, y + 2), harf, font=f, fill=(0, 0, 0, int(160 * saydam)))
-        d.text((x, y), harf, font=f, fill=(*KREM, int(255 * saydam)))
+        d.text((x, y), harf, font=f, fill=(*KREM, int(255 * saydam)), stroke_width=2,
+               stroke_fill=(0, 0, 0, int(200 * saydam)))  # fmt: skip
         x += f.getlength(harf) + 5
-    kare.alpha_composite(katman) if kare.mode == "RGBA" else kare.paste(katman, (0, 0), katman)
+    kare.paste(katman, (0, 0), katman)
 
 
 def kart(yazi: str, t: float, sure: float) -> Image.Image:
@@ -226,7 +232,7 @@ def miks(
     )
     suzgec.append(
         f"[v][m]amix=inputs=2:duration=longest:normalize=0,atrim=0:{son:.2f},afade=t=out:st={son - 2.5:.2f}:d=2.5,"
-        "alimiter=limit=0.89:level=false[a]"
+        "alimiter=limit=0.84:level=false[a]"  # 0,89'da AAC sonrası tepe -0,5 dBFS çıktı (pilot); hedef ≤ -1
     )
     subprocess.run(
         [ff, "-y", "-v", "error", *girdiler, "-filter_complex", ";".join(suzgec), "-map", "0:v", "-map", "[a]",

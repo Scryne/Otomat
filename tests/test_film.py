@@ -42,6 +42,10 @@ def test_pilot_senaryosu_gecerli():
         ({"tarif": "The man from the reference image.", "kim": ["yok"]}, "tanımsız karakter"),
         ({"tarif": "x", "hareket": "i2v"}, "hareket istemi"),
         ({"tarif": "A man walks.", "kim": ["a"]}, "reference image"),
+        (
+            {"tarif": "The man from the reference image.", "kim": ["a"], "hareket": "i2v", "i2v": "He Blinks slowly."},
+            "yüz hareketi",
+        ),
     ],
 )
 def test_kusurlu_sahne_duser(tmp_path, sahne, hata):
@@ -72,7 +76,33 @@ def test_parcala_cumle_sinirinda_ve_sinirda():
 def test_fark_ve_soylenis():
     assert anlatim.fark("Born near Bahía Blanca, in 1887.", "born near bahia blanca in 1887") == 0
     assert anlatim.fark("She jumped into the sea.", "She jumped.") > anlatim.HATA_ESIGI
-    assert anlatim.soylenis("Bahía — 1916") == "Bahia, 1916"
+    assert anlatim.soylenis("Bahía — 1916") == "Bahia, nineteen sixteen"
+    assert anlatim.soylenis("In 1906, 1900 and 1,066 people, lifeboat 16.") == (
+        "In nineteen oh six, nineteen hundred and 1,066 people, lifeboat 16."
+    )
+
+
+@pytest.mark.parametrize(
+    ("metin", "duyulan"),
+    [  # pilotta Whisper'ın gerçekten yazdıkları
+        ("Titanic took two hours and forty minutes to sink. Britannic was gone in fifty-five minutes.",
+         "Titanic took 2 hours and 40 minutes to sink.  Britannic was gone in 55 minutes."),
+        ("Thirty of the one thousand and sixty-six people aboard were killed.",
+         "30 of the 1,066 people aboard were killed."),
+        ("On the twenty-first of November 1916, and Sixth Officer Moody.",
+         "On the 21st of November 1916, and 6th Officer Moody."),
+    ],
+)  # fmt: skip
+def test_sayi_sozu_rakamla_esit(metin, duyulan):
+    assert anlatim.fark(metin, duyulan) == 0
+    assert anlatim.sayilar("a hundred and one") == ["101"] and anlatim.sayilar("1,066 or 2nd") == ["1066", "2"]
+
+
+def test_yanlis_sayi_parcayi_dusurur():
+    metin = "November 1916. The Aegean Sea. A lifeboat full of people is being dragged toward the propellers."
+    duyulan = "November, 1906. The Aegean Sea. A lifeboat full of people is being dragged toward the propellers."
+    assert anlatim.fark(metin, duyulan) == 1.0  # kelime oranıyla 0,05 kalıp geçiyordu
+    assert anlatim.fark("Lifeboat sixteen.", "Lifeboat 60.") == 1.0
 
 
 def test_cekimler_bitisik_kartli_ve_kuyruklu():
@@ -122,3 +152,4 @@ def test_insansiz_sahneye_karakter_tasarimi_gitmez(tmp_path):
     assert "in." in senaryo.sahne_istemi(f, referansli) and "in." in senaryo.sahne_istemi(f, kalabalik)
     istem = senaryo.sahne_istemi(f, deniz_feneri)
     assert "in." not in istem and "no people" in istem and senaryo.YUZSUZ in istem
+    assert "dot eyes" in senaryo.i2v_istemi(kalabalik) and "dot eyes" not in senaryo.i2v_istemi(deniz_feneri)

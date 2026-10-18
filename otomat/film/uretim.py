@@ -74,8 +74,7 @@ def hareketler(film: senaryo.Film, d: Path) -> None:
         hedef = i2v_dizini(d, i)
         if s.hareket != "i2v" or (hedef / f"{I2V['kare'] - 1:04d}.png").exists():
             continue
-        istem = f"{s.i2v} Minimalist flat 2D cartoon animation, clean outlines, consistent character design."
-        comfy.i2v(sahne_yolu(d, i), istem, hedef, tohum=3 + i, **I2V)
+        comfy.i2v(sahne_yolu(d, i), senaryo.i2v_istemi(s), hedef, tohum=3 + i, **I2V)
         _log("i2v", i)
 
 
@@ -109,8 +108,13 @@ def muzik_plani(film: senaryo.Film) -> list[str]:
 
 def kurgula(film: senaryo.Film, d: Path) -> dict:
     bloklar = film.bloklar()
-    wav, zamanlar, kayit = anlatim.seslendir([(bi, b.anlatim) for bi, b in bloklar], film.ses, d / "ses")
-    (d / "ses" / "denetim.json").write_text(json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8")
+    denetim = d / "ses" / "denetim.json"
+    try:
+        wav, zamanlar, kayit = anlatim.seslendir([(bi, b.anlatim) for bi, b in bloklar], film.ses, d / "ses")
+    except anlatim.AnlatimHatasi as h:
+        denetim.write_text(json.dumps(h.kayit, ensure_ascii=False, indent=1), encoding="utf-8")
+        raise
+    denetim.write_text(json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8")
     sahne_no = 0
     blok_sahneleri = []
     for _, b in bloklar:
@@ -199,7 +203,10 @@ def main() -> None:
     if adim in ("hepsi", "sahne"):
         sahneler(film, d, kartlar)
     if adim in ("hepsi", "i2v"):
+        # FLUX (+ Qwen 7,5 GB) ile Wan (+ UMT5 6,3 GB) aynı anda RAM'de kalınca 24 GB yetmiyor (10-17'de süreç öldü)
+        comfy.bosalt()
         hareketler(film, d)
+        comfy.bosalt()
     if adim in ("hepsi", "kapak"):
         _log("kapak", kapak(film, d, kartlar))
     if adim in ("hepsi", "ses", "kurgu"):

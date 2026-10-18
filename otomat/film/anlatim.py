@@ -5,6 +5,7 @@ hatasız. Referans ses Kokoro'dan üretildiği için (Apache-2.0) gerçek bir ki
 """
 
 import difflib
+import hashlib
 import json
 import os
 import re
@@ -32,6 +33,12 @@ REFERANS_METNI = (
 )
 
 
+class AnlatimHatasi(RuntimeError):
+    def __init__(self, mesaj: str, kayit: list[dict]):
+        super().__init__(mesaj)
+        self.kayit = kayit
+
+
 @dataclass(frozen=True)
 class Zaman:
     bas: float
@@ -52,20 +59,91 @@ def parcala(metin: str, sinir: int = PARCA_KELIME) -> list[str]:
     return parcalar
 
 
+BIRLER = "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen " \
+         "seventeen eighteen nineteen".split()  # fmt: skip
+ONLAR = "_ _ twenty thirty forty fifty sixty seventy eighty ninety".split()
+SIRA = {"first": 1, "second": 2, "third": 3, "fifth": 5, "eighth": 8, "ninth": 9, "twelfth": 12}
+SAYI_SOZ = {**{w: i for i, w in enumerate(BIRLER)}, **{w: i * 10 for i, w in enumerate(ONLAR) if w != "_"}}
+
+
+def _iki_hane(n: int) -> str:
+    return BIRLER[n] if n < 20 else ONLAR[n // 10] + (f"-{BIRLER[n % 10]}" if n % 10 else "")
+
+
+def yil_yaziya(m: re.Match) -> str:
+    """1916 → "nineteen sixteen", 1906 → "nineteen oh six". Chatterbox pilotta "1916"yı "1906" okudu (iki Whisper
+    modeli de öyle duydu)."""
+    y = int(m.group(0))
+    bas, son = divmod(y, 100)
+    if son == 0:
+        return f"{_iki_hane(bas)} hundred"
+    return f"{_iki_hane(bas)} {'oh ' + BIRLER[son] if son < 10 else _iki_hane(son)}"
+
+
 def soylenis(metin: str) -> str:
-    """TTS'e giden metin: aksanlar sadeleşir (Bahía → Bahia), uzun tire virgüle döner."""
+    """TTS'e giden metin: aksanlar sadeleşir (Bahía → Bahia), uzun tire virgüle döner, yıllar yazıya çevrilir."""
     metin = metin.replace(" — ", ", ").replace("—", ", ")  # ascii'ye inmeden önce: tire yoksa düşer
+    metin = re.sub(r"(?<![\d.])(?<!\d,)1[1-9]\d\d(?!\d|,\d)", yil_yaziya, metin)  # 1,066 gibi sayıya dokunmaz
     return unicodedata.normalize("NFKD", metin).encode("ascii", "ignore").decode()
 
 
+def _soz(k: str) -> int | None:
+    if k in SAYI_SOZ:
+        return SAYI_SOZ[k]
+    if k in SIRA:
+        return SIRA[k]
+    if k.endswith("th") and k[:-2] in SAYI_SOZ:  # fourth, sixth, sixteenth
+        return SAYI_SOZ[k[:-2]]
+    if k.endswith("ieth") and k[:-4] + "y" in SAYI_SOZ:  # twentieth
+        return SAYI_SOZ[k[:-4] + "y"]
+    return None
+
+
 def kelimeler(s: str) -> list[str]:
+    """Karşılaştırma birimleri: sayı sözleri ve rakamlar aynı biçime iner ("one thousand and sixty-six", "1,066" ve
+    "21st", "twenty-first" → "1066", "21"). Whisper rakam yazıyor, senaryo söz; inmeyince doğru parça 0,22 fark alıp
+    üç kez yeniden üretiliyordu (pilot)."""
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
-    return re.findall(r"[a-z0-9']+", s)
+    s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
+    s = re.sub(r"\b(\d+)(st|nd|rd|th)\b", r"\1", s)
+    cikti: list[str] = []
+    toplam = simdiki = None
+    for k in re.findall(r"[a-z0-9']+", s) + [""]:
+        n = _soz(k)
+        if n is not None or k in ("hundred", "thousand"):
+            if simdiki is None:  # "a hundred" = 100
+                toplam, simdiki = 0, (0 if n is not None else 1)
+            if k == "hundred":
+                simdiki *= 100
+            elif k == "thousand":
+                toplam += simdiki * 1000
+                simdiki = 0
+            else:
+                simdiki += n
+            continue
+        if k == "and" and simdiki is not None:  # "one thousand and sixty": sayı sürüyor
+            continue
+        if simdiki is not None:
+            cikti.append(str(toplam + simdiki))
+            toplam = simdiki = None
+        if k:
+            cikti.append(k)
+    return cikti
+
+
+def sayilar(s: str) -> list[str]:
+    return sorted(k for k in kelimeler(s) if k.isdigit())
 
 
 def fark(metin: str, duyulan: str) -> float:
+    """Kelime farkı; sayılar (yıl, süre, kişi sayısı) uyuşmuyorsa 1: bir yanlış yıl kelime oranında kaybolup geçiyordu
+    (pilotta "1906", fark 0,048)."""
     a, b = kelimeler(metin), kelimeler(duyulan)
-    return 1 - difflib.SequenceMatcher(None, a, b).ratio() if a else 0.0
+    if not a:
+        return 0.0
+    if sayilar(metin) != sayilar(duyulan):
+        return 1.0
+    return 1 - difflib.SequenceMatcher(None, a, b).ratio()
 
 
 def wav_oku(yol: Path) -> np.ndarray:
@@ -131,13 +209,16 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
     dizin.mkdir(parents=True, exist_ok=True)
     ref = referans(ses, dizin)
     parcalar = [(bi, pi, p) for bi, (_, metin) in enumerate(bloklar) for pi, p in enumerate(parcala(metin))]
-    secim: dict[tuple[int, int], Path] = {}
+    secim: dict[tuple[int, int], tuple[float, Path]] = {}
     kayit: list[dict] = []
     whisper = WhisperModel("small.en", device="cpu", compute_type="int8")
     acik = parcalar
     for deneme in range(DENEME):
-        isler = [{"metin": soylenis(p), "hedef": str(dizin / f"p{bi:03d}_{pi}_{deneme}.wav"), "tohum": deneme}
-                 for bi, pi, p in acik]  # fmt: skip
+        isler = []
+        for bi, pi, p in acik:
+            metin = soylenis(p)
+            iz = hashlib.sha1(metin.encode()).hexdigest()[:8]  # metin değişince eski ses kullanılmasın
+            isler.append({"metin": metin, "hedef": str(dizin / f"p{bi:03d}_{pi}_{deneme}_{iz}.wav"), "tohum": deneme})
         _uret(isler, ref, dizin)
         kalan = []
         for (bi, pi, p), is_ in zip(acik, isler, strict=True):
@@ -145,14 +226,15 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
             duyulan = " ".join(s.text for s in whisper.transcribe(_16k(x), language="en")[0])
             f = fark(p, duyulan)
             kayit.append({"blok": bi, "parca": pi, "deneme": deneme, "fark": round(f, 3), "duyulan": duyulan.strip()})
-            onceki = secim.get((bi, pi))
-            if onceki is None or f < _fark_kaydi(kayit, bi, pi, onceki):
-                secim[(bi, pi)] = Path(is_["hedef"])
+            if (bi, pi) not in secim or f < secim[(bi, pi)][0]:
+                secim[(bi, pi)] = (f, Path(is_["hedef"]))
             if f > HATA_ESIGI:
                 kalan.append((bi, pi, p))
         acik = kalan
         if not acik:
             break
+    if yanlis := [(bi, pi) for (bi, pi), (f, _) in secim.items() if f >= 1.0]:
+        raise AnlatimHatasi(f"{DENEME} denemede sayısı doğru okunmayan parça: {yanlis} (ses/denetim.json)", kayit)
     toplam, zamanlar, an = [], [], 0.0
     for bi, (bolum, _) in enumerate(bloklar):
         if bi:
@@ -162,7 +244,7 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
         bas = an
         pis = sorted(pi for b, pi in secim if b == bi)
         for j, pi in enumerate(pis):
-            x = sessizlik_kirp(wav_oku(secim[(bi, pi)]))
+            x = sessizlik_kirp(wav_oku(secim[(bi, pi)][1]))
             toplam.append(x)
             an += len(x) / SR
             if j < len(pis) - 1:
@@ -172,11 +254,6 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
     yol = dizin / "anlatim.wav"
     wav_yaz(yol, np.concatenate(toplam))
     return yol, zamanlar, kayit
-
-
-def _fark_kaydi(kayit: list[dict], bi: int, pi: int, yol: Path) -> float:
-    deneme = int(yol.stem.rsplit("_", 1)[1])
-    return next(k["fark"] for k in kayit if (k["blok"], k["parca"], k["deneme"]) == (bi, pi, deneme))
 
 
 def _16k(x: np.ndarray) -> np.ndarray:
