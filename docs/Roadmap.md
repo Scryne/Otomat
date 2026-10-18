@@ -20,7 +20,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
 | 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
 | 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
-| 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot Inkwell Oddities'de public; ikinci ve üçüncü film farklı yapıda yayında |
+| 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot One Ticket Back'te public; ikinci ve üçüncü film farklı yapıda yayında |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
 | 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
@@ -665,8 +665,11 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Wan 14B (10-18):** 5B'nin bozuk klipleri yüzünden Lowell ve Ellis durağandı (6 ve 2 klip). Wan 2.2 I2V-A14B GGUF Q3
   (iki istekte iki uzman, 16 fps) + yalnız görseldekini anlatan istemlerle Lowell 20, Ellis 16 klip; ikisi yeniden
   kurgulandı, doğrulandı, kesitleri yenilendi. Ayrıntı: `docs/arastirma/11-uzun-video.md` "Wan 14B'ye geçiş".
-- **Kalan (Bitti kriteri):** K-30 yükleme denemesi (ayrı gün, hesap temkini); pilotun yayını; ikinci ve üçüncü film
-  farklı yapıda. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
+- **Yükleme (10-19):** K-30 denemesi geçti (unlisted yüklenen Klondike işlendikten sonra da unlisted, kapak tamam; kilit
+  yok). Klondike `bx557A2rIHQ` 10-24 19:00 UTC'ye planlı, 3 kesiti 10-26/28/30. Hesap temkini için günde bir film + 3
+  kesit: Violet Jessop 10-19, Lowell 10-20, Ellis 10-21 Windows Görev Zamanlayıcı'dan (`Otomat-Yukle-<slug>`,
+  `calisma/film/yukle_sira.cmd`, kayıt `calisma/film/yukleme_sira.log`; önceki film bitmeden çalışmaz).
+- **Kalan (Bitti kriteri):** pilotun yayını (10-31); ikinci ve üçüncü film farklı yapıda yayında. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 
 ### Faz 7: Gerçek kullanım
 - **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.

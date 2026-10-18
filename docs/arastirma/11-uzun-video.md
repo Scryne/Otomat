@@ -103,6 +103,9 @@ denenmedi. Wan 14B 10-18'de denendi, bkz. "Wan 14B'ye geçiş".
 - **K-30 Yayın yolu:** Buffer uzun videoyu taşımaz. Sıra: (1) kendi projemizden tek `videos.insert` unlisted denemesi
   (ayrı gün, hesap kilidi temkini; private kalırsa kilit sürüyor demektir), (2) olmazsa Zernio/Upload-Post denemesi,
   (3) o arada Scryne Studio'dan yükler (video başına ~3 dk: dosya, başlık, açıklama, kapak, bitiş ekranı).
+  **Sonuç (10-19) [Ö]:** One Ticket Back'e Klondike `videos.insert` ile unlisted yüklendi; YouTube `unlisted` döndürdü,
+  işlendikten sonra da unlisted kaldı, `thumbnails.set` geçti. Kilit yok: yol (1) seçildi, (2) ve (3) gereksiz.
+  `planla` ile private + `publishAt` 10-24 19:00 UTC; kesitler aynı yoldan private + `publishAt`.
 
 - **K-31 İkinci biçim ve dil (10-18):** Scryne'ın gösterdiği Senin Devrin (@SeninDevrin, Türkçe; açılış 10-03, 15 günde
   4 video, 14,1 bin abone; "Eğer 1964'te Almanya'ya işçi olarak gitseydin?" 1,06 milyon izlenme, 865 yorum) "Your life
@@ -220,8 +223,8 @@ Island (1907; ABD izleyicisinin ailesine bağlanan kapanış sorusu).
 - Bellek: Ellis klipleri sırasında Claude Code arka plan işini yine kesti (boş RAM 5,4 GB; ComfyUI 7,6 GB, tarayıcı
   2,6 GB). Üretim tek film, tek iş olarak sürdü (Scryne: "teker teker sırayla").
 
-Açık kalan (pilot): 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
-video yükleme yolu (K-30) denenmedi.
+Açık kalan (pilot): 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok. Yükleme
+yolu (K-30) 10-19'da denendi ve çalıştı.
 
 ## Wan 14B'ye geçiş (10-18) [Ö]
 
