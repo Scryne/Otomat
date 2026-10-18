@@ -134,6 +134,20 @@ def test_cekimler_bitisik_kartli_ve_kuyruklu():
     assert all(a.son == pytest.approx(b.bas) for a, b in zip(c, c[1:], strict=False))
 
 
+def test_16_fps_klip_kendi_hizinda_oynar(tmp_path, monkeypatch):
+    from PIL import Image
+
+    for i in range(33):
+        (tmp_path / f"{i:04d}.png").touch()
+    (tmp_path / "fps").write_text("16")
+    okunan = []
+    monkeypatch.setattr(kurgu, "_gorsel", lambda yol: okunan.append(yol.stem) or Image.new("RGB", (16, 9)))
+    c = kurgu.Cekim(0.0, 33 / 16, "i2v", tmp_path)
+    kurgu.kare_uret(c, 1.0)
+    assert okunan == ["0016"]  # 24 fps sanılsaydı 1. saniye 24. kare olurdu: klip 1,5 kat hızlı oynardı
+    assert kurgu.klip_fps(tmp_path / "yok") == kurgu.I2V_FPS
+
+
 @pytest.mark.parametrize("tur", ["iceri", "disari", "sol", "sag", "yukari", "i2v"])
 def test_kamera_kaynak_disina_tasmaz(tur):
     for t in (0, 0.3, 0.7, 1):
@@ -207,3 +221,18 @@ def test_kesit_tek_bolumde_ve_sure_sinirinda(tmp_path):
     with pytest.raises(kesit.KesitHatasi):
         kesit.aralik([[0.0, 30.0], [30.5, 70.0]], k, 80.0)
     assert kesit.aralik([[1.0, 20.0], [20.5, 40.0]], k, 80.0) == (0.75, 40.6)
+
+
+def test_wan14_iki_istekte_tek_uzman():
+    from otomat.film import comfy
+
+    yuksek = comfy.i2v14_grafi("g.png", "i", 832, 480, 33, 7, "yuksek")
+    dusuk = comfy.i2v14_grafi("g.png", "i", 832, 480, 33, 7, "dusuk", "ara.latent")
+    for g, uzman in ((yuksek, "yuksek"), (dusuk, "dusuk")):  # aynı istekte iki uzman RAM'i 20 GB'a çıkarmıştı
+        assert [n["inputs"]["unet_name"] for n in g.values() if n["class_type"] == "UnetLoaderGGUF"] == [
+            comfy.WAN14[uzman]
+        ]
+    ks_y, ks_d = yuksek["ks"]["inputs"], dusuk["ks"]["inputs"]
+    assert (ks_y["start_at_step"], ks_y["end_at_step"], ks_y["return_with_leftover_noise"]) == (0, 2, "enable")
+    assert (ks_d["start_at_step"], ks_d["end_at_step"], ks_d["add_noise"]) == (2, 4, "disable")
+    assert yuksek["kay"]["class_type"] == "SaveLatent" and dusuk["ara"]["inputs"]["latent"] == "ara.latent"

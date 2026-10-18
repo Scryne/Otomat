@@ -154,6 +154,12 @@ def _i2v_kareleri(dizin: Path) -> list[Path]:
     return sorted(dizin.glob("*.png"))
 
 
+def klip_fps(dizin: Path) -> int:
+    """Wan 5B 24 fps üretir; 14B dizinine `fps` dosyası (16) yazar."""
+    yol = dizin / "fps"
+    return int(yol.read_text()) if yol.exists() else I2V_FPS
+
+
 def kare_uret(c: Cekim, an: float) -> Image.Image:
     t = an - c.bas
     sure = c.son - c.bas
@@ -161,9 +167,10 @@ def kare_uret(c: Cekim, an: float) -> Image.Image:
         return kart(c.kart, t, sure)
     if c.tur == "i2v":
         kareler = _i2v_kareleri(c.kaynak)
-        klip = len(kareler) / I2V_FPS
+        fps = klip_fps(c.kaynak)
+        klip = len(kareler) / fps
         hiz = max(min(klip / sure, 1.0), EN_YAVAS)
-        i = min(int(t * hiz * I2V_FPS), len(kareler) - 1)
+        i = min(int(t * hiz * fps), len(kareler) - 1)
         olcek, cx, cy = kamera("i2v", t / sure)
         kare = cerceve(_gorsel(kareler[i]), olcek, cx, cy)
     else:

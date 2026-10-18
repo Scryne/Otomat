@@ -69,12 +69,19 @@ def i2v_dizini(d: Path, i: int) -> Path:
     return d / "i2v" / f"{i:03d}"
 
 
+def klip_var(hedef: Path) -> bool:
+    """Eski 5B klibi (49 kare, 24 fps) ya da 14B klibi (`fps` dosyası en son yazılır)."""
+    return (hedef / "fps").exists() or (hedef / f"{I2V['kare'] - 1:04d}.png").exists()
+
+
 def hareketler(film: senaryo.Film, d: Path) -> None:
+    """Eksik klipler Wan 2.2 I2V-A14B ile (10-18: 5B kliplerin %25-71'i bozuktu; 14B istemi harfiyen izliyor, bu yüzden
+    istem yalnız görselde olanın hareketini anlatmalı)."""
     for i, s in enumerate(film.sahneler()):
         hedef = i2v_dizini(d, i)
-        if s.hareket != "i2v" or (hedef / f"{I2V['kare'] - 1:04d}.png").exists():
+        if s.hareket != "i2v" or klip_var(hedef):
             continue
-        comfy.i2v(sahne_yolu(d, i), senaryo.i2v_istemi(s), hedef, tohum=3 + i, **I2V)
+        comfy.i2v14(sahne_yolu(d, i), senaryo.i2v_istemi(s), hedef, tohum=3 + i)
         _log("i2v", i)
 
 

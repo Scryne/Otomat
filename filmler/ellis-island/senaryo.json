@@ -87,7 +87,8 @@
           "sahneler": [
             {
               "tarif": "A huge red-brick building with four towers topped by copper domes on a small island, seen across grey water at dawn, ferries approaching.",
-              "hareket": "yukari"
+              "hareket": "i2v",
+              "i2v": "The two small boats move slowly on the water toward the island, the water ripples gently. Flat 2D cartoon animation, static camera."
             },
             {
               "tarif": "An endless line of immigrants with round cream heads carrying bundles and trunks, stretching out of a ferry and up to a building entrance.",
@@ -139,7 +140,8 @@
           "sahneler": [
             {
               "tarif": "A wide flat barge crowded with immigrants with round cream heads and their bundles, being towed across the harbor by a small tugboat.",
-              "hareket": "sag",
+              "hareket": "i2v",
+              "i2v": "The barge and the small tugboat drift slowly across the dark water, small waves lap at the sides. Flat 2D cartoon animation, static camera.",
               "kisi": true
             }
           ]
@@ -205,7 +207,8 @@
           "sahneler": [
             {
               "tarif": "A small marshy island covered with seagulls and oyster beds in a calm bay, long ago, no buildings, soft morning light.",
-              "hareket": "iceri"
+              "hareket": "i2v",
+              "i2v": "The small seagulls on the island hop and flap their wings, the water around the island ripples gently. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -235,7 +238,8 @@
           "sahneler": [
             {
               "tarif": "A huge wooden building on fire at night on a small island, orange flames reflected in the dark water.",
-              "hareket": "sag"
+              "hareket": "i2v",
+              "i2v": "Flames roar and flicker across the burning building, sparks rise, reflections shimmer. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -257,7 +261,8 @@
           "sahneler": [
             {
               "tarif": "A huge crowd of immigrants with round cream heads filling the dock and the path into the building, trunks and baskets everywhere, seen from above.",
-              "hareket": "sol",
+              "hareket": "i2v",
+              "i2v": "The crowd shuffles slowly forward toward the entrance, coats and shawls sway. Flat 2D cartoon animation, static camera.",
               "kisi": true
             }
           ]
@@ -293,10 +298,11 @@
             },
             {
               "tarif": "The young man from the reference image climbing a wide staircase with other immigrants, holding the rail, a little out of breath.",
-              "hareket": "iceri",
+              "hareket": "i2v",
               "kim": [
                 "sen"
-              ]
+              ],
+              "i2v": "He climbs one step up the stairs with the crowd behind him, coats sway slightly. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -381,7 +387,8 @@
           "sahneler": [
             {
               "tarif": "A vast hall with a very high arched ceiling and tall arched windows, crowded with hundreds of immigrants with round cream heads in long lines between metal railings, flags hanging.",
-              "hareket": "disari",
+              "hareket": "i2v",
+              "i2v": "The long lines of people shuffle slowly forward between the railings, dust floats in the light from the tall windows. Flat 2D cartoon animation, static camera.",
               "kisi": true
             },
             {
@@ -419,10 +426,11 @@
             },
             {
               "tarif": "The young man from the reference image counting out coins from his purse onto the desk, nervous.",
-              "hareket": "disari",
+              "hareket": "i2v",
               "kim": [
                 "sen"
-              ]
+              ],
+              "i2v": "He slowly places a coin onto the small pile on the table, his hand trembles slightly. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -451,7 +459,8 @@
           "sahneler": [
             {
               "tarif": "A large wall clock high in the hall, its face blank, beams of light from the windows sliding across the floor.",
-              "hareket": "yukari"
+              "hareket": "i2v",
+              "i2v": "Light beams slowly slide across the floor, dust floats in the air. Flat 2D cartoon animation, static camera."
             }
           ]
         }
@@ -486,7 +495,8 @@
           "sahneler": [
             {
               "tarif": "A small group of immigrants with round cream heads walking back up a gangway onto a ship, carrying their bundles, heads down, grey light.",
-              "hareket": "iceri",
+              "hareket": "i2v",
+              "i2v": "The small group of people climbs slowly up the gangway toward the lit doorway, coats sway. Flat 2D cartoon animation, static camera.",
               "kisi": true
             }
           ]
@@ -526,7 +536,8 @@
           "sahneler": [
             {
               "tarif": "A simple wooden column in a busy hall where families with round cream heads embrace newly arrived relatives, hats and bundles everywhere, warm light.",
-              "hareket": "disari",
+              "hareket": "i2v",
+              "i2v": "The people hug each other and sway gently, a few heads turn, warm light glows on them. Flat 2D cartoon animation, static camera.",
               "kisi": true
             },
             {
@@ -543,7 +554,8 @@
           "sahneler": [
             {
               "tarif": "A great railroad terminal on the waterfront with steam trains under a long shed, crowds with round cream heads boarding with trunks.",
-              "hareket": "sol",
+              "hareket": "i2v",
+              "i2v": "Dark smoke drifts from the train in the background, the crowd on the platform shuffles slowly forward. Flat 2D cartoon animation, static camera.",
               "kisi": true
             }
           ]
@@ -633,7 +645,8 @@
           "sahneler": [
             {
               "tarif": "A small official boat crossing to the island, men with round cream heads in suits and hats standing at the bow, one pointing forward dramatically.",
-              "hareket": "sol",
+              "hareket": "i2v",
+              "i2v": "The rowing boat drifts slowly across the water, the man at the front points ahead, small waves ripple. Flat 2D cartoon animation, static camera.",
               "kisi": true
             }
           ]
@@ -648,10 +661,11 @@
             },
             {
               "tarif": "The young man from the reference image as a ghostly faded figure climbing the same staircase, the modern family watching from below.",
-              "hareket": "sag",
+              "hareket": "i2v",
               "kim": [
                 "sen"
-              ]
+              ],
+              "i2v": "The glowing faded figure slowly climbs the stairs and fades away, the three people below watch him. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -660,10 +674,11 @@
           "sahneler": [
             {
               "tarif": "The young man from the reference image on the ferry deck at sunset with his bundle, looking back at the island, the city ahead.",
-              "hareket": "disari",
+              "hareket": "i2v",
               "kim": [
                 "sen"
-              ]
+              ],
+              "i2v": "The ship moves slowly across the water, his coat flutters in the wind, the sea ripples. Flat 2D cartoon animation, static camera."
             },
             {
               "tarif": "The red-brick main building with its copper-domed towers at sunset, reflected in the calm harbor.",
