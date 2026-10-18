@@ -136,9 +136,13 @@ def sahne_istemi(film: Film, s: Sahne) -> str:
     if s.kim:
         # referans yalnız kendi karakterini bağlıyor; yanındaki kalabalık ve yan karakterler burunlu, yarı gerçekçi
         # çıktı (pilot 23, 36, 42, 75, 87)
+        # kartın tarifi metinde de durmazsa küçük ayrıntılar (gözlük, şapka) düşüyor: Klondike'ta "sen" 103 sahnenin
+        # çoğunda gözlüksüz, Dawson'da şapkasız ve kel çıktı
+        kartlar = " ".join(f"The reference character is {film.karakterler[k]}." for k in s.kim)
         return (
             f"{film.stil}. {film.insan}. Every other person in the scene is drawn in exactly the same simple style as "
-            f"the reference character, with the same round cream-white head, dot eyes and no nose. {YUZSUZ}. {s.tarif}"
+            f"the reference character, with the same round cream-white head, dot eyes and no nose. {YUZSUZ}. "
+            f"{kartlar} {s.tarif}"
         )
     if s.kisi:
         return f"{film.stil}. {film.insan}. {YUZSUZ}. {s.tarif}"

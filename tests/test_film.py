@@ -150,6 +150,7 @@ def test_insansiz_sahneye_karakter_tasarimi_gitmez(tmp_path):
     f = senaryo.oku(_yaz(tmp_path, d))
     referansli, deniz_feneri, kalabalik = f.sahneler()
     assert "in." in senaryo.sahne_istemi(f, referansli) and "in." in senaryo.sahne_istemi(f, kalabalik)
+    assert "The reference character is bir kişi." in senaryo.sahne_istemi(f, referansli)  # gözlük/şapka düşmesin
     istem = senaryo.sahne_istemi(f, deniz_feneri)
     assert "in." not in istem and "no people" in istem and senaryo.YUZSUZ in istem
     assert "dot eyes" in senaryo.i2v_istemi(kalabalik) and "dot eyes" not in senaryo.i2v_istemi(deniz_feneri)

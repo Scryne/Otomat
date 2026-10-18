@@ -183,7 +183,7 @@
               "kisi": true
             },
             {
-              "tarif": "The young man from the reference image squeezed between sacks of coal and crates below deck, face smudged with black coal dust, a swinging lantern.",
+              "tarif": "The young man from the reference image squeezed between sacks of coal and crates below deck, a few light grey smudges of coal dust on his coat, a swinging lantern.",
               "hareket": "iceri",
               "kim": [
                 "sen"
@@ -277,7 +277,7 @@
           "anlatim": "You want to tell your family you made it, so you step into the telegraph office and pay to send a message home. You even get a reply. There is just one problem. The office is fake. It belongs to a con man called Soapy Smith, whose gang of two to three hundred men is robbing travelers just like you.",
           "sahneler": [
             {
-              "tarif": "The young man from the reference image in his checked wool coat hands coins across a counter in a small wooden office with a brass telegraph key, a smiling clerk behind it.",
+              "tarif": "The young man from the reference image in his checked wool coat hands coins across a counter to a smiling telegraph clerk in a black suit and bowler hat, a brass telegraph key on the counter, small wooden office.",
               "hareket": "iceri",
               "kim": [
                 "sen_iz"
@@ -301,7 +301,7 @@
           "anlatim": "A visiting Mountie officer, Sam Steele, will call Skagway little better than a hell on earth. You decide not to stay. You take the Chilkoot Trail. Around twenty-two thousand people will cross it during the rush.",
           "sahneler": [
             {
-              "tarif": "The man from the reference image standing very straight in a muddy street at night, looking around with disapproval, saloons glowing behind him.",
+              "tarif": "The man from the reference image standing very straight in a muddy street at night, looking around with disapproval, the street behind him dark and blurred, only warm glowing windows, no signs at all.",
               "hareket": "sol",
               "kim": [
                 "mountie"
@@ -504,7 +504,7 @@
           "anlatim": "At the end of May, the ice breaks up, and seven thousand, one hundred and twenty-four boats set off for Dawson City.",
           "sahneler": [
             {
-              "tarif": "A huge lake filled with thousands of small wooden boats, rafts and scows with little sails, all heading the same way across the water, bright morning.",
+              "tarif": "A huge lake filled with thousands of small wooden boats, rafts and scows with little sails, tiny people sitting inside the boats, all heading the same way across the water, bright morning.",
               "hareket": "i2v",
               "i2v": "Thousands of small boats drift forward across the lake, little sails fill with wind, water ripples. Flat 2D cartoon animation, static camera.",
               "kisi": true
@@ -683,7 +683,7 @@
               ]
             },
             {
-              "tarif": "The young man from the reference image chopping a huge pile of firewood behind a police post under a grey Sunday sky.",
+              "tarif": "The young man from the reference image chopping a huge pile of firewood behind a plain log police post with no sign, under a grey Sunday sky.",
               "hareket": "i2v",
               "kim": [
                 "sen_dawson"
@@ -833,11 +833,11 @@
           "anlatim": "By then, the newspapers that sent you here have moved on. Since the spring of 1898, the headlines have been about the Spanish-American War. Back home, Ah, go to the Klondike, has become a popular phrase of disgust.",
           "sahneler": [
             {
-              "tarif": "A stack of fresh newspapers on a city street corner with a picture of warships on the front page, no readable text, a forgotten old newspaper in the gutter.",
+              "tarif": "A stack of fresh newspapers on a city street corner, the front page only a simple drawing of warships and plain grey blocks instead of any text, a forgotten old newspaper in the gutter.",
               "hareket": "iceri"
             },
             {
-              "tarif": "A shop window in a rainy city with a pile of unwanted goods marked down, snowshoes, fur hats and gold pans, dusty.",
+              "tarif": "A shop window in a rainy city with a dusty pile of unwanted snowshoes, fur hats and gold pans, no labels and no price tags.",
               "hareket": "sol"
             }
           ]
@@ -905,7 +905,7 @@
               "i2v": "The campfire flickers, sparks rise into the night, snow falls gently. Flat 2D cartoon animation, static camera."
             },
             {
-              "tarif": "The young man from the reference image in his office clothes standing on the Seattle pier at sunrise, suitcase in hand, looking north across the water, seen from behind.",
+              "tarif": "The young man from the reference image in his office clothes standing on a wooden pier of a small 1897 harbor town at sunrise, suitcase in hand, seen from directly behind so only the back of his head, his brown hair and his waistcoat are visible as he looks north across the water, ship masts and low wooden buildings, no tall buildings.",
               "hareket": "iceri",
               "kim": [
                 "sen"
