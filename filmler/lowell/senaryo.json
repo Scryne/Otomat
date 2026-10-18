@@ -91,7 +91,7 @@
               "hareket": "sol"
             },
             {
-              "tarif": "The young woman from the reference image in a plain calico dress feeding chickens in a farmyard, a red barn behind her.",
+              "tarif": "The young woman from the reference image in a plain calico dress feeding chickens in an 1830s farmyard, a red barn and a wooden fence behind her, no vehicles and no machines.",
               "hareket": "i2v",
               "kim": [
                 "sen"
@@ -340,7 +340,7 @@
           "anlatim": "One worker describes her room as small, comfortless, and half ventilated.",
           "sahneler": [
             {
-              "tarif": "The young woman from the reference image lying awake in a narrow shared bed, squeezed next to another sleeping girl, looking at the ceiling.",
+              "tarif": "The young woman from the reference image lying awake in a narrow shared bed, squeezed next to another sleeping girl, seen from the side at a distance, dim candle light.",
               "hareket": "iceri",
               "kim": [
                 "sen"
@@ -369,7 +369,7 @@
           "anlatim": "A handbook will put it plainly: the company does not employ anyone who is habitually absent from public worship on the Sabbath.",
           "sahneler": [
             {
-              "tarif": "An open old rule book on a dark wooden desk under a lamp, its pages covered in tiny unreadable scribbles, a quill beside it.",
+              "tarif": "An open old rule book on a dark wooden desk beside a small brass oil lamp, its pages covered in tiny unreadable scribbles, a quill beside it.",
               "hareket": "yukari"
             }
           ]
@@ -383,7 +383,7 @@
               "kisi": true
             },
             {
-              "tarif": "The young woman from the reference image holding up a new bonnet with ribbons in front of a small mirror, delighted.",
+              "tarif": "The young woman from the reference image holding up a new bonnet with ribbons, admiring it, delighted, in a small shop.",
               "hareket": "iceri",
               "kim": [
                 "sen"
@@ -465,7 +465,7 @@
           "anlatim": "Not everything in it is what it seems. A story called Abby's Year in Lowell, about a rebellious girl who learns the value of a dollar at the mill, will turn out to be a piece of propaganda for factory work.",
           "sahneler": [
             {
-              "tarif": "A printed magazine page with a simple drawing of a smiling girl at a loom and grey blocks instead of text, lying on a dark table under a lamp.",
+              "tarif": "A printed magazine page with a simple drawing of a smiling girl at a loom and grey blocks instead of text, lying on a dark table beside a small brass oil lamp.",
               "hareket": "iceri"
             }
           ]
@@ -516,7 +516,7 @@
           "anlatim": "One remembers fighting to stay awake at lectures. Her chief delight, she writes, was to place her aching feet in an easy position after the evening meal, and read a novel.",
           "sahneler": [
             {
-              "tarif": "The young woman from the reference image sitting in a chair by the boarding house fire with her bare tired feet up on a stool, reading a novel, smiling.",
+              "tarif": "The young woman from the reference image sitting in a chair beside a small brick fireplace in the boarding house parlor, her bare tired feet up on a stool, reading a novel, smiling.",
               "hareket": "iceri",
               "kim": [
                 "sen"
@@ -682,7 +682,7 @@
           "anlatim": "The women can't vote. They campaign against the committee's chairman anyway, and call him a tool. He loses his next election, mostly over railroads. A year later, he's back.",
           "sahneler": [
             {
-              "tarif": "A town street with election posters on a wall, all plain shapes without text, a group of mill women with round cream heads handing out papers to passing men.",
+              "tarif": "A town street with blank paper posters on a wall, no letters and no writing at all, a group of mill women with round cream heads handing out papers to passing men.",
               "hareket": "sag",
               "kisi": true
             }

@@ -138,7 +138,7 @@
           "anlatim": "You have already been checked. The steamship company looked you over in Europe before you boarded, and you got vaccinated during the voyage.",
           "sahneler": [
             {
-              "tarif": "A European port at dusk, a doctor with a round cream head looking into a passenger's mouth at a small table by the gangway, a line waiting.",
+              "tarif": "A European port at dusk, a doctor with a round cream head in a long white coat holding a lantern up to look at a standing passenger, a long line of passengers with bundles waiting by a ship's gangway.",
               "hareket": "sag",
               "kisi": true
             },
@@ -155,7 +155,7 @@
           "anlatim": "There's a reason the company cares. If you're turned away, it pays a fine of a hundred dollars, and the cost of shipping you back.",
           "sahneler": [
             {
-              "tarif": "A ledger on a shipping office desk with a stack of banknotes and a heavy brass stamp, lamp light, no readable text.",
+              "tarif": "A closed ledger on a shipping office desk with a stack of banknotes and a heavy brass stamp, lit by a small brass oil lamp.",
               "hareket": "iceri"
             }
           ]
@@ -303,7 +303,7 @@
               "kisi": true
             },
             {
-              "tarif": "The man from the reference image, a uniformed doctor, looking closely at a person in front of him, holding a small piece of chalk.",
+              "tarif": "The man from the reference image, a uniformed doctor, holding a small piece of chalk, looking closely at an immigrant who stands with his back to the viewer.",
               "hareket": "iceri",
               "kim": [
                 "doktor"
@@ -346,7 +346,7 @@
           "anlatim": "Nobody marks your coat. You keep walking.",
           "sahneler": [
             {
-              "tarif": "The young man from the reference image walking forward past the doctors, letting out a long breath, his coat clean.",
+              "tarif": "The young man from the reference image walking forward past the doctors with relief, his coat clean, his bundle in his arms.",
               "hareket": "iceri",
               "kim": [
                 "sen"
@@ -399,7 +399,7 @@
           "anlatim": "The government wants to know you can take care of yourself. On average, inspectors hope to see between eighteen and twenty-five dollars.",
           "sahneler": [
             {
-              "tarif": "A small worn leather purse open on a desk with a few coins and folded banknotes, lamp light.",
+              "tarif": "A small worn leather purse open on a wooden desk with a few coins and folded banknotes, warm light from a tall window.",
               "hareket": "iceri"
             },
             {
@@ -542,7 +542,7 @@
           "anlatim": "And your name? You may have heard that inspectors changed people's names here. It's a myth. They used the names on the ship's passenger list, and often corrected mistakes.",
           "sahneler": [
             {
-              "tarif": "A huge open passenger list on a desk, columns of tiny unreadable handwriting, a finger pointing at one line.",
+              "tarif": "A huge open passenger ledger on a desk, its columns drawn only as plain grey lines with no letters or numbers, a finger pointing at one line.",
               "hareket": "iceri"
             },
             {
