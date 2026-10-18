@@ -75,14 +75,15 @@ Ortak kalıplar:
 | Görsel | FLUX.2 klein 4B fp8, yerel ComfyUI 0.41 | Apache-2.0 | 1344×768 ~7 sn; tek karakter referansıyla ~11 sn; 1920×1088 ~13 sn |
 | Karakter tutarlılığı | karakter kartı (1024², sabit tohum) + `ReferenceLatent` | — | 4 farklı sahnede yüz, saç, kıyafet tutarlı; yaşlı/hemşire/çocuk varyantları aynı aile stilinde |
 | Hareket | Wan 2.2 TI2V-5B (zaten kurulu), 832×480, 49 kare, 10 adım | Apache-2.0 | ~70 sn / 2 sn klip; karakter korunuyor, yüz ifadesi kayabiliyor. 1280×704 × 73 kare 10 dakikayı aştı (vazgeçildi) |
+| Hareket (10-18'den) | Wan 2.2 I2V-A14B GGUF Q3_K_M + lightx2v 4 adım LoRA, 832×480, 33 kare 16 fps, iki istek (yüksek/düşük gürültü uzmanı ayrı) | Apache-2.0 | ~145 sn / 2 sn klip; ComfyUI tepesi 14,6 GB (Q4_K_M 17,4 GB) |
 | Anlatım | Chatterbox (MIT), referans ses Kokoro `bm_george`'tan üretilir | MIT + Apache-2.0 | perde sapması Kokoro 3,96 → Chatterbox 5,33 yarım ton, Whisper ikisinde de hatasız; ~0,85× gerçek zaman. audiobox-aesthetics ayırt etmedi (CE 6,3-6,6 hepsi) |
 | Müzik | Kevin MacLeod (CC BY 4.0), bölüm başına mood | CC BY | — |
 | Kurgu | PIL afin kamera + ffmpeg, 1920×1080 24 fps | — | — |
 
 Elenenler: Cloudflare'de görsel (klein-4b ~110 neuron/görsel → 96 sahne 10 bin neuron'luk günlük kotayı aşar, ve
 Shorts hattıyla ortak), FLUX.2 klein 9B / Kontext dev / Qwen-Image 2.1 (ticari olmayan lisans), Higgs v3, Fish S2,
-Voxtral, F5 ağırlıkları, MusicGen, MMAudio (ticari olmayan). Wan 14B (24 GB RAM'de kırılgan), LTX-2.x (gelir şartlı
-lisans, 20 GB+ indirme) şimdilik denenmedi.
+Voxtral, F5 ağırlıkları, MusicGen, MMAudio (ticari olmayan). LTX-2.x (gelir şartlı lisans, 22B, 24 GB RAM'e sığmıyor)
+denenmedi. Wan 14B 10-18'de denendi, bkz. "Wan 14B'ye geçiş".
 
 ## Kararlar
 
@@ -221,3 +222,22 @@ Island (1907; ABD izleyicisinin ailesine bağlanan kapanış sorusu).
 
 Açık kalan (pilot): 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
 video yükleme yolu (K-30) denenmedi.
+
+## Wan 14B'ye geçiş (10-18) [Ö]
+
+Scryne Lowell ve Ellis'in durağanlığını sordu ("son iki film kötü mü"); öneri: daha iyi hareket modeli. Araştırma
+(QuantStack GGUF, lightx2v LoRA, ComfyUI resmi şablonu `video_wan2_2_14B_i2v`) sonrası Wan 2.2 I2V-A14B.
+
+| | 5B (eski) | 14B Q3 |
+| --- | --- | --- |
+| Lowell temiz klip | 21'de 6 | 15 yeni denemede 14 (18 kamera) |
+| Ellis temiz klip | 5'te 2 | 13 yeni denemede 12 (25 kamera, iki istemde de) |
+| Hata türü | istemden bağımsız: ağaç, ayı, hayalet, yüz bozulması | istemi harfiyen uygular: "lamba ışığı" → kadraja lamba iner, "ağaçlar geçiyor" → karanlıktan ağaç çıkar; arkası dönük kalabalık kameraya döner |
+
+- **İstem kuralı:** yalnız görselde olanın küçük hareketi yazılır (fincan yoksa "çaydan buhar" yazılmaz). Düzeltilen
+  istemlerle aynı sahneler temiz çıktı. cfg 1'de negatif istem etkisiz.
+- **Bellek:** tek istekte iki uzman ComfyUI'yi 20 GB'a çıkardı → uzmanlar ayrı isteklerde, ara latent diskte. Q4_K_M'de
+  tepe 17,4 GB, sistemin arka plan iş kesicisi tetiklendi; Q3_K_M 14,6 GB (en az ~4 GB boş). Q3 tavuk sahnesinde elde
+  ikinci çubuk çıkardı, Q4 temizdi. GGUF umt5 işlemcide açılıp RAM'i fp8'den çok şişirdi, fp8 kaldı. Q3'le de bir kez
+  kesildi (oturum boştayken); `CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1` önerildi.
+- 14B 16 fps üretir; klip dizinine `fps` yazılır, kurgu onu okur (24 sanılsa 1,5 kat hızlı oynardı).

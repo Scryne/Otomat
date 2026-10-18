@@ -298,11 +298,10 @@
             },
             {
               "tarif": "The young man from the reference image climbing a wide staircase with other immigrants, holding the rail, a little out of breath.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen"
-              ],
-              "i2v": "He climbs one step up the stairs with the crowd behind him, coats sway slightly. Flat 2D cartoon animation, static camera."
+              ]
             }
           ]
         },
