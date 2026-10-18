@@ -168,8 +168,7 @@
             },
             {
               "tarif": "A blank wooden price board at a shipping office being wiped clean with a cloth by a hand, chalk dust in the lamp light.",
-              "hareket": "i2v",
-              "i2v": "The cloth wipes across the blank board, chalk dust drifts in the lamp light. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             }
           ]
         },
@@ -178,8 +177,7 @@
           "sahneler": [
             {
               "tarif": "An old overloaded steamship riding low in a grey sea, its deck crammed with crates, horses and people with round cream heads, smoke pouring from the funnel.",
-              "hareket": "i2v",
-              "i2v": "The overloaded ship rolls slowly on the grey swell, smoke streams from the funnel, waves splash. Flat 2D cartoon animation, static camera.",
+              "hareket": "iceri",
               "kisi": true
             },
             {
@@ -213,8 +211,7 @@
           "sahneler": [
             {
               "tarif": "A long paper list unrolling down a table and onto the floor, covered in tiny unreadable scribbles, a lamp beside it.",
-              "hareket": "i2v",
-              "i2v": "The long paper list slowly unrolls further across the floor, lamp light glows. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             },
             {
               "tarif": "The young man from the reference image, now in a red-and-black checked wool coat and a fur hat, bent almost double under a huge backpack, on a muddy beach.",
@@ -243,8 +240,7 @@
             },
             {
               "tarif": "Abandoned crates and flour sacks half swallowed by the rising tide on a dark beach, foam swirling around them.",
-              "hareket": "i2v",
-              "i2v": "The tide rises around the crates, foam swirls, a sack slowly floats away. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             }
           ]
         },
@@ -289,11 +285,10 @@
             },
             {
               "tarif": "The man from the reference image leaning in a saloon doorway at night, counting a thick roll of money, lamp light from behind.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "soapy"
-              ],
-              "i2v": "He slowly counts the money and tucks it into his coat, lamp light flickers behind him. Flat 2D cartoon animation, static camera."
+              ]
             }
           ]
         },
@@ -342,11 +337,10 @@
           "sahneler": [
             {
               "tarif": "The young man from the reference image carrying a single heavy sack on his back up a snowy trail, his pile of other sacks waiting behind him.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen_iz"
-              ],
-              "i2v": "He trudges slowly up the snowy trail with the sack, snow falls, his breath steams. Flat 2D cartoon animation, static camera."
+              ]
             },
             {
               "tarif": "The young man from the reference image walking back down the same trail with an empty back, past a long row of identical sacks lined up in the snow.",
@@ -448,8 +442,7 @@
             },
             {
               "tarif": "A wooden tramway pulling a loaded sled up a steep snowy slope on a long rope, a big wheel at the bottom turned by a horse.",
-              "hareket": "i2v",
-              "i2v": "The rope pulls the sled slowly up the slope, the wheel turns, snow falls. Flat 2D cartoon animation, static camera."
+              "hareket": "yukari"
             }
           ]
         },
@@ -458,8 +451,7 @@
           "sahneler": [
             {
               "tarif": "A giant wall of white snow pouring down a dark mountainside toward a tiny trail, silent and enormous.",
-              "hareket": "i2v",
-              "i2v": "The avalanche of snow pours down the mountainside, clouds of powder billow. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             },
             {
               "tarif": "A single abandoned backpack half buried in deep fresh snow on a silent mountain slope, pale light.",
@@ -544,8 +536,7 @@
           "sahneler": [
             {
               "tarif": "An empty small wooden boat spinning alone through white rapids, no one on board.",
-              "hareket": "i2v",
-              "i2v": "The empty boat spins and bobs through the rapids, water splashes. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             },
             {
               "tarif": "The young man from the reference image walking along a rocky riverbank carrying a sack, looking anxiously downstream.",
@@ -624,8 +615,7 @@
           "sahneler": [
             {
               "tarif": "A glittering saloon with mirrors and chandeliers, miners with round cream heads crowded around a dice table piled with gold, champagne bottles.",
-              "hareket": "i2v",
-              "i2v": "Dice tumble across the table, people lean in, chandelier light sparkles. Flat 2D cartoon animation, static camera.",
+              "hareket": "sag",
               "kisi": true
             },
             {
@@ -740,11 +730,10 @@
           "sahneler": [
             {
               "tarif": "The young man from the reference image hammering a wooden stake into the ground on a lonely hillside with a mallet.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen_dawson"
-              ],
-              "i2v": "He swings the mallet down onto the stake, the stake sinks, grass sways. Flat 2D cartoon animation, static camera."
+              ]
             },
             {
               "tarif": "A tiny figure running down a long trail through hills toward a distant town, long shadows, evening.",
@@ -758,8 +747,7 @@
           "sahneler": [
             {
               "tarif": "A narrow square mine shaft in frozen ground with a wood fire burning at its bottom, smoke rising out, night.",
-              "hareket": "i2v",
-              "i2v": "The fire burns at the bottom of the shaft, smoke curls upward, sparks rise. Flat 2D cartoon animation, static camera."
+              "hareket": "yukari"
             },
             {
               "tarif": "The young man from the reference image at the bottom of a deep narrow shaft digging into smoking thawed earth with a pick, lit by a candle.",
@@ -854,8 +842,7 @@
             },
             {
               "tarif": "An empty muddy street of a boom town with boarded-up buildings and a loose door swinging, dusk.",
-              "hareket": "i2v",
-              "i2v": "A loose door swings in the wind, scraps of paper blow along the empty street. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             }
           ]
         },
@@ -898,11 +885,10 @@
           "sahneler": [
             {
               "tarif": "The young man from the reference image in his checked wool coat sitting by a small campfire on a mountain ridge at night, looking back at the long trail behind him.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen_iz"
-              ],
-              "i2v": "The campfire flickers, sparks rise into the night, snow falls gently. Flat 2D cartoon animation, static camera."
+              ]
             },
             {
               "tarif": "The young man from the reference image in his office clothes standing on a wooden pier of a small 1897 harbor town at sunrise, suitcase in hand, seen from directly behind so only the back of his head, his brown hair and his waistcoat are visible as he looks north across the water, ship masts and low wooden buildings, no tall buildings.",

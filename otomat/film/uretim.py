@@ -168,8 +168,10 @@ def aciklama(film: senaryo.Film, bolum_bas: list[float], muzik: list[str]) -> st
 def kapak(film: senaryo.Film, d: Path, kartlar: dict[str, Path]) -> Path:
     zemin = d / "kapak_zemin.png"
     if not zemin.exists():
+        # sahnelerle aynı istem kuralı (kart tarifi dahil): ayrı istemle Klondike kapağında gözlük düştü, burun çıktı
+        sahne = senaryo.Sahne(film.kapak_sahne, "iceri", film.kapak_kim, kisi=True)
         comfy.gorsel(
-            f"{film.stil}. {film.insan}. {senaryo.YUZSUZ}. {film.kapak_sahne}",
+            senaryo.sahne_istemi(film, sahne),
             zemin,
             *GORSEL,
             tohum=77,
