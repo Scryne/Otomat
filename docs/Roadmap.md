@@ -637,6 +637,13 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     kart (10-21) 10-26'da ölçülür; **Faz 16 kararı ~10-26.** Kıyas tabanı canlıda: Bartman (sahneli) 3 günlük
     pencerede 200 görüntüleme, %31,5 Kalan, %50,5 izlenme.
 
+- **K-33 Shorts tek kanala indi (2026-10-18, Scryne: "shorts kanallarını ya kapatalım ya da 1 tanesiyle
+  ilerleyelim"):** son 28 gün Earth 662 görüntüleme / 3 abone (son 8 video 5-388, medyan ~55), Orbit 158 / 0 (son 8
+  videonun beşi 0-3). **Orbit (Lanternbug Tales) durdu:** günlük matristen ve yayın kontrolünden çıktı, profil ve token
+  duruyor, Buffer'da planlı son videolar yayına çıkar, kanal silinmedi. **Earth tek Shorts kanalı:** kart deneyi 10-26
+  kararına kadar sürer; oran tutmazsa Earth de durur ve Shorts emeği One Ticket Back'te film kesitlerine (aynı kanalda
+  uzun videoya abone çeken dikey fragmanlar) gider.
+
 ### Faz 17: Uzun animasyonlu hikâye (2026-10-17)
 - **Neden:** Scryne: "shorts yerine bu tarzda [Day One Films] bir kanal büyütsek… normal videolar… çok profesyonel olmalı;
   tarihi figürler, yaşanmış ilginç olaylar, bir karakterin macerası." Araştırma, kararlar (K-26…K-30) ve pilot ölçümleri:

@@ -33,9 +33,10 @@ jobs:
       fail-fast: false
       matrix:
         # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
+        # uzay (Lanternbug Tales) 2026-10-18'de durduruldu (K-33: 28 günde 158 izlenme, 0 abone); geri açmak için:
+        #   - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
         include:
           - { kanal: earth, sir: "", etiket: teslim }
-          - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
     concurrency:
       # dal denemesi main'in kuyruğunu geciktirmesin, bekleyen main koşusunu da iptal ettirmesin
       group: gunluk-${{ matrix.kanal }}-${{ github.ref_name }}

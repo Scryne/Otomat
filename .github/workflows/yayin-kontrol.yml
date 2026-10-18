@@ -13,10 +13,9 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
-      matrix:  # iki kanalın token'ı da (eskiden yalnız Earth'ünki denetleniyordu)
+      matrix:  # yayındaki her kanalın token'ı (uzay 2026-10-18'de durdu, K-33; geri açılırsa buraya da eklenir)
         include:
           - { kanal: earth, sir: "" }
-          - { kanal: uzay, sir: "_UZAY" }
     env:
       OTOMAT_KANAL: ${{ matrix.kanal }}
     # sırlar yalnız onları kullanan adımda (gunluk.yml gibi): checkout, setup-uv ve uv sync görmesin

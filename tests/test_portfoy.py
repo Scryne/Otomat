@@ -30,7 +30,7 @@ def _jsonl(k, satirlar):
 
 
 def test_matris_kanallari_okunur():
-    assert [k.id for k in portfoy.aktif_kanallar()] == ["earth", "uzay"]
+    assert [k.id for k in portfoy.aktif_kanallar()] == ["earth"]  # uzay 2026-10-18'de durdu (K-33)
 
 
 def test_portfoy_kanallari_yan_yana_ve_kotalar(kanallar):
