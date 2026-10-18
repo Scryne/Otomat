@@ -192,5 +192,32 @@ Bulunan ve düzeltilen:
 en riskli, manzara/su/kalabalık/ateş en güvenli. Klip incelemesi elle yapılıyor (her klipten 5 kare); daha güvenilir bir
 hareket modeli (LTX-2, Wan 14B) ayrı bir deneme konusu.
 
+## Film 3 ve 4: Lowell, Ellis Island (10-18) [Ö]
+
+Scryne: "1 aylık youtube'a atacağımız şeyleri üret… 2 video daha yap, shorts videolarını da yap". Konular araştırma
+ajanının adaylarından: Lowell fabrika kızı (1836; kadın ana karakter, en düzenli gündelik hayat ayrıntısı) ve Ellis
+Island (1907; ABD izleyicisinin ailesine bağlanan kapanış sorusu).
+
+| | Lowell | Ellis Island |
+| --- | --- | --- |
+| Kaynak | Lowell mill girls, revid 1360936022 (4.268 kelime) | Ellis Island, revid 1379350577 |
+| Senaryo | 1.301 kelime, 77 sahne | 1.216 kelime, 66 sahne |
+| Süre / ses | 8:27, -14,4 LUFS, tepe -1,4 | 8:13, -14,4 LUFS, tepe -1,1 |
+| Uçtan uca Whisper | %0,6, sayılar tam | %0,6, sayılar tam |
+| Görsel düzeltme | 7 / 77 (modern lamba, kamyon, ayna, yazı) | 6 / 66 (modern lamba, yazı, yüzsüz kişi) |
+| Wan klibi | 21'de 6 temiz | 5'te 2 temiz (kalan 12 üretilmedi) |
+
+- Makale kısa kalınca (Lowell) hedef 1.500 kelimeye çıkılmadı; eklenen her cümle kaynakta var (temettü %14, Martineau,
+  "Abby's Year", Mary Paul, Schouler'in seçimi, "ought to own them"). Makale içi çelişki (ortalama çalışma 3 mü 4 mü yıl;
+  ücret 3-4 mü 3-5 mi) kesin sayısız yazıldı. Ellis'te okuma yazma testi 1907'ye ait olmadığı (1917) için ve tebeşir
+  harflerinin anlamları düz metinde olmadığı için kullanılmadı; "79.000 geri çevrildi" makalede hastalık belgesi alan
+  700.000'in içindendir, öyle yazıldı.
+- **Wan bu filmlerde çok kötü:** karanlık iç mekânda kadraja ağaç, ayı, hayalet, araba, kağıt giriyor; Lowell'de 21'in
+  15'i bozuk. Klip yerine kamera hareketi bu biçimde yeterli; Wan yalnız manzara/kalabalık/ateş sahnelerinde denenmeli.
+- Anlatım kapısında üç yanlış alarm daha (12.5, "million", "between eighteen and twenty-five" → 43) gerçek Whisper
+  çıktılarıyla test edildi; dört filmin bütün parçaları temiz.
+- Bellek: Ellis klipleri sırasında Claude Code arka plan işini yine kesti (boş RAM 5,4 GB; ComfyUI 7,6 GB, tarayıcı
+  2,6 GB). Üretim tek film, tek iş olarak sürdü (Scryne: "teker teker sırayla").
+
 Açık kalan (pilot): 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
 video yükleme yolu (K-30) denenmedi.

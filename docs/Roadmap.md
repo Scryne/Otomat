@@ -659,6 +659,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Film 2 (Klondike) ✅ üretildi ve doğrulandı (10-18):** K-31 biçimi ("What if you…", İngilizce), 10:38, -14,4 LUFS,
   bitmiş videonun sesi %1,7 kelime farkı ve bütün sayılar tutuyor; 103 sahne ve 19 klip incelendi (33 klibin 14'ü
   bozuktu). Karakter tarifi istemde, sayı kapısı yanlış alarmları düzeltildi; 334 → 338 test.
+- **Bir aylık stok (10-18):** Lowell (8:27) ve Ellis Island (8:13) üretildi ve doğrulandı; dört filmin 3'er kesiti
+  (`kesit.py`). Takvim (K-34): Klondike 10-24, Violet Jessop 10-31, Lowell 11-07, Ellis 11-14 (cumartesi 19:00 UTC),
+  kesitler aradaki pazartesi/çarşamba/cuma. Yükleme yolu (`yukle.py`) yazıldı ve One Ticket Back token'ı alındı.
 - **Kalan (Bitti kriteri):** K-30 yükleme denemesi (ayrı gün, hesap temkini); pilotun yayını; ikinci ve üçüncü film
   farklı yapıda. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 
