@@ -91,6 +91,14 @@ def test_fark_ve_soylenis():
          "30 of the 1,066 people aboard were killed."),
         ("On the twenty-first of November 1916, and Sixth Officer Moody.",
          "On the 21st of November 1916, and 6th Officer Moody."),
+        # Klondike: üçü de doğru okunmuştu, ayrıştırıcı yanlış alarm verdi
+        ("This spring, eggs sell for three dollars each. Apples for a dollar.",
+         "This spring, eggs sell for $3 each, apples for $1."),
+        ("An unproven one costs around five thousand dollars. A proven one, fifty thousand.",
+         "An unproven one costs around $5,000.  A proven one, $50,000."),
+        ("Of the thirty to forty thousand people, only fifteen to twenty thousand went.",
+         "Of the 30,000 to 40,000 people, only 15,000 to 20,000 went."),
+        ("And seven thousand, one hundred and twenty-four boats set off.", "And 7,124 boats set off."),
     ],
 )  # fmt: skip
 def test_sayi_sozu_rakamla_esit(metin, duyulan):

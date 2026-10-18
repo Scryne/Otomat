@@ -106,9 +106,23 @@ def kelimeler(s: str) -> list[str]:
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
     s = re.sub(r"\b(\d+)(st|nd|rd|th)\b", r"\1", s)
+    # Whisper "a dollar" → "$1", "three dollars" → "$3" yazıyor ($ düşer): kelime karşılaştırmadan çıkar (Klondike)
+    s = re.sub(r"\ban? dollar\b", "1", s)
+    s = re.sub(r"\bdollars?\b", "", s)
     cikti: list[str] = []
     toplam = simdiki = None
-    for k in re.findall(r"[a-z0-9']+", s) + [""]:
+    onceki = ""
+    for k in re.findall(r"[a-z0-9']+|[.,;:!?]", s) + [""]:
+        if k and k in ".,;:!?":
+            # noktalama sayıyı keser ("a proven one, fifty thousand" 51000 oluyordu);
+            # "seven thousand, one hundred" sürer
+            if not (k == "," and onceki == "thousand" and simdiki is not None):
+                if simdiki is not None:
+                    cikti.append(str(toplam + simdiki))
+                    toplam = simdiki = None
+            onceki = k
+            continue
+        onceki = k
         n = _soz(k)
         if n is not None or k in ("hundred", "thousand"):
             if simdiki is None:  # "a hundred" = 100
@@ -128,6 +142,12 @@ def kelimeler(s: str) -> list[str]:
             toplam = simdiki = None
         if k:
             cikti.append(k)
+    for i in range(len(cikti) - 2):  # "thirty to forty thousand" = 30000 to 40000 (Whisper aralığı açık yazıyor)
+        a, ara, b = cikti[i : i + 3]
+        if a.isdigit() and ara in ("to", "or") and b.isdigit():
+            n, m = int(a), int(b)
+            if n < 1000 <= m and m % 1000 == 0 and n * 1000 <= m:
+                cikti[i] = str(n * 1000)
     return cikti
 
 
