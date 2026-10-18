@@ -14,7 +14,29 @@
     "american history",
     "history documentary"
   ],
-  "kesitler": [],
+  "kesitler": [
+    {
+      "baslik": "The Chalk Mark That Could Send You Back",
+      "bloklar": [
+        17,
+        21
+      ]
+    },
+    {
+      "baslik": "The Questions You Had to Answer at Ellis Island",
+      "bloklar": [
+        22,
+        25
+      ]
+    },
+    {
+      "baslik": "No, Ellis Island Didn't Change Your Name",
+      "bloklar": [
+        35,
+        36
+      ]
+    }
+  ],
   "kapak_yazi": "CHALK MARK.",
   "kapak_sahne": "The young man from the reference image in a crowded inspection hall, a doctor's hand drawing a large white chalk mark on the shoulder of his dark coat, he looks straight at the viewer, frightened, rows of immigrants and tall arched windows behind him, warm lamp light on his face and cold daylight from the windows.",
   "kapak_kim": [

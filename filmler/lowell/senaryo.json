@@ -14,7 +14,29 @@
     "labor history",
     "history documentary"
   ],
-  "kesitler": [],
+  "kesitler": [
+    {
+      "baslik": "73 Hours a Week in an 1830s Mill",
+      "bloklar": [
+        11,
+        14
+      ]
+    },
+    {
+      "baslik": "Curfew at Ten, Church on Sunday",
+      "bloklar": [
+        17,
+        20
+      ]
+    },
+    {
+      "baslik": "The Mill Girls Walked Out in 1836. They Won.",
+      "bloklar": [
+        36,
+        39
+      ]
+    }
+  ],
   "kapak_yazi": "73 HOURS.",
   "kapak_sahne": "The young woman from the reference image standing at a huge roaring loom in a dark brick mill at dawn, looking straight at the viewer, exhausted but defiant, rows of machines and tiny workers stretching away behind her, warm lamp light on her face and cold blue light from the tall windows.",
   "kapak_kim": [
