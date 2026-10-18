@@ -142,6 +142,7 @@ def kurgula(film: senaryo.Film, d: Path) -> dict:
         "bolum_bas": bolum_bas,
         "muzik": plan,
         "en_kotu_parca": max((k["fark"] for k in kayit), default=0),
+        "blok_zaman": [[z.bas, z.son] for z in zamanlar],  # videoda anlatım bloklarının yeri (kesitler)
     }
     (d / "kurgu.json").write_text(json.dumps(bilgi, ensure_ascii=False, indent=1), encoding="utf-8")
     (d / "aciklama.txt").write_text(aciklama(film, bolum_bas, plan), encoding="utf-8")
@@ -214,6 +215,12 @@ def main() -> None:
     if adim in ("hepsi", "ses", "kurgu"):
         comfy.bosalt()
         kurgula(film, d)
+    if adim == "zaman":  # blok_zaman'ı olmayan eski kurgu.json'a: önbellekli ses, render yok
+        bilgi = json.loads((d / "kurgu.json").read_text(encoding="utf-8"))
+        _, zamanlar, _ = anlatim.seslendir([(bi, b.anlatim) for bi, b in film.bloklar()], film.ses, d / "ses")
+        bilgi["blok_zaman"] = [[z.bas, z.son] for z in zamanlar]
+        (d / "kurgu.json").write_text(json.dumps(bilgi, ensure_ascii=False, indent=1), encoding="utf-8")
+        _log("blok_zaman", len(zamanlar))
 
 
 if __name__ == "__main__":

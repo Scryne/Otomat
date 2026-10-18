@@ -4,7 +4,9 @@ Shorts kanallarının profil/Buffer hattından ayrıdır: aynı OAuth istemcisi 
 (`sirlar/token_film.json`). Token başka kanala aitse hiçbir şey yüklenmez.
 
     uv run python -m otomat.film.yukle yetki                                  # bir kez: izin ekranında One Ticket Back
-    uv run python -m otomat.film.yukle filmler/<slug>/senaryo.json [unlisted|private|public]
+    uv run python -m otomat.film.yukle filmler/<slug>/senaryo.json [plan|unlisted|private|public]  # varsayılan plan
+    uv run python -m otomat.film.yukle planla filmler/<slug>/senaryo.json     # takvim dışı yüklenmişi slota koy
+    uv run python -m otomat.film.yukle kesit filmler/<slug>/senaryo.json [sıra]  # Shorts kesitleri (film planlı olmalı)
     uv run python -m otomat.film.yukle durum filmler/<slug>/senaryo.json      # YouTube'daki gizlilik/işlenme durumu
 
 Denetlenmemiş projede yüklenen video eskiden private'a kilitleniyordu (10-05 gözlemi); belge 2026-10-15'te tersini
@@ -20,6 +22,11 @@ from otomat.film import senaryo, uretim
 from otomat.yayin import youtube
 
 KANAL_AD = "One Ticket Back"
+# K-34 takvim: haftada bir film, cumartesi 19:00 UTC (ABD doğu 15:00, TR 22:00); filmin kesitleri sonraki pazartesi,
+# çarşamba, cuma aynı saatte (Scryne: "sürekli arka arkaya aynı gün video atmamamız lazım, haftada 1 video")
+FILM_GUNU, SAAT_UTC = 5, 19
+KESIT_GUNLERI = (2, 4, 6)
+EN_ERKEN = dt.timedelta(hours=24)  # yükleme + işlenme + son bakış payı
 TOKEN = youtube.SIRLAR / "token_film.json"
 KATEGORI = "27"  # Education
 GORUNURLUKLER = ("unlisted", "private", "public")
@@ -97,16 +104,50 @@ def dosyalar(film: senaryo.Film) -> dict[str, Path]:
     return {**yollar, "kayit": d / "yukleme.json"}
 
 
-def yukle(film: senaryo.Film, gorunurluk: str = "unlisted", yt=None) -> dict:
+def _zaman_yazi(t: dt.datetime) -> str:
+    return t.astimezone(dt.UTC).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+
+def film_takvimi(kok: Path | None = None) -> list[dt.datetime]:
+    """Planlanmış ya da yayınlanmış filmlerin yayın anları (calisma/film/*/yukleme.json)."""
+    kok = kok or uretim.KOK / "calisma" / "film"
+    anlar = []
+    for yol in kok.glob("*/yukleme.json"):
+        if yayin := json.loads(yol.read_text(encoding="utf-8")).get("yayin"):
+            anlar.append(dt.datetime.fromisoformat(yayin.replace("Z", "+00:00")))
+    return sorted(anlar)
+
+
+def sonraki_film_slotu(simdi: dt.datetime, dolu: list[dt.datetime]) -> dt.datetime:
+    """İlk uygun cumartesi 19:00 UTC: en az 24 saat sonra ve son filmden en az 7 gün sonra (haftada bir)."""
+    t = simdi.astimezone(dt.UTC).replace(hour=SAAT_UTC, minute=0, second=0, microsecond=0)
+    t += dt.timedelta(days=(FILM_GUNU - t.weekday()) % 7)
+    while t < simdi + EN_ERKEN or any(abs(t - x) < dt.timedelta(days=7) for x in dolu):
+        t += dt.timedelta(days=7)
+    return t
+
+
+def kesit_slotu(film_yayin: dt.datetime, sira: int) -> dt.datetime:
+    if sira >= len(KESIT_GUNLERI):
+        raise YuklemeHatasi(f"film başına en çok {len(KESIT_GUNLERI)} kesit (takvim)")
+    return film_yayin + dt.timedelta(days=KESIT_GUNLERI[sira])
+
+
+def yukle(film: senaryo.Film, gorunurluk: str = "plan", yt=None, simdi: dt.datetime | None = None) -> dict:
+    """gorunurluk "plan": private yüklenir, takvimdeki sıradaki cumartesi kendiliğinden public olur."""
     from googleapiclient.http import MediaFileUpload
 
     y = dosyalar(film)
     if y["kayit"].exists():
         raise YuklemeHatasi(f"{film.slug} zaten yüklendi: {y['kayit'].read_text(encoding='utf-8')}")
+    yayin = sonraki_film_slotu(simdi or dt.datetime.now(dt.UTC), film_takvimi()) if gorunurluk == "plan" else None
+    g = govde(film, y["aciklama"].read_text(encoding="utf-8"), "private" if yayin else gorunurluk)
+    if yayin:
+        g["status"]["publishAt"] = _zaman_yazi(yayin)
     yt = yt or servis()
     istek = yt.videos().insert(
         part="snippet,status",
-        body=govde(film, y["aciklama"].read_text(encoding="utf-8"), gorunurluk),
+        body=g,
         media_body=MediaFileUpload(str(y["video"]), mimetype="video/mp4", resumable=True, chunksize=16 * 1024 * 1024),
     )
     yanit = None
@@ -118,6 +159,8 @@ def yukle(film: senaryo.Film, gorunurluk: str = "unlisted", yt=None) -> dict:
         "donen": yanit.get("status", {}).get("privacyStatus"),
         "zaman": dt.datetime.now(dt.UTC).isoformat(timespec="seconds"),
     }
+    if yayin:
+        kayit["yayin"] = _zaman_yazi(yayin)
     y["kayit"].write_text(json.dumps(kayit, indent=1), encoding="utf-8")  # kapak düşse de çift yükleme olmasın
     try:
         yt.thumbnails().set(videoId=yanit["id"], media_body=MediaFileUpload(str(y["kapak"]), mimetype="image/jpeg")
@@ -126,6 +169,61 @@ def yukle(film: senaryo.Film, gorunurluk: str = "unlisted", yt=None) -> dict:
     except Exception as e:  # telefonla doğrulanmamış kanal: 403; video yine yüklendi
         kayit["kapak"] = youtube.kisa_hata(e)
     y["kayit"].write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+    return kayit
+
+
+def planla(film: senaryo.Film, yt=None, simdi: dt.datetime | None = None) -> dict:
+    """Takvim dışı yüklenmiş filmi (ör. unlisted deneme) sıradaki film slotuna planlar."""
+    y = dosyalar(film)
+    kayit = json.loads(y["kayit"].read_text(encoding="utf-8"))
+    if kayit.get("yayin"):
+        raise YuklemeHatasi(f"{film.slug} zaten planlı: {kayit['yayin']}")
+    yayin = sonraki_film_slotu(simdi or dt.datetime.now(dt.UTC), film_takvimi())
+    yt = yt or servis()
+    yt.videos().update(part="status", body={"id": kayit["video_id"], "status": {
+        "privacyStatus": "private", "publishAt": _zaman_yazi(yayin), "selfDeclaredMadeForKids": False,
+        "containsSyntheticMedia": False}}).execute()  # fmt: skip
+    kayit["yayin"] = _zaman_yazi(yayin)
+    y["kayit"].write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+    return kayit
+
+
+def kesit_govde(film: senaryo.Film, k: senaryo.Kesit, film_id: str, aciklama: str) -> dict:
+    """Kesit açıklaması: filmin bağlantısı, kaynaklar, müzik atfı (bölüm zaman damgaları kesitte yanlış olur)."""
+    kaynakca = aciklama[aciklama.index("Sources") :] if "Sources" in aciklama else ""
+    g = govde(film, f"{k.baslik}\n\nFull film: https://www.youtube.com/watch?v={film_id}\n\n{kaynakca}", "private")
+    g["snippet"]["title"] = youtube.temiz(k.baslik)[:100]
+    return g
+
+
+def yukle_kesit(film: senaryo.Film, sira: int, yt=None) -> dict:
+    """Kesit filmden sonra yayına girer (açıklamasındaki bağlantı ancak o zaman açılır): film planlı olmalı."""
+    from googleapiclient.http import MediaFileUpload
+
+    y = dosyalar(film)
+    if not y["kayit"].exists():
+        raise YuklemeHatasi(f"{film.slug}: önce film yüklenmeli (kesit filme bağlanır)")
+    fk = json.loads(y["kayit"].read_text(encoding="utf-8"))
+    if not fk.get("yayin"):
+        raise YuklemeHatasi(f"{film.slug}: film takvimde değil (planla)")
+    video = y["video"].parent / "kesit" / f"{sira:02d}.mp4"
+    kayit_yol = y["video"].parent / "kesit" / f"{sira:02d}.json"
+    if not video.exists():
+        raise YuklemeHatasi(f"kesit üretilmemiş: {video}")
+    if kayit_yol.exists():
+        raise YuklemeHatasi(f"kesit {sira} zaten yüklendi: {kayit_yol.read_text(encoding='utf-8')}")
+    yayin = kesit_slotu(dt.datetime.fromisoformat(fk["yayin"].replace("Z", "+00:00")), sira)
+    g = kesit_govde(film, film.kesitler[sira], fk["video_id"], y["aciklama"].read_text(encoding="utf-8"))
+    g["status"]["publishAt"] = _zaman_yazi(yayin)
+    yt = yt or servis()
+    ortam = MediaFileUpload(str(video), mimetype="video/mp4", resumable=True)
+    istek = yt.videos().insert(part="snippet,status", body=g, media_body=ortam)
+    yanit = None
+    while yanit is None:
+        _, yanit = istek.next_chunk(num_retries=youtube.DENEME)
+    kayit = {"video_id": yanit["id"], "yayin": _zaman_yazi(yayin), "film": fk["video_id"],
+             "donen": yanit.get("status", {}).get("privacyStatus")}  # fmt: skip
+    kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
     return kayit
 
 
@@ -144,8 +242,14 @@ def main() -> None:
         print("token:", yetki())
     elif a and a[0] == "durum":
         print(json.dumps(durum(senaryo.oku(Path(a[1]))), indent=1, ensure_ascii=False))
+    elif a and a[0] == "planla":
+        print(json.dumps(planla(senaryo.oku(Path(a[1]))), indent=1))
+    elif a and a[0] == "kesit":
+        film = senaryo.oku(Path(a[1]))
+        for i in range(len(film.kesitler)) if len(a) == 2 else [int(a[2])]:
+            print(json.dumps(yukle_kesit(film, i), indent=1))
     elif a:
-        print(json.dumps(yukle(senaryo.oku(Path(a[0])), a[1] if len(a) > 1 else "unlisted"), indent=1))
+        print(json.dumps(yukle(senaryo.oku(Path(a[0])), a[1] if len(a) > 1 else "plan"), indent=1))
     else:
         raise SystemExit(__doc__)
 

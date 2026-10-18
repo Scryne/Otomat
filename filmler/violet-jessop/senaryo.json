@@ -14,6 +14,29 @@
     "titanic survivor",
     "history documentary"
   ],
+  "kesitler": [
+    {
+      "baslik": "She Jumped From a Lifeboat on Purpose",
+      "bloklar": [
+        0,
+        3
+      ]
+    },
+    {
+      "baslik": "An Officer Handed Her a Baby on the Titanic",
+      "bloklar": [
+        22,
+        25
+      ]
+    },
+    {
+      "baslik": "The Phone Call That Couldn't Have Happened",
+      "bloklar": [
+        40,
+        45
+      ]
+    }
+  ],
   "kapak_yazi": "UNSINKABLE.",
   "kapak_sahne": "Close-up of the woman from the reference image in her stewardess uniform, soaking wet, staring straight ahead with a calm, unbreakable expression, a huge ship sinking far behind her in the dark, icy blue light on one side of her face and warm amber light on the other.",
   "kapak_kim": [

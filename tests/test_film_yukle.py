@@ -1,5 +1,6 @@
 """Film yükleyicisi: ağsız, sahte YouTube istemcisiyle."""
 
+import datetime as dt
 import json
 from pathlib import Path
 
@@ -94,3 +95,37 @@ def test_eksik_dosya_ve_bilinmeyen_gorunurluk(film):
         yukle.yukle(film, yt=_SahteYT())
     with pytest.raises(yukle.YuklemeHatasi, match="görünürlük"):
         yukle.govde(film, "x", "herkese")
+
+
+def _utc(*a):
+    return dt.datetime(*a, tzinfo=dt.UTC)
+
+
+def test_film_slotu_haftada_bir_cumartesi():
+    pazar = _utc(2026, 10, 18, 12)
+    assert yukle.sonraki_film_slotu(pazar, []) == _utc(2026, 10, 24, 19)  # sıradaki cumartesi 19:00 UTC
+    cuma_gece = _utc(2026, 10, 23, 20)  # 24 saatten az kala: bir sonraki hafta
+    assert yukle.sonraki_film_slotu(cuma_gece, []) == _utc(2026, 10, 31, 19)
+    dolu = [_utc(2026, 10, 24, 19)]
+    assert yukle.sonraki_film_slotu(pazar, dolu) == _utc(2026, 10, 31, 19)  # aynı hafta ikinci film yok
+    assert [yukle.kesit_slotu(dolu[0], i).strftime("%a") for i in range(3)] == ["Mon", "Wed", "Fri"]
+    with pytest.raises(yukle.YuklemeHatasi):
+        yukle.kesit_slotu(dolu[0], 3)
+
+
+def test_planli_yukleme_private_ve_publish_at(film, monkeypatch):
+    monkeypatch.setattr(yukle, "film_takvimi", lambda kok=None: [])
+    yt = _SahteYT()
+    kayit = yukle.yukle(film, yt=yt, simdi=_utc(2026, 10, 18, 12))
+    assert yt.govde["status"]["privacyStatus"] == "private"
+    assert yt.govde["status"]["publishAt"] == "2026-10-24T19:00:00.000Z" == kayit["yayin"]
+
+
+def test_kesit_filmden_once_yuklenmez_ve_filme_baglanir(film):
+    with pytest.raises(yukle.YuklemeHatasi, match="önce film"):
+        yukle.yukle_kesit(film, 0, yt=_SahteYT())
+    k = film.kesitler[0]
+    g = yukle.kesit_govde(film, k, "FILM1", "Hook\n\nChapters\n00:00 A\n\nSources\n- x\n\nMusic\nm")
+    aciklama = g["snippet"]["description"]
+    assert "watch?v=FILM1" in aciklama and "Chapters" not in aciklama and "Sources" in aciklama
+    assert g["snippet"]["title"] == k.baslik

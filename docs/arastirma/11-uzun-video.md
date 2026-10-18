@@ -117,6 +117,14 @@ lisans, 20 GB+ indirme) şimdilik denenmedi.
   kitlesi yok; uzun videoda izleyici bir vaade abone olur ("o çağda sen"). Ad Scryne'ın seçimi (dört boş ad arasından).
   Kimlik `docs/marka/oneticketback/`. Kanalı Scryne açar; ilk video Klondike (biçimi tanımlar), sonra pilot.
 
+- **K-34 Takvim ve kesitler (10-18, Scryne: "videoları planlı atmamız lazım… haftada 1 video… videolardan kesitleri
+  shorts olarak da yükleyebiliriz"):** K-28'in "haftada 2"si haftada 1'e iner. Film cumartesi 19:00 UTC (ABD doğu
+  15:00, TR 22:00) private + `publishAt` ile yüklenir; aynı hafta ikinci film konmaz (`yukle.sonraki_film_slotu`).
+  Her filmden 3 dikey kesit (`kesit.py`, senaryodaki `kesitler`: tek bölümün ardışık blokları, ≤ 59 sn), filmden sonraki
+  pazartesi/çarşamba/cuma aynı saatte, açıklamasında filmin bağlantısı; kesitler aynı kanalda (izleyiciyi uzun videoya
+  çeker). Yayın sırası: Klondike (biçimi tanımlar), sonra pilot. Inkwell'in adı YouTube "çok fazla deneme" sınırına
+  takıldı; Scryne'ın kararıyla "Earth in Numbers" kalıyor (kod iki adı da kabul ediyor).
+
 ## Pilot: Violet Jessop (10-17…10-18) [Ö]
 
 Senaryo `filmler/violet-jessop/senaryo.json` (Wikipedia revid 1376997573): 8 bölüm, 47 blok, 1.150 kelime, 96 sahne.

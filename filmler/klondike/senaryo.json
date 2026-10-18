@@ -15,6 +15,29 @@
     "dawson city",
     "history documentary"
   ],
+  "kesitler": [
+    {
+      "baslik": "You Just Caught Klondicitis",
+      "bloklar": [
+        0,
+        3
+      ]
+    },
+    {
+      "baslik": "1,500 Steps of Ice, Thirty Times",
+      "bloklar": [
+        19,
+        22
+      ]
+    },
+    {
+      "baslik": "A Single Egg Cost $3 in Dawson City",
+      "bloklar": [
+        32,
+        34
+      ]
+    }
+  ],
   "kapak_yazi": "ONE TON.",
   "kapak_sahne": "The young man from the reference image bent under an enormous towering backpack, climbing a steep staircase cut into blue ice, looking straight at the viewer exhausted, a long line of tiny climbers behind him on the white mountain, warm lantern light on his face and cold blue light on the snow.",
   "kapak_kim": [

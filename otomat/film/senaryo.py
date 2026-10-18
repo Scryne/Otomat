@@ -3,7 +3,7 @@ kusurlu senaryo GPU saatini yakmadan düşer."""
 
 import json
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 HAREKETLER = {"iceri", "disari", "sol", "sag", "yukari", "i2v"}
@@ -61,6 +61,7 @@ class Film:
     kaynaklar: tuple[dict, ...] = field(default_factory=tuple)
     ozet: str = ""  # açıklamanın ilk satırları (aramada görünen kısım); yoksa başlık
     etiketler: tuple[str, ...] = ()  # YouTube etiketleri (yükleme)
+    kesitler: tuple["Kesit", ...] = ()  # filmden dikey Shorts
 
     def bloklar(self) -> list[tuple[int, Blok]]:
         return [(i, b) for i, bo in enumerate(self.bolumler) for b in bo.bloklar]
@@ -70,6 +71,28 @@ class Film:
 
     def kelime(self) -> int:
         return sum(len(b.anlatim.split()) for _, b in self.bloklar())
+
+
+@dataclass(frozen=True)
+class Kesit:
+    baslik: str  # Shorts başlığı ve ekrandaki üst yazı
+    ilk: int  # film.bloklar() içindeki ilk ve son blok (dahil)
+    son: int
+
+
+def _kesitler(ham: list[dict], bloklar: list[tuple[int, Blok]]) -> tuple[Kesit, ...]:
+    """Kesit tek bölümün ardışık bloklarıdır: bölüm geçişi araya kart sokar, Shorts'ta boş ekran olur."""
+    sonuc = []
+    for i, k in enumerate(ham):
+        ilk, son = k["bloklar"]
+        if not (0 <= ilk <= son < len(bloklar)):
+            raise SenaryoHatasi(f"kesit {i}: blok aralığı {ilk}-{son} geçersiz ({len(bloklar)} blok)")
+        if bloklar[ilk][0] != bloklar[son][0]:
+            raise SenaryoHatasi(f"kesit {i}: bloklar {ilk}-{son} iki bölüme yayılıyor")
+        if not k.get("baslik", "").strip():
+            raise SenaryoHatasi(f"kesit {i}: başlık yok")
+        sonuc.append(Kesit(k["baslik"].strip(), ilk, son))
+    return tuple(sonuc)
 
 
 def _sahne(s: dict, karakterler: dict, yer: str) -> Sahne:
@@ -119,13 +142,14 @@ def oku(yol: Path) -> Film:
     kapak_kim = tuple(d.get("kapak_kim", ()))
     if bilinmeyen := [k for k in kapak_kim if k not in karakterler]:
         raise SenaryoHatasi(f"kapak: tanımsız karakter {bilinmeyen}")
-    return Film(
+    film = Film(
         slug=d["slug"], baslik=d["baslik"], kapak_yazi=d["kapak_yazi"], kapak_sahne=d["kapak_sahne"],
         kapak_kim=kapak_kim, stil=d["stil"], insan=d["insan"], ses=d.get("ses", "bm_george"),
         hiz=float(d.get("hiz", 1.0)),
         karakterler=karakterler, bolumler=tuple(bolumler), kaynaklar=tuple(d.get("kaynaklar", ())),
         ozet=d.get("ozet", "").strip(), etiketler=tuple(d.get("etiketler", ())),
     )  # fmt: skip
+    return replace(film, kesitler=_kesitler(d.get("kesitler", []), film.bloklar()))
 
 
 def karakter_istemi(film: Film, ad: str) -> str:

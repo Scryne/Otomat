@@ -170,3 +170,30 @@ def test_insansiz_sahneye_karakter_tasarimi_gitmez(tmp_path):
     istem = senaryo.sahne_istemi(f, deniz_feneri)
     assert "in." not in istem and "no people" in istem and senaryo.YUZSUZ in istem
     assert "dot eyes" in senaryo.i2v_istemi(kalabalik) and "dot eyes" not in senaryo.i2v_istemi(deniz_feneri)
+
+
+def test_kesit_hizalama_senaryo_yazimini_korur():
+    from otomat.film import kesit
+
+    duyulan = [("You", 0.0, 0.2), ("land", 0.2, 0.5), ("at", 0.5, 0.6), ("Dyer.", 0.6, 1.0), ("Then", 1.2, 1.4),
+               ("you", 1.4, 1.5), ("climb.", 1.5, 2.0)]  # fmt: skip
+    k = kesit.hizala("You land at Dyea. Then you climb.", duyulan)
+    assert [w for w, _, _ in k] == ["You", "land", "at", "Dyea.", "Then", "you", "climb."]
+    assert k[3][1] == pytest.approx(0.6) and k[3][2] == pytest.approx(1.2)  # eşleşmeyen: komşular arası
+    g = kesit.gruplar(k)
+    assert g[0][0] == "You land at" and g[1][0] == "Dyea." and g[0][2] == g[1][1]  # boşlukta önceki kalır
+
+
+def test_kesit_tek_bolumde_ve_sure_sinirinda(tmp_path):
+    from otomat.film import kesit
+
+    d = _ham()
+    d["bolumler"].append({"ad": "İki", "mood": "epic", "bloklar": [
+        {"anlatim": "İkinci.", "sahneler": [{"tarif": "x"}]}]})  # fmt: skip
+    d["kesitler"] = [{"baslik": "Yayılan", "bloklar": [0, 1]}]
+    with pytest.raises(senaryo.SenaryoHatasi, match="iki bölüme"):
+        senaryo.oku(_yaz(tmp_path, d))
+    k = senaryo.Kesit("Uzun", 0, 1)
+    with pytest.raises(kesit.KesitHatasi):
+        kesit.aralik([[0.0, 30.0], [30.5, 70.0]], k, 80.0)
+    assert kesit.aralik([[1.0, 20.0], [20.5, 40.0]], k, 80.0) == (0.75, 40.6)
