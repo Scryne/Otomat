@@ -649,6 +649,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   kelime farkı, bütün sayılar tutuyor; 96 sahnenin hepsi ve 21 klibin hepsi kare kare incelendi. Üretimde bulunan altı
   kusur sınıfı (bellek, Wan'ın yüz bozması ve kadraja nesne sokması, yan karakterlerin gerçekçi çizilmesi, TTS'in yılı
   yanlış okuması, okunmayan damga) kalıcı düzeltildi; ayrıntı araştırma notunda.
+- **Film 2 (Klondike) ✅ üretildi ve doğrulandı (10-18):** K-31 biçimi ("What if you…", İngilizce), 10:38, -14,4 LUFS,
+  bitmiş videonun sesi %1,7 kelime farkı ve bütün sayılar tutuyor; 103 sahne ve 19 klip incelendi (33 klibin 14'ü
+  bozuktu). Karakter tarifi istemde, sayı kapısı yanlış alarmları düzeltildi; 334 → 338 test.
 - **Kalan (Bitti kriteri):** K-30 yükleme denemesi (ayrı gün, hesap temkini); pilotun yayını; ikinci ve üçüncü film
   farklı yapıda. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 

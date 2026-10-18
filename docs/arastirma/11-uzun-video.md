@@ -148,5 +148,35 @@ Senaryo `filmler/violet-jessop/senaryo.json` (Wikipedia revid 1376997573): 8 bö
   boşuna üç kez üretiliyordu. Parça dosyası metnin özetini taşır; metin değişince eski ses kullanılmaz.
 - **Tarih damgası** açık gökyüzünde okunmuyordu: koyu kontur ve arkasında yumuşak koyu leke.
 
-Açık kalan: 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
+## Film 2: Klondike (10-18) [Ö]
+
+"What If You Joined the Klondike Gold Rush in 1897?" (K-31 biçimi; Wikipedia revid 1379892520). Konu bir araştırma
+ajanının 8 adayından seçildi: tek makalede yolculuk, para, yemek, tehlike ve sonuç sayılarla; ikinci tekil şahıs büyük
+rakip yok (ikinci aday Lowell fabrika kızları). 1.723 kelime, 8 bölüm, 103 sahne; kaynak satır satır denetlendi, makalenin
+kendi içinde çelişen üç yer (Nome'un yılı, atın fiyatının limanı, "came home") nötr yazıldı. Kapanış izleyiciye soru.
+
+| Ölçü | Değer |
+| --- | --- |
+| Süre | 10:38 (anlatım 10:28) |
+| Ses | -14,4 LUFS, LRA 2,5, tepe -1,4 dBFS (limiter 0,84) |
+| Hareket | 19 Wan klibi / 103 sahne (%18); 33 planlandı, **14'ü bozuk** (kadraja el, çaydanlık, fener, kutu giriyor; yüz bozuluyor; karakter uçuyor; ateş maviye dönüyor) |
+| Uçtan uca denetim | bitmiş videonun sesi Whisper'da %1,7 kelime farkı (Britanya/ABD yazımı, Dyea/Dyer gibi adlar), **bütün sayılar** tuttu |
+
+Bulunan ve düzeltilen:
+- **Karakter kayması:** referans görsel küçük ayrıntıyı tutmuyordu; "sen" çoğu sahnede gözlüksüz, Dawson'da şapkasız ve kel.
+  Referanslı sahne istemi kartın tarifini de metin olarak taşır (`senaryo.sahne_istemi`); 39 sahnenin hepsinde düzeldi.
+  Kapak da aynı istem kuralına bağlandı (ayrı istemle gözlük düşüp burun çıkmıştı).
+- **Yazı artığı:** tabela, gazete ve etiketlerde harf çıktı ("HONE", "SIUNTNOVE"); tarifte "tabelasız", "metin yerine gri
+  blok" yazınca gitti. Anakronizm: 1897 Seattle'ında gökdelen.
+- **Sayı kapısının yanlış alarmı:** üç doğru parçayı durdurdu: "$1" ↔ "a dollar", "a proven one, fifty thousand" (51000),
+  "thirty to forty thousand". Ayrıştırıcı düzeltildi, gerçek Whisper çıktılarıyla test edildi; pilotun 57 ve Klondike'ın 77
+  parçası temiz, yanlış yıl testi hâlâ düşüyor.
+- **Bellek:** i2v sırasında Claude Code arka plan işini bellek baskısıyla kesti (boş RAM 7,5 GB görünürken); Scryne
+  uygulamaları kapatınca kaldığı klipten sürdü. Bellek bekçisi (2 GB altında ComfyUI'yi keser) eklendi.
+
+**Ders:** Wan 2.2 5B'de bozuk klip oranı %25 (pilot) ile %42 (Klondike) arası; insan, el ve küçük nesne içeren sahneler
+en riskli, manzara/su/kalabalık/ateş en güvenli. Klip incelemesi elle yapılıyor (her klipten 5 kare); daha güvenilir bir
+hareket modeli (LTX-2, Wan 14B) ayrı bir deneme konusu.
+
+Açık kalan (pilot): 9 mumlu sahne 5 mum çiziyor; Titanic'in iskeleye yanaştığı sahnede yelken var (39); ses efekti yok; uzun
 video yükleme yolu (K-30) denenmedi.
