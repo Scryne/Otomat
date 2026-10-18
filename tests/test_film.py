@@ -99,6 +99,13 @@ def test_fark_ve_soylenis():
         ("Of the thirty to forty thousand people, only fifteen to twenty thousand went.",
          "Of the 30,000 to 40,000 people, only 15,000 to 20,000 went."),
         ("And seven thousand, one hundred and twenty-four boats set off.", "And 7,124 boats set off."),
+        # Ellis: milyon
+        ("Its busiest year: one million, four thousand, seven hundred and fifty-six immigrants.",
+         "Its busiest year: 1,004,756 immigrants."),
+        ("Of more than twenty-five million people, a hundred million dollar project.",
+         "Of more than 25 million people, a $100 million project."),
+        ("Inspectors hope to see between eighteen and twenty-five dollars.",
+         "Inspectors hope to see between $18 and $25."),
         # Lowell: ondalık
         ("In 1834, the mills announced a twelve and a half percent pay cut.",
          "In 1834, the mills announced a 12.5 percent pay cut."),

@@ -119,26 +119,30 @@ def kelimeler(s: str) -> list[str]:
         if k and k in ".,;:!?":
             # noktalama sayıyı keser ("a proven one, fifty thousand" 51000 oluyordu);
             # "seven thousand, one hundred" sürer
-            if not (k == "," and onceki == "thousand" and simdiki is not None):
+            if not (k == "," and onceki in ("thousand", "million") and simdiki is not None):
                 if simdiki is not None:
                     cikti.append(str(toplam + simdiki))
                     toplam = simdiki = None
             onceki = k
             continue
-        onceki = k
+        son_kelime, onceki = onceki, k
+        if k in ("thousand", "million") and simdiki is None and cikti and cikti[-1].isdigit():
+            cikti[-1] = str(int(cikti[-1]) * (1000 if k == "thousand" else 1_000_000))  # Whisper "25 million"
+            continue
         n = _soz(k)
-        if n is not None or k in ("hundred", "thousand"):
+        if n is not None or k in ("hundred", "thousand", "million"):
             if simdiki is None:  # "a hundred" = 100
                 toplam, simdiki = 0, (0 if n is not None else 1)
             if k == "hundred":
                 simdiki *= 100
-            elif k == "thousand":
-                toplam += simdiki * 1000
+            elif k in ("thousand", "million"):
+                toplam += simdiki * (1000 if k == "thousand" else 1_000_000)
                 simdiki = 0
             else:
                 simdiki += n
             continue
-        if k == "and" and simdiki is not None:  # "one thousand and sixty": sayı sürüyor
+        # "one thousand and sixty" sürer; "between eighteen and twenty-five" iki sayıdır (43 oluyordu, Ellis)
+        if k == "and" and simdiki is not None and son_kelime in ("hundred", "thousand", "million"):
             continue
         if simdiki is not None:
             cikti.append(str(toplam + simdiki))
