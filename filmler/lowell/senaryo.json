@@ -48,8 +48,7 @@
           "sahneler": [
             {
               "tarif": "Dark early morning outside a huge red-brick textile mill beside a river, rows of glowing windows, cold blue light, smoke from chimneys.",
-              "hareket": "i2v",
-              "i2v": "Smoke drifts from the mill chimneys, the river flows past, the glowing windows flicker. Flat 2D cartoon animation, static camera.",
+              "hareket": "iceri",
               "yazi": "LOWELL, MASSACHUSETTS — 1836"
             },
             {
@@ -92,11 +91,10 @@
             },
             {
               "tarif": "The young woman from the reference image in a plain calico dress feeding chickens in an 1830s farmyard, a red barn and a wooden fence behind her, no vehicles and no machines.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen"
-              ],
-              "i2v": "Chickens peck at the ground, her skirt sways, leaves drift past the barn. Flat 2D cartoon animation, static camera."
+              ]
             }
           ]
         },
@@ -135,16 +133,14 @@
           "sahneler": [
             {
               "tarif": "The young woman from the reference image sitting on top of a small wooden trunk on the back of a farm wagon on a dirt road, looking ahead.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen"
-              ],
-              "i2v": "The wagon rolls slowly along the road, her shawl flutters, trees pass by. Flat 2D cartoon animation, static camera."
+              ]
             },
             {
               "tarif": "Wide view of a river valley with a growing mill town: rows of huge brick mills along a canal, church spires, smoke, a waterfall in the river.",
-              "hareket": "i2v",
-              "i2v": "The river rushes over the falls, smoke rises from the mills, water flows along the canal. Flat 2D cartoon animation, static camera."
+              "hareket": "sol"
             }
           ]
         }
@@ -204,8 +200,7 @@
           "sahneler": [
             {
               "tarif": "A group of young women with round cream heads walking together along a canal toward the mill gate at dawn, shawls and bonnets.",
-              "hareket": "i2v",
-              "i2v": "The women walk together toward the gate, shawls sway, the canal water ripples. Flat 2D cartoon animation, static camera.",
+              "hareket": "sag",
               "kisi": true
             }
           ]
@@ -220,8 +215,7 @@
             },
             {
               "tarif": "A tall stack of gold coins growing on a polished desk next to a small model of a brick mill, warm light.",
-              "hareket": "i2v",
-              "i2v": "Gold coins drop one by one onto the growing stack, the lamp light glows. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             }
           ]
         }
@@ -284,11 +278,10 @@
             },
             {
               "tarif": "The young woman from the reference image wiping her forehead at a loom in a hot hazy room, the air full of tiny floating threads.",
-              "hareket": "i2v",
+              "hareket": "yukari",
               "kim": [
                 "sen_isci"
-              ],
-              "i2v": "Tiny threads and dust float through the hot hazy air, the loom shakes steadily. Flat 2D cartoon animation, static camera."
+              ]
             }
           ]
         },
@@ -297,8 +290,7 @@
           "sahneler": [
             {
               "tarif": "A beam of light in a dark mill room thick with floating white fibres, like snow that does not fall.",
-              "hareket": "i2v",
-              "i2v": "White fibres drift slowly through the beam of light like snow. Flat 2D cartoon animation, static camera."
+              "hareket": "sag"
             },
             {
               "tarif": "Exposed gears and leather belts of an old machine, close view, sharp shadows, dangerous.",
@@ -396,8 +388,7 @@
           "sahneler": [
             {
               "tarif": "A warm parlor in the boarding house at night, young women with round cream heads gathered around a table, sewing, reading and talking, lamp light.",
-              "hareket": "i2v",
-              "i2v": "Lamp light flickers, the women sew and turn pages, a little steam rises from tea cups. Flat 2D cartoon animation, static camera.",
+              "hareket": "disari",
               "kisi": true
             }
           ]
@@ -413,11 +404,10 @@
           "sahneler": [
             {
               "tarif": "The young woman from the reference image reading a book by candlelight in her shared bedroom while the others sleep.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen"
-              ],
-              "i2v": "The candle flame flickers, she slowly turns a page, shadows move on the wall. Flat 2D cartoon animation, static camera."
+              ]
             }
           ]
         },
@@ -550,8 +540,7 @@
           "sahneler": [
             {
               "tarif": "A huge dark shadow of a grasping hand falling across the brick wall of a mill at dusk.",
-              "hareket": "i2v",
-              "i2v": "The dark shadow of the hand slowly grows across the brick wall. Flat 2D cartoon animation, static camera."
+              "hareket": "disari"
             }
           ]
         },
@@ -578,8 +567,7 @@
             },
             {
               "tarif": "A crowd of mill women with round cream heads marching out of a mill gate into the street, shawls and bonnets, autumn leaves.",
-              "hareket": "i2v",
-              "i2v": "The crowd of women walks out through the gate, shawls sway, autumn leaves blow past. Flat 2D cartoon animation, static camera.",
+              "hareket": "yukari",
               "kisi": true
             }
           ]
@@ -604,8 +592,7 @@
           "sahneler": [
             {
               "tarif": "A huge silent mill room with most machines stopped, only a few women still working, dust settling in the light.",
-              "hareket": "i2v",
-              "i2v": "Dust settles slowly in the light, one machine turns slowly, the others stand still. Flat 2D cartoon animation, static camera."
+              "hareket": "iceri"
             },
             {
               "tarif": "Townspeople with round cream heads handing bread to striking mill women in the street, warm light.",
@@ -693,8 +680,7 @@
           "sahneler": [
             {
               "tarif": "A small printing press in a dim room, a sheet of paper coming out covered in grey blocks instead of text, ink and lamp light.",
-              "hareket": "i2v",
-              "i2v": "The press lever moves down and up, a sheet of paper slides out. Flat 2D cartoon animation, static camera."
+              "hareket": "disari"
             }
           ]
         },
@@ -748,11 +734,10 @@
           "sahneler": [
             {
               "tarif": "The young woman from the reference image standing alone on the canal bridge at dusk, looking back at the glowing mill, her shawl around her shoulders.",
-              "hareket": "i2v",
+              "hareket": "iceri",
               "kim": [
                 "sen"
-              ],
-              "i2v": "The canal water flows under the bridge, the mill windows glow, her shawl moves gently in the wind. Flat 2D cartoon animation, static camera."
+              ]
             },
             {
               "tarif": "Wide view of the brick mills along the river at night, every window glowing, reflections in the water.",
