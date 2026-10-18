@@ -1,0 +1,670 @@
+{
+  "slug": "ellis-island",
+  "baslik": "What If You Arrived at Ellis Island in 1907?",
+  "ozet": "Spring 1907. Your ship stops in New York Harbor, and one building stands between you and America. Doctors watching you climb the stairs, a buttonhook for your eyes, a chalk mark on your coat, and an inspector with a couple dozen questions. This is what it was really like to arrive at Ellis Island.",
+  "etiketler": [
+    "ellis island",
+    "immigration history",
+    "history",
+    "what if",
+    "your life as",
+    "animated history",
+    "1907",
+    "new york history",
+    "american history",
+    "history documentary"
+  ],
+  "kesitler": [],
+  "kapak_yazi": "CHALK MARK.",
+  "kapak_sahne": "The young man from the reference image in a crowded inspection hall, a doctor's hand drawing a large white chalk mark on the shoulder of his dark coat, he looks straight at the viewer, frightened, rows of immigrants and tall arched windows behind him, warm lamp light on his face and cold daylight from the windows.",
+  "kapak_kim": [
+    "sen"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Ellis Island",
+      "url": "https://en.wikipedia.org/wiki/Ellis_Island",
+      "revid": 1379350577
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "sen": "one young man about twenty, a 1907 immigrant: short dark curly hair, small round wire spectacles, worn brown wool coat, grey knitted scarf, flat dark trousers, carrying a tied cloth bundle",
+    "doktor": "one 1907 Public Health Service doctor: neat dark moustache, dark navy military-style uniform with brass buttons, peaked uniform cap",
+    "mufettis": "one 1907 immigration inspector: grey hair, round face, dark three-piece suit, high white collar, small round eyeglasses on a chain"
+  },
+  "bolumler": [
+    {
+      "ad": "Almost there",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Spring, 1907. After days at sea, your ship finally stops in New York Harbor. You have no passport and no visa. You don't need them.",
+          "sahneler": [
+            {
+              "tarif": "A crowded steamship deck in a misty harbor at dawn, hundreds of passengers with round cream heads pressed against the rail, a city skyline of 1907 low buildings and ship masts ahead.",
+              "hareket": "i2v",
+              "i2v": "Mist drifts across the harbor, the passengers sway with the ship, gulls circle overhead. Flat 2D cartoon animation, static camera.",
+              "yazi": "NEW YORK HARBOR — 1907",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image standing at the ship's rail with a tied cloth bundle, looking ahead in wonder, morning mist.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "What you need is to get through one building. On a single day this April, eleven thousand, seven hundred and forty-seven people will arrive there.",
+          "sahneler": [
+            {
+              "tarif": "A huge red-brick building with four towers topped by copper domes on a small island, seen across grey water at dawn, ferries approaching.",
+              "hareket": "i2v",
+              "i2v": "Small ferries move slowly toward the island, the water ripples, smoke drifts from a chimney. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "An endless line of immigrants with round cream heads carrying bundles and trunks, stretching out of a ferry and up to a building entrance.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "In a few hours, a doctor may draw a letter in chalk on your coat. Congratulations. You have made it to America. Almost.",
+          "sahneler": [
+            {
+              "tarif": "Close view of a hand holding a piece of white chalk in front of a dark wool coat, dramatic light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young man from the reference image looking up at the towering building from the ferry dock, holding his bundle tight.",
+              "hareket": "yukari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Steerage",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "You traveled in steerage, the cheapest class, below deck. That matters now. Passengers from first and second class usually skip Ellis Island altogether.",
+          "sahneler": [
+            {
+              "tarif": "A dark crowded steerage compartment below deck, rows of bunks packed with passengers with round cream heads, bags hanging, one swinging lamp.",
+              "hareket": "i2v",
+              "i2v": "The lamp swings slowly, the bunks sway with the ship, a little steam rises. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "Well-dressed first-class passengers with round cream heads walking down a gangway straight onto the Manhattan pier, porters carrying their trunks.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The big ships can't reach the island, the water is too shallow. So they unload in Manhattan, and steerage passengers are taken over to Ellis Island by barge.",
+          "sahneler": [
+            {
+              "tarif": "A wide flat barge crowded with immigrants with round cream heads and their bundles, being towed across the harbor by a small tugboat.",
+              "hareket": "i2v",
+              "i2v": "The barge moves slowly across the water, the tugboat puffs smoke, waves lap at the sides. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And in busy years, you wait. Since 1903, the station has been so overwhelmed that some immigrants stay on their ships for days before there's room to inspect them.",
+          "sahneler": [
+            {
+              "tarif": "Several big steamships anchored in a row in the harbor at dusk, their decks crowded with waiting passengers with round cream heads, lights coming on.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "You have already been checked. The steamship company looked you over in Europe before you boarded, and you got vaccinated during the voyage.",
+          "sahneler": [
+            {
+              "tarif": "A European port at dusk, a doctor with a round cream head looking into a passenger's mouth at a small table by the gangway, a line waiting.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image rolling down his sleeve after a vaccination in the ship's cramped medical room, wincing at the sting.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "There's a reason the company cares. If you're turned away, it pays a fine of a hundred dollars, and the cost of shipping you back.",
+          "sahneler": [
+            {
+              "tarif": "A ledger on a shipping office desk with a stack of banknotes and a heavy brass stamp, lamp light, no readable text.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "At the Narrows, the ship stopped for quarantine. Anyone with a serious disease, like cholera or typhus, was taken to small artificial islands off Staten Island.",
+          "sahneler": [
+            {
+              "tarif": "Two tiny man-made islands with low buildings in grey water under a heavy sky, a small boat approaching.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "A quarantine officer with a round cream head in a uniform climbing a rope ladder onto the side of a big steamship.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The island",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "This island has had many names. Long ago it was Gull Island. Then Little Oyster Island. Now it's named after Samuel Ellis, a merchant from Wales who bought it in 1774.",
+          "sahneler": [
+            {
+              "tarif": "A small marshy island covered with seagulls and oyster beds in a calm bay, long ago, no buildings, soft morning light.",
+              "hareket": "i2v",
+              "i2v": "Seagulls take off and circle over the marsh, the water ripples gently. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Before Ellis Island, immigrants landed at Castle Clinton, at the tip of Manhattan. More than eight million came through it, along with charges of mismanagement and abuse of immigrants. The federal government wanted it replaced.",
+          "sahneler": [
+            {
+              "tarif": "A round old stone fort on the Manhattan waterfront with a crowd of immigrants with round cream heads outside, sailing ships behind, nineteenth century.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The first immigration station opened here on New Year's Day, 1892. The very first immigrant was Annie Moore, a seventeen-year-old girl from Cork, in Ireland, traveling with her two brothers.",
+          "sahneler": [
+            {
+              "tarif": "A young girl with a round cream head in a long coat and shawl standing on a wooden dock with two small boys beside her, a large wooden building behind them, winter light.",
+              "hareket": "iceri",
+              "yazi": "ELLIS ISLAND — 1892",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1897, that wooden station burned to the ground in two hours. Every immigration record back to 1855 was destroyed.",
+          "sahneler": [
+            {
+              "tarif": "A huge wooden building on fire at night on a small island, orange flames reflected in the dark water.",
+              "hareket": "i2v",
+              "i2v": "Flames roar and flicker across the burning building, sparks rise, reflections shimmer. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The new one is fireproof: red brick and steel, four towers with copper domes. It wins a gold medal at the 1900 Paris Exposition. When it opened, it was expected to inspect five thousand people a day.",
+          "sahneler": [
+            {
+              "tarif": "The grand red-brick main building with four copper-domed towers in bright daylight, flags flying, neat paths in front.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "A gold medal resting on dark velvet under a spotlight.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "This year it will need every bit of that. 1907 is the busiest year in its history: one million, four thousand, seven hundred and fifty-six immigrants.",
+          "sahneler": [
+            {
+              "tarif": "A huge crowd of immigrants with round cream heads filling the dock and the path into the building, trunks and baskets everywhere, seen from above.",
+              "hareket": "i2v",
+              "i2v": "The crowd shuffles slowly forward toward the entrance, coats and shawls sway. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Look around you in line. Swedes, Poles, Hungarians, Italians, Greeks, Armenians, Syrians. In these years, two thirds of the people arriving come from Eastern, Southern and Central Europe, the Middle East and North Africa. They are escaping poverty, oppression, persecution and violence.",
+          "sahneler": [
+            {
+              "tarif": "A long line of immigrants with round cream heads in many different traditional clothes, headscarves, fur hats, embroidered vests and shawls, waiting together in a hall.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "A mother with a round cream head holding a sleeping child on a bench, a big wrapped bundle at her feet, soft window light.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The stairs",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Inside, you're told to drop your bags and walk up the stairs to the second floor. You don't know it, but the test has already begun.",
+          "sahneler": [
+            {
+              "tarif": "A great pile of trunks, baskets and cloth bundles left at the foot of a wide staircase, people with round cream heads climbing up.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image climbing a wide staircase with other immigrants, holding the rail, a little out of breath.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "He climbs one step after another with the crowd, coats sway, light falls from above. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Doctors are watching you climb. They're watching how you walk, looking for anything unusual in the way you move.",
+          "sahneler": [
+            {
+              "tarif": "Two doctors with round cream heads in dark uniforms standing at the top of the stairs, watching the people coming up, arms folded.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "At the top, you go into a single-file line. Two inspectors look you over, one after the other. The second one is there to catch anything the first one missed.",
+          "sahneler": [
+            {
+              "tarif": "A narrow single-file line of immigrants with round cream heads between wooden railings, a uniformed inspector at each end.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "The man from the reference image, a uniformed doctor, looking closely at a person in front of him, holding a small piece of chalk.",
+              "hareket": "iceri",
+              "kim": [
+                "doktor"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Then comes the part everyone dreads. To check your eyes for an infection called trachoma, the inspector examines them with special forceps, or with a buttonhook.",
+          "sahneler": [
+            {
+              "tarif": "A small metal buttonhook held up in a doctor's hand against a dark background, a glint of light on it.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young man from the reference image with his glasses removed, holding them in his hand, standing stiffly in front of the doctor.",
+              "hareket": "iceri",
+              "kim": [
+                "sen",
+                "doktor"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "If they suspect something is wrong, they draw a symbol in chalk on your clothes. A chalk mark means more examinations. Some people, it's said, quietly wipe the mark off, or turn their coat inside out.",
+          "sahneler": [
+            {
+              "tarif": "The back of a dark wool coat with a single large white chalk mark on the shoulder, a plain shape with no letter, lit from above.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "An immigrant with a round cream head in a quiet corner secretly turning his coat inside out, glancing over his shoulder.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Nobody marks your coat. You keep walking.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image walking forward past the doctors, letting out a long breath, his coat clean.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The Great Hall",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Now you're in the Registry Room. It's two hundred feet long, with a ceiling fifty-six feet high. Railings split the crowd into long lines.",
+          "sahneler": [
+            {
+              "tarif": "A vast hall with a very high arched ceiling and tall arched windows, crowded with hundreds of immigrants with round cream heads in long lines between metal railings, flags hanging.",
+              "hareket": "i2v",
+              "i2v": "The long lines shuffle slowly forward, light streams through the tall windows, dust floats. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "Close view of rows of metal railings forming a maze in the hall, people waiting between them.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "At the end of your line, an inspector sits behind a high desk with the ship's passenger list. He asks you a couple dozen questions. Your name. Your job. How much money you have.",
+          "sahneler": [
+            {
+              "tarif": "The man from the reference image, an immigration inspector, sitting at a tall wooden desk with a huge open ledger, looking down sternly.",
+              "hareket": "iceri",
+              "kim": [
+                "mufettis"
+              ]
+            },
+            {
+              "tarif": "The young man from the reference image standing before the tall desk, holding his cap, answering, an interpreter beside him.",
+              "hareket": "yukari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The government wants to know you can take care of yourself. On average, inspectors hope to see between eighteen and twenty-five dollars.",
+          "sahneler": [
+            {
+              "tarif": "A small worn leather purse open on a desk with a few coins and folded banknotes, lamp light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young man from the reference image counting out coins from his purse onto the desk, nervous.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "He places coins one by one onto the desk, his hand trembles slightly. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The inspectors speak three languages on average, and you are usually sent to one who speaks yours. Still, whether you're admitted can come down to that one man.",
+          "sahneler": [
+            {
+              "tarif": "A row of tall inspection desks along the hall, each with a different inspector and a different small group of immigrants, interpreters leaning in.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Around the hall, there are interpreters, watchmen, matrons, clerks and stenographers, all keeping the machine running.",
+          "sahneler": [
+            {
+              "tarif": "A balcony running around the great hall high above the crowd, officials with round cream heads looking down at the lines, a stenographer typing at a small desk.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "If you pass, the whole thing takes two to five hours.",
+          "sahneler": [
+            {
+              "tarif": "A large wall clock high in the hall, its face blank, beams of light from the windows sliding across the floor.",
+              "hareket": "i2v",
+              "i2v": "Light beams slowly slide across the floor, dust floats in the air. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Island of Tears",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Not everyone passes. Some are sent to the hospital on the island. This February, it doubled in size, from a hundred and twenty-five beds to two hundred and fifty.",
+          "sahneler": [
+            {
+              "tarif": "A long clean hospital ward with rows of white iron beds, nurses with round cream heads in white caps, large windows over the water.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Others are held for a hearing. If you're rejected, you can appeal to a board of three inspectors.",
+          "sahneler": [
+            {
+              "tarif": "Three stern officials with round cream heads seated at a long table in a small hearing room, a worried family standing before them.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Workers judged likely to become a public charge, unable to support themselves, can be refused. About two percent of all immigrants are sent back.",
+          "sahneler": [
+            {
+              "tarif": "A small group of immigrants with round cream heads walking back up a gangway onto a ship, carrying their bundles, heads down, grey light.",
+              "hareket": "i2v",
+              "i2v": "The small group walks slowly up the gangway, the ship's smoke drifts, the water is grey. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "That's why people will call this place the Island of Tears, or Heartbreak Island. Over the years, more than three thousand would-be Americans will die in its hospital.",
+          "sahneler": [
+            {
+              "tarif": "A woman with a round cream head standing alone at a window of the hospital, looking out at the distant city lights across the water at night.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The island at night from across the water, a few lit windows, the city skyline glowing far away.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "But for most people, the story ends differently. Of more than twenty-five million people reviewed here over four decades, about seven hundred thousand are given a certificate of disease or disability, and seventy-nine thousand of those are barred from entering.",
+          "sahneler": [
+            {
+              "tarif": "A huge crowd of immigrants walking out of the building into bright sunlight, only a few figures standing apart in shadow.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The Kissing Post",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "You're cleared. You're in. You walk out of the Registry Room to a wooden column, where families wait for the people they've been waiting for. They call it the Kissing Post.",
+          "sahneler": [
+            {
+              "tarif": "A simple wooden column in a busy hall where families with round cream heads embrace newly arrived relatives, hats and bundles everywhere, warm light.",
+              "hareket": "i2v",
+              "i2v": "People embrace and sway, a child jumps up and down, warm light flickers. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image hugging an older relative near a wooden column, his glasses crooked, laughing.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Most new arrivals don't stay in New York. About ten and a half million will leave from the railroad terminal across the water in New Jersey, heading west and south.",
+          "sahneler": [
+            {
+              "tarif": "A great railroad terminal on the waterfront with steam trains under a long shed, crowds with round cream heads boarding with trunks.",
+              "hareket": "i2v",
+              "i2v": "Steam rises from the trains, the crowd boards slowly, a train begins to move. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And your name? You may have heard that inspectors changed people's names here. It's a myth. They used the names on the ship's passenger list, and often corrected mistakes.",
+          "sahneler": [
+            {
+              "tarif": "A huge open passenger list on a desk, columns of tiny unreadable handwriting, a finger pointing at one line.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The man from the reference image, the immigration inspector, carefully correcting a line in the ledger with a pen, concentrating.",
+              "hareket": "iceri",
+              "kim": [
+                "mufettis"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Many families did change their names, but later, and by choice. The average family changed its surname five years after arriving. So many did it that a 1906 law began to require paperwork for it.",
+          "sahneler": [
+            {
+              "tarif": "A family with round cream heads at a small office counter, filling in a form, a clerk stamping it.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Your family",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Ellis Island will close on the twelfth of November, 1954. Its last detainee is a Norwegian sailor who overstayed his shore leave.",
+          "sahneler": [
+            {
+              "tarif": "The empty Registry Room in 1954, rows of empty benches, light through dusty windows, silence.",
+              "hareket": "disari",
+              "yazi": "ELLIS ISLAND — 1954"
+            },
+            {
+              "tarif": "A sailor with a round cream head in a pea coat and cap walking alone down an empty dock toward a ferry, carrying a duffel bag.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The flood doesn't last. During the First World War, arrivals drop by ninety-seven percent. In 1921 and 1924, new laws set strict quotas, and the era of mass immigration ends. Ellis Island becomes mostly a place for detention.",
+          "sahneler": [
+            {
+              "tarif": "The great hall almost empty, a handful of people with round cream heads sitting on long benches, cold light, echoing space.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "For years, the buildings rot. In 1990, the main building reopens as a museum. Outside it, a wall of honor carries seven hundred and seventy-five thousand names.",
+          "sahneler": [
+            {
+              "tarif": "A long curving metal wall covered with rows and rows of tiny engraved lines, the harbor and city beyond, sunset.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "The restored grand hall as a museum, visitors with round cream heads looking up at the high arched ceiling.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "People have big ideas for the empty island. A developer wants a resort with a hotel, a marina and skating rinks. Frank Lloyd Wright designs a hundred million dollar project with housing, hotels and huge domes. None of it happens.",
+          "sahneler": [
+            {
+              "tarif": "A fantasy plan of the island covered with giant white domes and tall hotel towers, drawn like an architect's sketch on a dark table, lamp light, no text.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1956, the mayor of Jersey City even takes a Coast Guard boat and leads a group of officials out to claim the island. Forty-two years later, the Supreme Court decides that most of it really is in New Jersey. Only the original little island belongs to New York.",
+          "sahneler": [
+            {
+              "tarif": "A small official boat crossing to the island, men with round cream heads in suits and hats standing at the bow, one pointing forward dramatically.",
+              "hareket": "i2v",
+              "i2v": "The boat moves across the water toward the island, a flag flutters at the bow, spray rises. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "About twelve million immigrants came through here. By one estimate, two out of every five Americans may be descended from someone who walked up those stairs.",
+          "sahneler": [
+            {
+              "tarif": "A modern family with round cream heads standing in the restored hall, a grandmother pointing up at the staircase.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The young man from the reference image as a ghostly faded figure climbing the same staircase, the modern family watching from below.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "The faded figure slowly climbs the stairs and fades away, light falls through the windows. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "So here's my question. Did someone in your family come through Ellis Island? Where did they come from? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The young man from the reference image on the ferry deck at sunset with his bundle, looking back at the island, the city ahead.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "The ferry moves across the golden water, his coat flutters, the island grows smaller. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The red-brick main building with its copper-domed towers at sunset, reflected in the calm harbor.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

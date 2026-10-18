@@ -1,0 +1,766 @@
+{
+  "slug": "lowell",
+  "baslik": "What If You Were a Lowell Mill Girl in 1836?",
+  "ozet": "It's five in the morning in Lowell, Massachusetts, and you are already at work. Seventy-three hours a week, three to four dollars, eighty women to a room and a ten o'clock curfew. This is what it was really like to be one of America's first factory girls, and how they fought back.",
+  "etiketler": [
+    "lowell mill girls",
+    "industrial revolution",
+    "history",
+    "what if",
+    "your life as",
+    "animated history",
+    "1836",
+    "womens history",
+    "labor history",
+    "history documentary"
+  ],
+  "kesitler": [],
+  "kapak_yazi": "73 HOURS.",
+  "kapak_sahne": "The young woman from the reference image standing at a huge roaring loom in a dark brick mill at dawn, looking straight at the viewer, exhausted but defiant, rows of machines and tiny workers stretching away behind her, warm lamp light on her face and cold blue light from the tall windows.",
+  "kapak_kim": [
+    "sen_isci"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Lowell mill girls",
+      "url": "https://en.wikipedia.org/wiki/Lowell_mill_girls",
+      "revid": 1360936022
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "sen": "one young woman about twenty years old, an 1836 New England farmer's daughter: dark brown hair parted in the middle and pinned in a low bun, small round wire spectacles, plain blue calico dress with a white collar, grey wool shawl",
+    "sen_isci": "the same young woman at work in the mill: dark brown hair pinned in a low bun, small round wire spectacles, blue calico dress with sleeves rolled up, long white work apron",
+    "mentor": "one older experienced mill woman about forty: grey hair in a bun under a white cap, dark brown dress, white apron",
+    "gozetmen": "one stern mill overseer: middle-aged man, dark side whiskers, black top hat, dark frock coat, grey waistcoat",
+    "dul": "one strict boarding house keeper: elderly widow, white hair under a black lace cap, black dress, small round glasses"
+  },
+  "bolumler": [
+    {
+      "ad": "Five in the morning",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "It is five o'clock in the morning, and you are already at work. Around you, eighty women work at roaring machines. You will be here until seven tonight.",
+          "sahneler": [
+            {
+              "tarif": "Dark early morning outside a huge red-brick textile mill beside a river, rows of glowing windows, cold blue light, smoke from chimneys.",
+              "hareket": "i2v",
+              "i2v": "Smoke drifts from the mill chimneys, the river flows past, the glowing windows flicker. Flat 2D cartoon animation, static camera.",
+              "yazi": "LOWELL, MASSACHUSETTS — 1836"
+            },
+            {
+              "tarif": "A long factory room filled with rows of spinning machines and women with round cream heads working at them, belts and wheels overhead, dim lamp light.",
+              "hareket": "i2v",
+              "i2v": "The belts and wheels overhead turn steadily, the spinning machines vibrate, dust floats in the light. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Congratulations. You work at the center of America's Industrial Revolution. You are a Lowell mill girl. Let's see how long you last.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image standing in front of a huge loom in a long work dress and apron, looking up at it, small against the machine.",
+              "hareket": "yukari",
+              "kim": [
+                "sen_isci"
+              ]
+            },
+            {
+              "tarif": "A single white thread running through a dark machine, lit by a thin beam of light, close view.",
+              "hareket": "i2v",
+              "i2v": "The thread runs quickly through the machine, tiny fibres float in the beam of light. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Leaving the farm",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "A few weeks ago, you were a farmer's daughter in New England. Most of the girls in Lowell are, aged fifteen to thirty-five.",
+          "sahneler": [
+            {
+              "tarif": "A small white New England farmhouse among bare autumn fields and stone walls, grey morning, a thin line of smoke from the chimney.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "The young woman from the reference image in a plain calico dress feeding chickens in a farmyard, a red barn behind her.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "Chickens peck at the ground, her skirt sways, leaves drift past the barn. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Girls come for different reasons. Some help a brother pay for college. Some want the education Lowell promises. Others need to earn money for the family.",
+          "sahneler": [
+            {
+              "tarif": "A farmhouse kitchen table at night with a candle, a small pile of coins and a folded letter, a book beside them.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A young man with a round cream head in a long coat walking toward a distant college building with a small bag, autumn trees.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The pay is three to four dollars a week. That is half of what a man would earn. But for many of these women, it is the first money that has ever been their own.",
+          "sahneler": [
+            {
+              "tarif": "Three silver coins resting in an open young hand, warm amber light, dark background.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young woman from the reference image sitting on a wooden bench by a window, counting coins into a small cloth purse, smiling softly.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "So you pack a trunk and leave the farm. Lowell is waiting, with almost eight thousand workers by 1840, and nearly three quarters of them women.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image sitting on top of a small wooden trunk on the back of a farm wagon on a dirt road, looking ahead.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "The wagon rolls slowly along the road, her shawl flutters, trees pass by. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Wide view of a river valley with a growing mill town: rows of huge brick mills along a canal, church spires, smoke, a waterfall in the river.",
+              "hareket": "i2v",
+              "i2v": "The river rushes over the falls, smoke rises from the mills, water flows along the canal. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "City of spindles",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "They call it the City of Spindles. The mills here run on a system that is still new to America: raw cotton goes in one end of the building, and finished cloth comes out the other.",
+          "sahneler": [
+            {
+              "tarif": "A cross-section view of a tall brick mill building, bales of raw cotton entering on the left and rolls of finished cloth leaving on the right, machines on every floor.",
+              "hareket": "sol"
+            },
+            {
+              "tarif": "Thousands of spinning spindles in long rows inside a mill, glowing in the light from tall windows.",
+              "hareket": "i2v",
+              "i2v": "The rows of spindles spin rapidly, threads shimmer, light flickers across them. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "On your first day, you are a spare hand on a fixed daily wage. An experienced woman shows you the machines. Later, the best loom operators are paid by the piece.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image standing beside an older experienced mill woman who points at a loom, showing her how it works.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_isci",
+                "mentor"
+              ]
+            },
+            {
+              "tarif": "A pair of hands guiding a thread into a loom, close view, lamp light.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Some of the workers are younger than you think. Girls of ten to fifteen work as doffers, taking full bobbins off the machines and putting on empty ones.",
+          "sahneler": [
+            {
+              "tarif": "A small girl with a round cream head reaching up to lift a full wooden bobbin off a tall spinning frame, a basket of empty bobbins beside her.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "A basket full of wooden bobbins wound with white thread on a factory floor, light from a high window.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "The average age, though, is about twenty-four. Like you, most of them came from farms. Many were recruited by a sister or a friend.",
+          "sahneler": [
+            {
+              "tarif": "A group of young women with round cream heads walking together along a canal toward the mill gate at dawn, shawls and bonnets.",
+              "hareket": "i2v",
+              "i2v": "The women walk together toward the gate, shawls sway, the canal water ripples. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The money is good for someone. Between 1846 and 1850, the investors behind the Lowell mills earn dividends averaging fourteen percent a year.",
+          "sahneler": [
+            {
+              "tarif": "A wealthy man with a round cream head in a fine suit and top hat sitting in a grand Boston parlor, counting stacks of banknotes, a chandelier above.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "A tall stack of gold coins growing on a polished desk next to a small model of a brick mill, warm light.",
+              "hareket": "i2v",
+              "i2v": "Gold coins drop one by one onto the growing stack, the lamp light glows. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Seventy-three hours",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Your day starts at five in the morning and ends at seven at night. On average, that's seventy-three hours a week.",
+          "sahneler": [
+            {
+              "tarif": "A large factory clock on a brick wall above rows of machines, its hands blank, warm dusty light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The young woman from the reference image at her loom in the dim early light, sleeves rolled up, tired.",
+              "hareket": "sag",
+              "kim": [
+                "sen_isci"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "You get thirty minutes for breakfast and forty-five for lunch. That's it.",
+          "sahneler": [
+            {
+              "tarif": "A long wooden table crowded with young women with round cream heads eating quickly from bowls, plates of bread, steam rising.",
+              "hareket": "i2v",
+              "i2v": "Steam rises from the bowls, the women eat quickly, spoons move. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Each room holds about eighty women at the machines, and two men to watch over them.",
+          "sahneler": [
+            {
+              "tarif": "A huge long weaving room seen from above: rows and rows of looms with women at each one, two men in dark suits standing at the far end.",
+              "hareket": "disari",
+              "kisi": true
+            },
+            {
+              "tarif": "The man from the reference image, a stern overseer, standing with his hands behind his back, watching the rows of machines.",
+              "hareket": "iceri",
+              "kim": [
+                "gozetmen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The noise is something one worker will call frightful and infernal. In summer, the machines make the room hot, but the windows stay shut, because the thread works better that way.",
+          "sahneler": [
+            {
+              "tarif": "Tall factory windows firmly shut on a bright summer day, sunlight blazing outside, hot hazy air inside.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The young woman from the reference image wiping her forehead at a loom in a hot hazy room, the air full of tiny floating threads.",
+              "hareket": "i2v",
+              "kim": [
+                "sen_isci"
+              ],
+              "i2v": "Tiny threads and dust float through the hot hazy air, the loom shakes steadily. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And you are breathing it. The air is full of tiny bits of thread and cloth. The building has few safety rules: unstable floors, poor ventilation, dangerous machinery, and too many people.",
+          "sahneler": [
+            {
+              "tarif": "A beam of light in a dark mill room thick with floating white fibres, like snow that does not fall.",
+              "hareket": "i2v",
+              "i2v": "White fibres drift slowly through the beam of light like snow. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Exposed gears and leather belts of an old machine, close view, sharp shadows, dangerous.",
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "You do this for most of the year, eight to ten months, and then you do it again.",
+          "sahneler": [
+            {
+              "tarif": "A row of calendar pages on a wall, the pages blank, one torn off and falling, dim light.",
+              "hareket": "iceri"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The boarding house",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "At night, you go home to a company boarding house. About twenty-six women live in yours, up to six to a bedroom.",
+          "sahneler": [
+            {
+              "tarif": "A street of identical brick boarding houses at night near the mills, warm light in many windows.",
+              "hareket": "i2v",
+              "i2v": "Warm light flickers in the windows, a little smoke rises from the chimneys. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A small crowded bedroom with three narrow beds shared by six young women with round cream heads, clothes hanging on hooks, one candle.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "One worker describes her room as small, comfortless, and half ventilated.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image lying awake in a narrow shared bed, squeezed next to another sleeping girl, looking at the ceiling.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The house is run by a widow, who keeps a close eye on you. There's a ten o'clock curfew. Men are generally not allowed inside. And going to church is mandatory.",
+          "sahneler": [
+            {
+              "tarif": "The woman from the reference image, a strict boarding house keeper, standing at the front door at night holding a lamp, looking out.",
+              "hareket": "iceri",
+              "kim": [
+                "dul"
+              ]
+            },
+            {
+              "tarif": "A small white wooden church on a Sunday morning, a line of young women with round cream heads in bonnets walking in.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "A handbook will put it plainly: the company does not employ anyone who is habitually absent from public worship on the Sabbath.",
+          "sahneler": [
+            {
+              "tarif": "An open old rule book on a dark wooden desk under a lamp, its pages covered in tiny unreadable scribbles, a quill beside it.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Board costs you seventy-five cents to a dollar twenty-five a week. What's left can buy good clothes, books, and savings. The shops in town are very happy to help with the clothes.",
+          "sahneler": [
+            {
+              "tarif": "A row of small shop windows on a town street full of bonnets, ribbons and fabric, young women with round cream heads looking in.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "The young woman from the reference image holding up a new bonnet with ribbons in front of a small mirror, delighted.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Still, the women in these houses become close. They eat together, work together, cover each other's machines for a half day off. It's a community. And a community can organize.",
+          "sahneler": [
+            {
+              "tarif": "A warm parlor in the boarding house at night, young women with round cream heads gathered around a table, sewing, reading and talking, lamp light.",
+              "hareket": "i2v",
+              "i2v": "Lamp light flickers, the women sew and turn pages, a little steam rises from tea cups. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Learning after dark",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Here's what surprises visitors. After seventy-three hours a week, many of these women are still studying.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image reading a book by candlelight in her shared bedroom while the others sleep.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "The candle flame flickers, she slowly turns a page, shadows move on the wall. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "They read in the city library and borrow novels. Against the rules, some pin poems to their spinning frames, to train their memories, and pin up math problems in the rooms where they work.",
+          "sahneler": [
+            {
+              "tarif": "A small piece of paper with a poem pinned to the wooden frame of a spinning machine, the writing tiny and unreadable, thread rushing past.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Rows of library shelves with old books in warm light, a young woman with a round cream head taking a book down.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "In the evenings, you can attend lectures at the Lyceum: twenty-five lectures a season, for twenty-five cents.",
+          "sahneler": [
+            {
+              "tarif": "A lecture hall at night, a speaker at a podium and rows of young women with round cream heads in bonnets listening, gas lamps glowing.",
+              "hareket": "disari",
+              "kisi": true
+            },
+            {
+              "tarif": "The young woman from the reference image sitting in the lecture hall audience, trying hard to keep her eyes open, her head nodding.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1840, the girls even get their own magazine, the Lowell Offering, full of their poems, essays and stories.",
+          "sahneler": [
+            {
+              "tarif": "A stack of thin printed magazines on a table, the covers showing only a simple drawing of a mill and plain grey blocks instead of any text.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Not everything in it is what it seems. A story called Abby's Year in Lowell, about a rebellious girl who learns the value of a dollar at the mill, will turn out to be a piece of propaganda for factory work.",
+          "sahneler": [
+            {
+              "tarif": "A printed magazine page with a simple drawing of a smiling girl at a loom and grey blocks instead of text, lying on a dark table under a lamp.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1842, the famous writer Charles Dickens visits. He can't recall one young face that gave him a painful impression.",
+          "sahneler": [
+            {
+              "tarif": "A well-dressed visiting gentleman with a round cream head and a top hat walking through a tidy mill room, neatly dressed workers smiling at their machines.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Two years later, the English writer Harriet Martineau visits too. She sees no signs of weariness. All well dressed and ladylike, she writes.",
+          "sahneler": [
+            {
+              "tarif": "A visiting woman with a round cream head in a fine traveling dress and bonnet walking along a row of looms with a notebook, smiling workers on both sides.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "But many workers suspect that visitors are shown the nicely dressed ones. Very pretty picture, writes a worker called Juliana. But we who work in the factory know the sober reality to be quite another thing.",
+          "sahneler": [
+            {
+              "tarif": "A dark cramped corner of the mill behind a curtain, tired workers with round cream heads at noisy machines, the visitors' bright room visible far away.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Another asks the obvious question: who, after thirteen hours of steady work, can sit down and think deeply about anything?",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image asleep at the table with her head on an open book, the candle burned low.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "One remembers fighting to stay awake at lectures. Her chief delight, she writes, was to place her aching feet in an easy position after the evening meal, and read a novel.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image sitting in a chair by the boarding house fire with her bare tired feet up on a stool, reading a novel, smiling.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The turn-out",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "You are not the first to push back. In 1834, the mills announced a twelve and a half percent pay cut. The women walked out, and pulled their savings from the banks, causing a run on two of them.",
+          "sahneler": [
+            {
+              "tarif": "A crowd of young women with round cream heads lining up at the counter of a small bank, a worried banker behind it.",
+              "hareket": "sag",
+              "yazi": "LOWELL — 1834",
+              "kisi": true
+            },
+            {
+              "tarif": "An empty bank vault with its door open, a few coins left on the shelf, lamp light.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "They warned that the oppressing hand of avarice would enslave them.",
+          "sahneler": [
+            {
+              "tarif": "A huge dark shadow of a grasping hand falling across the brick wall of a mill at dusk.",
+              "hareket": "i2v",
+              "i2v": "The dark shadow of the hand slowly grows across the brick wall. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "That strike failed. Within days, they were back at work for less money, or gone.",
+          "sahneler": [
+            {
+              "tarif": "A line of women with round cream heads walking slowly back into the mill gate, heads down, grey sky.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Now it's October 1836, and the mills want to raise the rent in the boarding houses. This time, the women form the Factory Girls' Association and walk out again.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image standing in a crowd of mill women in the street, holding her shawl tight, determined.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_isci"
+              ],
+              "yazi": "LOWELL — OCTOBER 1836"
+            },
+            {
+              "tarif": "A crowd of mill women with round cream heads marching out of a mill gate into the street, shawls and bonnets, autumn leaves.",
+              "hareket": "i2v",
+              "i2v": "The crowd of women walks out through the gate, shawls sway, autumn leaves blow past. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "A girl climbs onto a water pump and gives a speech. It's said to be the first time a woman has spoken in public in Lowell. The crowd is shocked.",
+          "sahneler": [
+            {
+              "tarif": "A young woman with a round cream head standing on top of a town water pump, one arm raised, speaking to a crowd of women below.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "Faces of a crowd of women and men with round cream heads looking up, surprised, in a town square.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "More than fifteen hundred workers join the turn-out, nearly twice as many as before. The mills run far below capacity. And this time, the town is on your side.",
+          "sahneler": [
+            {
+              "tarif": "A huge silent mill room with most machines stopped, only a few women still working, dust settling in the light.",
+              "hareket": "i2v",
+              "i2v": "Dust settles slowly in the light, one machine turns slowly, the others stand still. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Townspeople with round cream heads handing bread to striking mill women in the street, warm light.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "After several weeks, the directors cancel the rent increase. You won.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image hugging two other mill women in the street, laughing, evening light.",
+              "hareket": "iceri",
+              "kim": [
+                "sen_isci"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The ten-hour fight",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Most girls stay only a few years, and you will probably be back on a farm, or married, when the next fight comes. In January 1845, twelve workers start the Lowell Female Labor Reform Association. Within six months, it has five hundred members. It is the first union of working women in the United States.",
+          "sahneler": [
+            {
+              "tarif": "Twelve young women with round cream heads around a small table in a boarding house parlor at night, one writing in a notebook, lamp light.",
+              "hareket": "iceri",
+              "yazi": "LOWELL — 1845",
+              "kisi": true
+            },
+            {
+              "tarif": "A long line of women with round cream heads signing their names on a very long sheet of paper on a table outdoors.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Pay is not what it was, either. In her letters, a worker named Mary Paul expects about two dollars a week, and writes that it will be dearly earned.",
+          "sahneler": [
+            {
+              "tarif": "A young woman with a round cream head writing a letter by candlelight at a small desk, a few coins beside the paper.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "They send petitions signed by thousands of workers, asking for a ten-hour day. The state legislature holds hearings, the first government investigation of working conditions in the United States.",
+          "sahneler": [
+            {
+              "tarif": "A grand state house hall with men in dark suits at a long table, a mill woman with a round cream head standing before them, speaking.",
+              "hareket": "yukari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The committee decides that working hours are not the legislature's business.",
+          "sahneler": [
+            {
+              "tarif": "A heavy wooden door closing in a dark hallway of a government building, a thin strip of light disappearing.",
+              "hareket": "i2v",
+              "i2v": "The heavy door slowly closes, the strip of light narrows. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The women can't vote. They campaign against the committee's chairman anyway, and call him a tool. He loses his next election, mostly over railroads. A year later, he's back.",
+          "sahneler": [
+            {
+              "tarif": "A town street with election posters on a wall, all plain shapes without text, a group of mill women with round cream heads handing out papers to passing men.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Their newspaper, the Voice of Industry, doesn't hold back. One of their tracts declares that they will no longer submit to that arbitrary power.",
+          "sahneler": [
+            {
+              "tarif": "A small printing press in a dim room, a sheet of paper coming out covered in grey blocks instead of text, ink and lamp light.",
+              "hareket": "i2v",
+              "i2v": "The press lever moves down and up, a sheet of paper slides out. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "But the pressure works, slowly. In 1847, the mills cut thirty minutes from the workday. In 1853, the day drops to eleven hours.",
+          "sahneler": [
+            {
+              "tarif": "The factory clock on the brick wall, warm evening light, a little brighter than before.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Mill women with round cream heads walking out of the gate while it is still light outside, the sun low over the river.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1847, New Hampshire becomes the first state to pass a ten-hour law. Nobody enforces it.",
+          "sahneler": [
+            {
+              "tarif": "A dusty law book lying closed on a shelf under a cobweb, a beam of light on it.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "By the 1850s, the mills can't find enough farm girls. They start hiring Irish immigrants, survivors of the Great Famine. The world you knew is changing.",
+          "sahneler": [
+            {
+              "tarif": "A crowded mill gate with new workers, men and women with round cream heads in worn clothes and caps, carrying bundles, grey morning.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "One of their writings puts the whole fight in a single line: those who work in the mills ought to own them.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image standing in front of the huge brick mill at sunrise, looking up at it, the light on her face.",
+              "hareket": "yukari",
+              "kim": [
+                "sen_isci"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "So, three to four dollars a week, seventy-three hours, a ten o'clock curfew, and a library card. Would you have taken the job? And in 1836, would you have walked out? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The young woman from the reference image standing alone on the canal bridge at dusk, looking back at the glowing mill, her shawl around her shoulders.",
+              "hareket": "i2v",
+              "kim": [
+                "sen"
+              ],
+              "i2v": "The canal water flows under the bridge, the mill windows glow, her shawl moves gently in the wind. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "Wide view of the brick mills along the river at night, every window glowing, reflections in the water.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
