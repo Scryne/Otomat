@@ -60,6 +60,7 @@ class Film:
     bolumler: tuple[Bolum, ...]
     kaynaklar: tuple[dict, ...] = field(default_factory=tuple)
     ozet: str = ""  # açıklamanın ilk satırları (aramada görünen kısım); yoksa başlık
+    etiketler: tuple[str, ...] = ()  # YouTube etiketleri (yükleme)
 
     def bloklar(self) -> list[tuple[int, Blok]]:
         return [(i, b) for i, bo in enumerate(self.bolumler) for b in bo.bloklar]
@@ -123,7 +124,7 @@ def oku(yol: Path) -> Film:
         kapak_kim=kapak_kim, stil=d["stil"], insan=d["insan"], ses=d.get("ses", "bm_george"),
         hiz=float(d.get("hiz", 1.0)),
         karakterler=karakterler, bolumler=tuple(bolumler), kaynaklar=tuple(d.get("kaynaklar", ())),
-        ozet=d.get("ozet", "").strip(),
+        ozet=d.get("ozet", "").strip(), etiketler=tuple(d.get("etiketler", ())),
     )  # fmt: skip
 
 
