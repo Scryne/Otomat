@@ -1,5 +1,5 @@
 """Filmden dikey Shorts kesiti (K-34): senaryodaki `kesitler` aralığı bitmiş `video.mp4`'ten kesilir, 1080×1920'ye
-yerleştirilir (bulanık zemin + ortada 4:3 görüntü), üstte başlık, altında kelime zamanlı altyazı.
+yerleştirilir (bulanık zemin + ortada tam 16:9 görüntü), üstte başlık, altında kelime zamanlı altyazı.
 
 Altyazının metni senaryodan, zamanı Whisper'dan gelir: Whisper "Dyea"yı "Dyer", "Mountie"yi "bounty" yazıyordu (Klondike
 uçtan uca denetimi); eşleşmeyen kelimenin zamanı komşularından aradeğerlenir. Yerleşim Shorts arayüzünün güvenli
@@ -25,9 +25,10 @@ from otomat.film import kurgu, senaryo, uretim
 W, H, FPS = 1080, 1920, 24
 EN_UZUN = 59.0  # Shorts 3 dakikaya kadar kabul ediyor ama kesit kısa ve tek fikir olmalı
 ON_PAY, ARKA_PAY = 0.25, 0.6
-ON_Y, ON_W, ON_H = 450, 1080, 810  # ortadaki görüntü (4:3)
-BASLIK_Y = (170, 420)
-ALTYAZI_Y = 1345
+# ortadaki görüntü tam 16:9: 4:3 kırpma filmin sol üstteki tarih damgasını yarıda kesiyordu ("E — JULY 1897")
+ON_Y, ON_W, ON_H = 500, 1080, 608
+BASLIK_Y = (190, 440)
+ALTYAZI_Y = 1215
 KAPANIS = 2.0  # son saniyeler: altyazı yerine kanal çağrısı
 KAPANIS_YAZI = "FULL FILM ON THE CHANNEL"
 
@@ -128,7 +129,7 @@ def kare(goruntu: Image.Image, ust: Image.Image, yazi: str, saydam: float = 1.0)
     kucuk = goruntu.resize((341, 192), Image.Resampling.BILINEAR).crop((116, 0, 224, 192))
     zemin = kucuk.filter(ImageFilter.GaussianBlur(5)).resize((W, H), Image.Resampling.BILINEAR)
     zemin = Image.blend(Image.new("RGB", (W, H)), zemin, 0.45)
-    on = goruntu.crop((240, 0, 1680, 1080)).resize((ON_W, ON_H), Image.Resampling.LANCZOS)
+    on = goruntu.resize((ON_W, ON_H), Image.Resampling.LANCZOS)
     zemin.paste(on, (0, ON_Y))
     zemin.paste(ust, (0, 0), ust)
     if yazi:
