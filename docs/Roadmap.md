@@ -667,8 +667,13 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   kurgulandı, doğrulandı, kesitleri yenilendi. Ayrıntı: `docs/arastirma/11-uzun-video.md` "Wan 14B'ye geçiş".
 - **Yükleme (10-19):** K-30 denemesi geçti (unlisted yüklenen Klondike işlendikten sonra da unlisted, kapak tamam; kilit
   yok). Klondike `bx557A2rIHQ` 10-24 19:00 UTC'ye planlı, 3 kesiti 10-26/28/30. Hesap temkini için günde bir film + 3
-  kesit: Violet Jessop 10-19, Lowell 10-20, Ellis 10-21 Windows Görev Zamanlayıcı'dan (`Otomat-Yukle-<slug>`,
-  `calisma/film/yukle_sira.cmd`, kayıt `calisma/film/yukleme_sira.log`; önceki film bitmeden çalışmaz).
+  kesit: Violet Jessop 10-19 Görev Zamanlayıcı'dan yüklendi. Scryne "şimdi yükle" dedi: Lowell filmi ve ilk kesiti
+  girdi, ikinci kesitte `uploadLimitExceeded` (kanal 24 saatte 10 video; Klondike 4 + Violet 4 + Lowell 2). Kalan 6
+  (Lowell 2 kesit, Ellis film + 3 kesit) 10-20 03:45 TR'de tek görevle (`Otomat-Yukle-kalan`,
+  `calisma/film/yukle_sira.cmd`, kayıt `calisma/film/yukleme_sira.log`; önceki film bitmeden çalışmaz, yüklenmiş kesit
+  atlanır). Denetimde bulunan: `planla` status'u eksik alanla yazınca Klondike gömülemez olmuştu; artık
+  `youtube.tam_durum` ile, canlıdaki düzeltildi. 10 videonun gizlilik, `publishAt`, süre, çözünürlük, başlık, açıklama,
+  bölümler, etiket, kategori ve kesit-film bağı denetimden temiz geçti.
 - **Kalan (Bitti kriteri):** pilotun yayını (10-31); ikinci ve üçüncü film farklı yapıda yayında. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 
 ### Faz 7: Gerçek kullanım

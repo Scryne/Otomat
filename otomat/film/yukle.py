@@ -180,9 +180,9 @@ def planla(film: senaryo.Film, yt=None, simdi: dt.datetime | None = None) -> dic
         raise YuklemeHatasi(f"{film.slug} zaten planlı: {kayit['yayin']}")
     yayin = sonraki_film_slotu(simdi or dt.datetime.now(dt.UTC), film_takvimi())
     yt = yt or servis()
-    yt.videos().update(part="status", body={"id": kayit["video_id"], "status": {
-        "privacyStatus": "private", "publishAt": _zaman_yazi(yayin), "selfDeclaredMadeForKids": False,
-        "containsSyntheticMedia": False}}).execute()  # fmt: skip
+    # bütün status alanlarıyla: verilmeyen alan varsayılana döner (10-19'da Klondike gömülemez oldu)
+    yt.videos().update(part="status", body=youtube.tam_durum(yt, kayit["video_id"], mfk=False, yayin_ani=yayin)
+                       ).execute()  # fmt: skip
     kayit["yayin"] = _zaman_yazi(yayin)
     y["kayit"].write_text(json.dumps(kayit, indent=1), encoding="utf-8")
     return kayit
@@ -227,6 +227,12 @@ def yukle_kesit(film: senaryo.Film, sira: int, yt=None) -> dict:
     return kayit
 
 
+def eksik_kesitler(film: senaryo.Film) -> list[int]:
+    """Kaydı olmayan kesitler: kanalın 24 saatte 10 video sınırı (10-19, `uploadLimitExceeded`) yarıda keserse."""
+    d = uretim.dizin(film) / "kesit"
+    return [i for i in range(len(film.kesitler)) if not (d / f"{i:02d}.json").exists()]
+
+
 def durum(film: senaryo.Film, yt=None) -> dict:
     kayit = json.loads(dosyalar(film)["kayit"].read_text(encoding="utf-8"))
     yt = yt or servis()
@@ -246,7 +252,7 @@ def main() -> None:
         print(json.dumps(planla(senaryo.oku(Path(a[1]))), indent=1))
     elif a and a[0] == "kesit":
         film = senaryo.oku(Path(a[1]))
-        for i in range(len(film.kesitler)) if len(a) == 2 else [int(a[2])]:
+        for i in eksik_kesitler(film) if len(a) == 2 else [int(a[2])]:
             print(json.dumps(yukle_kesit(film, i), indent=1))
     elif a:
         print(json.dumps(yukle(senaryo.oku(Path(a[0])), a[1] if len(a) > 1 else "plan"), indent=1))

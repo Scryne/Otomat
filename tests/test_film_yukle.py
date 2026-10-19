@@ -129,3 +129,24 @@ def test_kesit_filmden_once_yuklenmez_ve_filme_baglanir(film):
     aciklama = g["snippet"]["description"]
     assert "watch?v=FILM1" in aciklama and "Chapters" not in aciklama and "Sources" in aciklama
     assert g["snippet"]["title"] == k.baslik
+
+
+def test_planla_butun_status_alanlarini_yazar(film, monkeypatch):
+    monkeypatch.setattr(yukle, "film_takvimi", lambda kok=None: [])
+    (uretim.dizin(film) / "yukleme.json").write_text(json.dumps({"video_id": "VID123"}))
+    yt = _SahteYT()
+    guncelleme = []
+    yt.update = lambda part, body: guncelleme.append(body) or _Istek({})
+    kayit = yukle.planla(film, yt=yt, simdi=_utc(2026, 10, 18, 12))
+    s = guncelleme[0]["status"]
+    assert s["publishAt"] == "2026-10-24T19:00:00.000Z" == kayit["yayin"] and s["privacyStatus"] == "private"
+    assert s["embeddable"] is True and s["publicStatsViewable"] is True and s["license"] == "youtube"
+    assert s["selfDeclaredMadeForKids"] is False
+
+
+def test_yarida_kalan_kesitler_kaldigi_yerden(film):
+    d = uretim.dizin(film) / "kesit"
+    d.mkdir()
+    assert yukle.eksik_kesitler(film) == [0, 1, 2]
+    (d / "00.json").write_text("{}")
+    assert yukle.eksik_kesitler(film) == [1, 2]
