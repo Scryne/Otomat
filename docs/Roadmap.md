@@ -674,6 +674,13 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   atlanır). Denetimde bulunan: `planla` status'u eksik alanla yazınca Klondike gömülemez olmuştu; artık
   `youtube.tam_durum` ile, canlıdaki düzeltildi. 10 videonun gizlilik, `publishAt`, süre, çözünürlük, başlık, açıklama,
   bölümler, etiket, kategori ve kesit-film bağı denetimden temiz geçti.
+- **İkinci ay (10-20):** Scryne: "bir sonraki ayın videolarını da üret… tektek sırayla". Dört film üretildi ve
+  doğrulandı, biçimler dönüşümlü: Graf Zeppelin (What if you, 1929) 11-21, Emperor Norton (kişi) 11-28, Pony Express
+  (What if you, 1860) 12-05, Great Stink (olay, Londra 1858) 12-12; her birinin 3 kesiti. Süreler 8:21-8:43, uçtan uca
+  Whisper %0,5-1,7, sayılar tam. Yükleme günde bir film + 3 kesit, Görev Zamanlayıcı'dan 10-21…10-24 04:00
+  (`Otomat-Yukle-zeppelin/norton/pony/stink`). Anlatım kapısında iki yanlış alarm kodda düzeldi ("$3.55", "£3m"; film
+  testleri 36 → 38). Ayrıntı ve dersler (sakal burun çizdiriyor, modern dünya sızıntısı, bellek
+  bekçisinin yanlış ölçüsü): `docs/arastirma/11-uzun-video.md` "İkinci ay".
 - **Kalan (Bitti kriteri):** pilotun yayını (10-31); ikinci ve üçüncü film farklı yapıda yayında. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 
 ### Faz 7: Gerçek kullanım

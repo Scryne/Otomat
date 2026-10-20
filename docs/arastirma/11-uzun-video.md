@@ -244,3 +244,42 @@ Scryne Lowell ve Ellis'in durağanlığını sordu ("son iki film kötü mü"); 
   ikinci çubuk çıkardı, Q4 temizdi. GGUF umt5 işlemcide açılıp RAM'i fp8'den çok şişirdi, fp8 kaldı. Q3'le de bir kez
   kesildi (oturum boştayken); `CLAUDE_CODE_DISABLE_BG_SHELL_PRESSURE_REAP=1` önerildi.
 - 14B 16 fps üretir; klip dizinine `fps` yazılır, kurgu onu okur (24 sanılsa 1,5 kat hızlı oynardı).
+
+## İkinci ay: Film 5-8 (10-20) [Ö]
+
+Scryne: "bir sonraki ayın videolarını da üret… tektek sırayla… herşeyi sana bırakıyorum". Konular bir araştırma ajanının
+9 adayından (tek Wikipedia makalesi, ≥3.500 kelime, şiddetsiz, rakip zayıf) ve biçim dönüşümlü seçildi (inauthentic
+content: her video ayrı yapı): K-31 "What if you" iki film, üçüncü şahıs kişi hikâyesi bir, olay hikâyesi bir.
+
+| | Graf Zeppelin | Emperor Norton | Pony Express | Great Stink |
+| --- | --- | --- | --- | --- |
+| Biçim | What if you (1929) | kişi, 3. şahıs | What if you (1860) | olay, 3. şahıs |
+| Kaynak revid | 1379984179 | 1380337225 | 1380206108 | 1380641323 |
+| Kelime / sahne | 1.299 / 88 | 1.293 / 79 | 1.252 / 68 | 1.295 / 67 |
+| Süre | 8:23 | 8:43 | 8:21 | 8:42 |
+| Uçtan uca Whisper | %0,9, sayılar tam | %1,7, sayılar tam* | %0,5, sayılar tam | %1,2, sayılar tam |
+| Sahne düzeltme | 9 / 88 | 10 / 79 (+3 kart) | 17 / 68 (+2 kart) | 12 / 67 (+2 kart) |
+| 14B klip | 28'de 27 temiz | 21'de 19 temiz | 30'da 27 temiz | 26'da 25 temiz |
+
+\* Whisper "10,000"i "10 000" yazdı (ayrı iki sayı); ses doğru.
+
+- **Sakal ve bıyık burun çizdiriyor:** sakallı/bıyıklı her karakter kartında (8 kartın 7'si) yarı gerçekçi burun çıktı. Kart
+  tarifine "a perfectly round cream-white face with no nose, small dot eyes" ve sakalın "below the face" yazılması çoğunu
+  düzeltti; kalanlarda sakal/bıyık kaldırıldı ya da tohum değiştirildi (kart dosyası referanstır, tohumu serbest).
+- **Model 1860'a modern dünya çiziyor:** kamyon, gökdelen, TV anteni, cam kapı, modern gemi. Tarifte dönemi ve "no tall
+  buildings / no trucks / only horse-drawn carts" yazmak yetti. "Control car" (zeplin kumanda gondolu) otomobil diye
+  çizildi; "airship cockpit" düzeltti.
+- **Kişili sahnede manzaraya yüz:** insan tarifi istemdeyken dağ zirvelerine ve küreye göz çizildi; kişi sahne için
+  önemsizse sahne insansız yazıldı.
+- **Aynı karakterin iki kopyası:** "X handing Y to …" kalıbında ikinci kişi tarif edilmeyince referans karakter ikinci kez
+  çizildi; karşıdaki kişi ayrıca tarif edilir.
+- **Anlatım kapısında üç yanlış alarm daha:** "$3.55" ↔ "three dollars and fifty-five cents" (kodda düzeltildi, test
+  eklendi); "£3m" ↔ "three million pounds" (kodda, testli); "two" ↔ "too" ve "Norton the First" ↔ "Norton I" (metin
+  değiştirildi). Kapının yakalamadığı bir okuma hatası: Chatterbox "St Albans"ı bozuk okudu (Whisper "Snorbens");
+  bitmiş videonun uçtan uca dökümünde görüldü, metin "Saint Albans" yapıldı. Kısaltmalar (St, Mr, No.) açık yazılır.
+- **Bellek:** kendi bekçim (`FreePhysicalMemory` < 1,2 GB → ComfyUI'yi kes) Wan yüklenirken iki kez sağlam süreci kesti;
+  bu ölçü Windows'un geri alınabilir önbelleğini saymıyor. "Available" ölçüsüne (< 0,8 GB) geçti. Wan 14B ile Whisper
+  (kesit, doğrulama) aynı anda koşturulmaz; FLUX sahneleri ve CPU render'ı birlikte sorunsuz. Wan sırasında başka bir
+  projenin işi (Matbaa `tiktok`) başlayınca kullanılabilir RAM 0,4 GB'a indi ve bekçi doğru kesti; iş bitince sürdü.
+- **Yükleme:** kanal 24 saatte 10 video kabul ediyor; her film (film + 3 kesit) ayrı güne Görev Zamanlayıcı ile
+  (`Otomat-Yukle-<film>`, `yukle_sira.cmd`, önceki filmin son kesiti yüklenmeden çalışmaz).

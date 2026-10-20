@@ -38,7 +38,7 @@
     }
   ],
   "kapak_yazi": "EMPEROR.",
-  "kapak_sahne": "The bearded emperor from the reference image standing tall on a foggy San Francisco street at night, looking straight at the viewer with great dignity, one hand on his walking stick, a police officer saluting him in the background, warm gas lamp light on his uniform.",
+  "kapak_sahne": "Waist-up close view of the bearded emperor from the reference image on a foggy San Francisco street at night, his tall dark hat with a big colourful feather sticking up from it, looking straight at the viewer with great dignity, chin raised, one hand on his chest, warm gas lamp light on his blue uniform and gold epaulettes, dark wooden buildings blurred behind him.",
   "kapak_kim": [
     "norton"
   ],
@@ -56,7 +56,7 @@
   "karakterler": {
     "norton": "one man about fifty, a self-proclaimed emperor: a perfectly round cream-white face with no nose, small dot eyes, a big bushy dark beard covering only the chin and jaw below the face, faded blue military uniform coat with gold epaulettes and brass buttons, tall dark beaver hat with a colourful feather on top, holding a wooden walking stick",
     "genc": "one clean-shaven man about thirty-four, a prosperous 1850s merchant: a perfectly round cream-white face with no nose, small dot eyes, short dark sideburns, black frock coat, grey waistcoat with a gold watch chain, tall black top hat",
-    "polis": "one 1860s San Francisco police officer: dark moustache, long dark blue coat with brass buttons, dark blue peaked police cap"
+    "polis": "one clean-shaven 1860s San Francisco police officer: a perfectly round cream-white face with no nose, small dot eyes, long dark blue coat with brass buttons, dark blue peaked police cap"
   },
   "bolumler": [
     {
@@ -97,7 +97,7 @@
           "anlatim": "The letter begins: At the peremptory request and desire of a large majority of the citizens of these United States, I, Joshua Norton, declare and proclaim myself Emperor of these United States.",
           "sahneler": [
             {
-              "tarif": "A sheet of old paper with lines of handwriting shown only as grey blurred strokes, lit by a candle, a quill pen beside it.",
+              "tarif": "A sheet of old paper with a few plain straight grey horizontal bars on it instead of writing, lit by a candle, a quill pen beside it.",
               "hareket": "iceri"
             },
             {
@@ -246,7 +246,7 @@
           "anlatim": "Two years later, he ran an ad in the paper announcing that he was a candidate for the United States Congress. Then, in 1859, he aimed higher.",
           "sahneler": [
             {
-              "tarif": "The merchant in the top hat from the reference image pinning a small paper notice onto a wooden board covered in other notices, all with blank grey blocks instead of writing.",
+              "tarif": "The merchant in the top hat from the reference image pinning a small paper notice onto a wooden board covered in other notices, all completely blank paper with no marks at all.",
               "hareket": "iceri",
               "kim": [
                 "genc"
@@ -261,7 +261,7 @@
       "mood": "funny",
       "bloklar": [
         {
-          "anlatim": "Emperor Norton the First got straight to work. On October 12, 1859, he issued a decree to formally abolish the United States Congress.",
+          "anlatim": "The new emperor got straight to work. On October 12, 1859, he issued a decree to formally abolish the United States Congress.",
           "sahneler": [
             {
               "tarif": "The bearded emperor from the reference image seated at a tiny desk in a small rented room, writing with a quill by candlelight, stacks of papers around him.",
@@ -366,8 +366,7 @@
           "sahneler": [
             {
               "tarif": "A huge 1930s suspension bridge stretching across a wide bay at dusk, tiny lights along its cables, fog drifting under it.",
-              "hareket": "i2v",
-              "i2v": "Fog drifts slowly under the bridge, the bay water ripples, the small lights twinkle. Flat 2D cartoon animation, static camera.",
+              "hareket": "iceri",
               "yazi": "1936"
             }
           ]
@@ -462,7 +461,7 @@
           "anlatim": "A cartoonist often drew him with two famous stray dogs, Bummer and Lazarus. So people assumed they were his pets. There's no evidence they were.",
           "sahneler": [
             {
-              "tarif": "Two scruffy cartoon stray dogs in flat simple style, one big and one small, sitting together on a foggy street corner.",
+              "tarif": "Two stray dogs drawn as very simple flat 2D cartoon shapes with thick black outlines, round bodies, dot eyes and no fur detail, one big and one small, sitting together on a foggy street corner.",
               "hareket": "i2v",
               "i2v": "The two dogs wag their tails and look around, fog drifts behind them. Flat 2D cartoon animation, static camera."
             },
@@ -695,8 +694,7 @@
           "sahneler": [
             {
               "tarif": "An umbrella lying open on a wet cobblestone street at night under a gas lamp, rain falling.",
-              "hareket": "i2v",
-              "i2v": "Rain falls on the cobblestones, the open umbrella rocks gently in the wind. Flat 2D cartoon animation, static camera."
+              "hareket": "yukari"
             },
             {
               "tarif": "The police officer from the reference image running through the rain at night down a dark street.",
@@ -711,7 +709,7 @@
           "anlatim": "The next morning, one paper wrote: Norton the First, by the grace of God, Emperor of the United States and Protector of Mexico, departed this life.",
           "sahneler": [
             {
-              "tarif": "A grey rainy dawn over the rooftops of the city, fog lying in the streets.",
+              "tarif": "A grey rainy dawn over the low wooden rooftops and chimneys of an 1880 city, fog lying in the streets.",
               "hareket": "i2v",
               "i2v": "Fog drifts slowly over the rooftops, the grey clouds move. Flat 2D cartoon animation, static camera."
             }
@@ -808,7 +806,7 @@
           "anlatim": "In 1939, a plaque honoring his call for a bridge was made. The bridge authorities didn't approve it. It has been moved around ever since.",
           "sahneler": [
             {
-              "tarif": "A bronze plaque with a raised portrait and decorative borders but no letters, leaning against a wall in a storage room.",
+              "tarif": "A plain bronze plaque with only a decorative border and an empty smooth centre, no picture and no letters, leaning against a wall in a storage room.",
               "hareket": "sag"
             }
           ]
@@ -841,7 +839,7 @@
           "anlatim": "So, here's my question. If a broke, kind, slightly strange man in your town declared himself emperor tomorrow, would you salute him? Tell me in the comments.",
           "sahneler": [
             {
-              "tarif": "The bearded emperor from the reference image turning to face the viewer directly, raising his tall feathered hat in a polite greeting, foggy city behind him.",
+              "tarif": "The bearded emperor from the reference image turning to face the viewer directly, raising his tall feathered hat in a polite greeting, a foggy 1870s city of low wooden houses and church spires behind him.",
               "hareket": "iceri",
               "kim": [
                 "norton"

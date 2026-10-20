@@ -38,7 +38,7 @@
     }
   ],
   "kapak_yazi": "10 DAYS.",
-  "kapak_sahne": "The young rider from the reference image galloping straight toward the viewer on a small fast brown horse across an empty prairie at sunset, a leather mail cover on the saddle, dust flying, his scarf streaming behind him, determined look.",
+  "kapak_sahne": "Wide shot: the young rider from the reference image small in the lower half of the image, galloping toward the viewer on a small fast brown horse across an empty prairie at sunset, a leather mail cover on the saddle, dust flying, his red scarf streaming behind him, a huge empty glowing sky filling the upper half of the image.",
   "kapak_kim": [
     "sen"
   ],
@@ -55,8 +55,8 @@
   "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
   "karakterler": {
     "sen": "one skinny young man about eighteen, an 1860 express rider: short straw-coloured hair, wide-brimmed tan hat, red bandana scarf around his neck, brown leather vest over a light blue shirt, dark trousers tucked into tall brown boots",
-    "majors": "one 1860 businessman about forty-five: dark hair, full dark beard, black frock coat, white shirt, black bow tie",
-    "keeper": "one 1860 frontier station keeper: grey stubble beard, rolled-up shirt sleeves, brown work apron, battered grey hat"
+    "majors": "one clean-shaven 1860 businessman about forty-five: a perfectly round cream-white face with no nose, small dot eyes, short dark hair with long dark sideburns, black frock coat, white shirt, black bow tie",
+    "keeper": "one 1860 frontier station keeper: a perfectly round cream-white face with no nose, small dot eyes, a short grey chin beard below the face, rolled-up shirt sleeves, brown work apron, battered grey hat"
   },
   "bolumler": [
     {
@@ -138,7 +138,7 @@
           "anlatim": "There's a catch. Alexander Majors, one of the owners, is a religious man. He hands you a Bible, and you sign an oath. No swearing. No liquor. No fighting with the other men.",
           "sahneler": [
             {
-              "tarif": "The bearded businessman from the reference image handing a small leather Bible across a desk, very serious, lamp light.",
+              "tarif": "The businessman with long sideburns from the reference image handing a small leather Bible across a desk to a skinny young rider with a round cream head and a cowboy hat sitting opposite him, very serious, lamp light.",
               "hareket": "iceri",
               "kim": [
                 "majors"
@@ -192,7 +192,7 @@
           "anlatim": "Three businessmen, Russell, Majors and Waddell, set the whole thing up in two months. Riders, stations, and hundreds of horses.",
           "sahneler": [
             {
-              "tarif": "The bearded businessman from the reference image with two other businessmen with round cream heads leaning over a big map spread on a table, lamp light.",
+              "tarif": "The businessman with long sideburns from the reference image with two other businessmen with round cream heads leaning over a big map spread on a table, lamp light.",
               "hareket": "iceri",
               "kim": [
                 "majors"
@@ -204,7 +204,7 @@
           "anlatim": "They were already in the freighting business. At their peak, they employed six thousand men and owned seventy-five thousand oxen.",
           "sahneler": [
             {
-              "tarif": "A long line of covered freight wagons pulled by teams of oxen across a dusty plain at sunset.",
+              "tarif": "A long line of old wooden covered wagons with white canvas tops, each pulled by a team of oxen, crossing a dusty empty prairie at sunset, no engines and no trucks.",
               "hareket": "i2v",
               "i2v": "The oxen pull the wagons slowly forward, dust rises in the golden light. Flat 2D cartoon animation, static camera."
             }
@@ -305,7 +305,7 @@
           "anlatim": "Meanwhile, in Sacramento, a rider named Sam Hamilton set off with the first mail going the other way.",
           "sahneler": [
             {
-              "tarif": "A lone rider with a round cream head galloping out of a sleeping riverside town at night, a single lamp behind him.",
+              "tarif": "A rider with a round cream head on a full-size galloping horse, seen from the side, leaving a sleeping 1860 riverside town of small wooden houses at night, a single lamp behind him.",
               "hareket": "i2v",
               "i2v": "The rider gallops away into the dark, the lamp glows behind him. Flat 2D cartoon animation, static camera.",
               "kisi": true
@@ -330,7 +330,7 @@
               "i2v": "The horse gallops forward, the tall grass sways, his scarf flies in the wind. Flat 2D cartoon animation, static camera."
             },
             {
-              "tarif": "The young rider from the reference image riding hunched against heavy rain at night on a muddy trail.",
+              "tarif": "The young rider from the reference image sitting on his galloping brown horse, hunched in the saddle against heavy rain at night on a muddy trail.",
               "hareket": "sol",
               "kim": [
                 "sen"
@@ -375,7 +375,7 @@
               "hareket": "iceri"
             },
             {
-              "tarif": "The young rider from the reference image swinging the leather saddle cover from one saddle onto another in one quick move.",
+              "tarif": "The young rider from the reference image standing between two saddled horses, throwing the leather saddle cover from one horse onto the other horse's saddle, nobody else there.",
               "hareket": "sag",
               "kim": [
                 "sen"
@@ -409,8 +409,7 @@
           "sahneler": [
             {
               "tarif": "A small saddle maker's workshop with leather hides and tools on the walls, a craftsman with a round cream head stitching a light saddle by lamp light.",
-              "hareket": "i2v",
-              "i2v": "He pulls the stitching thread through the leather, the lamp flame flickers. Flat 2D cartoon animation, static camera.",
+              "hareket": "iceri",
               "kisi": true
             }
           ]
@@ -419,7 +418,7 @@
           "anlatim": "And the horses? The company paid around two hundred dollars each. They're small and fast, about nine hundred pounds. That's where the name pony comes from, even if not all of them really are.",
           "sahneler": [
             {
-              "tarif": "A corral full of small fast horses of different colours at sunset, kicking up dust.",
+              "tarif": "A wooden corral on an empty prairie full of small fast horses of different colours at sunset, kicking up dust, no buildings.",
               "hareket": "i2v",
               "i2v": "The horses trot around the corral, dust rises in the golden light. Flat 2D cartoon animation, static camera."
             }
@@ -453,10 +452,9 @@
               "hareket": "sag"
             },
             {
-              "tarif": "A wide high mountain pass between snowy peaks, a single rider crossing it far away.",
+              "tarif": "A wide high grassy mountain pass between snowy peaks under a clear sky, a narrow dirt trail winding through it.",
               "hareket": "i2v",
-              "i2v": "Clouds drift over the snowy peaks, the grass in the pass ripples in the wind. Flat 2D cartoon animation, static camera.",
-              "kisi": true
+              "i2v": "Clouds drift over the snowy peaks, the grass in the pass ripples in the wind. Flat 2D cartoon animation, static camera."
             }
           ]
         },
@@ -492,7 +490,7 @@
           "anlatim": "The first westbound mail reaches Sacramento at one in the morning on April 14. Ten days, as promised. From there, a steamer carries it down the river to San Francisco.",
           "sahneler": [
             {
-              "tarif": "A riverside town at night, a rider with a round cream head pulling up his tired horse in front of a lit office, a small cheering crowd.",
+              "tarif": "A small 1860 riverside town of wooden buildings at night, a rider with a round cream head pulling up his tired horse in front of a lit wooden office, a small cheering crowd.",
               "hareket": "iceri",
               "yazi": "SACRAMENTO — 14 APRIL 1860",
               "kisi": true
@@ -508,7 +506,7 @@
           "anlatim": "In San Francisco, the first pouch was delivered around midnight. Inside was a letter of congratulations from President Buchanan to the governor of California. Eighty-five pieces of mail in all.",
           "sahneler": [
             {
-              "tarif": "A foggy San Francisco waterfront at midnight, a small crowd of people with round cream heads holding lanterns around a rider and his horse.",
+              "tarif": "A foggy 1860 waterfront of wooden wharves and sailing ships at midnight, no tall buildings, a small crowd of people with round cream heads holding lanterns around a rider and his horse.",
               "hareket": "i2v",
               "i2v": "The lanterns sway, the fog drifts, the horse shakes its mane. Flat 2D cartoon animation, static camera.",
               "yazi": "SAN FRANCISCO",
@@ -538,8 +536,7 @@
           "sahneler": [
             {
               "tarif": "An empty corral with a broken gate swinging in the wind at dawn, no horses.",
-              "hareket": "i2v",
-              "i2v": "The broken gate swings slowly in the wind, dust blows across the empty corral. Flat 2D cartoon animation, static camera."
+              "hareket": "yukari"
             },
             {
               "tarif": "A stack of mail pouches piled up untouched in a dark station room.",
@@ -565,7 +562,7 @@
               "kisi": true
             },
             {
-              "tarif": "A lone rider galloping through a dark rocky canyon at night under the stars.",
+              "tarif": "A rider with a round cream head on a dark galloping horse, small in the frame, riding through a dark rocky canyon at night under the stars.",
               "hareket": "i2v",
               "i2v": "The rider gallops forward through the canyon, the stars glitter, dust rises. Flat 2D cartoon animation, static camera.",
               "kisi": true
@@ -576,7 +573,7 @@
           "anlatim": "Along the way, an arrow struck his jaw, and he lost three teeth. He finished anyway. Three hundred and eighty miles, round trip. The longest ride on record.",
           "sahneler": [
             {
-              "tarif": "A tired rider with a round cream head and a bandaged jaw slumped in the saddle of a walking horse at dawn, arriving at a station.",
+              "tarif": "A tired rider with a round cream head and a bandaged jaw slumped in the saddle of a walking horse at dawn, arriving at a lonely log cabin station in an empty desert.",
               "hareket": "disari",
               "kisi": true
             }
@@ -592,7 +589,7 @@
           "anlatim": "If a rider can't go on, someone has to ride double. Jack Keetley once rode three hundred and forty miles in thirty-one hours, without stopping to rest or eat.",
           "sahneler": [
             {
-              "tarif": "The young rider from the reference image riding through the night under a full moon, swaying, eyes half closed, slumping lower and lower in the saddle.",
+              "tarif": "The young rider from the reference image sitting on his walking brown horse at night under a full moon on the open prairie, swaying in the saddle, eyes half closed, slumping lower and lower in the saddle.",
               "hareket": "i2v",
               "kim": [
                 "sen"
@@ -605,7 +602,7 @@
           "anlatim": "When he finally arrived, he was taken from the saddle sound asleep.",
           "sahneler": [
             {
-              "tarif": "Two station hands with round cream heads gently lifting a sleeping rider down from his horse at dawn, his hat falling off.",
+              "tarif": "Two station hands with round cream heads gently lifting a sleeping rider with a round cream head down from the saddle of a tired horse in front of a log cabin at dawn.",
               "hareket": "iceri",
               "kisi": true
             }
@@ -616,8 +613,7 @@
           "sahneler": [
             {
               "tarif": "A stagecoach on a dusty road, a passenger with a round cream head leaning out of the window and watching a small rider gallop past.",
-              "hareket": "i2v",
-              "i2v": "The rider gallops past the stagecoach, dust rises, the stagecoach rolls slowly. Flat 2D cartoon animation, static camera.",
+              "hareket": "iceri",
               "kisi": true
             }
           ]
@@ -684,12 +680,12 @@
           "anlatim": "On October 24, 1861, the telegraph reaches Salt Lake City, connecting Omaha and Sacramento. Two days later, the Pony Express announces it is closing.",
           "sahneler": [
             {
-              "tarif": "Close view of a telegraph key and a coil of wire on a wooden desk, a single lamp.",
+              "tarif": "Close view of an old brass 1861 telegraph key with a small lever on a wooden desk next to a glowing oil lamp.",
               "hareket": "iceri",
               "yazi": "24 OCTOBER 1861"
             },
             {
-              "tarif": "A telegraph wire humming against a grey sky, a small bird sitting on it.",
+              "tarif": "A single telegraph wire stretched between two wooden poles against a grey sky over an empty prairie, a small bird sitting on it.",
               "hareket": "i2v",
               "i2v": "The wire vibrates slightly, the bird shifts its feet, grey clouds drift. Flat 2D cartoon animation, static camera."
             }
@@ -699,7 +695,7 @@
           "anlatim": "It lasted about eighteen months. It carried around thirty-five thousand letters. And it lost money. It made ninety thousand dollars and lost two hundred thousand.",
           "sahneler": [
             {
-              "tarif": "The bearded businessman from the reference image sitting alone at a desk at night with an open ledger, his head in his hands.",
+              "tarif": "The businessman with long sideburns from the reference image sitting alone at a desk at night with an open ledger, his head in his hands.",
               "hareket": "iceri",
               "kim": [
                 "majors"

@@ -54,8 +54,8 @@
   "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
   "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
   "karakterler": {
-    "baz": "one Victorian engineer about forty: receding dark hair, very big bushy dark sideburns joined to a thick moustache, black frock coat, high white collar, black cravat",
-    "dis": "one Victorian politician about fifty: black curly hair with one curl on the forehead, small black goatee beard on the chin, dark frock coat, bright red waistcoat"
+    "baz": "one Victorian engineer about forty: a perfectly round cream-white face with no nose, small dot eyes, receding dark hair, very big bushy dark sideburns on both cheeks, clean-shaven chin and upper lip, black frock coat, high white collar, black cravat",
+    "dis": "one Victorian politician about fifty: a perfectly round cream-white face with no nose, small dot eyes, black curly hair with one curl on the forehead, a small black goatee beard below the face, dark frock coat, bright red waistcoat"
   },
   "bolumler": [
     {
@@ -97,7 +97,7 @@
           "anlatim": "The press soon has a name for it. The Great Stink.",
           "sahneler": [
             {
-              "tarif": "A street newspaper seller with a round cream head shouting and waving a blank newspaper, holding his nose with the other hand, people hurrying past.",
+              "tarif": "Every person here has a round cream-white head with dot eyes and no nose. A street newspaper seller with a round cream head shouting and waving a blank newspaper, holding his nose with the other hand, people hurrying past.",
               "hareket": "i2v",
               "i2v": "He waves the newspaper up and down, people hurry past holding their noses. Flat 2D cartoon animation, static camera.",
               "kisi": true
@@ -185,7 +185,7 @@
           "anlatim": "In 1855, the scientist Michael Faraday dropped pieces of white paper into the Thames to test how murky it was. Near the bridges, he wrote, the filth rolled up in clouds so dense they were visible at the surface. The whole river was for the time a real sewer.",
           "sahneler": [
             {
-              "tarif": "A Victorian scientist with a round cream head and grey hair, leaning over the side of a small boat, dropping small white paper cards into brown water.",
+              "tarif": "A single Victorian scientist with a round cream head and grey hair, alone in a small boat, leaning over its side, dropping small white paper cards into brown water.",
               "hareket": "iceri",
               "yazi": "1855",
               "kisi": true
@@ -201,7 +201,7 @@
           "anlatim": "Charles Dickens, in one of his novels, called the Thames a deadly sewer, in the place of a fine, fresh river.",
           "sahneler": [
             {
-              "tarif": "A Victorian writer with a round cream head and a pointed beard writing at a desk by a window overlooking a hazy brown river, candle light.",
+              "tarif": "A single Victorian writer with a round cream-white head, dot eyes, no nose and a small pointed beard below the face, alone, writing at a desk by a window overlooking a hazy brown river, candle light.",
               "hareket": "iceri",
               "kisi": true
             }
@@ -242,7 +242,7 @@
               "i2v": "The greenish fog creeps slowly along the street and curls around the lamp posts. Flat 2D cartoon animation, static camera."
             },
             {
-              "tarif": "A worried Victorian doctor with a round cream head in a black coat holding a cloth over his face, looking at the fog.",
+              "tarif": "Front view of a worried Victorian doctor with a round cream head in a black coat holding a cloth over the lower half of his face, looking at the fog.",
               "hareket": "sag",
               "kisi": true
             }
@@ -373,7 +373,7 @@
           "anlatim": "With no rain, the river dropped. The raw sewage stayed on the banks, baking in the heat. One writer reported that in places the deposit was more than six feet deep.",
           "sahneler": [
             {
-              "tarif": "Low tide on a wide river: thick dark brown mud banks exposed under a hot sun, flies buzzing over them, wooden posts sticking out.",
+              "tarif": "Low tide on a wide river, only old wooden sailing barges, no modern ships: thick dark brown mud banks exposed under a hot sun, flies buzzing over them, wooden posts sticking out.",
               "hareket": "i2v",
               "i2v": "Small flies buzz over the mud, heat shimmers above it, the water barely moves. Flat 2D cartoon animation, static camera."
             }
@@ -383,7 +383,7 @@
           "anlatim": "One magazine wrote: we can colonise the remotest ends of the earth, but we cannot clean the River Thames.",
           "sahneler": [
             {
-              "tarif": "A proud Victorian sailing ship heading out to sea at sunrise, and behind it a hazy city skyline above a brown river.",
+              "tarif": "A proud Victorian sailing ship heading out to sea at sunrise, and behind it a hazy 1858 skyline of church spires, domes and chimneys, no tall buildings, above a brown river.",
               "hareket": "i2v",
               "i2v": "The sailing ship moves slowly out to sea, the sails fill with wind, the haze drifts over the city. Flat 2D cartoon animation, static camera."
             }
@@ -427,10 +427,10 @@
           ]
         },
         {
-          "anlatim": "There was talk of moving Parliament out of London altogether, to Oxford or St Albans.",
+          "anlatim": "There was talk of moving Parliament out of London altogether, to Oxford or Saint Albans.",
           "sahneler": [
             {
-              "tarif": "Politicians with round cream heads in top hats loading trunks onto a horse-drawn carriage outside the parliament building, holding their noses.",
+              "tarif": "Politicians with round cream heads in top hats loading trunks onto a horse-drawn carriage outside a Gothic building without any signs or writing, the parliament building, holding their noses.",
               "hareket": "disari",
               "kisi": true
             }
@@ -440,7 +440,7 @@
           "anlatim": "When an MP asked what the government was doing about it, the minister replied that the Thames was not under his jurisdiction.",
           "sahneler": [
             {
-              "tarif": "A minister with a round cream head standing in a crowded Victorian debating chamber, shrugging with his palms up, other members glaring at him.",
+              "tarif": "Every person here has a round cream-white head with dot eyes and no nose. A minister with a round cream head standing in a crowded Victorian debating chamber, shrugging with his palms up, other members glaring at him.",
               "hareket": "iceri",
               "kisi": true
             }
@@ -450,7 +450,7 @@
           "anlatim": "The satirical magazine Punch joked that the one topic in both Houses was the Conspiracy to Poison, and that the guilty party was that old offender, Father Thames.",
           "sahneler": [
             {
-              "tarif": "A huge grumpy old man made of brown river water with a long dripping beard and a crown of reeds rising out of the river in front of a Gothic parliament building, flat cartoon style.",
+              "tarif": "A huge simple flat cartoon blob of brown river water shaped like a grumpy old man with a perfectly round cream-white head, dot eyes and no nose, a long dripping brown beard and a crown of reeds, rising out of the river in front of a Gothic parliament building, flat cartoon style.",
               "hareket": "yukari"
             }
           ]
@@ -465,7 +465,7 @@
           "anlatim": "Meanwhile, two hundred to two hundred and fifty tons of lime were being dumped near the sewer mouths. Men spread lime on the riverbank at low tide. Cost: fifteen hundred pounds a week.",
           "sahneler": [
             {
-              "tarif": "Workers with round cream heads shovelling white powder from carts onto dark mud banks by the river, clouds of white dust.",
+              "tarif": "Workers with round cream heads shovelling white powder from horse-drawn wooden carts onto dark mud banks by an 1858 river with only sailing barges, clouds of white dust.",
               "hareket": "i2v",
               "i2v": "The workers shovel the white powder, white dust clouds drift in the hot air. Flat 2D cartoon animation, static camera.",
               "kisi": true
@@ -530,7 +530,7 @@
               "kisi": true
             },
             {
-              "tarif": "A deep open trench cut through a busy Victorian street, workers with round cream heads laying bricks for a big round tunnel inside it.",
+              "tarif": "A deep open trench cut through a busy Victorian street with only horse-drawn carts, workers with round cream heads laying bricks for a big round tunnel inside it.",
               "hareket": "disari",
               "kisi": true
             }
@@ -550,7 +550,7 @@
           "anlatim": "Bazalgette had every batch of cement tested. One historian calls his system elaborate and draconian. The manufacturers changed how they made their cement.",
           "sahneler": [
             {
-              "tarif": "The engineer with the big sideburns from the reference image examining a small cracked cement block with a magnifying glass while a worried supplier with a round cream head watches.",
+              "tarif": "The engineer with the big sideburns from the reference image examining a small cracked cement block with a magnifying glass while a short worried supplier with a round cream head, a flat cap and a brown work coat watches.",
               "hareket": "iceri",
               "kim": [
                 "baz"
@@ -576,8 +576,7 @@
           "sahneler": [
             {
               "tarif": "A magnificent Victorian engine house interior with ornate painted cast-iron columns and huge beam engines, great iron beams rocking.",
-              "hareket": "i2v",
-              "i2v": "The huge iron beams rock slowly up and down, the big flywheel turns. Flat 2D cartoon animation, static camera.",
+              "hareket": "yukari",
               "yazi": "CROSSNESS — 1865"
             },
             {

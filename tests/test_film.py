@@ -112,6 +112,9 @@ def test_fark_ve_soylenis():
         # Graf Zeppelin: dolar ve sent ondalık yazılıyor
         ("Even a letter needed three dollars and fifty-five cents in stamps.",
          "Even a letter needed $3.55 in stamps."),
+        # Great Stink: sterlin milyon kısaltması
+        ("It let the board borrow three million pounds, for forty years.",
+         "It let the board borrow £3m, for 40 years."),
     ],
 )  # fmt: skip
 def test_sayi_sozu_rakamla_esit(metin, duyulan):

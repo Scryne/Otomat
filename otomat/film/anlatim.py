@@ -103,6 +103,9 @@ def kelimeler(s: str) -> list[str]:
     """Karşılaştırma birimleri: sayı sözleri ve rakamlar aynı biçime iner ("one thousand and sixty-six", "1,066" ve
     "21st", "twenty-first" → "1066", "21"). Whisper rakam yazıyor, senaryo söz; inmeyince doğru parça 0,22 fark alıp
     üç kez yeniden üretiliyordu (pilot)."""
+    # Whisper "three million pounds" → "£3m" yazıyor; £ ascii'de düşmeden söze açılır (Great Stink)
+    birim = {"£": "pounds", "$": "dollars", "€": "euros"}
+    s = re.sub(r"([£$€])(\d+(?:\.\d+)?)m\b", lambda m: f"{m[2]} million {birim[m[1]]}", s)
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
     # Whisper "three dollars and fifty-five cents" → "$3.55" yazıyor: ondalık sayıya dönmeden söze açılır (Zeppelin)
