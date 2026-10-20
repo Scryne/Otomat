@@ -1,0 +1,855 @@
+{
+  "slug": "emperor-norton",
+  "baslik": "The Bankrupt Who Declared Himself Emperor of the United States",
+  "ozet": "In 1859, a bankrupt businessman walked into a San Francisco newspaper and proclaimed himself Emperor of these United States. He abolished Congress, printed his own money, proposed to Queen Victoria, and the police saluted him in the street. This is the true story of Emperor Norton the First.",
+  "etiketler": [
+    "emperor norton",
+    "san francisco history",
+    "history",
+    "true story",
+    "animated history",
+    "american history",
+    "gold rush",
+    "history documentary",
+    "eccentric",
+    "1859"
+  ],
+  "kesitler": [
+    {
+      "baslik": "He Ordered the Army to Shut Down Congress",
+      "bloklar": [
+        12,
+        14
+      ]
+    },
+    {
+      "baslik": "Arrested for Being Emperor. Then the City Fought Back",
+      "bloklar": [
+        27,
+        30
+      ]
+    },
+    {
+      "baslik": "What They Found in the Emperor's Room",
+      "bloklar": [
+        40,
+        42
+      ]
+    }
+  ],
+  "kapak_yazi": "EMPEROR.",
+  "kapak_sahne": "The bearded emperor from the reference image standing tall on a foggy San Francisco street at night, looking straight at the viewer with great dignity, one hand on his walking stick, a police officer saluting him in the background, warm gas lamp light on his uniform.",
+  "kapak_kim": [
+    "norton"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Emperor Norton",
+      "url": "https://en.wikipedia.org/wiki/Emperor_Norton",
+      "revid": 1380337225
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "norton": "one man about fifty, a self-proclaimed emperor: a perfectly round cream-white face with no nose, small dot eyes, a big bushy dark beard covering only the chin and jaw below the face, faded blue military uniform coat with gold epaulettes and brass buttons, tall dark beaver hat with a colourful feather on top, holding a wooden walking stick",
+    "genc": "one clean-shaven man about thirty-four, a prosperous 1850s merchant: a perfectly round cream-white face with no nose, small dot eyes, short dark sideburns, black frock coat, grey waistcoat with a gold watch chain, tall black top hat",
+    "polis": "one 1860s San Francisco police officer: dark moustache, long dark blue coat with brass buttons, dark blue peaked police cap"
+  },
+  "bolumler": [
+    {
+      "ad": "The letter",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "September 17, 1859. San Francisco. A man walks into the office of a newspaper, the Daily Evening Bulletin, and hands over a letter.",
+          "sahneler": [
+            {
+              "tarif": "Evening, a hilly 1860s San Francisco street of two- and three-storey wooden and brick buildings without any signs, gas lamps glowing, fog rolling down the hill, a few people with round cream heads walking.",
+              "hareket": "i2v",
+              "i2v": "Fog drifts slowly down the street, the gas lamps flicker, the people walk slowly. Flat 2D cartoon animation, static camera.",
+              "yazi": "SAN FRANCISCO — 17 SEPTEMBER 1859",
+              "kisi": true
+            },
+            {
+              "tarif": "The merchant in the top hat from the reference image standing at the wooden counter of a dim 1859 newspaper office, handing a folded letter to a clerk with a round cream head, piles of blank paper around them.",
+              "hareket": "iceri",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The editors read it, and they decide to print it in that evening's paper. Not because it's important. Because it's funny.",
+          "sahneler": [
+            {
+              "tarif": "Two newspaper editors with round cream heads in shirtsleeves reading a letter together at a cluttered desk, one of them laughing and slapping the desk, oil lamp light.",
+              "hareket": "i2v",
+              "i2v": "The two men shake with laughter, one slaps the desk, the lamp light flickers. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The letter begins: At the peremptory request and desire of a large majority of the citizens of these United States, I, Joshua Norton, declare and proclaim myself Emperor of these United States.",
+          "sahneler": [
+            {
+              "tarif": "A sheet of old paper with lines of handwriting shown only as grey blurred strokes, lit by a candle, a quill pen beside it.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The bearded emperor from the reference image standing proudly in his uniform on a dark stage-like background, one hand on his chest, warm light from above.",
+              "hareket": "yukari",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Nobody voted for him. He has no army, no money, and no power at all. And yet, for the next twenty years, his city will treat him like an emperor anyway.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image walking alone down a hilly 1860s San Francisco street of two- and three-storey wooden and brick buildings without any signs at dusk, people with round cream heads tipping their hats to him as he passes.",
+              "hareket": "sag",
+              "kim": [
+                "norton"
+              ],
+              "kisi": true
+            },
+            {
+              "tarif": "A small empty wooden throne-like chair in a bare rented room, a single window with fog outside.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "To understand how that happened, you have to go back to a ship, a city full of gold, and a lot of rice.",
+          "sahneler": [
+            {
+              "tarif": "A sailing ship entering a misty harbor full of ship masts, a young wooden city on the hills beyond.",
+              "hareket": "i2v",
+              "i2v": "The sailing ship glides slowly into the harbor, the mist drifts, the water ripples. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The rice",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Joshua Norton was born in England, most likely in 1818, and grew up in South Africa. As a young man, he tried business there. His first company failed after eighteen months.",
+          "sahneler": [
+            {
+              "tarif": "A small 1830s colonial town of white-walled houses under wide hills and a big sky, dry grass, warm sunset light.",
+              "hareket": "sag",
+              "yazi": "SOUTH AFRICA — 1830s"
+            },
+            {
+              "tarif": "The merchant in the top hat from the reference image younger, sitting at a small wooden desk with a closed ledger, chin in his hand, in an empty shop.",
+              "hareket": "iceri",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1846 he reached Boston, and eventually San Francisco. He claimed he arrived in November 1849.",
+          "sahneler": [
+            {
+              "tarif": "A crowded muddy 1849 San Francisco waterfront: abandoned sailing ships packed in the bay, tents and wooden shacks on the hills, people with round cream heads hauling crates.",
+              "hareket": "i2v",
+              "i2v": "The people haul crates slowly along the muddy waterfront, the ships rock gently in the bay. Flat 2D cartoon animation, static camera.",
+              "yazi": "SAN FRANCISCO — 1849",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And here, it went well. He made money trading goods and buying real estate. By late 1852, he was one of the more prosperous, respected citizens of the city.",
+          "sahneler": [
+            {
+              "tarif": "The merchant in the top hat from the reference image standing confidently in a fine office with tall windows, stacks of goods and sacks behind him, a gold watch chain on his waistcoat.",
+              "hareket": "iceri",
+              "kim": [
+                "genc"
+              ]
+            },
+            {
+              "tarif": "The merchant in the top hat from the reference image shaking hands with other well-dressed businessmen with round cream heads in top hats on a busy street.",
+              "hareket": "sol",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Then, in December 1852, he tried to corner the rice market. To buy up so much rice that he could control the price.",
+          "sahneler": [
+            {
+              "tarif": "A huge warehouse stacked to the ceiling with hundreds of rice sacks, a single lamp hanging from the beams.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The merchant in the top hat from the reference image standing on top of a tall pile of rice sacks with his arms spread wide, triumphant.",
+              "hareket": "disari",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "It didn't work. A dispute over a rice contract went all the way to the California Supreme Court, and he lost.",
+          "sahneler": [
+            {
+              "tarif": "A dark 1850s courtroom with tall windows, a judge with a round cream head high at the bench raising a wooden gavel.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The merchant in the top hat from the reference image sitting slumped in a courtroom chair, his top hat on his knees.",
+              "hareket": "sag",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The court ordered the foreclosure of all his real estate. His business clients left. In August 1856, Joshua Norton declared bankruptcy.",
+          "sahneler": [
+            {
+              "tarif": "The merchant in the top hat from the reference image standing in the rain outside a building as workers with round cream heads carry his furniture out onto the muddy street.",
+              "hareket": "disari",
+              "kim": [
+                "genc"
+              ],
+              "yazi": "AUGUST 1856",
+              "kisi": true
+            },
+            {
+              "tarif": "Rain falling on a muddy empty street at night, a single gas lamp, a pile of abandoned furniture.",
+              "hareket": "i2v",
+              "i2v": "Rain falls steadily, puddles ripple, the gas lamp flickers. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Two years later, he ran an ad in the paper announcing that he was a candidate for the United States Congress. Then, in 1859, he aimed higher.",
+          "sahneler": [
+            {
+              "tarif": "The merchant in the top hat from the reference image pinning a small paper notice onto a wooden board covered in other notices, all with blank grey blocks instead of writing.",
+              "hareket": "iceri",
+              "kim": [
+                "genc"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Abolish Congress",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "Emperor Norton the First got straight to work. On October 12, 1859, he issued a decree to formally abolish the United States Congress.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image seated at a tiny desk in a small rented room, writing with a quill by candlelight, stacks of papers around him.",
+              "hareket": "i2v",
+              "kim": [
+                "norton"
+              ],
+              "i2v": "He writes with the quill, the candle flame flickers, his shoulders move slightly. Flat 2D cartoon animation, static camera.",
+              "yazi": "12 OCTOBER 1859"
+            }
+          ]
+        },
+        {
+          "anlatim": "Congress, in Washington, kept meeting anyway. So in January 1860, he ordered the commander of the Army, Major-General Scott, to go with a suitable force and clear the Halls of Congress.",
+          "sahneler": [
+            {
+              "tarif": "A grand domed government building at night, its windows lit, a quiet empty street in front.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The bearded emperor from the reference image pointing dramatically east with his walking stick, standing on a hill above the foggy bay.",
+              "hareket": "sag",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The Army ignored him. Congress ignored him. The emperor kept going.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image standing at a window, hands behind his back, calmly looking out at the foggy night.",
+              "hareket": "disari",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1860, he ordered the republic dissolved. In 1862, he ordered the churches to publicly ordain him Emperor, hoping to settle the disputes that had led to the Civil War.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image standing on the steps of a big stone church, holding out a rolled paper toward two priests with round cream heads who look at each other uncertainly.",
+              "hareket": "sol",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1869, he abolished the Democratic and Republican parties. And somewhere along the way, he added a second title. Protector of Mexico.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image sealing a letter with red wax at his desk, very serious, candle light.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ],
+              "yazi": "1869"
+            },
+            {
+              "tarif": "A plain map-like drawing of North America with no writing, one warm glow covering the United States and Mexico together.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "There's one decree people love to quote. Anyone who says the abominable word Frisco shall pay a penalty of twenty-five dollars. Historians aren't actually sure he wrote it. But it sounds like him.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image turning sharply in the street to glare at a startled man with a round cream head who has his hand over his own mouth, a few people watching.",
+              "hareket": "sag",
+              "kim": [
+                "norton"
+              ],
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And then there's this one. More than once, he ordered the construction of a suspension bridge, or a tunnel, connecting Oakland and San Francisco across the bay.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image standing on a rocky shore at sunset, pointing across a wide empty bay toward distant hills.",
+              "hareket": "disari",
+              "kim": [
+                "norton"
+              ]
+            },
+            {
+              "tarif": "A wide empty bay at sunset with faint glowing dotted lines sketched across the water from one shore to the other, like a plan for a bridge.",
+              "hareket": "i2v",
+              "i2v": "The faint glowing lines shimmer, the water of the bay ripples, the sunset clouds drift. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1936, long after his death, the San Francisco to Oakland Bay Bridge opened.",
+          "sahneler": [
+            {
+              "tarif": "A huge 1930s suspension bridge stretching across a wide bay at dusk, tiny lights along its cables, fog drifting under it.",
+              "hareket": "i2v",
+              "i2v": "Fog drifts slowly under the bridge, the bay water ripples, the small lights twinkle. Flat 2D cartoon animation, static camera.",
+              "yazi": "1936"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "His Majesty's rounds",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "For the rest of his life, the emperor lived in a small room on the top floor of a rooming house on Commercial Street.",
+          "sahneler": [
+            {
+              "tarif": "A narrow three-storey 1860s wooden rooming house on a steep street, one small lit window at the very top, fog around it.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The bearded emperor from the reference image in a tiny attic room with a narrow bed, hanging his uniform coat carefully on a nail.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "He wore a blue uniform with gold-plated epaulettes, given to him secondhand by army officers at the Presidio. On top, a beaver hat decorated with feathers. Plus a walking stick, and an umbrella.",
+          "sahneler": [
+            {
+              "tarif": "Full view of the bearded emperor from the reference image standing proudly on a street corner, blue uniform, tall feathered hat, walking stick in one hand and a closed umbrella in the other.",
+              "hareket": "yukari",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Every day, he walked the streets, inspecting. He checked the sidewalks, the cable cars, the condition of public property, and how the police officers looked.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image bending down to inspect a broken wooden plank in the sidewalk with his walking stick, people with round cream heads walking past.",
+              "hareket": "sol",
+              "kim": [
+                "norton"
+              ],
+              "kisi": true
+            },
+            {
+              "tarif": "The bearded emperor from the reference image inspecting a police officer, who stands straight while the emperor brushes a speck off his shoulder.",
+              "hareket": "iceri",
+              "kim": [
+                "norton",
+                "polis"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "He visited parks, libraries, newspaper offices and old friends. In the evenings, he went to political meetings, the theatre, and concerts.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image sitting in a theatre box, watching a lit stage, an audience of people with round cream heads below.",
+              "hareket": "i2v",
+              "kim": [
+                "norton"
+              ],
+              "i2v": "The audience below shifts slightly, the stage lights glow and flicker gently. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "He rode the ferries and trains for free. Friends and admirers helped with his rent, and gave him free meals.",
+          "sahneler": [
+            {
+              "tarif": "A paddle-wheel ferry crossing a foggy bay toward a city on the hills, smoke rising from its stack.",
+              "hareket": "i2v",
+              "i2v": "The paddle wheel turns, smoke rises from the stack, the bay water ripples. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The bearded emperor from the reference image dining alone at a restaurant table with a white cloth, a waiter with a round cream head bowing as he serves soup.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "A cartoonist often drew him with two famous stray dogs, Bummer and Lazarus. So people assumed they were his pets. There's no evidence they were.",
+          "sahneler": [
+            {
+              "tarif": "Two scruffy cartoon stray dogs in flat simple style, one big and one small, sitting together on a foggy street corner.",
+              "hareket": "i2v",
+              "i2v": "The two dogs wag their tails and look around, fog drifts behind them. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The bearded emperor from the reference image walking past the two stray dogs on the sidewalk without looking at them.",
+              "hareket": "sag",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "He even printed his own money. Notes from fifty cents to ten dollars, and some restaurants accepted them. Today, the few that survive routinely sell for more than ten thousand dollars.",
+          "sahneler": [
+            {
+              "tarif": "A small banknote-like paper note with a plain portrait drawing and decorative borders but no letters or numbers, lying on a wooden table.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The bearded emperor from the reference image handing a small paper note to a smiling restaurant owner with a round cream head.",
+              "hareket": "sol",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The arrest",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "Not everyone played along. In 1867, a private security guard named Armand Barbier arrested the emperor, to have him committed for treatment for a mental disorder.",
+          "sahneler": [
+            {
+              "tarif": "A burly private security guard with a round cream head gripping the arm of the bearded emperor from the reference image on a foggy street, people watching in shock.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ],
+              "yazi": "1867",
+              "kisi": true
+            },
+            {
+              "tarif": "A dark barred doorway of an 1860s police station at night, a single lamp above it.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "The city was outraged. The newspapers attacked the arrest. One wrote that he had shed no blood, robbed no one, and despoiled no country, which is more than can be said of his fellows in that line.",
+          "sahneler": [
+            {
+              "tarif": "People with round cream heads crowded around a newsstand, reading blank newspapers with no writing, shaking their fists.",
+              "hareket": "i2v",
+              "i2v": "The people shake their newspapers and wave their arms, the papers flutter. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "A printing press in a dark print shop, pages flying out.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "The police chief, Patrick Crowley, ordered him released, and issued a formal apology on behalf of the police. The emperor, graciously, granted Barbier an imperial pardon.",
+          "sahneler": [
+            {
+              "tarif": "The police officer from the reference image opening a cell door and bowing his head apologetically.",
+              "hareket": "iceri",
+              "kim": [
+                "polis"
+              ]
+            },
+            {
+              "tarif": "The bearded emperor from the reference image raising one hand in a grand gesture of forgiveness toward a sheepish security guard with a round cream head.",
+              "hareket": "sag",
+              "kim": [
+                "norton"
+              ],
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "From then on, San Francisco police officers saluted him as he passed in the street.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image walking down a hilly 1860s San Francisco street of two- and three-storey wooden and brick buildings without any signs, a row of police officers saluting him as he passes.",
+              "hareket": "sol",
+              "kim": [
+                "norton",
+                "polis"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Three years later, the census came around. Joshua Norton, fifty years old, 624 Commercial Street. Occupation: Emperor.",
+          "sahneler": [
+            {
+              "tarif": "A census taker with a round cream head writing in a big ledger at a doorway, the page covered only in grey blurred lines.",
+              "hareket": "iceri",
+              "yazi": "1870",
+              "kisi": true
+            },
+            {
+              "tarif": "The bearded emperor from the reference image standing in the doorway answering with great dignity, chin raised.",
+              "hareket": "yukari",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Foreign affairs",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "An emperor needs foreign relations. Norton wrote to foreign leaders, to encourage better behavior.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image writing a long letter at his desk with a quill, a small globe beside him, candle light.",
+              "hareket": "i2v",
+              "kim": [
+                "norton"
+              ],
+              "i2v": "He writes steadily with the quill, the candle flame flickers. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "He wrote to Queen Victoria many times, and once suggested that the two of them should marry, to strengthen ties between their nations. The queen never responded.",
+          "sahneler": [
+            {
+              "tarif": "A plain envelope with a red wax seal crossing a stormy grey ocean in a small ship.",
+              "hareket": "i2v",
+              "i2v": "The small ship rocks on the grey waves, the sea rolls. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The bearded emperor from the reference image waiting by a window holding an empty letter tray, looking hopeful.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Newspapers started printing fake decrees under his name, written by the editors themselves. So in 1870, he named his own official paper, the Pacific Appeal, a Black-owned newspaper. It published some two hundred and fifty of his proclamations.",
+          "sahneler": [
+            {
+              "tarif": "A small newspaper office with a printing press, a Black editor with a round cream head in a waistcoat setting type.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The bearded emperor from the reference image shaking hands with the editor in the doorway of the newspaper office.",
+              "hareket": "sol",
+              "kim": [
+                "norton"
+              ],
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "And when an angry rally against Chinese immigrants gathered in 1878, the emperor stood on a small box in front of the crowd and told them all to go home.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image standing on a small wooden box in front of a huge shouting crowd of people with round cream heads on a dusty sandlot, raising his walking stick.",
+              "hareket": "yukari",
+              "kim": [
+                "norton"
+              ],
+              "yazi": "1878",
+              "kisi": true
+            },
+            {
+              "tarif": "A huge crowd of people with round cream heads on a dusty lot, seen from behind, dust in the air.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "They didn't. But the local papers reported it for the next couple of days.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image walking away alone through the dust as the crowd stays behind him.",
+              "hareket": "disari",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The last night",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "On the evening of January 8, 1880, the emperor was walking to a debate at the California Academy of Sciences. It was raining.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image walking up a dark rainy street corner at night, holding his umbrella, a tall church tower in the background.",
+              "hareket": "i2v",
+              "kim": [
+                "norton"
+              ],
+              "i2v": "Rain falls steadily, he walks slowly forward under his umbrella. Flat 2D cartoon animation, static camera.",
+              "yazi": "8 JANUARY 1880"
+            },
+            {
+              "tarif": "A tall old brick church tower at night in the rain, its window glowing faintly.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "On the corner of California Street and Dupont Street, he collapsed. A police officer ran for a carriage to take him to the hospital. He died before it arrived.",
+          "sahneler": [
+            {
+              "tarif": "An umbrella lying open on a wet cobblestone street at night under a gas lamp, rain falling.",
+              "hareket": "i2v",
+              "i2v": "Rain falls on the cobblestones, the open umbrella rocks gently in the wind. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The police officer from the reference image running through the rain at night down a dark street.",
+              "hareket": "sag",
+              "kim": [
+                "polis"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The next morning, one paper wrote: Norton the First, by the grace of God, Emperor of the United States and Protector of Mexico, departed this life.",
+          "sahneler": [
+            {
+              "tarif": "A grey rainy dawn over the rooftops of the city, fog lying in the streets.",
+              "hareket": "i2v",
+              "i2v": "Fog drifts slowly over the rooftops, the grey clouds move. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "People had always whispered that the emperor was secretly rich. He wasn't. He had five or six dollars in change on him. In his room, there was a single gold coin, worth about two dollars and fifty cents.",
+          "sahneler": [
+            {
+              "tarif": "A few small coins on a bare wooden table in a tiny attic room, one gold coin among them, pale morning light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The tiny empty attic room with a narrow bed, a uniform coat hanging on a nail, rain on the window.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Also in the room: his walking sticks, a battered sword, a collection of hats, his letters to Queen Victoria, and ninety-eight shares of stock in a gold mine that had gone out of business.",
+          "sahneler": [
+            {
+              "tarif": "A row of walking sticks leaning against a wall, a dented old sword, a stack of old hats, and a bundle of letters tied with string, in a dim room.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "And a fake telegram, supposedly from the Tsar of Russia, congratulating him on his upcoming marriage to Queen Victoria.",
+          "sahneler": [
+            {
+              "tarif": "A yellowed telegram paper with only grey blurred lines on it, lying on a small table next to a candle stub.",
+              "hareket": "iceri"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Le Roi Est Mort",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "He was going to be buried in a cheap pauper's coffin. Instead, a club of San Francisco businessmen paid for a handsome rosewood casket.",
+          "sahneler": [
+            {
+              "tarif": "A polished dark wooden casket with brass handles in a candlelit hall, flowers around it.",
+              "hareket": "iceri",
+              "yazi": "10 JANUARY 1880"
+            }
+          ]
+        },
+        {
+          "anlatim": "A newspaper headline read: Le Roi Est Mort. The King is dead. Some ten thousand people came to see the emperor before his funeral. Rich and poor, ladies and pickpockets.",
+          "sahneler": [
+            {
+              "tarif": "A long line of people with round cream heads of every kind, rich and poor, in top hats and rags, waiting in the rain outside a hall.",
+              "hareket": "i2v",
+              "i2v": "The line of people shuffles slowly forward, rain falls. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "Mourners with round cream heads filing slowly past the casket in a candlelit hall, hats in hands.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Later, legend said the funeral procession was two miles long. It wasn't. The paper reported only three carriages, and about thirty people at the burial.",
+          "sahneler": [
+            {
+              "tarif": "Three black horse-drawn carriages moving slowly down a grey empty road in the rain.",
+              "hareket": "i2v",
+              "i2v": "The horses walk slowly, the carriages roll forward, rain falls. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A small group of about thirty people with round cream heads standing around a grave under umbrellas in a grey cemetery.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "But the city kept him. Mark Twain, who lived in San Francisco during Norton's reign, based the King in Adventures of Huckleberry Finn on him. Robert Louis Stevenson put him in a novel too.",
+          "sahneler": [
+            {
+              "tarif": "A stack of old leather-bound books on a desk with a quill and an ink pot, warm lamp light.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1939, a plaque honoring his call for a bridge was made. The bridge authorities didn't approve it. It has been moved around ever since.",
+          "sahneler": [
+            {
+              "tarif": "A bronze plaque with a raised portrait and decorative borders but no letters, leaning against a wall in a storage room.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "And just this year, in 2026, the California Senate voted thirty-nine to zero to name the bridge's tunnel after him. The Assembly never voted on it. The campaign continues.",
+          "sahneler": [
+            {
+              "tarif": "The huge suspension bridge at night with a tunnel opening through a rocky island, car lights streaming through.",
+              "hareket": "i2v",
+              "i2v": "Lights stream slowly through the tunnel and across the bridge, the bay water shimmers. Flat 2D cartoon animation, static camera.",
+              "yazi": "2026"
+            }
+          ]
+        },
+        {
+          "anlatim": "His biographer put it like this. San Francisco lived off the Emperor Norton, not Norton off San Francisco.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image standing on a hill at sunset in his uniform and feathered hat, looking out over the city and the bay, seen from behind.",
+              "hareket": "i2v",
+              "kim": [
+                "norton"
+              ],
+              "i2v": "His coat and the feather on his hat move in the wind, the fog drifts over the bay below. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "So, here's my question. If a broke, kind, slightly strange man in your town declared himself emperor tomorrow, would you salute him? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The bearded emperor from the reference image turning to face the viewer directly, raising his tall feathered hat in a polite greeting, foggy city behind him.",
+              "hareket": "iceri",
+              "kim": [
+                "norton"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

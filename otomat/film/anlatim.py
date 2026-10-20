@@ -105,6 +105,8 @@ def kelimeler(s: str) -> list[str]:
     üç kez yeniden üretiliyordu (pilot)."""
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
+    # Whisper "three dollars and fifty-five cents" → "$3.55" yazıyor: ondalık sayıya dönmeden söze açılır (Zeppelin)
+    s = re.sub(r"\$(\d+)\.(\d\d)\b", r"\1 dollars and \2 cents", s)
     s = re.sub(r"\b(\d+)(st|nd|rd|th)\b", r"\1", s)
     # Whisper "a dollar" → "$1", "three dollars" → "$3" yazıyor ($ düşer): kelime karşılaştırmadan çıkar (Klondike)
     s = re.sub(r"\ban? dollar\b", "1", s)

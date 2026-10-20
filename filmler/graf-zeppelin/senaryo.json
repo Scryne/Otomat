@@ -1,0 +1,865 @@
+{
+  "slug": "graf-zeppelin",
+  "baslik": "What If You Flew Around the World on a Zeppelin in 1929?",
+  "ozet": "August 1929. A ticket costs almost $3,000, the ship is 776 feet long, and the gas holding it up is hydrogen. Wine with dinner, furs in a freezing cabin, a crowd of a quarter of a million in Tokyo, and the first nonstop flight across the Pacific. This is what it was really like to fly around the world on the Graf Zeppelin.",
+  "etiketler": [
+    "graf zeppelin",
+    "zeppelin",
+    "airship",
+    "history",
+    "what if",
+    "your life as",
+    "animated history",
+    "1929",
+    "aviation history",
+    "around the world",
+    "history documentary"
+  ],
+  "kesitler": [
+    {
+      "baslik": "Four Days Before Your Flight, a Gorilla Flew This Airship",
+      "bloklar": [
+        5,
+        9
+      ]
+    },
+    {
+      "baslik": "The Airship Crewman Whose Job Was Protecting the Wine",
+      "bloklar": [
+        18,
+        20
+      ]
+    },
+    {
+      "baslik": "Your Zeppelin Is Too Heavy to Take Off",
+      "bloklar": [
+        36,
+        39
+      ]
+    }
+  ],
+  "kapak_yazi": "21 DAYS.",
+  "kapak_sahne": "The man in the fedora from the reference image leaning out of a big arched airship window high above the clouds, looking straight at the viewer, amazed, holding his hat, the huge silver hull of the airship above him and a golden sunset ocean far below.",
+  "kapak_kim": [
+    "sen"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: LZ 127 Graf Zeppelin",
+      "url": "https://en.wikipedia.org/wiki/LZ_127_Graf_Zeppelin",
+      "revid": 1379984179
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "sen": "one man about thirty, a 1929 airship passenger: short slicked-back dark hair, thin dark moustache, grey felt fedora hat with a black band, long camel-coloured double-breasted overcoat, dark red tie",
+    "eckener": "one 1929 airship commander about sixty: short grey hair, a small pointed grey beard on the chin only, dark navy double-breasted captain's jacket with gold buttons, white peaked captain's cap",
+    "lehmann": "one 1929 airship officer about forty: short dark hair, clean-shaven, dark navy officer's uniform with a dark peaked cap",
+    "drummond": "one 1929 woman journalist: short dark bob haircut under a dark green cloche hat, long dark green coat, a string of pearls, holding a small notebook and pencil"
+  },
+  "bolumler": [
+    {
+      "ad": "The ticket",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "August 1929. Lakehurst, New Jersey. You are standing in front of a giant airship, holding a ticket that cost almost three thousand dollars.",
+          "sahneler": [
+            {
+              "tarif": "Night airfield, a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings, floating just above the ground beside a giant dark hangar, ropes hanging from its nose, warm lamps glowing on the field.",
+              "hareket": "i2v",
+              "i2v": "The airship floats and bobs very gently, the ropes under its nose sway slightly, the lamps glow. Flat 2D cartoon animation, static camera.",
+              "yazi": "LAKEHURST, NEW JERSEY — AUGUST 1929"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image standing small on the grass airfield, holding a paper ticket, looking up in awe at the enormous silver airship hull that fills the sky above him.",
+              "hareket": "yukari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "That's about fifty-six thousand dollars today. And here's the funny part. Most of the people flying with you aren't paying for their own tickets.",
+          "sahneler": [
+            {
+              "tarif": "The man in the fedora from the reference image holding his ticket while other well-dressed 1929 passengers with round cream heads walk past him toward the airship with their hands empty and relaxed, he looks at them suspiciously.",
+              "hareket": "sol",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Newspaper owner William Randolph Hearst is paying half the cost of this trip. And he insists that it officially start and finish right here, in New Jersey.",
+          "sahneler": [
+            {
+              "tarif": "A wealthy 1929 newspaper owner with a round cream head in a dark suit, sitting behind a huge desk piled with blank newspapers without any writing, talking into an old candlestick telephone.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "A spinning printing press in a dark print shop throwing out stacks of blank newspapers, warm lamplight.",
+              "hareket": "i2v",
+              "i2v": "The rollers of the printing press turn and the stack of blank paper slowly grows. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The plan is simple. Fly around the entire world.",
+          "sahneler": [
+            {
+              "tarif": "A plain globe on a dark background with a thin glowing amber line circling all the way around it.",
+              "hareket": "i2v",
+              "i2v": "The globe rotates slowly, the glowing line shines softly. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "One more thing. The gas holding this ship up is hydrogen. Welcome aboard the Graf Zeppelin.",
+          "sahneler": [
+            {
+              "tarif": "Dramatic low view of a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings, lit from below by warm amber light against a black night sky.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image stopping at the bottom of a small boarding stairway into the gondola, glancing nervously up at the huge hull above him.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Should you worry?",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Before you climb in, you might want to know this ship's recent history. Last October, on its first trip to America, a storm tore the fabric off one of the tail fins, over the middle of the ocean.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying through a dark storm over a black ocean, lightning in the clouds, a piece of torn grey fabric flapping from one tail fin.",
+              "hareket": "i2v",
+              "i2v": "Rain streaks across the frame, the torn fabric on the tail fin flaps in the wind, the dark clouds roll slowly. Flat 2D cartoon animation, static camera.",
+              "yazi": "OCTOBER 1928"
+            },
+            {
+              "tarif": "Close view of a huge tail fin of an airship with a long ripped hole in its fabric covering, showing the metal frame underneath, storm clouds behind.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "Volunteers climbed outside the airship to fix it, including the commander's own son. The ship sent a distress call. Then it went quiet. Many people believed it was lost.",
+          "sahneler": [
+            {
+              "tarif": "Tiny figures with round cream heads clinging to the metal frame on the outside of a giant airship tail fin, sewing torn fabric, high above a stormy ocean.",
+              "hareket": "disari",
+              "kisi": true
+            },
+            {
+              "tarif": "A dark 1928 radio room: an old wooden radio set with round dials and a row of small glowing vacuum tubes on top, no screen, a brass telegraph key and headphones on the desk, nobody there.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "It wasn't. Then in May, on another trip to America, four of its engines failed on the very first night.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings drifting low at night over dark French hills, most of its engine propellers standing still.",
+              "hareket": "yukari",
+              "yazi": "MAY 1929"
+            }
+          ]
+        },
+        {
+          "anlatim": "The commander, Hugo Eckener, barely managed an emergency landing in the south of France.",
+          "sahneler": [
+            {
+              "tarif": "The airship commander from the reference image seen from the front, facing the viewer, gripping a wooden steering wheel inside the dark cockpit of an airship with big slanted windows, tense, dark night sky behind him.",
+              "hareket": "iceri",
+              "kim": [
+                "eckener"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "And just four days before your flight, the ship landed right here with a passenger called Susie. Susie was a gorilla. So you are in interesting company.",
+          "sahneler": [
+            {
+              "tarif": "A friendly cartoon gorilla in simple flat style sitting calmly inside a wooden travel crate with open slats, inside an airship cargo room, warm lamp light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image raising his eyebrows and looking sideways at an empty wooden animal crate with open slats on the airfield.",
+              "hareket": "sag",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The ship",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "From the outside, the Graf Zeppelin is seven hundred and seventy-six feet long. When it was built, there were only eighteen inches between the top of the ship and the roof of its hangar.",
+          "sahneler": [
+            {
+              "tarif": "Side view of a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings, stretching across the whole wide frame high in the sky, seen from far away, and far below it on the ground a tiny crowd of people with round cream heads looking up.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "Inside a vast dark construction hangar, the top of a giant silver airship hull almost touching the steel roof beams, a narrow gap of light between them.",
+              "hareket": "yukari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Its skin is thick cotton, painted with aluminium and sanded smooth. Inside are seventeen huge bags of hydrogen, and twelve more full of a fuel called Blau gas.",
+          "sahneler": [
+            {
+              "tarif": "Cutaway view of an airship hull: inside the metal ring frame, rows of huge round pale gas bags glowing softly, a long walkway running underneath.",
+              "hareket": "disari"
+            },
+            {
+              "tarif": "Workers with round cream heads on tall ladders painting a huge silver cotton airship skin with long rollers.",
+              "hareket": "i2v",
+              "i2v": "The workers move their rollers slowly up and down the silver skin. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Blau gas weighs about the same as air. So as the engines burn it, the ship doesn't get lighter and climb away. That trick is what lets it fly so far.",
+          "sahneler": [
+            {
+              "tarif": "Simple diagram-like drawing: a balance scale with a pale gas bag on one side and a pale bag of air on the other, perfectly level, dark background.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying level and steady above a sea of white clouds in golden sunlight.",
+              "hareket": "i2v",
+              "i2v": "The clouds drift slowly underneath, the airship glides steadily forward, the propellers spin. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Five engines, each in its own pod, push you along at about seventy-three miles an hour. During flight, crew members reach those engines by climbing along open ladders. You will not be doing that.",
+          "sahneler": [
+            {
+              "tarif": "Close view of a streamlined engine pod hanging under an airship hull, its large wooden propeller spinning, clouds far below.",
+              "hareket": "i2v",
+              "i2v": "The wooden propeller spins fast, the clouds far below drift slowly backwards. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A crewman with a round cream head in overalls climbing along an open metal ladder between the airship hull and an engine pod, wind blowing his clothes, clouds far below.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "The man in the fedora from the reference image looking down through a window and quickly stepping back, holding his hat.",
+              "hareket": "disari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Thirty-six crew run the ship. And there are beds for only twenty-four passengers.",
+          "sahneler": [
+            {
+              "tarif": "A neat row of crewmen with round cream heads in dark uniforms standing in line in front of the airship gondola on an airfield.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Takeoff is unusual. The ship simply rises, lifted by its gas. Only then do the engines start.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings rising slowly off the ground at dawn, ground crew with round cream heads letting go of the ropes and looking up.",
+              "hareket": "i2v",
+              "i2v": "The airship rises slowly upward, the ropes slip up from the hands of the ground crew, mist drifts across the field. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The man in the fedora from the reference image at a gondola window watching the ground fall away below, both hands on the window frame.",
+              "hareket": "disari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Life on board",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "Your whole world is a gondola under the ship's belly, ninety-eight feet long. At the front, the officers steer. Behind them, the map room, the radio room, and a kitchen with an electric oven.",
+          "sahneler": [
+            {
+              "tarif": "Side view of the long streamlined gondola hanging under the belly of a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings, a row of warmly lit windows, night sky.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "A tiny 1929 airship kitchen with a double electric oven and hot plates, a cook with a round cream head in a white cap stirring a pot.",
+              "hareket": "i2v",
+              "i2v": "The cook stirs the pot slowly, steam rises from the pot. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "From the radio room, you can even send a telegram from the sky. On the ship's first crossing, the radio room sent four hundred and eighty-four private telegrams.",
+          "sahneler": [
+            {
+              "tarif": "A radio operator with a round cream head wearing headphones, tapping a telegraph key in a small radio room full of glowing valves, a stack of telegram forms beside him.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The dining room is sixteen feet square, with four big arched windows, wooden inlays, and Art Deco chairs. Three hot meals a day are served here. With wine.",
+          "sahneler": [
+            {
+              "tarif": "An elegant 1929 Art Deco dining lounge inside an airship gondola: four large arched windows showing clouds, wooden inlaid walls, small tables with white cloths, wine bottles and glasses, warm lamps.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image seated at a small table by an arched window, a steward with a round cream head pouring him a glass of red wine, clouds outside.",
+              "hareket": "sag",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "That wine is taken very seriously. The crewman who controls the ship's nose-up and nose-down angle tries to keep it within five degrees, so the bottles don't tip over.",
+          "sahneler": [
+            {
+              "tarif": "A crewman with a round cream head gripping a large wooden wheel at the side of a dark airship cockpit with big slanted windows and clouds outside, a small dial with a needle in front of him, concentrating hard.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "Close view of a dining table with wine bottles and full glasses, the wine surface tilted very slightly, clouds in the window behind.",
+              "hareket": "i2v",
+              "i2v": "The wine in the glasses sways very gently, the bottles stay still, clouds drift past the window. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The job is so exhausting that his shift lasts only four hours. In rough weather, just two hours.",
+          "sahneler": [
+            {
+              "tarif": "A single tired crewman with a round cream head slumped in a chair, rubbing his neck, a large wooden wheel beside him, inside a dark airship cockpit with big slanted windows and clouds outside.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Between meals, you look out of the window. You're usually flying at just six hundred and fifty feet, low enough to watch the world go by beneath you.",
+          "sahneler": [
+            {
+              "tarif": "The man in the fedora from the reference image leaning on the sill of a big arched window, gazing down at a landscape far below.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            },
+            {
+              "tarif": "View straight down from an airship at sunset: green fields, a winding river, tiny farmhouses and a small village far below.",
+              "hareket": "i2v",
+              "i2v": "The fields, river and village below slide slowly backwards, small clouds pass underneath. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Your cabin has a sofa that turns into two beds at night. There are two washrooms, and two chemical toilets, for everyone.",
+          "sahneler": [
+            {
+              "tarif": "A tiny narrow airship passenger cabin with a sofa folded out into two narrow beds, one small window, a small lamp.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image waiting in a narrow corridor in his dressing gown, holding a towel, behind a closed washroom door with other passengers with round cream heads queuing behind him.",
+              "hareket": "sol",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "And the cabins are often cold. On some stretches, passengers wear furs and huddle under blankets. Also, there's a smell. That's the Blau gas.",
+          "sahneler": [
+            {
+              "tarif": "The man in the fedora from the reference image wrapped in a thick fur coat and two blankets, sitting hunched on his narrow cabin bed, his breath steaming.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            },
+            {
+              "tarif": "The man in the fedora from the reference image sniffing the air in the cabin with a puzzled look, holding a handkerchief to his nose.",
+              "hareket": "sag",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "But at night, on this flight, there's dancing to a phonograph. And one of the officers, Ernst Lehmann, plays the accordion. Remember his name.",
+          "sahneler": [
+            {
+              "tarif": "Night in the Art Deco airship lounge, passengers with round cream heads dancing in pairs, a wind-up phonograph with a big horn on a table, warm lamplight.",
+              "hareket": "i2v",
+              "i2v": "The couples sway and turn slowly in the warm light, the phonograph record turns. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "The airship officer from the reference image playing an accordion in the lounge, swaying, warm lamp light.",
+              "hareket": "i2v",
+              "kim": [
+                "lehmann"
+              ],
+              "i2v": "He squeezes the accordion in and out, his body sways gently to the music. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Halfway around",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "You fly east, across the Atlantic, to the ship's home in Friedrichshafen, Germany, to refuel. Then you keep going, across Eastern Europe and the Soviet Union.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying low over a calm lake at dawn, a small German town with church spires on the shore, mountains in the distance.",
+              "hareket": "i2v",
+              "i2v": "The airship glides slowly over the lake, the water ripples, morning mist drifts. Flat 2D cartoon animation, static camera.",
+              "yazi": "FRIEDRICHSHAFEN, GERMANY"
+            },
+            {
+              "tarif": "A plain globe with a glowing amber line stretching from Germany eastward across a vast empty land toward Japan.",
+              "hareket": "sol"
+            }
+          ]
+        },
+        {
+          "anlatim": "Not every welcome is friendly. On another trip, near the Soviet border, someone fired rifle shots at this ship and punctured it.",
+          "sahneler": [
+            {
+              "tarif": "Close view of the silver fabric skin of an airship filling the whole frame, lit by bright moonlight, with one small round hole in it and a thin wisp of gas escaping.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "On the nineteenth of August, you arrive in Tokyo. Crowds come out to see this ship on most of its trips. In Tokyo, there may have been a quarter of a million people.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings floating over a vast crowd of people with round cream heads filling a huge field, many waving, Japanese rooftops in the distance.",
+              "hareket": "i2v",
+              "i2v": "The crowd waves arms slowly, the airship glides above them. Flat 2D cartoon animation, static camera.",
+              "yazi": "TOKYO — 19 AUGUST 1929",
+              "kisi": true
+            },
+            {
+              "tarif": "The man in the fedora from the reference image waving from the gondola window down at an enormous crowd below.",
+              "hareket": "disari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The ship rests for five days in a hangar that once stood in Germany. It was taken down there and rebuilt at a naval air station in Japan.",
+          "sahneler": [
+            {
+              "tarif": "A giant dark airship hangar at dusk with the tail of a silver airship visible inside, small figures with round cream heads in front.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Newspapers around the world follow every step. One of the reporters on board is Lady Grace Drummond-Hay. By the end of this trip, she'll be the first woman to fly around the world.",
+          "sahneler": [
+            {
+              "tarif": "The woman journalist from the reference image writing quickly in her notebook at a lounge table by an arched window, clouds outside.",
+              "hareket": "iceri",
+              "kim": [
+                "drummond"
+              ]
+            },
+            {
+              "tarif": "A pile of blank newspapers without any writing, each with a plain drawing of a silver airship on the front.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "She once wrote that the Graf Zeppelin is a ship with a soul.",
+          "sahneler": [
+            {
+              "tarif": "The woman journalist from the reference image looking out of a big arched window at a glowing sunset over clouds, her notebook closed against her chest.",
+              "hareket": "disari",
+              "kim": [
+                "drummond"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The Pacific",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Next comes the big one. The Pacific Ocean. No aircraft has ever crossed it without stopping. You're about to try.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings small and alone above an endless dark blue ocean, no land anywhere, a few clouds.",
+              "hareket": "i2v",
+              "i2v": "The ocean waves roll slowly below, the airship glides steadily forward. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The airship commander from the reference image studying a large paper chart spread on a table in the map room, a pair of dividers in his hand.",
+              "hareket": "iceri",
+              "kim": [
+                "eckener"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Over the sea, the crew drops floating flares into the water, to measure the wind and work out how far it is pushing you off course.",
+          "sahneler": [
+            {
+              "tarif": "Night view down from an airship: a small bright flare floating on the black ocean, glowing orange and throwing light on the waves.",
+              "hareket": "i2v",
+              "i2v": "The flare glows and flickers on the water, the waves rise and fall gently. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Finally, the coast of California appears. But Eckener doesn't head straight in. He waits, so that you can cross the Golden Gate at San Francisco near sunset. Just because it looks better.",
+          "sahneler": [
+            {
+              "tarif": "The airship commander from the reference image standing calmly at the control car window with his arms folded, waiting, a golden coastline outside.",
+              "hareket": "sag",
+              "kim": [
+                "eckener"
+              ]
+            },
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings gliding over the entrance of a wide bay between green hills at sunset, the sky orange and pink, the sea glittering.",
+              "hareket": "i2v",
+              "i2v": "The airship glides slowly toward the bay, the sea glitters, the sunset clouds drift. Flat 2D cartoon animation, static camera.",
+              "yazi": "SAN FRANCISCO — AUGUST 1929"
+            }
+          ]
+        },
+        {
+          "anlatim": "Then the ship lands in Los Angeles. You've just made the first nonstop flight across the Pacific Ocean, in history.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings descending over a sunny 1929 airfield with palm trees, a huge crowd of people with round cream heads waiting.",
+              "hareket": "yukari",
+              "yazi": "LOS ANGELES",
+              "kisi": true
+            },
+            {
+              "tarif": "The man in the fedora from the reference image stepping down from the gondola onto the field, raising his hat to the crowd.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Landing is a team sport. Ropes drop from the nose, and up to three hundred people on the ground grab them and haul the ship in.",
+          "sahneler": [
+            {
+              "tarif": "Hundreds of ground crew with round cream heads in two long lines pulling on long ropes hanging from the nose of a giant silver airship.",
+              "hareket": "i2v",
+              "i2v": "The people lean back and pull the ropes hand over hand, the airship sinks slowly lower. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            },
+            {
+              "tarif": "A small smoky fire burning on the edge of the airfield, its smoke drifting sideways in the wind.",
+              "hareket": "i2v",
+              "i2v": "The smoke drifts sideways in the wind, the small flames flicker. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Too heavy",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "Leaving Los Angeles turns out to be the hard part. The air is hot, and a warm layer of air sits over the field. The ship can't get enough lift.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings sitting heavily on a hot dusty airfield under a blazing sun, heat shimmer in the air.",
+              "hareket": "i2v",
+              "i2v": "Heat shimmers above the dusty ground, a little dust blows across the field. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "The airship commander from the reference image seen from the front, facing the viewer, wiping his forehead with a handkerchief, hot hazy airfield behind him.",
+              "hareket": "yukari",
+              "kim": [
+                "eckener"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "So the crew lightens it. Six crewmen and some of the cargo are sent ahead to New Jersey by aeroplane. You are allowed to stay. You paid.",
+          "sahneler": [
+            {
+              "tarif": "Six crewmen with round cream heads carrying their kit bags, walking toward a small 1929 biplane on the airfield, looking back over their shoulders sadly.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "The man in the fedora from the reference image sitting very still in the lounge, clutching his ticket and trying to look light.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "On takeoff, the tail strikes the ground. Then the ship only barely clears the electricity cables at the edge of the field.",
+          "sahneler": [
+            {
+              "tarif": "The tail fin of a giant silver airship scraping the dusty ground, a cloud of dust kicked up.",
+              "hareket": "sag"
+            },
+            {
+              "tarif": "Low view of a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings rising just above a line of electricity poles and wires at the edge of an airfield, a gap of only a few feet between them.",
+              "hareket": "i2v",
+              "i2v": "The airship rises slowly over the wires, the wires sway slightly. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And then, on the morning of the twenty-ninth of August, you arrive back at Lakehurst, from the west. Three weeks after you left, heading east.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings arriving over the Lakehurst airfield and its giant hangar in the early morning sun, a cheering crowd of people with round cream heads below.",
+              "hareket": "i2v",
+              "i2v": "The airship glides slowly toward the hangar, the crowd below waves. Flat 2D cartoon animation, static camera.",
+              "yazi": "LAKEHURST — 29 AUGUST 1929",
+              "kisi": true
+            },
+            {
+              "tarif": "A plain globe with a glowing amber line that now forms a complete circle around it.",
+              "hareket": "disari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Around the world",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Time in the air: twelve days, twelve hours and thirteen minutes. The whole trip, with stops: twenty-one days, five hours and thirty-one minutes.",
+          "sahneler": [
+            {
+              "tarif": "A large brass pocket watch lying open on a map table in warm light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "The man in the fedora from the reference image stepping off the airship onto the Lakehurst field, stretching his back, smiling, suitcase in hand.",
+              "hareket": "sag",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "Twenty thousand, six hundred and fifty-one miles. At that moment, it was the fastest trip around the world anyone had ever made.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying above the curve of the Earth at sunrise, oceans and clouds below, a long golden glow on the horizon.",
+              "hareket": "i2v",
+              "i2v": "The sunrise glow spreads slowly along the horizon, the clouds below drift. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Even a letter that flew the whole way with you needed three dollars and fifty-five cents in stamps. Souvenir mail like that helped pay for the flight.",
+          "sahneler": [
+            {
+              "tarif": "A plain envelope covered in rows of colourful postage stamps without any writing, lying on a wooden desk under a lamp.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "Mail sacks being unloaded from the airship gondola by crewmen with round cream heads, envelopes spilling out.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Eckener gets a gold medal from the National Geographic Society, and meets President Herbert Hoover.",
+          "sahneler": [
+            {
+              "tarif": "The airship commander from the reference image standing on a stage holding a round gold medal, an audience of people with round cream heads clapping.",
+              "hareket": "iceri",
+              "kim": [
+                "eckener"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The last flight",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "For years after your trip, the Graf Zeppelin keeps flying. It makes sixty-four round trips to Brazil, the first regular passenger air service between continents.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying low over a green tropical coastline with palm trees and a white beach, a city on the bay.",
+              "hareket": "i2v",
+              "i2v": "The airship glides slowly along the coast, waves wash onto the beach, palm leaves sway. Flat 2D cartoon animation, static camera.",
+              "yazi": "BRAZIL — 1930s"
+            },
+            {
+              "tarif": "A plain globe with a glowing amber line going back and forth many times between Europe and South America.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Then, in May 1937, flying home from Brazil, the crew hears news over the radio. The Hindenburg, a newer zeppelin, has been destroyed in a disaster.",
+          "sahneler": [
+            {
+              "tarif": "A radio operator with a round cream head frozen still, one hand pressing his headphones, dim radio room, night.",
+              "hareket": "iceri",
+              "yazi": "MAY 1937",
+              "kisi": true
+            },
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying alone over a dark ocean at night under heavy clouds.",
+              "hareket": "i2v",
+              "i2v": "Dark clouds drift slowly past the airship, the ocean below is black and still. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "They don't tell the passengers until after landing, so as not to alarm them. Among the thirty-six people killed is Ernst Lehmann. The officer who played the accordion on your flight.",
+          "sahneler": [
+            {
+              "tarif": "Passengers with round cream heads chatting happily in the warm airship lounge, unaware, while two officers in the dark doorway behind them stand silent.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "An accordion resting alone on an empty chair in a dark lounge, a single lamp glowing.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "After that, nobody trusts hydrogen anymore. Helium would be safe. But almost all of the world's supply is controlled by the United States, and it will not sell to Germany.",
+          "sahneler": [
+            {
+              "tarif": "Rows of large steel gas cylinders in a dim warehouse behind a locked chain-link fence.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "The Graf Zeppelin makes its five hundred and ninetieth and final flight in June 1937. In 1940, it is scrapped, and its frame is melted down for military aircraft.",
+          "sahneler": [
+            {
+              "tarif": "A giant empty airship hangar, the bare metal ring skeleton of an airship inside, partly taken apart, cold light from high windows.",
+              "hareket": "disari",
+              "yazi": "1940"
+            },
+            {
+              "tarif": "A heap of twisted metal girders on a hangar floor in cold grey light.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Its final record: more than a million miles. The first aircraft ever to fly that far. Thirteen thousand, one hundred and ten passengers.",
+          "sahneler": [
+            {
+              "tarif": "a huge silver cigar-shaped rigid airship with four tail fins and a small streamlined gondola under its nose, small engine pods with propellers along its sides, a plain silver hull without any lettering or markings flying into a golden sunset above the clouds, seen from far away, small against the sky.",
+              "hareket": "i2v",
+              "i2v": "The airship glides slowly toward the sunset, the clouds below drift. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And in all those years, it never injured a single passenger or crewman.",
+          "sahneler": [
+            {
+              "tarif": "The man in the fedora from the reference image older now, standing alone on an empty grass airfield in front of a giant empty hangar, holding an old paper ticket, looking up at an empty sky.",
+              "hareket": "yukari",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "So, honest question. Three thousand dollars. Three weeks. A cold cabin, a smell of gas, and a sky full of hydrogen over your head. Would you have bought the ticket? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The man in the fedora from the reference image holding up his paper ticket and looking straight at the viewer with a questioning look, the silver airship floating behind him at dusk.",
+              "hareket": "iceri",
+              "kim": [
+                "sen"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

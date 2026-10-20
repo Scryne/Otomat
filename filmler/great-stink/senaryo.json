@@ -1,0 +1,736 @@
+{
+  "slug": "great-stink",
+  "baslik": "The Summer London Smelled So Bad, Parliament Almost Fled",
+  "ozet": "Summer 1858. The Queen's pleasure cruise lasts a few minutes, Parliament soaks its curtains in chemicals, and the Chancellor flees a committee room with a handkerchief over his nose. This is the true story of the Great Stink, and the engineer who built a hidden city of sewers under London.",
+  "etiketler": [
+    "great stink",
+    "london history",
+    "victorian london",
+    "history",
+    "true story",
+    "animated history",
+    "bazalgette",
+    "river thames",
+    "history documentary",
+    "1858"
+  ],
+  "kesitler": [
+    {
+      "baslik": "The Queen's Boat Trip Lasted a Few Minutes",
+      "bloklar": [
+        0,
+        3
+      ]
+    },
+    {
+      "baslik": "Parliament Soaked Its Curtains to Survive the Smell",
+      "bloklar": [
+        25,
+        28
+      ]
+    },
+    {
+      "baslik": "They Held a Banquet Inside a Sewage Works",
+      "bloklar": [
+        38,
+        40
+      ]
+    }
+  ],
+  "kapak_yazi": "THE STINK.",
+  "kapak_sahne": "The politician with the black curls from the reference image on a stone riverside terrace in front of a Gothic parliament building, pressing a handkerchief to his face and looking straight at the viewer in horror, a sickly greenish haze rising from the brown river behind him, hot hazy sun.",
+  "kapak_kim": [
+    "dis"
+  ],
+  "kaynaklar": [
+    {
+      "ad": "Wikipedia: Great Stink",
+      "url": "https://en.wikipedia.org/wiki/Great_Stink",
+      "revid": 1380641323
+    }
+  ],
+  "ses": "bm_george",
+  "hiz": 1.0,
+  "stil": "Minimalist 2D animated short film still. Flat cartoon, clean thin black outlines. High-contrast cinematic chiaroscuro lighting, deep black and charcoal shadows, limited palette of charcoal, cream and warm amber light, glow around light sources, subtle film grain, 16:9 wide composition with lots of negative space. No text, no letters, no writing",
+  "insan": "People, and only people, are drawn as simple cartoon characters with big round cream-white heads, small black dot eyes, thick expressive black eyebrows, no nose, simple rounded bodies",
+  "karakterler": {
+    "baz": "one Victorian engineer about forty: receding dark hair, very big bushy dark sideburns joined to a thick moustache, black frock coat, high white collar, black cravat",
+    "dis": "one Victorian politician about fifty: black curly hair with one curl on the forehead, small black goatee beard on the chin, dark frock coat, bright red waistcoat"
+  },
+  "bolumler": [
+    {
+      "ad": "A pleasure cruise",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "Summer, 1858. London. Queen Victoria and Prince Albert decide to take a pleasant boat trip on the River Thames.",
+          "sahneler": [
+            {
+              "tarif": "a wide brown 1858 river in a big Victorian city, low murky water, dark muddy banks, old wooden wharves and brick warehouses without any signs, hazy yellow-green air, a small elegant royal pleasure boat with a striped canopy setting off from a stone pier, bright hot sun.",
+              "hareket": "i2v",
+              "i2v": "The small boat moves slowly away from the pier, the brown water ripples, the canopy flutters. Flat 2D cartoon animation, static camera.",
+              "yazi": "LONDON — SUMMER 1858"
+            },
+            {
+              "tarif": "A small queen with a round cream head in a dark dress and a tiny crown, and a tall prince with a round cream head and side whiskers, sitting under the striped canopy of a boat, smiling.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "They are back on shore within a few minutes. The smell is that terrible.",
+          "sahneler": [
+            {
+              "tarif": "The same small queen and prince with round cream heads hurrying back up the stone steps of a pier, both pressing handkerchiefs to their faces.",
+              "hareket": "sol",
+              "kisi": true
+            },
+            {
+              "tarif": "Close view of the brown river water with a sickly greenish haze rising off it in the hot sun.",
+              "hareket": "i2v",
+              "i2v": "A sickly greenish haze rises slowly from the brown water, small bubbles pop on the surface. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The press soon has a name for it. The Great Stink.",
+          "sahneler": [
+            {
+              "tarif": "A street newspaper seller with a round cream head shouting and waving a blank newspaper, holding his nose with the other hand, people hurrying past.",
+              "hareket": "i2v",
+              "i2v": "He waves the newspaper up and down, people hurry past holding their noses. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "One paper writes: it stinks, and whoso once inhales the stink can never forget it, and can count himself lucky if he lives to remember it.",
+          "sahneler": [
+            {
+              "tarif": "A gentleman with a round cream head in a top hat reading a blank newspaper on a bench by the river, slowly turning green, a handkerchief over his nose.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "This is the story of how a smell forced the British government to finally act. And how one engineer built a hidden world of tunnels under London.",
+          "sahneler": [
+            {
+              "tarif": "a huge Victorian Gothic parliament building with tall pointed towers beside a river at dusk, a faint greenish haze drifting in front of it from the river.",
+              "hareket": "i2v",
+              "i2v": "A faint greenish haze drifts slowly across the river in front of the building. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A huge dark brick tunnel stretching away underground, lit by a single lantern, a curved arched ceiling of countless bricks.",
+              "hareket": "iceri"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Three million people",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "How did it get this bad? London's population had grown from just under one million people to three million.",
+          "sahneler": [
+            {
+              "tarif": "A vast crowded Victorian city of chimneys and rooftops stretching to the horizon, smoke rising from thousands of chimneys.",
+              "hareket": "i2v",
+              "i2v": "Smoke rises slowly from countless chimneys, the haze drifts over the rooftops. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The city had around two hundred thousand cesspits, holes in the ground that held human waste. Some of them leaked gas, which caught fire and exploded.",
+          "sahneler": [
+            {
+              "tarif": "A dark backyard of a Victorian terraced house with a round wooden cover over a pit in the ground, a faint glow seeping out from under the cover.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A small orange burst of flame popping out of a pit cover in a dark yard, startled cat jumping away.",
+              "hareket": "sag"
+            }
+          ]
+        },
+        {
+          "anlatim": "Then came flushing toilets, and new iron water pipes. More water was flushed into the sewers. And the old sewers had only one place to go.",
+          "sahneler": [
+            {
+              "tarif": "Close view of a shiny Victorian flushing toilet with a pull chain and a high cistern, in a small tiled room.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "An old brick sewer outlet in a river wall pouring dark water straight into the river.",
+              "hareket": "i2v",
+              "i2v": "Dark water pours steadily out of the brick outlet into the river, ripples spread. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The Thames. Factories and slaughterhouses dumped their waste there too.",
+          "sahneler": [
+            {
+              "tarif": "a wide brown 1858 river in a big Victorian city, low murky water, dark muddy banks, old wooden wharves and brick warehouses without any signs, hazy yellow-green air, factory chimneys along the banks, dark pipes pouring into the water.",
+              "hareket": "i2v",
+              "i2v": "Dark liquid pours from the pipes into the river, smoke drifts from the chimneys. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1855, the scientist Michael Faraday dropped pieces of white paper into the Thames to test how murky it was. Near the bridges, he wrote, the filth rolled up in clouds so dense they were visible at the surface. The whole river was for the time a real sewer.",
+          "sahneler": [
+            {
+              "tarif": "A Victorian scientist with a round cream head and grey hair, leaning over the side of a small boat, dropping small white paper cards into brown water.",
+              "hareket": "iceri",
+              "yazi": "1855",
+              "kisi": true
+            },
+            {
+              "tarif": "Small white paper cards sinking into murky brown water and disappearing.",
+              "hareket": "i2v",
+              "i2v": "The white paper cards sink slowly into the brown water and fade from view. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Charles Dickens, in one of his novels, called the Thames a deadly sewer, in the place of a fine, fresh river.",
+          "sahneler": [
+            {
+              "tarif": "A Victorian writer with a round cream head and a pointed beard writing at a desk by a window overlooking a hazy brown river, candle light.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Bad air",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "And there was something much worse than the smell. Cholera. London's first big cholera epidemic, in 1831, killed six thousand, five hundred and thirty-six people.",
+          "sahneler": [
+            {
+              "tarif": "A narrow dark Victorian street at night, shuttered windows, a single lamp, empty and silent.",
+              "hareket": "disari",
+              "yazi": "1831"
+            }
+          ]
+        },
+        {
+          "anlatim": "Two more outbreaks followed. Together they killed nearly twenty-five thousand Londoners.",
+          "sahneler": [
+            {
+              "tarif": "Rows of small dark houses with lit windows going out one by one at night.",
+              "hareket": "i2v",
+              "i2v": "The lit windows go dark one by one, the night sky is still. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Most doctors believed diseases like cholera spread through bad air. A theory called miasma. If it smelled foul, it could kill you. So the smell itself was terrifying.",
+          "sahneler": [
+            {
+              "tarif": "A thick greenish fog creeping along a cobbled Victorian street at night, curling around lamp posts.",
+              "hareket": "i2v",
+              "i2v": "The greenish fog creeps slowly along the street and curls around the lamp posts. Flat 2D cartoon animation, static camera."
+            },
+            {
+              "tarif": "A worried Victorian doctor with a round cream head in a black coat holding a cloth over his face, looking at the fog.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "One doctor, John Snow, thought differently. He believed cholera spread through water. In 1854, he removed the handle from a water pump in Soho, and the deaths fell. Little attention was paid to his theory.",
+          "sahneler": [
+            {
+              "tarif": "A Victorian doctor with a round cream head and dark sideburns removing the iron handle from a street water pump, a few people watching.",
+              "hareket": "iceri",
+              "yazi": "SOHO — 1854",
+              "kisi": true
+            },
+            {
+              "tarif": "An old street water pump with no handle on a quiet cobbled corner.",
+              "hareket": "disari"
+            }
+          ]
+        },
+        {
+          "anlatim": "Here's the irony. Because everyone feared the smell from the sewers, the authorities had the sewers flushed through regularly. Straight into the Thames.",
+          "sahneler": [
+            {
+              "tarif": "Workers with round cream heads opening a big iron sluice gate, a rush of dark water flooding down a brick channel toward the river.",
+              "hareket": "i2v",
+              "i2v": "Dark water rushes down the brick channel, the workers turn the big wheel. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The plan nobody approved",
+      "mood": "mysterious",
+      "bloklar": [
+        {
+          "anlatim": "The man with the solution already had a plan. His name was Joseph Bazalgette, an engineer who had worked on railways until overwork wrecked his health.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image standing at a big drawing table covered in large plans, a pencil behind his ear, lamp light.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "His boss, the chief engineer, was so stressed by the job that he died in 1852. Bazalgette took his place.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image alone in a dim empty office, looking at an empty chair behind a desk.",
+              "hareket": "sag",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "By 1856, his plans were finished. Small local sewers feeding into bigger ones, draining into huge main pipes eleven feet high. All of it carrying the waste east, out of the city.",
+          "sahneler": [
+            {
+              "tarif": "A simple diagram-like drawing on dark paper of small glowing pipes joining into bigger pipes and flowing east into one huge pipe, no writing.",
+              "hareket": "disari"
+            },
+            {
+              "tarif": "The engineer with the big sideburns from the reference image standing beside a giant circular pipe section almost twice his height, for scale.",
+              "hareket": "yukari",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "And then nothing happened. The minister in charge didn't like where the waste would come out. He sent the plans to a committee of three engineers.",
+          "sahneler": [
+            {
+              "tarif": "Three engineers with round cream heads in frock coats arguing around a table piled with papers, one jabbing his finger at a plan.",
+              "hareket": "iceri",
+              "kisi": true
+            },
+            {
+              "tarif": "The engineer with the big sideburns from the reference image sitting in a waiting room, drumming his fingers on his hat, a clock on the wall.",
+              "hareket": "i2v",
+              "kim": [
+                "baz"
+              ],
+              "i2v": "He drums his fingers on the hat, the clock pendulum swings. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Their version would cost over five million pounds. More than double Bazalgette's estimate. Then, in February 1858, the government fell, and a new minister took over.",
+          "sahneler": [
+            {
+              "tarif": "A tall wobbling stack of paper documents tied with red ribbon on a desk, about to topple.",
+              "hareket": "yukari"
+            },
+            {
+              "tarif": "Exterior of a huge Victorian Gothic parliament building with tall pointed towers beside a river at night under a cloudy sky.",
+              "hareket": "disari",
+              "yazi": "FEBRUARY 1858"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The curtains",
+      "mood": "funny",
+      "bloklar": [
+        {
+          "anlatim": "Then came June 1858. In the shade, London averaged thirty-four to thirty-six degrees Celsius. In the sun, up to forty-eight.",
+          "sahneler": [
+            {
+              "tarif": "a wide brown 1858 river in a big Victorian city, low murky water, dark muddy banks, old wooden wharves and brick warehouses without any signs, hazy yellow-green air under a blazing white sun, heat shimmer rising, the water level very low.",
+              "hareket": "i2v",
+              "i2v": "Heat shimmers above the water, the sun blazes, the low water barely moves. Flat 2D cartoon animation, static camera.",
+              "yazi": "JUNE 1858"
+            }
+          ]
+        },
+        {
+          "anlatim": "With no rain, the river dropped. The raw sewage stayed on the banks, baking in the heat. One writer reported that in places the deposit was more than six feet deep.",
+          "sahneler": [
+            {
+              "tarif": "Low tide on a wide river: thick dark brown mud banks exposed under a hot sun, flies buzzing over them, wooden posts sticking out.",
+              "hareket": "i2v",
+              "i2v": "Small flies buzz over the mud, heat shimmers above it, the water barely moves. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "One magazine wrote: we can colonise the remotest ends of the earth, but we cannot clean the River Thames.",
+          "sahneler": [
+            {
+              "tarif": "A proud Victorian sailing ship heading out to sea at sunrise, and behind it a hazy city skyline above a brown river.",
+              "hareket": "i2v",
+              "i2v": "The sailing ship moves slowly out to sea, the sails fill with wind, the haze drifts over the city. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "And right on the river sat the Houses of Parliament.",
+          "sahneler": [
+            {
+              "tarif": "a huge Victorian Gothic parliament building with tall pointed towers beside a river, seen from the river, a greenish haze rising from the water in front of it.",
+              "hareket": "i2v",
+              "i2v": "A greenish haze rises from the river and drifts toward the building. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "The smell got so bad that members couldn't use the committee rooms or the library. The curtains on the river side were soaked in lime chloride to block it out. It didn't work.",
+          "sahneler": [
+            {
+              "tarif": "Workers with round cream heads on ladders hanging huge dripping wet curtains over tall Gothic windows inside a grand wood-panelled room.",
+              "hareket": "sag",
+              "kisi": true
+            },
+            {
+              "tarif": "A grand empty library with tall bookshelves and leather chairs, the windows covered by dripping curtains, nobody there.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "Benjamin Disraeli, the Chancellor of the Exchequer, was seen leaving a committee room with a mass of papers in one hand, and his handkerchief pressed to his nose.",
+          "sahneler": [
+            {
+              "tarif": "The politician with the black curls from the reference image hurrying out of a doorway with an armful of papers, pressing a handkerchief to his face, other politicians with round cream heads hurrying behind him.",
+              "hareket": "sol",
+              "kim": [
+                "dis"
+              ],
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "There was talk of moving Parliament out of London altogether, to Oxford or St Albans.",
+          "sahneler": [
+            {
+              "tarif": "Politicians with round cream heads in top hats loading trunks onto a horse-drawn carriage outside the parliament building, holding their noses.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "When an MP asked what the government was doing about it, the minister replied that the Thames was not under his jurisdiction.",
+          "sahneler": [
+            {
+              "tarif": "A minister with a round cream head standing in a crowded Victorian debating chamber, shrugging with his palms up, other members glaring at him.",
+              "hareket": "iceri",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The satirical magazine Punch joked that the one topic in both Houses was the Conspiracy to Poison, and that the guilty party was that old offender, Father Thames.",
+          "sahneler": [
+            {
+              "tarif": "A huge grumpy old man made of brown river water with a long dripping beard and a crown of reeds rising out of the river in front of a Gothic parliament building, flat cartoon style.",
+              "hareket": "yukari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Sheer stench",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Meanwhile, two hundred to two hundred and fifty tons of lime were being dumped near the sewer mouths. Men spread lime on the riverbank at low tide. Cost: fifteen hundred pounds a week.",
+          "sahneler": [
+            {
+              "tarif": "Workers with round cream heads shovelling white powder from carts onto dark mud banks by the river, clouds of white dust.",
+              "hareket": "i2v",
+              "i2v": "The workers shovel the white powder, white dust clouds drift in the hot air. Flat 2D cartoon animation, static camera.",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "On the fifteenth of June, Disraeli put forward a new bill. In the debate, he called the Thames a Stygian pool, reeking with ineffable and intolerable horrors.",
+          "sahneler": [
+            {
+              "tarif": "The politician with the black curls from the reference image standing in the crowded debating chamber, one arm raised dramatically toward the windows, the other members listening.",
+              "hareket": "iceri",
+              "kim": [
+                "dis"
+              ],
+              "yazi": "15 JUNE 1858",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "The bill handed the job to the Metropolitan Board of Works, let it borrow three million pounds, and paid for it with a tax of three pennies on every London household for forty years.",
+          "sahneler": [
+            {
+              "tarif": "Three small copper pennies on a wooden table next to a stack of gold coins, lamp light.",
+              "hareket": "iceri"
+            },
+            {
+              "tarif": "A long row of identical Victorian terraced houses with smoking chimneys, a tax collector with a round cream head knocking at the first door.",
+              "hareket": "sol",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "As one newspaper put it, Parliament was all but compelled to act by the force of sheer stench. The bill became law on the second of August.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image unrolling his big plans on a table with a satisfied look, sunlight through the window.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ],
+              "yazi": "2 AUGUST 1858"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The city under the city",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Building began in 1859. The plan: eleven hundred miles of new street sewers, feeding into eighty-two miles of main sewers. Four hundred draftsmen worked on the drawings for the first stage alone.",
+          "sahneler": [
+            {
+              "tarif": "A huge drawing office with long rows of draftsmen with round cream heads bent over drawing tables, lamps glowing.",
+              "hareket": "i2v",
+              "i2v": "The draftsmen draw with small movements of their pencils, the lamps glow. Flat 2D cartoon animation, static camera.",
+              "yazi": "1859",
+              "kisi": true
+            },
+            {
+              "tarif": "A deep open trench cut through a busy Victorian street, workers with round cream heads laying bricks for a big round tunnel inside it.",
+              "hareket": "disari",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "Gravity did most of the work. The main sewers sloped gently east, about two feet per mile. Where the land was too low, pumping stations lifted the sewage up into higher sewers.",
+          "sahneler": [
+            {
+              "tarif": "A long brick tunnel sloping gently downward into darkness, a thin stream flowing along its floor, lanterns on the walls.",
+              "hareket": "i2v",
+              "i2v": "The water flows steadily down the tunnel floor, the lantern flames flicker. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "Bazalgette had every batch of cement tested. One historian calls his system elaborate and draconian. The manufacturers changed how they made their cement.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image examining a small cracked cement block with a magnifying glass while a worried supplier with a round cream head watches.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ],
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "It wasn't easy. There was a strike, hard frosts, and heavy rain. In 1862, a wall between two deep trenches collapsed, and the old Fleet river flooded onto Victoria Street.",
+          "sahneler": [
+            {
+              "tarif": "A flooded Victorian street at night, water rushing between buildings without signs, a broken brick wall, people with round cream heads climbing onto carts.",
+              "hareket": "i2v",
+              "i2v": "Muddy water rushes along the street, the people climb onto the carts, rain falls. Flat 2D cartoon animation, static camera.",
+              "yazi": "1862",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "In 1865, the Prince of Wales opened the pumping station at Crossness by starting its four huge beam engines, named Victoria, Prince Consort, Albert Edward and Alexandra. Afterwards, five hundred guests had dinner. Inside the sewage works.",
+          "sahneler": [
+            {
+              "tarif": "A magnificent Victorian engine house interior with ornate painted cast-iron columns and huge beam engines, great iron beams rocking.",
+              "hareket": "i2v",
+              "i2v": "The huge iron beams rock slowly up and down, the big flywheel turns. Flat 2D cartoon animation, static camera.",
+              "yazi": "CROSSNESS — 1865"
+            },
+            {
+              "tarif": "A long formal banquet table with white cloths and candles set up between giant iron engines, guests with round cream heads in evening dress raising glasses.",
+              "hareket": "sag",
+              "kisi": true
+            }
+          ]
+        },
+        {
+          "anlatim": "When the southern system was finished, the board agreed to give Bazalgette a bonus of six thousand pounds, three times his yearly salary. After criticism, the idea was dropped.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image reaching for a fat envelope on a desk just as a hand pulls it away, his face falling.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        },
+        {
+          "anlatim": "The second station, Abbey Mills, got an ornate dome. One architectural historian called it exciting architecture applied to the most foul purposes.",
+          "sahneler": [
+            {
+              "tarif": "An ornate Victorian pumping station with a central dome and tall decorated windows, like a church, under a pink evening sky.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "For the low-level sewers, he built new walls along the river, ran the sewers inside them, and filled in behind them. The Victoria, Albert and Chelsea Embankments. He took back fifty-two acres of land from the Thames.",
+          "sahneler": [
+            {
+              "tarif": "A wide new granite river wall with a broad tree-lined road and walkway along it, gas lamps, a calm river beside it.",
+              "hareket": "i2v",
+              "i2v": "The trees along the walkway sway gently, the calm river flows past the granite wall. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "By 1875, the system was finished. It took three hundred and eighteen million bricks, and cost around six and a half million pounds. Bazalgette was knighted.",
+          "sahneler": [
+            {
+              "tarif": "A giant mountain of red bricks with tiny workers with round cream heads at its base.",
+              "hareket": "yukari",
+              "kisi": true
+            },
+            {
+              "tarif": "The engineer with the big sideburns from the reference image kneeling with his head bowed, a sword resting lightly on his shoulder, in a grand hall.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "The proof",
+      "mood": "tragic",
+      "bloklar": [
+        {
+          "anlatim": "In 1866, cholera came back to London. It killed five thousand, five hundred and ninety-six people. But almost all of them died in one part of the East End.",
+          "sahneler": [
+            {
+              "tarif": "A poor Victorian East End street at dusk, narrow and silent, a single lamp, all doors closed.",
+              "hareket": "disari",
+              "yazi": "EAST END — 1866"
+            }
+          ]
+        },
+        {
+          "anlatim": "The one area that was not yet connected to Bazalgette's system. Ninety-three percent of the deaths were there.",
+          "sahneler": [
+            {
+              "tarif": "A simple map-like drawing of a city with no writing, most of it glowing a calm warm amber, one small eastern patch dark red.",
+              "hareket": "iceri"
+            }
+          ]
+        },
+        {
+          "anlatim": "A water company had been dumping its sewage half a mile downriver from its reservoir. The incoming tide carried it straight back up into the drinking water.",
+          "sahneler": [
+            {
+              "tarif": "A river estuary where a dark stain in the water is pushed upstream by the incoming tide toward a brick reservoir.",
+              "hareket": "i2v",
+              "i2v": "The dark stain in the water drifts slowly upstream with the tide, the water ripples. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "That settled it. Cholera was carried by water, not by bad air. John Snow had been right. It was the last cholera outbreak in London.",
+          "sahneler": [
+            {
+              "tarif": "An old street water pump without a handle standing in soft morning sunlight, a small flower growing at its base.",
+              "hareket": "yukari"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ad": "Still flowing",
+      "mood": "epic",
+      "bloklar": [
+        {
+          "anlatim": "Bazalgette's sewers are still working today. When he died, The Times wrote that the great sewer had added some twenty years to Londoners' chance of life.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image older and grey, standing on the granite river wall at sunset, looking out at the calm river.",
+              "hareket": "i2v",
+              "kim": [
+                "baz"
+              ],
+              "i2v": "His coat moves in the breeze, the calm river flows, the sunset clouds drift. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "One historian said he probably did more good, and saved more lives, than any single Victorian official.",
+          "sahneler": [
+            {
+              "tarif": "A busy modern city riverside at night, seen from far away, glittering lights reflecting on a calm river.",
+              "hareket": "i2v",
+              "i2v": "The city lights twinkle and reflect on the calm water, the river flows gently. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "By 2015, the system was used by up to eight million people a day. And in 2014, the water company admitted it is struggling to cope with twenty-first century London.",
+          "sahneler": [
+            {
+              "tarif": "The old dark brick sewer tunnel with water rushing high along its floor, lantern light.",
+              "hareket": "i2v",
+              "i2v": "Water rushes along the tunnel floor, the lantern light flickers on the bricks. Flat 2D cartoon animation, static camera."
+            }
+          ]
+        },
+        {
+          "anlatim": "So it took the worst smell in London's history to get it built. Here's my question. What would it take, in your city? Tell me in the comments.",
+          "sahneler": [
+            {
+              "tarif": "The engineer with the big sideburns from the reference image standing in the big brick tunnel holding a lantern, turning to look straight at the viewer with a questioning look.",
+              "hareket": "iceri",
+              "kim": [
+                "baz"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

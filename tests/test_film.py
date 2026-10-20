@@ -109,6 +109,9 @@ def test_fark_ve_soylenis():
         # Lowell: ondalık
         ("In 1834, the mills announced a twelve and a half percent pay cut.",
          "In 1834, the mills announced a 12.5 percent pay cut."),
+        # Graf Zeppelin: dolar ve sent ondalık yazılıyor
+        ("Even a letter needed three dollars and fifty-five cents in stamps.",
+         "Even a letter needed $3.55 in stamps."),
     ],
 )  # fmt: skip
 def test_sayi_sozu_rakamla_esit(metin, duyulan):
