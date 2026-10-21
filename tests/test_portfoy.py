@@ -66,7 +66,7 @@ def test_portfoy_kanallari_yan_yana_ve_kotalar(kanallar):
     assert e["ilk_public"] == dt.date(2026, 10, 10) and u["ilk_public"] is None  # geri çekilen sayılmaz
 
     metin = portfoy.olustur(2026, 42, ozetler, {"earth": 20, "uzay": 18, "ortak": 7})
-    assert "| | Inkwell Oddities (`earth`) | Lanternbug Tales (`uzay`) |" in metin
+    assert "| | Inkwell Oddities Stories (`earth`) | Lanternbug Tales (`uzay`) |" in metin
     assert "| Görüntüleme (hafta) | 1.500 | — |" in metin and "| Abone (net · toplam) | +3 · 12 | — |" in metin
     assert "| Hikâye havuzu (kalan) | 700 | 140 |" in metin
     k14 = "karar günü 2026-12-05 (9/56 gün); ilk public videodan bu yana 4.000 / 1.200.000 görüntüleme, 12 / 200 abone"

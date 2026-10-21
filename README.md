@@ -2,7 +2,7 @@
 
 Sıfır sermayeyle, insan dokunuşu olmadan her gün YouTube Shorts üreten ve yayınlayan hat. İki kanal:
 
-- **Inkwell Oddities** (`kanallar/earth`): Wikipedia'nın "Unusual articles" listesinden gerçek, tuhaf hikâyeler.
+- **Inkwell Oddities Stories** (`kanallar/earth`): Wikipedia'nın "Unusual articles" listesinden gerçek, tuhaf hikâyeler.
 - **Lanternbug Tales** (`kanallar/uzay`): Ezop masalları, yumuşatılmadan, yetişkinlere.
 
 Her video kaynaklıdır: senaryodaki her olgu kaynak metinle kod kapısında ve bir hakem modelinde denetlenir. Kapıdan

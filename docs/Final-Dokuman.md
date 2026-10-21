@@ -32,7 +32,7 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 
 | Kanal | YouTube adı | İçerik | Kaynak havuzu | Ses | Yayın (UTC) |
 | --- | --- | --- | --- | --- | --- |
-| `earth` | Inkwell Oddities | gerçek tuhaf olaylar, genel kitle (K-15); **kart biçimi** (K-25): 8 sn, anlatıcısız paragraf + makalenin Commons görseli | Wikipedia: Unusual articles, ~710 makale (TypeSafe jev-1.13.0 ile süzüldü, K-18) | Kokoro `bm_george` 1,08× | 14:00 |
+| `earth` | Inkwell Oddities Stories | gerçek tuhaf olaylar, genel kitle (K-15); **kart biçimi** (K-25): 8 sn, anlatıcısız paragraf + makalenin Commons görseli | Wikipedia: Unusual articles, ~710 makale (TypeSafe jev-1.13.0 ile süzüldü, K-18) | Kokoro `bm_george` 1,08× | 14:00 |
 | `uzay` | Lanternbug Tales | Ezop masalları yumuşatılmadan, yetişkinlere (K-24) | Aesop's Fables, V. S. Vernon Jones 1912 (kamu malı), 245 masal | Kokoro `af_heart` 1,02× | 20:00 |
 
 | Katman | Seçim | Not |

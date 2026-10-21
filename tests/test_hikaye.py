@@ -163,12 +163,17 @@ def test_marka_adi_beklemez_ad_degisince_yerel_adi_gunceller(kanal_sec, monkeypa
 
 
 def test_marka_yedek_adla_da_uygulanir(kanal_sec, monkeypatch):
+    import dataclasses
+
     from otomat.yayin import marka
 
     kanal_sec("earth")
+    # Earth'ün yedek adı 10-21'de asıl ad oldu; düzenek bir profil yedeğiyle denenir
+    earth = dataclasses.replace(kanal.aktif(), ad="Asıl Ad", yedek_adlar=("Asıl Ad Stories",))
+    monkeypatch.setattr(kanal, "aktif", lambda: earth)
     uygulanan = []
     monkeypatch.setattr(marka, "uygula", lambda yt, oge, m: uygulanan.append(oge["snippet"]["title"]))
-    assert marka.kontrol(_SahteKanal("Inkwell Oddities Stories")) == "uygulandı"  # YouTube asıl adı reddetti
+    assert marka.kontrol(_SahteKanal("Asıl Ad Stories")) == "uygulandı"  # YouTube asıl adı reddetti
 
 
 def _sahte_video(genislik=1080, yukseklik=1920, ses=True, sure=37.71):

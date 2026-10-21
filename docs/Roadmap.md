@@ -18,7 +18,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 5 | Yayın ve audit | ✅ Tamamlandı | Scryne D1–D3'ü yaptı; OAuth "In production"; yükleyici + planlama + 5 dilli metadata + altyazı; GitHub Pages'ta uygulama/gizlilik/şartlar; audit başvurusu gönderildi; ilk video gerçek kanalda (private-kilitli olsa bile); Plan B paketi çalışıyor |
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
-| 15 | Kanal kimliği dönüşümü | 🔄 Devam Ediyor | Scryne kanalları yeniden adlandırdı (Inkwell Oddities, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
+| 15 | Kanal kimliği dönüşümü | ✅ Tamamlandı | Scryne kanalları yeniden adlandırdı (Inkwell Oddities Stories, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
 | 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
 | 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot One Ticket Back'te public; ikinci ve üçüncü film farklı yapıda yayında |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
@@ -288,6 +288,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   profilde (`yedek_adlar`); hangisi tutarsa kimlik o adla uygulanır.
 - **Faz 15 için Scryne'dan:** iki kanalın adı ve tanıtıcısı (Studio → Özelleştirme → Temel bilgiler) ve profil resmi
   (API ile yüklenemiyor). Gerisi API ile.
+- **✅ Kapandı (2026-10-21):** Earth'ün YouTube'daki adı 14 gün kilidi yüzünden hâlâ "Earth in Numbers"tı. Kilit
+  açıldı ama "Inkwell Oddities" ikinci kez reddedildi ("Bu adı kullanamazsınız"). Yedek ad **Inkwell Oddities
+  Stories** tuttu: Data API'de `title` ve en_US yerelleştirmesi yeni adda, `marka.kontrol` iki kanalda da "tamam".
+  `kanal.toml`'da `ad` artık bu, `yedek_adlar` kalktı. `eski_adlar` ~10-28'de silinebilir. Eski veri videoları
+  private. Public site (`otomat-site`) kanalı hâlâ "Inkwell Oddities" diye anıyor ve film kanalını hiç anmıyor; bir
+  sonraki site güncellemesinde düzeltilecek.
 - **İlk hikâye yayınları (2026-10-09 akşam):**
   - Kota 17:00 UTC'de açıldı (kayan 24 saat). İlk koşuda 5 hikâye üretildi ama hepsi reddedildi: Actions'ta
     ffprobe yok. Earth'te bir sahne görseli 3030 filtresine takılıp koşuyu düşürdü. Günün kotası gitti.

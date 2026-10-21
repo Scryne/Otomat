@@ -2,9 +2,9 @@
 # Yollar çok kanal öncesi düzeni korur (durum/otomat.db, raporlar/): geçmiş ve analitik eşleşmesi bozulmaz.
 # `ad` YouTube'daki kanal adıyla birebir aynı olmalı (youtube.kanal_dogrula); kanal yeniden adlandırılınca burası da değişir.
 id = "earth"
-ad = "Inkwell Oddities"
-eski_adlar = ["Earth in Numbers"]  # Scryne Studio'da yeniden adlandırana kadar (Faz 15); sonra silinebilir
-yedek_adlar = ["The Inkwell Oddities", "Inkwell Oddities Stories", "Inkwell Oddities TV"]  # YouTube `ad`ı reddederse (10-08: "Bu adı kullanamazsınız")
+# YouTube "Inkwell Oddities"i iki kez reddetti ("Bu adı kullanamazsınız", 10-08 ve 10-21); yedek ad 10-21'de tuttu
+ad = "Inkwell Oddities Stories"
+eski_adlar = ["Earth in Numbers"]  # 10-21'de değişti; eski adı gören koşu kalmayınca (~10-28) silinebilir
 tanim = "illustrated short true stories: the strangest real events, people and animals from history"
 tur = "hikaye"
 bicim = "kart"  # K-25 (2026-10-14): anlatıcısız tek ekran paragraf + gerçek görsel; sahneli anlatım 3-81 izlenmede kaldı
