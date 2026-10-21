@@ -227,7 +227,7 @@ def actions_dakikasi(bas: dt.date, son: dt.date, kanallar: list[str]) -> dict[st
         return None
 
 
-def olustur(yil: int, hafta: int, ozetler: list[dict], dakika: dict[str, int] | None) -> str:
+def olustur(yil: int, hafta: int, ozetler: list[dict], dakika: dict[str, int] | None, film: dict | None = None) -> str:
     bas, son = hafta_araligi(yil, hafta)
     baslik = "| | " + " | ".join(f"{o['ad']} (`{o['id']}`)" for o in ozetler) + " |"
     s = [
@@ -288,6 +288,17 @@ def olustur(yil: int, hafta: int, ozetler: list[dict], dakika: dict[str, int] | 
             f"({min(gecen, OLDURME['gun'])}/{OLDURME['gun']} gün); {olcum}."
         )
 
+    if film is not None:  # One Ticket Back matriste değil (K-32); sayılar kendi haftalık raporundan (film/rapor.py)
+        h = film["hafta"]
+        s += [
+            "",
+            "## Film kanalı (One Ticket Back)",
+            "",
+            f"`raporlar/film`: bu hafta {_sayi(h['views'])} görüntüleme, {h['saat']:.1f} saat izlenme, abone net "
+            f"{h['abone_net']:+d} (toplam {_sayi(film['abone_toplam'])}); {len(film['filmler'])} public film. YPP: "
+            f"{film['ypp_saat']:.1f} / 4.000 saat, {_sayi(film['abone_toplam'])} / 1.000 abone.",
+        ]
+
     neuron_gun: dict[str, int] = {}
     api_gun: dict[str, int] = {}
     for o in ozetler:
@@ -340,7 +351,9 @@ def yaz(yil: int, hafta: int) -> Path:
     dakika = actions_dakikasi(*hafta_araligi(yil, hafta), [k.id for k in kanallar])
     yol = dosya(yil, hafta)
     yol.parent.mkdir(parents=True, exist_ok=True)
-    yol.write_text(olustur(yil, hafta, ozetler, dakika), encoding="utf-8")
+    film_yolu = KOK / "raporlar" / "film" / f"{yil}-H{hafta:02d}.json"
+    film = json.loads(film_yolu.read_text(encoding="utf-8")) if film_yolu.exists() else None
+    yol.write_text(olustur(yil, hafta, ozetler, dakika, film), encoding="utf-8")
     return yol
 
 

@@ -209,10 +209,48 @@ jobs:
             gh issue close "$ACIK" --comment "Temiz koşu ($(date -u +%F)): alarm kapandı. $KOSU"
           fi
 
+  # One Ticket Back haftalık raporu (raporlar/film/, otomat/film/rapor.py). Film kanalı matriste değil (K-32): üretimi
+  # ve yüklemesi yerelde; rapor yalnız YouTube'u okur. Hafta bitiminden 3 gün sonra, günün ilk koşusunda ya da elle.
+  film:
+    if: github.ref_name == 'main' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency:
+      group: gunluk-film
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Yazılacak rapor var mı
+        id: kontrol
+        run: PYTHONPATH=. python3 -m otomat.film.rapor bekleyen || echo "atla=1" >> "$GITHUB_OUTPUT"
+      - uses: astral-sh/setup-uv@v7
+        if: steps.kontrol.outputs.atla != '1'
+        with:
+          enable-cache: true
+          version: "0.13.1"
+      - name: Film raporu
+        if: steps.kontrol.outputs.atla != '1'
+        env:
+          YT_TOKEN_JSON_FILM: ${{ secrets.YT_TOKEN_JSON_FILM }}  # istemci kimliği token'ın içinde
+        run: uv run --locked python -m otomat.film.rapor
+      - name: Kaydet
+        if: steps.kontrol.outputs.atla != '1'
+        run: |
+          git config user.name "otomat-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add raporlar/film/
+          git diff --cached --quiet && exit 0
+          git commit -m "Film raporu"
+          for i in 1 2 3 4 5; do git push && exit 0; git pull --rebase || git rebase --abort || true; sleep $((i * 5)); done
+          exit 1
+
   # Faz 13: kanallar yan yana haftalık portföy raporu (raporlar/portfoy/). Kanal işleri haftalık raporlarını yazdıktan
-  # sonra; yalnız günün ilk koşusunda ve elle (ayda ≤ 30 dk), yazılacak rapor yoksa ilk adımda biter.
+  # sonra; yalnız günün ilk koşusunda ve elle (ayda ≤ 30 dk), yazılacak rapor yoksa ilk adımda biter. Film raporundan
+  # da sonra: aynı haftanın film sayıları portföye bölüm olarak girer.
   portfoy:
-    needs: uret
+    needs: [uret, film]
     if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
     runs-on: ubuntu-24.04
     timeout-minutes: 10

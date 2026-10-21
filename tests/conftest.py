@@ -19,6 +19,7 @@ for _ad in (
     "YT_ISTEMCI_JSON",
     "YT_TOKEN_JSON",
     "YT_TOKEN_JSON_UZAY",
+    "YT_TOKEN_JSON_FILM",
     "GH_TOKEN",
     "GITHUB_TOKEN",
     "GITHUB_STEP_SUMMARY",
@@ -35,6 +36,7 @@ def _gercek_sir_yok(monkeypatch):
     Buffer anahtarı `.env`'e düşüyor. Earth kart biçimine geçince (K-25) senaryosu sahtelenmiş bir test kart yoluna
     sapıp yerelde gerçek Cloudflare'e istek attı (CI'da dosya olmadığı için görünmüyordu). Gerçek uca giden her test
     burada düşer."""
+    from otomat.film import yukle
     from otomat.hikaye import cf
     from otomat.yayin import buffer, youtube
 
@@ -47,3 +49,4 @@ def _gercek_sir_yok(monkeypatch):
     monkeypatch.setattr(cf, "kimlik", yok("Cloudflare"))
     monkeypatch.setattr(youtube, "kimlik", yok("YouTube"))
     monkeypatch.setattr(buffer, "anahtar", yok("Buffer"))
+    monkeypatch.setattr(yukle, "kimlik", yok("One Ticket Back"))  # film raporu ve yükleyici

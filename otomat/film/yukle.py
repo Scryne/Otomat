@@ -15,6 +15,7 @@ söylüyor. İlk yükleme bunu ölçer: istenen görünürlük ile YouTube'un d�
 
 import datetime as dt
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -28,6 +29,7 @@ FILM_GUNU, SAAT_UTC = 5, 19
 KESIT_GUNLERI = (2, 4, 6)
 EN_ERKEN = dt.timedelta(hours=24)  # yükleme + işlenme + son bakış payı
 TOKEN = youtube.SIRLAR / "token_film.json"
+TOKEN_DEGISKENI = "YT_TOKEN_JSON_FILM"
 KATEGORI = "27"  # Education
 GORUNURLUKLER = ("unlisted", "private", "public")
 VARSAYILAN_ETIKET = ["history", "animated history", "what if", "your life as", "history documentary"]
@@ -53,9 +55,13 @@ def kimlik():
     from google.auth.transport.requests import Request
     from google.oauth2.credentials import Credentials
 
-    if not TOKEN.exists():
+    if ham := os.environ.get(TOKEN_DEGISKENI):  # Actions: haftalık film raporu (otomat/film/rapor.py)
+        bilgi = json.loads(ham)
+    elif TOKEN.exists():
+        bilgi = json.loads(TOKEN.read_text(encoding="utf-8"))
+    else:
         raise YuklemeHatasi("token yok: önce `python -m otomat.film.yukle yetki`")
-    k = Credentials.from_authorized_user_info(json.loads(TOKEN.read_text(encoding="utf-8")), youtube.KAPSAMLAR)
+    k = Credentials.from_authorized_user_info(bilgi, youtube.KAPSAMLAR)
     if not k.valid:
         k.refresh(Request())
     return k

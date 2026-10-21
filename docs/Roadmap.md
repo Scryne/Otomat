@@ -681,6 +681,13 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   (`Otomat-Yukle-zeppelin/norton/pony/stink`). Anlatım kapısında iki yanlış alarm kodda düzeldi ("$3.55", "£3m"; film
   testleri 36 → 38). Ayrıntı ve dersler (sakal burun çizdiriyor, modern dünya sızıntısı, bellek
   bekçisinin yanlış ölçüsü): `docs/arastirma/11-uzun-video.md` "İkinci ay".
+- **Film raporu (10-21):** Scryne kanal analizi istedi. Canlı durum: One Ticket Back'te 0 public video, 20 planlı;
+  Earth karta geçince video medyanı ~59'dan ~145'e çıktı (Zelda 1.416), ama Kalan %31'de sabit kaldı. Film kanalı
+  hiçbir rapora bağlı değildi. `otomat/film/rapor.py` eklendi: haftalık `raporlar/film/` raporu (film başına ilk 7
+  gün görüntüleme, izlenme saati, ortalama süre/%, 30. sn'de kalan, abone; kesitler; filmlere trafik; YPP saati).
+  Kesit, açıklamasındaki "Full film:" bağlantısından filmine bağlanır (yükleme kayıtları Actions'ta yok). Günlük iş
+  akışında `film` işi var (secret `YT_TOKEN_JSON_FILM`), portföy raporu film bölümünü okuyor. İlk rapor H43, 10-28'de.
+  Sorgular canlı API'de denendi. Gösterim ve tıklama oranı API'de yok, Studio'dan okunur. 359 → 367 test.
 - **Kalan (Bitti kriteri):** pilotun yayını (10-31); ikinci ve üçüncü film farklı yapıda yayında. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
 
 ### Faz 7: Gerçek kullanım
