@@ -292,8 +292,10 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   açıldı ama "Inkwell Oddities" ikinci kez reddedildi ("Bu adı kullanamazsınız"). Yedek ad **Inkwell Oddities
   Stories** tuttu: Data API'de `title` ve en_US yerelleştirmesi yeni adda, `marka.kontrol` iki kanalda da "tamam".
   `kanal.toml`'da `ad` artık bu, `yedek_adlar` kalktı. `eski_adlar` ~10-28'de silinebilir. Eski veri videoları
-  private. Public site (`otomat-site`) kanalı hâlâ "Inkwell Oddities" diye anıyor ve film kanalını hiç anmıyor; bir
-  sonraki site güncellemesinde düzeltilecek.
+  private. Public site (`otomat-site`, `7bd1fb5`) aynı gün güncellendi: yeni ad, One Ticket Back ve doğrudan API
+  yüklemesi, Lanternbug Tales'in durduğu. Yayın öncesi tarama temiz (geçmiş dahil, çıkış 0).
+  Aynı gün Pillow 13.0.0 ve certifi 2026.10.19'a geçildi (Dependabot: 2 kritik, 6 yüksek, 2 orta). Kapak, kart ve
+  kesit kareleri iki Pillow sürümünde üretildi, piksel farkı 0.
 - **İlk hikâye yayınları (2026-10-09 akşam):**
   - Kota 17:00 UTC'de açıldı (kayan 24 saat). İlk koşuda 5 hikâye üretildi ama hepsi reddedildi: Actions'ta
     ffprobe yok. Earth'te bir sahne görseli 3030 filtresine takılıp koşuyu düşürdü. Günün kotası gitti.

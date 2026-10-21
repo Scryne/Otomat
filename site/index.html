@@ -21,9 +21,10 @@
 <body>
 <main>
   <h1><span class="accent" aria-hidden="true"></span>Otomat</h1>
-  <p>Otomat is a private, single-user tool. It makes short vertical story videos and publishes them to YouTube
-    channels owned by its operator: <strong>Inkwell Oddities</strong> (true, strange stories from history) and
-    <strong>Lanternbug Tales</strong> (Aesop's fables).</p>
+  <p>Otomat is a private, single-user tool. It makes story videos from public sources and publishes them to YouTube
+    channels owned by its operator: <strong>Inkwell Oddities Stories</strong> (short vertical videos of true, strange
+    stories from history), <strong>One Ticket Back</strong> (animated history films of about ten minutes, with short
+    vertical clips from each film) and <strong>Lanternbug Tales</strong> (Aesop's fables; paused).</p>
 
   <h2>What it does</h2>
   <ul>
@@ -33,9 +34,14 @@
       against the source text before a video is made.</li>
     <li>Uses an illustration made with an AI image model, or a freely licensed image from Wikimedia Commons with its
       author and license credited. Narration, where used, is a synthetic voice; music is by Kevin MacLeod (CC BY 4.0).</li>
-    <li>Publishes through the operator's own Buffer account, then uses the YouTube Data API on the operator's own
-      channels to set the title, description, tags, scheduled publish time, translated titles and descriptions and
-      caption tracks, and reads those channels' own YouTube Analytics to choose future stories.</li>
+    <li>For the films, draws scenes with AI image and video models from a sourced script narrated by a synthetic
+      voice; every number and name in the narration is checked against the source. The film description lists its
+      sources.</li>
+    <li>Publishes short videos through the operator's own Buffer account, then uses the YouTube Data API on the
+      operator's own channels to set the title, description, tags, scheduled publish time, translated titles and
+      descriptions and caption tracks. Films and their clips are uploaded with the YouTube Data API as private videos
+      scheduled to become public, with a custom thumbnail.</li>
+    <li>Reads those channels' own YouTube Analytics to choose future stories and to compare films.</li>
   </ul>
 
   <h2>What it does not do</h2>
