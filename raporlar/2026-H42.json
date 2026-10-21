@@ -1,0 +1,21 @@
+{
+ "kanal": "earth",
+ "hafta": {
+  "views": 2086,
+  "engaged_views": 666,
+  "abone_net": 1,
+  "abone_toplam": 3,
+  "video_sayisi": 11
+ },
+ "son_56_gun": {
+  "views": 1509,
+  "engaged_views": 476,
+  "abone_net": 0,
+  "abone_toplam": 3,
+  "video_sayisi": 11,
+  "bas": "2026-10-17",
+  "son": "2026-10-18"
+ },
+ "analitik_hatasi": null,
+ "yazildi": "2026-10-21"
+}
