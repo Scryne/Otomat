@@ -27,8 +27,40 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 > saniyelerde kaydırdı); nişte tutarlı izlenen küçük kanallar hikâyeyi anlatıcısız tek ekran paragrafla ve konunun
 > gerçek görseliyle veriyor. Earth `bicim = "kart"`a geçti (`otomat/hikaye/kart.py`); sahne motoru Orbit'te sürüyor.
 > Kanıt ve karar: `docs/arastirma/10-rakip-kart.md`, Roadmap Faz 16.
+>
+> **Uzun film (2026-10-17…10-23, K-26…K-35).** Otomat'ın tek yayındaki kolu artık **One Ticket Back**: haftada bir
+> 8-11 dk anlatıcılı, animasyonlu tarih filmi ve her filmden 3 dikey kesit. Shorts kanalları durdu: Orbit K-33
+> (10-18), Earth K-35 (10-23; kart biçiminde de izleyicinin ~%31'i kaldı, eşik %50). Shorts motoru ve profilleri
+> silinmedi; geri açma tarifi `.github/workflows/gunluk.yml` başında. Aşağıdaki "Güncel mimari (film)" bugünkü ürünü
+> anlatır; "hikâye motoru" bölümü durmuş Shorts hattının, ondan sonrakiler v1 veri videolarının kaydıdır.
 
-## Güncel mimari (hikâye motoru, 2026-10-13)
+## Güncel mimari (film, 2026-10-23)
+
+| | |
+| --- | --- |
+| Kanal | One Ticket Back (@OneTicketBack), İngilizce, ayrı Google kanalı (K-32: YPP incelemesi Shorts'la karışmasın) |
+| İçerik | tek kişinin ya da olayın kaynaklı gerçek hikâyesi; iki çerçeve dönüşümlü: "What if you…" (ikinci tekil, K-31) ve kişi/olay (K-26) |
+| Kaynak | Wikipedia'nın sabit revizyonu (`kaynaklar[].revid`); her cümle kaynakla satır satır karşılaştırılır (K-28) |
+| Takvim | film cumartesi 19:00 UTC, kesitler filmden sonraki pazartesi/çarşamba/cuma 19:00 UTC (K-34) |
+
+| Katman | Seçim | Not |
+| --- | --- | --- |
+| Senaryo | `filmler/<id>/senaryo.json` (bölüm → blok → sahne, karakterler, kesitler), `otomat/film/senaryo.py` denetimi | ~1.500 kelime / 8-11 dk |
+| Görsel | yerel ComfyUI, FLUX.2 klein 4B: karakter kartı (sabit tohum) + `ReferenceLatent` sahneleri, 1920×1088 | koyu sinematik minimal 2D; karakter tarifi her istemde |
+| Hareket | Wan 2.2 I2V-A14B GGUF Q3 + lightx2v 4 adım, 832×480 16 fps, sahnelerin ~%30'u | bozuk klip kare kare elenir, gerisi kamera hareketi |
+| Anlatım | Chatterbox (referans ses Kokoro `bm_george`'tan), parça başına Whisper kapısı (kelime ve sayı) | bitmiş videoda Whisper farkı %0,5-1,7 |
+| Kurgu | PIL afin kamera + ffmpeg, 1920×1080 24 fps; tarih damgası, bölüm kartı, Kevin MacLeod müziği (CC BY) | -14 LUFS |
+| Kesit | `kesit.py`: tek bölümün ardışık blokları, dikey, ≤ 59 sn, açıklamada filmin bağlantısı | film başına 3 |
+| Yayın | kendi API projemiz: `videos.insert` private + `publishAt`, `thumbnails.set` (K-30); `otomat/film/yukle.py` | kanal 24 saatte 10 video sınırı → günde bir film + 3 kesit, Windows Görev Zamanlayıcı |
+| Ölçüm | `otomat/film/rapor.py`, Actions `film` işi, haftalık `raporlar/film/` (hafta bitimi + 3 gün) | gösterim ve tıklama oranı API'de yok, Studio'dan |
+| Çalışma yeri | yerel laptop (RTX 4060 8 GB, 24 GB RAM), K-27 | üretim planlı oturum işi; yayın ve rapor kendiliğinden |
+
+**Bitti = kullanıldı (film, Faz 7):** bir ayın 4 filmi + 12 kesiti planlandığı saatte, kaçan ve çift olmadan yayına
+çıktı; haftalık film raporu 4 hafta üst üste kendiliğinden düştü; yayın ve rapor tarafında kod müdahalesi yok;
+Scryne'ın dokunuşu haftada ≤ 10 dk. Biçim kararı Faz 18 (ilk üç filmin verisi, ~11-16), öldürme kriteri Faz 8
+(12-19); ikisinin eşikleri Roadmap'te önceden yazılı.
+
+## Shorts hikâye motoru (2026-10-13; durdu 10-23, K-35)
 
 | Kanal | YouTube adı | İçerik | Kaynak havuzu | Ses | Yayın (UTC) |
 | --- | --- | --- | --- | --- | --- |

@@ -1,21 +1,29 @@
 # Otomat
 
-Sıfır sermayeyle, insan dokunuşu olmadan her gün YouTube Shorts üreten ve yayınlayan hat. İki kanal:
+Sıfır sermayeyle YouTube içeriği üreten ve yayınlayan hat. Bugün yayındaki tek kol **One Ticket Back**: haftada bir
+8-11 dakikalık, anlatıcılı, animasyonlu tarih filmi ("What if you joined the Klondike Gold Rush in 1897?", tek kişinin
+ya da olayın gerçek hikâyesi) ve her filmden üç dikey kesit.
 
-- **Inkwell Oddities Stories** (`kanallar/earth`): Wikipedia'nın "Unusual articles" listesinden gerçek, tuhaf hikâyeler.
-- **Lanternbug Tales** (`kanallar/uzay`): Ezop masalları, yumuşatılmadan, yetişkinlere.
+Her film kaynaklıdır: senaryo Wikipedia'nın sabit revizyonundan yazılır, her cümle kaynakla satır satır karşılaştırılır,
+bitmiş anlatım Whisper'la geri dökülüp metinle ve sayılarla eşleştirilir.
 
-Her video kaynaklıdır: senaryodaki her olgu kaynak metinle kod kapısında ve bir hakem modelinde denetlenir. Kapıdan
-ya da yayın kabulünden geçmeyen video kanala çıkmaz.
+Shorts kanalları durdu: Lanternbug Tales (Orbit, K-33, 2026-10-18) ve Inkwell Oddities Stories (Earth, K-35,
+2026-10-23). Shorts motoru, profilleri ve testleri duruyor; geri açma tarifi `.github/workflows/gunluk.yml` başında.
 
 ## Nasıl çalışır
 
-GitHub Actions (`.github/workflows/gunluk.yml`) günde dört kez tetiklenir; kanal başına bir iş, kanalın pistinde
-(bugün + 2 gün) boş slot varsa üretir. Senaryo, sahne görselleri, kare denetimi ve çeviri Cloudflare Workers AI'ın
-bedava kotasıyla; ses Kokoro, render PIL + ffmpeg; yayın Buffer + YouTube Data API. Durum `durum/*.db`'de, her koşu
-sonunda repoya yazılır. Sorun olursa "alarm" etiketli issue açılır, temiz koşu kapatır.
+Film üretimi yerelde (GPU): ComfyUI'da FLUX.2 klein karakter kartı ve sahneler, Wan 2.2 klipleri, Chatterbox anlatım,
+PIL + ffmpeg kurgu (`otomat/film/`). Yükleme kendi API projemizle private + `publishAt` (`otomat/film/yukle.py`;
+kanal 24 saatte 10 video kabul ettiği için günde bir film + 3 kesit, Windows Görev Zamanlayıcı'dan). Haftalık film
+raporu GitHub Actions'ta kendiliğinden yazılır (`raporlar/film/`).
 
-Mimarinin tamamı: `docs/Final-Dokuman.md` ("Güncel mimari"). Fazlar ve her fazda öğrenilenler: `docs/Roadmap.md`.
+Mimarinin tamamı: `docs/Final-Dokuman.md` ("Güncel mimari (film)"). Fazlar ve her fazda öğrenilenler: `docs/Roadmap.md`.
+
+## Shorts motoru (durdu)
+
+GitHub Actions (`.github/workflows/gunluk.yml`) günde dört kez tetikleniyordu; kanal başına bir iş, kanalın pistinde
+(bugün + 2 gün) boş slot varsa üretiyordu. Senaryo, sahne görselleri, kare denetimi ve çeviri Cloudflare Workers AI'ın
+bedava kotasıyla; ses Kokoro, render PIL + ffmpeg; yayın Buffer + YouTube Data API. Durum `durum/*.db`'de.
 
 ## Yerelde
 
@@ -26,14 +34,16 @@ OTOMAT_KANAL=earth uv run python -m otomat.hikaye.uretim "wiki:Great Molasses Fl
 ```
 
 Tek hikâye üretimi, yayın kabulü, günlük koşunun artifact'ını kare kare inceleme ve kusurlu videoyu geri çekme:
-`.claude/skills/calistir/SKILL.md`. Cloudflare kotası günlük koşuyla ortaktır (kayan 24 saat); yerel denemeler
-günlük koşudan sonra yapılır.
+`.claude/skills/calistir/SKILL.md`. Cloudflare kotası kayan 24 saattir; Shorts durduğu için günlük koşu artık
+ondan harcamıyor.
 
 ## Dizinler
 
 | Yol | İçerik |
 | --- | --- |
-| `otomat/hikaye/` | hikâye motoru: kaynaklar, senaryo + hakem, Cloudflare istemcisi, üretim, yayın kabulü |
+| `otomat/film/` | film hattı: senaryo denetimi, ComfyUI, anlatım, kurgu, kesit, yükleme, haftalık rapor |
+| `filmler/<id>/` | film senaryoları (`senaryo.json`) |
+| `otomat/hikaye/` | Shorts hikâye motoru (durdu): kaynaklar, senaryo + hakem, Cloudflare istemcisi, üretim, yayın kabulü |
 | `otomat/yayin/` | Buffer, YouTube, çeviri, kanal kimliği, Plan B teslim sayfası |
 | `otomat/gunluk.py` | günlük koşu: pist, üretim, yayın, onarımlar, alarm |
 | `otomat/analitik.py`, `haydut.py`, `rapor.py`, `portfoy.py` | ölçüm, kanca kalıbı seçimi, haftalık ve portföy raporu |

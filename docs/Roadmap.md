@@ -19,11 +19,12 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 6 | Geri besleme ve işletim | ✅ Tamamlandı | Analitik toplayıcı; faktörlü Thompson sampling (konu, kanca); günlük cron 3 gün kesintisiz; haftalık rapor; `invalid_grant` ve koşu hatası alarmı |
 | 14 | Hikâye motoru (format değişimi) | ✅ Tamamlandı | `otomat/hikaye` main'de; Earth (gerçek tuhaf hikâye) ve Orbit (Ezop, genel kitle; K-24) için her kanaldan ≥ 2 uçtan uca video senaryo + kare + ses kontrolünden geçti; günlük koşu iki kanalda yeşil (alarmsız); test + CI yeşil |
 | 15 | Kanal kimliği dönüşümü | ✅ Tamamlandı | Scryne kanalları yeniden adlandırdı (Inkwell Oddities Stories, Lanternbug Tales) ve profil resmini yükledi; banner, açıklama (5 dil), anahtar kelime API ile yeni kimlikte; Orbit kanal düzeyinde MFK değil (K-24, 10-13; eski masal videoları video düzeyinde MFK); `kanal.toml` adları YouTube'la aynı; eski veri videoları private |
-| 16 | Kart biçimi ve izlenme deneyi | 🔄 Devam Ediyor | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı |
+| 16 | Kart biçimi ve izlenme deneyi | ✅ Tamamlandı | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı (Orbit K-33 ile durdu; Earth K-35 ile durdu) |
 | 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot One Ticket Back'te public; ikinci ve üçüncü film farklı yapıda yayında |
-| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi yeni formatla gerçekleşti (14 gün, kod müdahalesiz; sayaç Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar); bulgular roadmap'e işlendi |
-| 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | Kanal başına, yeni formatın ilk public videosundan 8 hafta sonra: son 56 günde ≥ 1,2M Shorts izlenmesi veya ≥ 200 abone ölçüldü; karar (sürdür / konsept değiştir / kapat) yazıldı |
-| 9 | Reels ve görsel kolları (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: aynı videolar Facebook/Instagram Reels'e; medya motorundan stok görsel kolu |
+| 18 | Film ölçümü ve biçim kararı | ⏳ Bekliyor | İlk üç filmin (Klondike, Violet Jessop, Lowell) yayın + 7 günlük sayıları haftalık film raporunda (görüntüleme, ortalama izlenme %, 30. sn'de kalan, abone, trafik kaynağı; gösterim ve tıklama oranı Studio'dan); biçimler (What if you / kişi) yan yana; Faz 18 detayındaki önceden yazılmış eşiklerle karar yazıldı (biçim, giriş, kapak/başlık, süre); kapak ya da başlık değişecekse planlı filmlere API ile uygulandı; üçüncü ayın dört konusu bu karara göre seçildi |
+| 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi film hattıyla gerçekleşti: bir ayın 4 filmi + 12 kesiti planlandığı saatte, kaçan ve çift olmadan yayına çıktı; haftalık film raporu 4 hafta üst üste kendiliğinden düştü; yayın ve rapor tarafında kod müdahalesi yok (sayaç Faz 18 kararından sonraki ilk planlı filmle başlar); Scryne'ın dokunuşu haftada ≤ 10 dk; bulgular roadmap'e işlendi |
+| 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | One Ticket Back, ilk public filmden (10-24) 8 hafta sonra (12-19): Faz 8 detayındaki eşik ölçüldü; karar (sürdür / biçim değiştir / kapat) yazıldı |
+| 9 | Kesitlerin çapraz yayını (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: film kesitleri Facebook/Instagram Reels'e, filmin bağlantısıyla; ölçüm haftalık raporda |
 | 10 | Çok kanal temeli | ✅ Tamamlandı | Kanal profili (`kanallar/<id>/kanal.toml`), motor kanaldan habersiz; Actions matrisi (kanal başına iş, alarm, Release); Earth'ün davranışı değişmedi (regresyon testi + bir temiz günlük koşu main'de) |
 | 11 | Kanal 2: Orbit Ruler (uzay) | ✅ Tamamlandı | JPL CAD + Exoplanet Archive; `yakin_gecis` + `olcek` şablonları, ayrı kimlik/ses/saat; 6 tipte uçtan uca video kare ve ses kontrolünden geçti; Scryne kanalı açtı ve Buffer'a bağladı (ayrı günler); token secret'ta; matrise eklendi; ilk planlı video public (oturumsuz doğrulandı) |
 | 13 | Portföy işletimi | ✅ Tamamlandı | Haftalık raporda kanallar yan yana (üretim, izlenme, abone, kota: Buffer istekleri, API birimleri, Actions dakikası); kanal başına öldürme kriteri (K-14) raporda |
@@ -652,6 +653,29 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   kararına kadar sürer; oran tutmazsa Earth de durur ve Shorts emeği One Ticket Back'te film kesitlerine (aynı kanalda
   uzun videoya abone çeken dikey fragmanlar) gider.
 
+- **Sonuç ve K-35: Shorts durdu (2026-10-23).** Yayın günü + 2 günlük pencere (`olcumler`), Kalan = engaged / görüntüleme:
+
+  | Biçim | Video | Görüntüleme | Kalan | Ort. izlenme |
+  | --- | --- | --- | --- | --- |
+  | sahneli | Acacia (10-11) | 81 | %38 | %54 |
+  | sahneli | Cubs fan (10-14) | 389 | %31 | %58 |
+  | sahneli | Ganesha (10-16) | 139 | %35 | %67 |
+  | kart | Hobby Lobby (10-17) | 66 | %32 | %196 |
+  | kart | Zelda (10-18) | 1.421 | %32 | %159 |
+  | kart | Montauk, Paperclip, McArthur (10-19…21; canlı, pencere kapanmadan) | 3 · 450 · 95 | %33 · %32 · %26 | %223 · %149 · %169 |
+
+  Kart görüntülemeyi artırdı (medyan ~59 → ~145) ama Kalan iki biçimde de %31 civarında kaldı: izleyicinin üçte ikisi
+  ilk saniyede, ne görürse görsün kaydırıyor. Kalan izleyici kartı döndürüyor (%150-220), yani içerik değil akıştaki ilk
+  kare/konu tutmuyor. Eşik %50, beş kartın hiçbiri %33'ü geçmedi; 10-21 kartının pencere ölçümü 10-26'da gelecekti
+  ama eşiğe 17 puan uzak, kararı değiştiremez. K-14 tarafı: ilk karttan bu yana 1.509 / 1.200.000.
+  **Karar (K-33'ün önceden yazılmış kuralı):** Earth de durur. `uret` ve `portfoy` işleri kapalı (`if: false`),
+  cron'lar 06:17 + 16:47'ye indi (yalnız film raporu); profil, token, `durum/otomat.db` ve kod duruyor, geri açma
+  tarifi `gunluk.yml` başında. Pistteki son iki video (Trump Burger 10-24, Third-pound burger 10-25) dört dilli,
+  YouTube'da planlı; açık alarm, onarım kuyruğu ve otomat-site'ta kalan medya yok. Orbit gibi kanal silinmedi.
+  Ders: Shorts akışında konu ve paketleme değişse de ilk saniye kaydırması değişmedi; üç biçim (veri, sahneli, kart)
+  boyunca hiçbir video kendi kitlesini bulamadı. Uzun videoda izleyici bir başlık ve kapağı seçerek gelir, ölçüm de
+  bu yüzden orada (Faz 18).
+
 ### Faz 17: Uzun animasyonlu hikâye (2026-10-17)
 - **Neden:** Scryne: "shorts yerine bu tarzda [Day One Films] bir kanal büyütsek… normal videolar… çok profesyonel olmalı;
   tarihi figürler, yaşanmış ilginç olaylar, bir karakterin macerası." Araştırma, kararlar (K-26…K-30) ve pilot ölçümleri:
@@ -697,12 +721,52 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   akışında `film` işi var (secret `YT_TOKEN_JSON_FILM`), portföy raporu film bölümünü okuyor. İlk rapor H43, 10-28'de.
   Sorgular canlı API'de denendi. Gösterim ve tıklama oranı API'de yok, Studio'dan okunur. 359 → 367 test.
 - **Kalan (Bitti kriteri):** pilotun yayını (10-31); ikinci ve üçüncü film farklı yapıda yayında. Süre: pilot 8 dk alt sınırının altında kaldı, sonraki senaryolar ~1.500 kelime.
+- **Yayın öncesi (10-23):** 28 video planlı (8 film + 20 kesit; Great Stink ve 3 kesiti 10-24 17:00 TR görevinde,
+  `Otomat-Yukle-stink`, bilgisayar açık ve oturum açık olmalı). Stok 12-12 filmine, kesitler 12-18'e kadar yetiyor.
+  **Yeni film üretimi Faz 18 kararına kadar durur:** sekiz film seyirciyle hiç buluşmamış bir biçimle üretildi; Shorts
+  tarafında iki kez (veri, sahneli) önce üretip sonra izlenmediğini öğrendik. Klondike kapağı ("ONE TON.", tek
+  karakter, koyu zemin) ve açıklaması (ilk satır özet, 8 bölüm, kaynak, müzik atfı, AI beyanı) incelendi; veri olmadan
+  değiştirilmedi.
+
+### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
+- **Neden:** Sekiz film ve 24 kesit tek bir izleyici verisi olmadan üretildi. Üçüncü ay ancak ilk filmlerin sayılarıyla
+  seçilir; o güne kadar yeni film üretilmez (Faz 17 "Yayın öncesi").
+- **Takvim:** pencere yayın + 7 gün, üstüne 2 gün Analytics gecikmesi. Klondike (10-24) 11-02, Violet Jessop (10-31)
+  11-09, Lowell (11-07) **11-16'da**: karar günü. Ellis (11-14) erken okuma olarak girer. Üçüncü ayın ilk boş
+  cumartesisi 12-19; üretim (~4 film, 2-3 gün) 11-17…12-12 arasına sığar.
+- **Ölçütler (önceden yazıldı; kaynaklar ve gerekçe aşağıda):**
+
+  | Ölçüt | Tutuyor | Sınırda | Tutmuyor |
+  | --- | --- | --- | --- |
+  | Ortalama izlenme % (8-11 dk) | ≥ %38 | %28-38 | < %28 |
+  | 30. sn'de kalan | ≥ %60 | %50-60 | < %50 |
+  | Gösterim tıklama oranı (gösterim ağırlıklı ortalama, ≥ 1.000 gösterim) | ≥ %5 | %3-5 | < %3 |
+
+  Kural: üç ölçütün ikisi "tutuyor" ve hiçbiri "tutmuyor" değilse biçim sürer (üçüncü ay aynı biçimde, en iyi giden
+  çerçeveye ağırlık). İkisi "tutmuyor"sa düşük olana göre değişir: tıklama düşükse kapak/başlık (planlı filmlere
+  `thumbnails.set` + başlık API'den, yeniden render yok), 30. sn düşükse giriş (ilk 30 sn'nin yapısı), ortalama %
+  düşükse süre ve ortası. Arada kalan her durum sınırda: biçim sürer, en zayıf ölçüt tek değişkenle denenir.
+  Gösterim 1.000'i geçmediyse tıklama oranı karara girmez, sorun dağıtımdır (kesitler ve ilk 48 saat). Biçim kıyası:
+  Klondike ve Lowell "What if you", Violet Jessop kişi.
+- **Kaynaklar (2026-10-23 araştırması):** 30. sn: YouTube Yardım, %50'nin üstü "tipik girişten iyi" (support
+  12942217); %60 hedefi vidIQ [İ]. Tıklama: YouTube Yardım, "kanalların ve videoların yarısı %2-10", yeni videoda daha
+  geniş oynar (support 7628154). Ortalama %: AIR Media-Tech (302 kanal, 21.755 video, 5-15 dk) medyan %30, üst çeyrek
+  %41; vidIQ 6-9 dk için ~%30 [İ, ikisi de satıcı verisi, yerleşik kanallar]. Tarih nişine özel ve yeni yüzsüz kanal
+  için kaynaklı benchmark bulunamadı; Shorts → uzun video yönlendirmesinin ölçülmüş payı da yok, kendi raporumuzdaki
+  trafik kaynağı tablosu ("Shorts'taki bağlantı") bunu ölçer.
+- **Okuma:** sayılar haftalık film raporundan (`raporlar/film/`). Gösterim ve tıklama oranı API'de yok (10-23'te
+  `videoThumbnailImpressions*`, `impressions*` denendi, 400): karar günü Studio'dan tarayıcıyla okunur, olmazsa Scryne
+  Studio'nun "Erişim" sekmesinin ekran görüntüsünü atar (tek seferlik, ~1 dk).
+- **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 7: Gerçek kullanım
-- **İşler:** 14 günlük koşu; Scryne'ın dokunuş süresinin kaydı; her gün kapı/yükleme sonuçlarının raporu.
-- **Sayaç:** Faz 16'nın kararıyla oturan biçimin ilk günlük koşusuyla başlar. (10-14 sabahı "Faz 14 kapanınca başlar"
-  yazılmıştı; aynı gün veri, izlenmeyen biçimi 14 gün dondurmanın kayıp olduğunu gösterdi: K-25.) 14 gün boyunca
-  çıktıyı değiştiren commit sayacı sıfırlar; hata düzeltmesi ve ölçüm sayılmaz.
+- **İşler:** bir aylık film döngüsü (4 film + 12 kesit) yayın ve rapor tarafında kod müdahalesiz; Scryne'ın dokunuş
+  süresinin kaydı. Üretim (senaryo, görsel, klip, kurgu) planlı bir oturum işidir, sayaca girmez; yayın, takvim ve
+  rapor girer.
+- **Sayaç:** Faz 18 kararından sonraki ilk planlı filmle başlar. (Eskiden Shorts'un günlük koşusuna bağlıydı; Shorts
+  K-35 ile durdu.) Dört hafta boyunca yayını ya da raporu düzelten commit sayacı sıfırlar; ölçüm sayılmaz.
+  Geçmiş: 10-14 sabahı "Faz 14 kapanınca başlar" yazılmıştı; aynı gün veri, izlenmeyen biçimi 14 gün dondurmanın
+  kayıp olduğunu gösterdi (K-25).
 - **Bitti Kriteri:** "bitti = kullanıldı" cümlesi.
 - **Notlar:**
   - **Kanal kimliği (2026-10-04):** `docs/marka/` — profil resmi, banner, filigran, favicon, logo varyantları (logo-design
@@ -717,3 +781,21 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     adresi, Gemini'ye video ürettiriyor). İki fikri zaten bizde: "doğrulanmamış iddia yayını durdurur" = anlamsal hakem +
     politika kapısı (Faz 4); "yeniden seslendirmede sahne süresi sesten gelir" = cümle başına Kokoro, süre sesten (Faz 4).
     Medya hakkı kapısının karşılığı açık veri + açıklamadaki `Data:`/`Source:` atfı (`uretim.py`).
+
+### Faz 8: Öldürme kriteri (One Ticket Back, 2026-12-19)
+- **Neden:** K-14'ün Shorts eşiği (56 günde 1,2M görüntüleme / 200 abone) iki Shorts kanalını kapattı; filmin de
+  önceden yazılmış bir eşiği olmalı. Shorts kanalları kapandı, eşik yalnız film kanalı için.
+- **Pencere:** ilk public film (Klondike, 10-24) + 56 gün = **12-19**. O güne kadar 8 film ve ~21 kesit public.
+- **Eşik (kendi tahminimiz; niş için kaynaklı yeni kanal eğrisi bulunamadı, Faz 18 "Kaynaklar"):**
+  - **Sürdür:** herhangi bir film ≥ 10.000 görüntüleme (kanalın bir konuyla patlayabildiğinin kanıtı), ya da toplam
+    ≥ 300 saat izlenme ve ≥ 100 abone.
+  - **Kapat:** hiçbir film 1.000 görüntülemeyi geçmedi ve abone < 50.
+  - **Biçim değiştir:** arada kalan her durum; Faz 18'in en zayıf ölçütü yeni biçimin ilk değişkeni olur.
+- YPP notu: yeni başvurularda izlenme şartı 2027-02-01'den 4.000'den 8.000 saate çıkıyor (docs/arastirma/11
+  "Politika"); 12-19'a kadar 4.000 saate yetişmek gerçekçi değil, plan 8.000 saat üzerinden yapılır.
+- **Bitti Kriteri:** tablodaki gibi.
+
+### Faz 9: Kesitlerin çapraz yayını (koşullu)
+- Faz 8 "sürdür" derse: film kesitleri Facebook/Instagram Reels'e, açıklamada filmin bağlantısıyla. Shorts motorunun
+  Buffer yolu (`otomat/yayin/buffer.py`) bugün yalnız YouTube'a gönderiyor; Reels kanalı o tarihte Buffer'ın
+  güncel desteğiyle denenir. Ölçüm haftalık film raporuna girer.

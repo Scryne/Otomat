@@ -10,12 +10,13 @@ name: Günlük üretim
 # "Üretilecek iş var mı" adımında biter (teslim modunda: gün zaten üretildiyse).
 # Çok kanal: her kanal ayrı matris işi (kanallar/<id>/kanal.toml); biri düşerse diğerleri sürer, alarm kanal başına.
 # Matristeki kanal yayına hazırdır (token + Buffer bağlantısı); hazırlıktaki kanal buraya eklenmez (test_kanal.py).
+# SHORTS DURDU (2026-10-23, K-35): Earth'ün kart deneyi Faz 16 eşiğinde kaldı (Kalan %31, eşik %50); `uret` ve
+# `portfoy` işleri kapalı, yalnız film raporu koşar. Geri açmak için iki işteki `if: false` satırını kaldır ve
+# 11:37 / 21:37 cron'larını geri ekle (Earth'ün telafi koşuları).
 on:
   schedule:
     - cron: "17 6 * * *"
-    - cron: "37 11 * * *"
-    - cron: "47 16 * * *"
-    - cron: "37 21 * * *"
+    - cron: "47 16 * * *"  # film raporunun yedeği: GitHub planlı koşuyu bazen hiç başlatmıyor
   workflow_dispatch:
 
 permissions:
@@ -25,6 +26,7 @@ permissions:
 
 jobs:
   uret:
+    if: false  # Shorts durdu (K-35, 2026-10-23); profil, token ve durum duruyor
     # sürüm sabit: ubuntu-latest 2026-10-19'dan itibaren Ubuntu 26'ya geçiyor (ffmpeg/onnxruntime riski; 10-09'da
     # ffprobe eksikliği bir günü yaktı). Yükseltme bilinçli yapılır.
     runs-on: ubuntu-24.04
@@ -210,9 +212,10 @@ jobs:
           fi
 
   # One Ticket Back haftalık raporu (raporlar/film/, otomat/film/rapor.py). Film kanalı matriste değil (K-32): üretimi
-  # ve yüklemesi yerelde; rapor yalnız YouTube'u okur. Hafta bitiminden 3 gün sonra, günün ilk koşusunda ya da elle.
+  # ve yüklemesi yerelde; rapor yalnız YouTube'u okur. Hafta bitiminden 3 gün sonra, her koşuda (yazılacak rapor
+  # yoksa ilk adımda biter) ya da elle.
   film:
-    if: github.ref_name == 'main' && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
+    if: github.ref_name == 'main'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:
@@ -251,7 +254,8 @@ jobs:
   # da sonra: aynı haftanın film sayıları portföye bölüm olarak girer.
   portfoy:
     needs: [uret, film]
-    if: always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
+    # Shorts durdu (K-35): portföy Shorts kanallarının kotalarını yan yana koyuyordu, film kanalının kendi raporu var
+    if: false && always() && (github.event_name == 'workflow_dispatch' || github.event.schedule == '17 6 * * *')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     concurrency:  # elle tetikleme ile 06:17 koşusu aynı rapor dosyasına yazmasın

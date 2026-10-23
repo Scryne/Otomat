@@ -1,3 +1,6 @@
+# DURDURULDU (2026-10-23, K-35): kart biçiminde de izleyicinin ~%31'i kaldı (Faz 16 eşiği %50); Shorts bitti, emek
+# One Ticket Back'e. Profil, token ve durum duruyor; `uret` işi kapalı (.github/workflows/gunluk.yml). Pistteki son
+# iki video (10-24, 10-25) YouTube'da planlı, yayına kendisi çıkar.
 # Earth kanalı → gerçek tuhaf hikâyeler (2026-10-08, K-15…K-19; docs/arastirma/08). Veri formatı izlenmedi (3-63 izlenme).
 # Yollar çok kanal öncesi düzeni korur (durum/otomat.db, raporlar/): geçmiş ve analitik eşleşmesi bozulmaz.
 # `ad` YouTube'daki kanal adıyla birebir aynı olmalı (youtube.kanal_dogrula); kanal yeniden adlandırılınca burası da değişir.
