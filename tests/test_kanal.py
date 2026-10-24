@@ -1,9 +1,11 @@
 """Kanal profilleri: her profil motorun bildiği parçalara işaret eder; Earth in Numbers eski değerlerini korur."""
 
 import re
+import tomllib
 
 import pytest
 import yaml
+from PIL import Image
 
 from otomat import kanal
 from otomat.ayarlar import KOK
@@ -53,8 +55,12 @@ def test_spor_serileri_tek_kanal():
     assert {k.grup for k in seriler} == {"spor"} and len({k.ad for k in seriler}) == 1
     assert {k.kaynaklar for k in seriler} == {("spor",)} and {k.kategori for k in seriler} == {"17"}
     assert len({k.yayin_saati_utc for k in seriler}) == 3
-    assert [(KOK / "kanallar" / k.id / "marka.toml").exists() for k in seriler].count(True) <= 1
+    assert [(KOK / "kanallar" / k.id / "marka.toml").exists() for k in seriler] == [True, False, False]
     assert all(not k.mfk and k.bicim == "sahne" for k in seriler)
+    with open(KOK / "kanallar" / "futbol" / "marka.toml", "rb") as f:
+        m = tomllib.load(f)
+    assert set(m["aciklama"]) == {"en", *seriler[0].diller}  # yerelleştirme dilleriyle aynı
+    assert Image.open(KOK / m["banner"]).size == (2560, 1440) and Image.open(KOK / m["filigran"]).size == (150, 150)
 
 
 def test_earth_eski_duzeni_korur():

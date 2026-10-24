@@ -1,0 +1,19 @@
+# Arena Lore — kanal ayarları (Faz 19, K-37). Üç seri aynı kanal: kimlik yalnız bu profilde (kanallar/futbol/kanal.toml).
+# otomat/yayin/marka.py günlük koşuda bir kez uygular. Görseller: docs/marka/arena_gorselleri.py
+banner = "docs/marka/arenalore/banner-2560x1440.png"
+filigran = "docs/marka/arenalore/filigran-150.png"
+anahtar = "\"sports stories\" \"football history\" \"MMA history\" \"boxing history\" \"UFC stories\" \"greatest fights\" \"famous matches\" \"sports shorts\""
+
+[aciklama]
+en = """The most dramatic matches and fights in sports history, told as stories in under a minute. Football finals, World Cup classics, UFC nights and legendary title fights: the upsets, comebacks and controversies, from the first whistle or bell to the final moment.
+
+Three new Shorts every day: football, MMA and boxing. Every story comes from Wikipedia and is checked line by line against the source, which is linked in each video. Illustrations are AI-generated and do not show the real athletes; narration is computer-generated.
+"""
+es = """Los partidos y combates más dramáticos de la historia del deporte, contados como historias en menos de un minuto. Finales de fútbol, clásicos de los Mundiales, noches de UFC y peleas de campeonato legendarias: las sorpresas, las remontadas y las polémicas, desde el primer silbatazo o campanazo hasta el momento final.
+
+Tres Shorts nuevos cada día: fútbol, MMA y boxeo. Cada historia proviene de Wikipedia y se verifica línea por línea con la fuente, enlazada en cada video. Las ilustraciones están generadas con IA y no muestran a los atletas reales; la narración es por computadora.
+"""
+pt = """As partidas e lutas mais dramáticas da história do esporte, contadas como histórias em menos de um minuto. Finais de futebol, clássicos de Copa do Mundo, noites de UFC e lutas de título lendárias: as zebras, as viradas e as polêmicas, do primeiro apito ou gongo ao momento final.
+
+Três Shorts novos todos os dias: futebol, MMA e boxe. Cada história vem da Wikipédia e é conferida linha por linha com a fonte, indicada em cada vídeo. As ilustrações são geradas por IA e não mostram os atletas reais; a narração é feita por computador.
+"""

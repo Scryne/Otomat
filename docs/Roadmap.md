@@ -758,6 +758,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - Kalan ≥ %50 ve 30 günde ≥ 1M görüntüleme: sürer; en iyi seri ikinci slota çıkar (günde 4-5 video).
   - Kalan %40-50 ya da 1M altı: biçim tek değişkenle denenir (önce ilk kare/kanca), en kötü seri durur.
   - Kalan < %40 ve 30 günde < 300K: kanal durur (K-35'in kuralı).
+- **İlerleme:**
+  - 10-24: Scryne kanalı açtı (gün 1): **Arena Lore**, `@arenalorestories` (`@arenalore` dolu), kanal kimliği
+    `UCfIUpTZAatx5LcGpFSg8zGQ` (oturumsuz sayfadan okundu). Buffer gün 2 (10-25), yetki gün 3 (10-26).
+  - 10-24: marka kiti `docs/marka/arenalore/` (kemer kapılı A: arenanın kapısı; altın `#FFD84D` / mürekkep siyahı
+    `#121214`, Barlow Condensed; `docs/marka/arena_gorselleri.py`) ve `kanallar/futbol/marka.toml` (açıklama en/es/pt,
+    anahtar kelime, banner, filigran). Kimliği ilk koşu uygular; profil resmi Studio'dan Scryne yükler.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
