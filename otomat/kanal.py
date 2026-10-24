@@ -60,6 +60,18 @@ class Kanal:
     # hikâye kanalının video biçimi: "sahne" (anlatıcı + sahne illüstrasyonları) ya da "kart" (anlatıcısız tek ekran
     # paragraf + gerçek görsel, 8 sn; K-25, otomat/hikaye/kart.py)
     bicim: str = "sahne"
+    # kanala özel etiketler (spor serileri: "football", "UFC"…); Earth/Orbit etiketlerini havuzdan alır
+    etiketler: tuple[str, ...] = ()
+    # aynı YouTube kanalının serileri (K-37: spor → futbol, mma, boks): ad, token ve Buffer kanalı ortak; durum, havuz,
+    # rapor ve yayın saati seri başına (günde seri başına bir slot). Boşsa profil kendi kanalıdır
+    grup: str = ""
+    # spor havuzu: çok dramatik makalenin girebildiği en düşük hikâye puanı (kaynaklar.spor_uygun; dövüşte 0,2)
+    olay_esigi: float = 0.5
+
+    @property
+    def kanal_kimligi(self) -> str:
+        """Aynı YouTube kanalını paylaşan profillerin ortak kimliği."""
+        return self.grup or self.id
 
     @property
     def yeni_adlar(self) -> tuple[str, ...]:
@@ -115,6 +127,9 @@ def yukle(kimlik: str) -> Kanal:
         donem=str(d.get("donem", "")),
         referans=bool(d.get("referans", False)),
         bicim=d.get("bicim", Kanal.bicim),
+        etiketler=tuple(d.get("etiketler", [])),
+        grup=d.get("grup", ""),
+        olay_esigi=float(d.get("olay_esigi", Kanal.olay_esigi)),
     )
 
 

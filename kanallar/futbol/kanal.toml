@@ -1,0 +1,38 @@
+# Spor kanalı (K-37, 2026-10-24; docs/arastirma/13): gerçek spor olayları, anlatıcı + illüstrasyon, yayın görüntüsü yok.
+# Tek YouTube kanalı, üç seri (futbol, mma, boks): her seri ayrı profil, ayrı havuz/durum/rapor ve yayın saati; günde
+# her seriden bir video (durum.yayin_slotu günde bir slot verir, üç profil üç slot). Token, Buffer kanalı ve ad ortak.
+# Kanal kimliği (marka.toml) yalnız bu profilde: üç profil aynı kimliği üç kez uygulamasın.
+id = "futbol"
+ad = "Arena Lore"
+yedek_adlar = ["Arena Lore Stories", "The Arena Lore", "Arena Lore Sports"]  # YouTube `ad`ı reddederse
+tanim = "true sports stories: the most dramatic matches, fights and moments in football, MMA and boxing history"
+tur = "hikaye"
+grup = "spor"  # aynı YouTube kanalının serileri (kanal.Kanal.grup)
+kaynaklar = ["spor"]
+veri = "kanallar/futbol/havuz.json"
+tasarim = "kanallar/spor/DESIGN.md"
+durum = "durum/futbol.db"
+raporlar = "raporlar/futbol"
+ses = "am_michael"
+hiz = 1.1
+yayin_saati_utc = 16  # 19:00 TR; Avrupa akşamı, ABD öğlesi (futbol kitlesi Avrupa + Latin Amerika)
+diller = ["es", "pt"]  # futbolun en büyük iki dil kitlesi; altyazı izi dil başına 400 birim, film kanalıyla ortak kota
+kategori = "17"  # Sports
+sir_eki = "_SPOR"  # YT_TOKEN_JSON_SPOR (üç seri ortak)
+mfk = false
+ornekler = ""
+kaliplar = ["an", "ihtimal", "sonuc_once", "kisi"]
+etiketler = ["football", "soccer", "football history", "football shorts"]
+stil = """Bold graphic-novel illustration, thick confident ink lines, dramatic stadium floodlight, saturated colors with
+deep shadows, dynamic motion lines, cinematic low-angle composition, full-bleed edge-to-edge artwork with no border or
+frame, no text, no letters, no numbers, no logos"""
+font = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"
+font_boyu = 108
+vurgu = "#FFD84D"
+muzik_lufs = -27  # müzik yatağı (anlatıcı -14 LUFS); spor anlatımı Earth'ten daha yüksek tempolu
+
+[muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
+epic = ["Volatile Reaction", "Five Armies", "Heroic Age", "Crusade"]
+tense = ["Killers", "Hitman", "Impact Prelude", "Ready Aim Fire"]
+triumphant = ["Sovereign", "Achilles", "Rocket"]
+tragic = ["Heartbreaking", "Lightless Dawn"]

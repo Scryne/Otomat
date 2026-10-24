@@ -46,6 +46,67 @@ def test_suzgec_esikleri():
     assert not kaynaklar.ezop_uygun({"olum": 0.2, "siddet": 0.1, "yetiskin": 0.7, "anlasilir": 1.8})
 
 
+def test_spor_suzgeci():
+    temel = {"hikaye": 0.8, "dram": 0.9, "hassas": 0.1, "siyaset": 0.1, "olmadi": 0.1}
+    assert kaynaklar.spor_uygun(temel)
+    for alan in ("hassas", "siyaset", "olmadi"):  # stadyum felaketi, siyaset, planlanan/iptal maç
+        assert not kaynaklar.spor_uygun({**temel, alan: 0.6}, olay_esigi=0.2)
+    kart = {**temel, "hikaye": 0.33}  # UFC 202: organizasyon makalesi maç kartıdır, dram yüksek
+    assert not kaynaklar.spor_uygun(kart) and kaynaklar.spor_uygun(kart, olay_esigi=0.2)
+    assert not kaynaklar.spor_uygun({**kart, "dram": 0.6}, olay_esigi=0.2)  # dram 0,7 altı: hikâye 0,5 ister
+
+
+def test_spor_havuzlari(kanal_sec):
+    for seri, en_az in (("futbol", 200), ("mma", 120), ("boks", 180)):  # 2026-10-24: 250, 151, 220
+        kanal_sec(seri)
+        paketler, _ = kaynaklar.topla()
+        assert len(paketler) >= en_az, seri
+        assert {p.tur for p in paketler} == {"spor"} and all(p.gorsel["agirlik"] > 0 for p in paketler)
+        assert len({p.anahtar for p in paketler}) == len(paketler)
+        assert all(kanal.aktif().etiketler[0] in p.etiketler for p in paketler)
+
+
+def test_spor_secimi_populerligi_agirlik_yapar(kanal_sec, tmp_path, monkeypatch):
+    from otomat import durum, gunluk, haydut
+
+    kanal_sec("boks")
+    paketler = [p for p in kaynaklar.topla()[0] if p.kol == "unvan"]
+    monkeypatch.setattr(haydut, "sec", lambda db, gun, kollar, kaliplar, r: ("unvan", kaliplar[0], {}))
+    db = durum.baglan(tmp_path / "d.db")
+    gunler = [dt.date(2026, 11, 1) + dt.timedelta(days=i) for i in range(1500)]
+    secilen = [gunluk.sec(paketler, db, g)[0].anahtar for g in gunler]
+    agir = max(paketler, key=lambda p: p.gorsel["agirlik"])
+    beklenen = agir.gorsel["agirlik"] / sum(p.gorsel["agirlik"] for p in paketler)
+    assert secilen.count(agir.anahtar) / len(gunler) == pytest.approx(beklenen, abs=0.015)
+    hafif = min(paketler, key=lambda p: p.gorsel["agirlik"])
+    assert secilen.count(agir.anahtar) > secilen.count(hafif.anahtar)
+
+
+def test_spor_kisaltmasi_olayi_korur():
+    """1986 Arjantin-İngiltere (14.134 karakter): baş + son kesimi "Hand of God" bölümünü atıyordu (10-24)."""
+    arka = "Background\n" + "The rivalry had a long history before the war. " * 120
+    mac = 'Match\n\nFirst half\nThe game was goalless at half-time.\nThe "Hand of God"\nMaradona punched it in.'
+    tablo = "\nDetails\n" + "Argentina: Pumpido; Cuciuffo. " * 80
+    son = "\nAftermath and legacy\nThe goal became famous."
+    kaynak = "Argentina played England in 1986.\n" + arka + "\n" + mac + tablo + son
+    kisa = senaryo.kisalt(kaynak, "spor")
+    assert "Maradona punched it in" in kisa and "The goal became famous" in kisa
+    assert "Pumpido" not in kisa and len(kisa) <= senaryo.KAYNAK_SINIR + 200
+    assert "Maradona punched it in" not in senaryo.kisalt(kaynak, "tuhaf")  # öbür türler eskisi gibi
+    assert senaryo.kisalt("kısa metin", "spor") == "kısa metin"
+
+
+def test_spor_olgu_kapisi_ve_istemleri():
+    kaynak = "Muhammad Ali fought Joe Frazier at Madison Square Garden in 1971; Frazier won on points."
+    satirlar = ["In 1971, Frazier met Ali at Madison Square Garden."] + ["Frazier knocked him down in the last round."]
+    satirlar += ["Then Ali beat Foreman in Kinshasa."] + ["The crowd roared as the round went on."] * 5
+    sorun = senaryo.kod_kontrolu("spor", "Ali versus Frazier", satirlar, kaynak)
+    assert (3, "name not in source: Foreman") in sorun and (3, "name not in source: Kinshasa") in sorun
+    assert "real names never appear" in senaryo.GORSEL_KURALI["spor"] and "no logos" in senaryo.GORSEL_KURALI["spor"]
+    assert senaryo.HAKEM_ISTEM["spor"] == senaryo.HAKEM_ISTEM["tuhaf"]
+    assert {"an", "ihtimal"} <= set(senaryo.KALIPLAR)
+
+
 def test_sayi_ad_kapisi():
     kaynak = "On 17 October 1814 a vat at Meux's brewery in London burst, releasing 128,000 to 323,000 gallons."
     assert senaryo.sayi_ad_kapisi("In 1814, a vat burst in London.", kaynak) == []

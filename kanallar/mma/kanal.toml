@@ -1,0 +1,36 @@
+# Spor kanalının MMA serisi (K-37): ortak kanal ve token, ayrı havuz/durum/rapor/saat. Ayrıntı kanallar/futbol.
+id = "mma"
+ad = "Arena Lore"
+yedek_adlar = ["Arena Lore Stories", "The Arena Lore", "Arena Lore Sports"]
+tanim = "true sports stories: the most dramatic matches, fights and moments in football, MMA and boxing history"
+tur = "hikaye"
+grup = "spor"  # aynı YouTube kanalının serileri (kanal.Kanal.grup)
+kaynaklar = ["spor"]
+olay_esigi = 0.2  # organizasyon makalesi maç kartıdır: dram ≥ 0,7 ise hikâye ≥ 0,2 yeter (kaynaklar.spor_uygun)
+veri = "kanallar/mma/havuz.json"
+tasarim = "kanallar/spor/DESIGN.md"
+durum = "durum/mma.db"
+raporlar = "raporlar/mma"
+ses = "am_michael"
+hiz = 1.1
+yayin_saati_utc = 1  # 04:00 TR; ABD doğusu 21:00 (UFC kitlesi ABD akşamı)
+diller = ["es", "pt"]  # Brezilya ve Latin Amerika MMA kitlesi
+kategori = "17"  # Sports
+sir_eki = "_SPOR"
+mfk = false
+ornekler = ""
+kaliplar = ["an", "ihtimal", "sonuc_once", "kisi"]
+etiketler = ["UFC", "MMA", "MMA history", "fight stories"]
+stil = """Bold graphic-novel illustration, thick confident ink lines, hard overhead arena spotlight, saturated colors
+with deep shadows, dynamic motion lines, cinematic low-angle composition, full-bleed edge-to-edge artwork with no border
+or frame, no text, no letters, no numbers, no logos"""
+font = "otomat/varliklar/fontlar/BarlowCondensed-Bold.ttf"
+font_boyu = 108
+vurgu = "#FF5A3D"
+muzik_lufs = -27
+
+[muzik]  # Kevin MacLeod, incompetech.com, CC BY 4.0 (açıklamada atıf)
+epic = ["Volatile Reaction", "Five Armies", "Heroic Age", "Crusade"]
+tense = ["Killers", "Hitman", "Impact Prelude", "Ready Aim Fire"]
+triumphant = ["Sovereign", "Achilles", "Rocket"]
+tragic = ["Heartbreaking", "Lightless Dawn"]

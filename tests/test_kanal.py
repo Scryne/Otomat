@@ -35,9 +35,26 @@ def test_profil_gecerli(kimlik):
 
 def test_kanallar_birbirine_karismaz():
     profiller = [kanal.yukle(i) for i in kanal.hepsi()]
-    for alan in ("ad", "durum", "raporlar", "sir_eki", "token_dosyasi"):
+    for alan in ("durum", "raporlar", "veri"):  # seri başına bile ayrı
         degerler = [getattr(k, alan) for k in profiller]
-        assert len(set(degerler)) == len(degerler), f"iki kanal aynı {alan} değerini paylaşıyor"
+        assert len(set(degerler)) == len(degerler), f"iki profil aynı {alan} değerini paylaşıyor"
+    # ad ve token kanalındır: aynı grubun serileri paylaşır (K-37), iki ayrı kanal paylaşmaz
+    for alan in ("ad", "sir_eki", "token_dosyasi"):
+        kanallar = {}
+        for k in profiller:
+            kanallar.setdefault(getattr(k, alan), set()).add(k.kanal_kimligi)
+        assert all(len(v) == 1 for v in kanallar.values()), f"iki kanal aynı {alan} değerini paylaşıyor: {kanallar}"
+
+
+def test_spor_serileri_tek_kanal():
+    """K-37: futbol, mma, boks aynı YouTube kanalının serileri; saatleri ayrı (günde her seriden bir video), kimliği
+    (marka.toml) yalnız biri uygular."""
+    seriler = [kanal.yukle(i) for i in ("futbol", "mma", "boks")]
+    assert {k.grup for k in seriler} == {"spor"} and len({k.ad for k in seriler}) == 1
+    assert {k.kaynaklar for k in seriler} == {("spor",)} and {k.kategori for k in seriler} == {"17"}
+    assert len({k.yayin_saati_utc for k in seriler}) == 3
+    assert [(KOK / "kanallar" / k.id / "marka.toml").exists() for k in seriler].count(True) <= 1
+    assert all(not k.mfk and k.bicim == "sahne" for k in seriler)
 
 
 def test_earth_eski_duzeni_korur():

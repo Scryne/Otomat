@@ -33,6 +33,13 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 > (10-18), Earth K-35 (10-23; kart biçiminde de izleyicinin ~%31'i kaldı, eşik %50). Shorts motoru ve profilleri
 > silinmedi; geri açma tarifi `.github/workflows/gunluk.yml` başında. Aşağıdaki "Güncel mimari (film)" bugünkü ürünü
 > anlatır; "hikâye motoru" bölümü durmuş Shorts hattının, ondan sonrakiler v1 veri videolarının kaydıdır.
+>
+> **Spor Shorts kanalı (2026-10-24, K-37; K-36'yı Scryne'ın kararıyla açar).** Scryne: "shorts kanalı açalım… gerçek
+> görüntüler… anlatımlı… popüler şeyler (mma, futbol)"; sonra "herşeyi sana bırakıyorum, para kazanayım yeterli, günde
+> 2-3 shorts". Sıfırdan yeni kanal **Arena Lore**, İngilizce; hikâye motorunun sahne biçimi, üç seri (futbol, mma,
+> boks) üç profil, günde her seriden bir video. **Yayın görüntüsü ve fotoğrafı yok:** lisans yolu bulunamadı, talepli
+> Short'un geliri hak sahibine gider, ihtar kişiye ve One Ticket Back'e uzanır (`docs/arastirma/13-spor-shorts.md`).
+> Görsel grafik roman illüstrasyonu, sporcular adsız rol figürü. Kanıt ve faz: Roadmap Faz 19.
 
 ## Güncel mimari (film, 2026-10-23)
 

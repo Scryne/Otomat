@@ -1,0 +1,3824 @@
+[
+ {
+  "baslik": "Wladimir Klitschko",
+  "bolum": "mac",
+  "bayt": 340558,
+  "tanim": "Ukrainian boxer (born 1976)",
+  "goruntulenme": 5095.9,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul",
+  "bolum": "mac",
+  "bayt": 141155,
+  "tanim": "American influencer and professional boxer (born 1997)",
+  "goruntulenme": 3141.2,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI",
+  "bolum": "mac",
+  "bayt": 214420,
+  "tanim": "English influencer, musician, and former boxer (born 1993)",
+  "goruntulenme": 2365.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Naoya Inoue",
+  "bolum": "mac",
+  "bayt": 134077,
+  "tanim": "Japanese boxer (born 1993)",
+  "goruntulenme": 2341.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Vitali Klitschko",
+  "bolum": "mac",
+  "bayt": 193833,
+  "tanim": "Ukrainian politician and boxer (born 1971)",
+  "goruntulenme": 1712.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.8,
+   "hassas": 0.04,
+   "olmadi": 0.05,
+   "siyaset": 0.49
+  }
+ },
+ {
+  "baslik": "Boxing career of Manny Pacquiao",
+  "bolum": "mac",
+  "bayt": 234094,
+  "tanim": "",
+  "goruntulenme": 1364.7,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ryan Garcia vs. Conor Benn",
+  "bolum": "unvan",
+  "bayt": 11043,
+  "tanim": "Boxing competition",
+  "goruntulenme": 1094.3,
+  "ts": {
+   "hikaye": 0.56,
+   "dram": 0.5,
+   "hassas": 0.01,
+   "olmadi": 0.53,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "The Rumble in the Jungle",
+  "bolum": "unvan",
+  "bayt": 41614,
+  "tanim": "Boxing competition",
+  "goruntulenme": 726.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Thrilla in Manila",
+  "bolum": "unvan",
+  "bayt": 39580,
+  "tanim": "1975 boxing match at the Araneta Coliseum",
+  "goruntulenme": 537.1,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.89,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kell Brook",
+  "bolum": "mac",
+  "bayt": 85506,
+  "tanim": "British boxer (born 1986)",
+  "goruntulenme": 428.6,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.72,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Fight of the Century",
+  "bolum": "unvan",
+  "bayt": 28848,
+  "tanim": "1971 boxing match",
+  "goruntulenme": 401.6,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Manny Pacquiao II",
+  "bolum": "mac",
+  "bayt": 18740,
+  "tanim": "Proposed boxing match in Las Vegas",
+  "goruntulenme": 374.1,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.96,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Mike Tyson",
+  "bolum": "mac",
+  "bayt": 32006,
+  "tanim": "2024 professional boxing match",
+  "goruntulenme": 348.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Zab Judah",
+  "bolum": "mac",
+  "bayt": 89089,
+  "tanim": "American boxer (born 1977)",
+  "goruntulenme": 318.0,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.82,
+   "hassas": 0.07,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Mike Tyson II",
+  "bolum": "unvan",
+  "bayt": 26670,
+  "tanim": "Boxing competition",
+  "goruntulenme": 303.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.08,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Bruce Seldon vs. Mike Tyson",
+  "bolum": "unvan",
+  "bayt": 16321,
+  "tanim": "Boxing match",
+  "goruntulenme": 288.4,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.85,
+   "hassas": 0.17,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Manny Pacquiao",
+  "bolum": "unvan",
+  "bayt": 114015,
+  "tanim": "2015 professional boxing match",
+  "goruntulenme": 279.7,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Buster Douglas",
+  "bolum": "unvan",
+  "bayt": 29474,
+  "tanim": "Boxing match",
+  "goruntulenme": 272.8,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.99,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Terence Crawford",
+  "bolum": "unvan",
+  "bayt": 54500,
+  "tanim": "2025 professional boxing match",
+  "goruntulenme": 268.2,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.46,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ezzard Charles",
+  "bolum": "mac",
+  "bayt": 59015,
+  "tanim": "American boxer (1921–1975)",
+  "goruntulenme": 250.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.59,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Mike Tyson",
+  "bolum": "unvan",
+  "bayt": 23760,
+  "tanim": "Boxing competition",
+  "goruntulenme": 234.0,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Anthony Joshua",
+  "bolum": "mac",
+  "bayt": 39297,
+  "tanim": "2025 professional boxing match",
+  "goruntulenme": 232.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.59,
+   "hassas": 0.03,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 in Misfits Boxing and MF Pro",
+  "bolum": "mac",
+  "bayt": 69489,
+  "tanim": "",
+  "goruntulenme": 218.0,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.61,
+   "hassas": 0.02,
+   "olmadi": 0.14,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Yuriorkis Gamboa",
+  "bolum": "mac",
+  "bayt": 36793,
+  "tanim": "Cuban world champion boxer (born 1981)",
+  "goruntulenme": 209.8,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Evander Holyfield",
+  "bolum": "unvan",
+  "bayt": 24639,
+  "tanim": "Boxing competition",
+  "goruntulenme": 208.2,
+  "ts": {
+   "hikaye": 0.76,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Gervonta Davis vs. Ryan Garcia",
+  "bolum": "mac",
+  "bayt": 65267,
+  "tanim": "Boxing competition",
+  "goruntulenme": 206.3,
+  "ts": {
+   "hikaye": 0.72,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Conor McGregor",
+  "bolum": "mac",
+  "bayt": 68191,
+  "tanim": "2017 professional crossover boxing match",
+  "goruntulenme": 200.5,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Sonny Liston",
+  "bolum": "unvan",
+  "bayt": 36924,
+  "tanim": "Boxing competition",
+  "goruntulenme": 191.5,
+  "ts": {
+   "hikaye": 0.22,
+   "dram": 0.98,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Chris Eubank Jr vs Conor Benn",
+  "bolum": "mac",
+  "bayt": 46781,
+  "tanim": "2025 boxing match",
+  "goruntulenme": 158.7,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Oleksandr Usyk",
+  "bolum": "unvan",
+  "bayt": 39047,
+  "tanim": "2024 professional boxing match",
+  "goruntulenme": 155.7,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Devin Haney vs. Ryan Garcia",
+  "bolum": "mac",
+  "bayt": 13387,
+  "tanim": "Boxing competition",
+  "goruntulenme": 150.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Oscar Bonavena",
+  "bolum": "unvan",
+  "bayt": 15195,
+  "tanim": "Boxing competition",
+  "goruntulenme": 150.2,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.62,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Diego Corrales",
+  "bolum": "mac",
+  "bayt": 29544,
+  "tanim": "American boxer (1977–2007)",
+  "goruntulenme": 149.7,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.91,
+   "hassas": 0.15,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Peter McNeeley",
+  "bolum": "mac",
+  "bayt": 22178,
+  "tanim": "Boxing competition",
+  "goruntulenme": 148.2,
+  "ts": {
+   "hikaye": 0.43,
+   "dram": 0.85,
+   "hassas": 0.11,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Michael Spinks",
+  "bolum": "unvan",
+  "bayt": 35727,
+  "tanim": "Boxing competition",
+  "goruntulenme": 135.3,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Julio César Chávez vs. Meldrick Taylor",
+  "bolum": "unvan",
+  "bayt": 10631,
+  "tanim": "Boxing competition",
+  "goruntulenme": 126.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Arslanbek Makhmudov",
+  "bolum": "mac",
+  "bayt": 10007,
+  "tanim": "2026 professional boxing match in London",
+  "goruntulenme": 121.7,
+  "ts": {
+   "hikaye": 0.56,
+   "dram": 0.45,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Chuck Wepner",
+  "bolum": "unvan",
+  "bayt": 16514,
+  "tanim": "Boxing competition",
+  "goruntulenme": 119.5,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.92,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sugar Ray Robinson vs. Jake LaMotta",
+  "bolum": "mac",
+  "bayt": 13555,
+  "tanim": "Historic boxing rivalry",
+  "goruntulenme": 112.9,
+  "ts": {
+   "hikaye": 0.13,
+   "dram": 0.95,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Deontay Wilder vs. Tyson Fury",
+  "bolum": "unvan",
+  "bayt": 51165,
+  "tanim": "Boxing competition",
+  "goruntulenme": 111.0,
+  "ts": {
+   "hikaye": 0.46,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Joe Frazier II",
+  "bolum": "mac",
+  "bayt": 11520,
+  "tanim": "Boxing match",
+  "goruntulenme": 105.2,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Deontay Wilder III",
+  "bolum": "unvan",
+  "bayt": 26799,
+  "tanim": "Boxing match",
+  "goruntulenme": 100.2,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Larry Holmes vs. Muhammad Ali",
+  "bolum": "unvan",
+  "bayt": 15605,
+  "tanim": "Boxing competition",
+  "goruntulenme": 96.8,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.88,
+   "hassas": 0.03,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sonny Liston vs. Cassius Clay",
+  "bolum": "unvan",
+  "bayt": 45093,
+  "tanim": "Boxing match",
+  "goruntulenme": 95.9,
+  "ts": {
+   "hikaye": 0.76,
+   "dram": 0.96,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Andy Ruiz Jr.",
+  "bolum": "unvan",
+  "bayt": 43565,
+  "tanim": "Boxing match",
+  "goruntulenme": 94.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Donovan Ruddock",
+  "bolum": "mac",
+  "bayt": 17148,
+  "tanim": "Boxing match",
+  "goruntulenme": 94.0,
+  "ts": {
+   "hikaye": 0.55,
+   "dram": 0.93,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Derek Chisora vs. Deontay Wilder",
+  "bolum": "mac",
+  "bayt": 13043,
+  "tanim": "2026 professional boxing match",
+  "goruntulenme": 92.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.12,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Andrew Golota",
+  "bolum": "mac",
+  "bayt": 12197,
+  "tanim": "Boxing competition",
+  "goruntulenme": 89.3,
+  "ts": {
+   "hikaye": 0.81,
+   "dram": 0.65,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "White-collar boxing",
+  "bolum": "capraz",
+  "bayt": 14798,
+  "tanim": "Participation of white collar workers in boxing",
+  "goruntulenme": 88.5,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.22,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Tyrell Biggs",
+  "bolum": "unvan",
+  "bayt": 8143,
+  "tanim": "Boxing competition",
+  "goruntulenme": 87.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.47,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Gennady Golovkin",
+  "bolum": "unvan",
+  "bayt": 41076,
+  "tanim": "2017 professional boxing match",
+  "goruntulenme": 84.2,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs. Daniel Dubois II",
+  "bolum": "unvan",
+  "bayt": 29950,
+  "tanim": "Boxing match",
+  "goruntulenme": 82.4,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.11,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "Artur Beterbiev vs. Dmitry Bivol",
+  "bolum": "unvan",
+  "bayt": 21783,
+  "tanim": "2024 boxing match",
+  "goruntulenme": 81.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs. Tyson Fury II",
+  "bolum": "unvan",
+  "bayt": 21202,
+  "tanim": "Boxing match",
+  "goruntulenme": 80.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.83,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mario Barrios vs. Ryan Garcia",
+  "bolum": "mac",
+  "bayt": 8178,
+  "tanim": "Boxing competition",
+  "goruntulenme": 80.9,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.83,
+   "hassas": 0.01,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Canelo Álvarez",
+  "bolum": "unvan",
+  "bayt": 16412,
+  "tanim": "2013 professional boxing match",
+  "goruntulenme": 79.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Marvin Hagler vs. Thomas Hearns",
+  "bolum": "unvan",
+  "bayt": 14999,
+  "tanim": "Boxing match",
+  "goruntulenme": 79.5,
+  "ts": {
+   "hikaye": 0.41,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Adrien Broner",
+  "bolum": "mac",
+  "bayt": 21870,
+  "tanim": "2019 boxing match",
+  "goruntulenme": 75.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.56,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Artur Beterbiev vs. Dmitry Bivol II",
+  "bolum": "unvan",
+  "bayt": 40469,
+  "tanim": "Boxing match",
+  "goruntulenme": 73.9,
+  "ts": {
+   "hikaye": 0.38,
+   "dram": 0.5,
+   "hassas": 0.01,
+   "olmadi": 0.18,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Louis vs. Max Schmeling",
+  "bolum": "mac",
+  "bayt": 15910,
+  "tanim": "Boxing match",
+  "goruntulenme": 73.4,
+  "ts": {
+   "hikaye": 0.66,
+   "dram": 0.69,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs Daniel Dubois",
+  "bolum": "unvan",
+  "bayt": 10835,
+  "tanim": "Boxing match",
+  "goruntulenme": 72.5,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Donovan Ruddock II",
+  "bolum": "mac",
+  "bayt": 20548,
+  "tanim": "Boxing match",
+  "goruntulenme": 71.8,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Floyd Mayweather Jr.",
+  "bolum": "unvan",
+  "bayt": 14771,
+  "tanim": "Boxing match",
+  "goruntulenme": 70.5,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Devon Alexander",
+  "bolum": "mac",
+  "bayt": 21725,
+  "tanim": "American boxer (born 1987)",
+  "goruntulenme": 67.8,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.49,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Trevor Berbick vs. Mike Tyson",
+  "bolum": "unvan",
+  "bayt": 9027,
+  "tanim": "Boxing match",
+  "goruntulenme": 66.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.7,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jack Johnson vs. James J. Jeffries",
+  "bolum": "unvan",
+  "bayt": 25866,
+  "tanim": "1910 boxing competition",
+  "goruntulenme": 65.7,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.32,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Moses Itauma vs Filip Hrgovic",
+  "bolum": "mac",
+  "bayt": 16544,
+  "tanim": "Boxing contest",
+  "goruntulenme": 65.7,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.25,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Francis Ngannou",
+  "bolum": "mac",
+  "bayt": 24336,
+  "tanim": "Boxing competition",
+  "goruntulenme": 65.3,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Juan Manuel Márquez IV",
+  "bolum": "mac",
+  "bayt": 13463,
+  "tanim": "Boxing match",
+  "goruntulenme": 64.7,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Andrew Tate vs Chase DeMoor",
+  "bolum": "mac",
+  "bayt": 13749,
+  "tanim": "2025 crossover boxing match",
+  "goruntulenme": 64.4,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs Tommy Fury",
+  "bolum": "mac",
+  "bayt": 39461,
+  "tanim": "2023 professional crossover boxing match",
+  "goruntulenme": 64.3,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Mario Barrios",
+  "bolum": "unvan",
+  "bayt": 18420,
+  "tanim": "2025 boxing match",
+  "goruntulenme": 62.5,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Frazier vs. George Foreman",
+  "bolum": "unvan",
+  "bayt": 10746,
+  "tanim": "Boxing competition",
+  "goruntulenme": 62.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Larry Holmes",
+  "bolum": "unvan",
+  "bayt": 11377,
+  "tanim": "Boxing competition",
+  "goruntulenme": 62.3,
+  "ts": {
+   "hikaye": 0.64,
+   "dram": 0.77,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Roberto Durán vs. Sugar Ray Leonard II",
+  "bolum": "unvan",
+  "bayt": 10944,
+  "tanim": "Boxing competition",
+  "goruntulenme": 61.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Frank Bruno",
+  "bolum": "unvan",
+  "bayt": 11420,
+  "tanim": "Boxing competition",
+  "goruntulenme": 61.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. George Foreman",
+  "bolum": "unvan",
+  "bayt": 8526,
+  "tanim": "Boxing match",
+  "goruntulenme": 60.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.83,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Marvin Hagler vs. Sugar Ray Leonard",
+  "bolum": "unvan",
+  "bayt": 23615,
+  "tanim": "Boxing match",
+  "goruntulenme": 60.4,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Teofimo Lopez vs. Shakur Stevenson",
+  "bolum": "mac",
+  "bayt": 7342,
+  "tanim": "Boxing competition",
+  "goruntulenme": 60.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.7,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Naoya Inoue vs. Junto Nakatani",
+  "bolum": "unvan",
+  "bayt": 8650,
+  "tanim": "Boxing competition",
+  "goruntulenme": 59.3,
+  "ts": {
+   "hikaye": 0.79,
+   "dram": 0.45,
+   "hassas": 0.01,
+   "olmadi": 0.32,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Vitali Klitschko",
+  "bolum": "unvan",
+  "bayt": 11700,
+  "tanim": "Boxing competition in 2003",
+  "goruntulenme": 59.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.64,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Manny Pacquiao",
+  "bolum": "mac",
+  "bayt": 18215,
+  "tanim": "Boxing match",
+  "goruntulenme": 58.2,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Tony Tucker",
+  "bolum": "unvan",
+  "bayt": 8956,
+  "tanim": "Boxing competition",
+  "goruntulenme": 56.9,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.55,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Deontay Wilder vs. Tyson Fury II",
+  "bolum": "unvan",
+  "bayt": 48341,
+  "tanim": "Boxing match",
+  "goruntulenme": 56.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Lennox Lewis",
+  "bolum": "unvan",
+  "bayt": 17673,
+  "tanim": "Boxing competition",
+  "goruntulenme": 56.2,
+  "ts": {
+   "hikaye": 0.82,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Leon Spinks",
+  "bolum": "unvan",
+  "bayt": 8944,
+  "tanim": "February 1978 boxing competition",
+  "goruntulenme": 56.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lucian Bute",
+  "bolum": "mac",
+  "bayt": 36543,
+  "tanim": "Romanian boxer (born 1980)",
+  "goruntulenme": 54.9,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Francois Botha",
+  "bolum": "mac",
+  "bayt": 7995,
+  "tanim": "Boxing competition",
+  "goruntulenme": 54.9,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nigel Benn vs. Chris Eubank",
+  "bolum": "unvan",
+  "bayt": 9882,
+  "tanim": "Boxing match",
+  "goruntulenme": 53.8,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "The Long Count Fight",
+  "bolum": "unvan",
+  "bayt": 13128,
+  "tanim": "Boxing match",
+  "goruntulenme": 53.6,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Dmitry Bivol",
+  "bolum": "unvan",
+  "bayt": 17168,
+  "tanim": "2022 professional boxing match",
+  "goruntulenme": 53.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Sugar Ray Leonard vs. Roberto Durán",
+  "bolum": "unvan",
+  "bayt": 9074,
+  "tanim": "1980 boxing match",
+  "goruntulenme": 51.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Roy Jones Jr.",
+  "bolum": "mac",
+  "bayt": 28255,
+  "tanim": "2020 exhibition boxing match",
+  "goruntulenme": 51.1,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nigel Benn vs. Gerald McClellan",
+  "bolum": "unvan",
+  "bayt": 25931,
+  "tanim": "Boxing competition",
+  "goruntulenme": 50.4,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.97,
+   "hassas": 0.49,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Logan Paul",
+  "bolum": "mac",
+  "bayt": 16794,
+  "tanim": "2021 exhibition crossover boxing match",
+  "goruntulenme": 50.2,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.54,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs Logan Paul",
+  "bolum": "mac",
+  "bayt": 42257,
+  "tanim": "2018 amateur YouTube boxing match",
+  "goruntulenme": 49.6,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Frank Bruno vs. Mike Tyson II",
+  "bolum": "unvan",
+  "bayt": 15708,
+  "tanim": "Boxing competition",
+  "goruntulenme": 49.4,
+  "ts": {
+   "hikaye": 0.38,
+   "dram": 0.71,
+   "hassas": 0.05,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Mitch Green",
+  "bolum": "mac",
+  "bayt": 7823,
+  "tanim": "Boxing match",
+  "goruntulenme": 49.2,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.94,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Oliver McCall II",
+  "bolum": "unvan",
+  "bayt": 10999,
+  "tanim": "Boxing competition",
+  "goruntulenme": 48.4,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Wladimir Klitschko vs. Tyson Fury",
+  "bolum": "unvan",
+  "bayt": 31402,
+  "tanim": "Boxing competition",
+  "goruntulenme": 47.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Trevor Berbick",
+  "bolum": "mac",
+  "bayt": 7874,
+  "tanim": "Boxing match",
+  "goruntulenme": 46.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Gennady Golovkin II",
+  "bolum": "unvan",
+  "bayt": 36040,
+  "tanim": "2018 professional boxing match",
+  "goruntulenme": 45.5,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ray Mancini vs. Kim Duk-koo",
+  "bolum": "unvan",
+  "bayt": 15505,
+  "tanim": "Boxing match",
+  "goruntulenme": 45.5,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.88,
+   "hassas": 0.81,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Gennady Golovkin III",
+  "bolum": "unvan",
+  "bayt": 14055,
+  "tanim": "2022 boxing match",
+  "goruntulenme": 45.4,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Antonio Margarito",
+  "bolum": "unvan",
+  "bayt": 10929,
+  "tanim": "2010 boxing match",
+  "goruntulenme": 45.4,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.56,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Francis Ngannou",
+  "bolum": "mac",
+  "bayt": 16606,
+  "tanim": "Boxing match",
+  "goruntulenme": 45.2,
+  "ts": {
+   "hikaye": 0.52,
+   "dram": 0.87,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Eddie Hall vs. Hafþór Björnsson",
+  "bolum": "mac",
+  "bayt": 14157,
+  "tanim": "2022 boxing match between World's Strongest Man competitors",
+  "goruntulenme": 44.5,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.84,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Gervonta Davis",
+  "bolum": "mac",
+  "bayt": 15727,
+  "tanim": "2025 exhibition boxing match",
+  "goruntulenme": 44.5,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.83,
+   "hassas": 0.02,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Ken Norton",
+  "bolum": "mac",
+  "bayt": 8591,
+  "tanim": "Boxing competitions",
+  "goruntulenme": 44.4,
+  "ts": {
+   "hikaye": 0.48,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sugar Ray Leonard vs. Thomas Hearns",
+  "bolum": "unvan",
+  "bayt": 9387,
+  "tanim": "1981 boxing match",
+  "goruntulenme": 44.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Michael Moorer vs. George Foreman",
+  "bolum": "unvan",
+  "bayt": 17190,
+  "tanim": "1994 professional boxing match",
+  "goruntulenme": 43.9,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Leon Spinks vs. Muhammad Ali II",
+  "bolum": "unvan",
+  "bayt": 11845,
+  "tanim": "September 1978 boxing match",
+  "goruntulenme": 43.8,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Marcos Maidana",
+  "bolum": "unvan",
+  "bayt": 22328,
+  "tanim": "Boxing match",
+  "goruntulenme": 42.9,
+  "ts": {
+   "hikaye": 0.46,
+   "dram": 0.4,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Timothy Bradley",
+  "bolum": "unvan",
+  "bayt": 30408,
+  "tanim": "2012 boxing match",
+  "goruntulenme": 42.6,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Krzysztof Głowacki",
+  "bolum": "mac",
+  "bayt": 26061,
+  "tanim": "Polish boxer and mixed martial artist (born 1986)",
+  "goruntulenme": 42.3,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs. Daniel Dubois",
+  "bolum": "unvan",
+  "bayt": 18405,
+  "tanim": "Boxing competition",
+  "goruntulenme": 42.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs Tommy Fury",
+  "bolum": "mac",
+  "bayt": 9701,
+  "tanim": "2023 professional crossover boxing match",
+  "goruntulenme": 41.8,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.62,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Ricky Hatton",
+  "bolum": "unvan",
+  "bayt": 13680,
+  "tanim": "2007 professional boxing match",
+  "goruntulenme": 40.9,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Nate Diaz",
+  "bolum": "mac",
+  "bayt": 9551,
+  "tanim": "2023 professional crossover boxing match",
+  "goruntulenme": 40.4,
+  "ts": {
+   "hikaye": 0.73,
+   "dram": 0.55,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Earnie Shavers",
+  "bolum": "unvan",
+  "bayt": 9999,
+  "tanim": "Boxing competition",
+  "goruntulenme": 40.0,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Andy Ruiz Jr. vs. Anthony Joshua II",
+  "bolum": "unvan",
+  "bayt": 24963,
+  "tanim": "Boxing match",
+  "goruntulenme": 39.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Tommy Morrison",
+  "bolum": "unvan",
+  "bayt": 8224,
+  "tanim": "Boxing competition",
+  "goruntulenme": 39.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.84,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Cassius Clay vs. Henry Cooper",
+  "bolum": "mac",
+  "bayt": 12279,
+  "tanim": "Boxing match",
+  "goruntulenme": 39.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Adrien Broner vs. Marcos Maidana",
+  "bolum": "unvan",
+  "bayt": 10459,
+  "tanim": "Boxing competition",
+  "goruntulenme": 38.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Benny Paret vs. Emile Griffith III",
+  "bolum": "unvan",
+  "bayt": 17534,
+  "tanim": "1962 boxing match",
+  "goruntulenme": 38.6,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.96,
+   "hassas": 0.89,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Errol Spence Jr. vs. Terence Crawford",
+  "bolum": "unvan",
+  "bayt": 19380,
+  "tanim": "Boxing match",
+  "goruntulenme": 37.9,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Carl Williams",
+  "bolum": "unvan",
+  "bayt": 7797,
+  "tanim": "Boxing competition",
+  "goruntulenme": 37.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs. Logan Paul II",
+  "bolum": "mac",
+  "bayt": 37371,
+  "tanim": "2019 professional YouTube boxing match",
+  "goruntulenme": 37.6,
+  "ts": {
+   "hikaye": 0.81,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Louis vs. Max Schmeling II",
+  "bolum": "unvan",
+  "bayt": 20643,
+  "tanim": "Boxing match",
+  "goruntulenme": 37.5,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.88,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Naseem Hamed vs. Marco Antonio Barrera",
+  "bolum": "unvan",
+  "bayt": 8892,
+  "tanim": "Boxing match",
+  "goruntulenme": 37.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Otto Wallin",
+  "bolum": "mac",
+  "bayt": 17915,
+  "tanim": "Professional boxing match",
+  "goruntulenme": 37.1,
+  "ts": {
+   "hikaye": 0.42,
+   "dram": 0.75,
+   "hassas": 0.02,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Jaime Munguía",
+  "bolum": "unvan",
+  "bayt": 9584,
+  "tanim": "Boxing match",
+  "goruntulenme": 35.8,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.27,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Oleksandr Usyk",
+  "bolum": "unvan",
+  "bayt": 20821,
+  "tanim": "Boxing match",
+  "goruntulenme": 35.5,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Louis vs. Rocky Marciano",
+  "bolum": "mac",
+  "bayt": 10249,
+  "tanim": "Boxing match",
+  "goruntulenme": 35.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.87,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs Deji",
+  "bolum": "mac",
+  "bayt": 8802,
+  "tanim": "Boxing competition",
+  "goruntulenme": 35.1,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.42,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Bernard Hopkins vs. Joe Calzaghe",
+  "bolum": "unvan",
+  "bayt": 14205,
+  "tanim": "Boxing match",
+  "goruntulenme": 34.0,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.91,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Danny Williams",
+  "bolum": "mac",
+  "bayt": 10037,
+  "tanim": "Boxing competition",
+  "goruntulenme": 34.0,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.95,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Ricky Hatton",
+  "bolum": "unvan",
+  "bayt": 27099,
+  "tanim": "2009 boxing match",
+  "goruntulenme": 33.8,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Riddick Bowe",
+  "bolum": "unvan",
+  "bayt": 11259,
+  "tanim": "Boxing competition",
+  "goruntulenme": 33.5,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.65,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Larry Holmes vs. Gerry Cooney",
+  "bolum": "unvan",
+  "bayt": 14013,
+  "tanim": "Boxing competition",
+  "goruntulenme": 33.0,
+  "ts": {
+   "hikaye": 0.75,
+   "dram": 0.84,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Frank Bruno",
+  "bolum": "unvan",
+  "bayt": 11901,
+  "tanim": "1993 boxing competition",
+  "goruntulenme": 32.9,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs Jake Paul",
+  "bolum": "mac",
+  "bayt": 22034,
+  "tanim": "Proposed professional YouTube boxing match",
+  "goruntulenme": 32.9,
+  "ts": {
+   "hikaye": 0.15,
+   "dram": 0.69,
+   "hassas": 0.02,
+   "olmadi": 0.93,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "YouTubers vs. TikTokers",
+  "bolum": "mac",
+  "bayt": 17137,
+  "tanim": "2021 boxing match",
+  "goruntulenme": 32.0,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.36,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Victor Ortiz",
+  "bolum": "unvan",
+  "bayt": 11163,
+  "tanim": "Boxing match",
+  "goruntulenme": 31.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Riddick Bowe vs. Andrew Golota",
+  "bolum": "mac",
+  "bayt": 15366,
+  "tanim": "1996 boxing match",
+  "goruntulenme": 31.9,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.96,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Devin Haney vs. Vasiliy Lomachenko",
+  "bolum": "unvan",
+  "bayt": 16879,
+  "tanim": "Boxing match",
+  "goruntulenme": 31.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Lennox Lewis II",
+  "bolum": "unvan",
+  "bayt": 17341,
+  "tanim": "Boxing competition",
+  "goruntulenme": 30.9,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Dillian Whyte",
+  "bolum": "unvan",
+  "bayt": 20829,
+  "tanim": "Boxing match",
+  "goruntulenme": 30.2,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Hasim Rahman",
+  "bolum": "unvan",
+  "bayt": 12058,
+  "tanim": "Boxing competition",
+  "goruntulenme": 30.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Julio César Chávez vs. Oscar De La Hoya",
+  "bolum": "unvan",
+  "bayt": 8187,
+  "tanim": "Boxing match",
+  "goruntulenme": 30.0,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.91,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs Wladimir Klitschko",
+  "bolum": "unvan",
+  "bayt": 33536,
+  "tanim": "Boxing match",
+  "goruntulenme": 29.8,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jack Dempsey vs. Georges Carpentier",
+  "bolum": "unvan",
+  "bayt": 15513,
+  "tanim": "Boxing match",
+  "goruntulenme": 29.5,
+  "ts": {
+   "hikaye": 0.82,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Buster Douglas vs. Evander Holyfield",
+  "bolum": "unvan",
+  "bayt": 14794,
+  "tanim": "Boxing match",
+  "goruntulenme": 29.5,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Calzaghe vs. Roy Jones Jr.",
+  "bolum": "unvan",
+  "bayt": 8204,
+  "tanim": "Boxing competition",
+  "goruntulenme": 29.3,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.56,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Ken Norton III",
+  "bolum": "unvan",
+  "bayt": 7868,
+  "tanim": "Professional boxing match contested on September 28, 1976",
+  "goruntulenme": 29.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jack Dempsey vs. Luis Ángel Firpo",
+  "bolum": "unvan",
+  "bayt": 16206,
+  "tanim": "Boxing match",
+  "goruntulenme": 29.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nigel Benn vs. Chris Eubank II",
+  "bolum": "unvan",
+  "bayt": 7733,
+  "tanim": "Boxing match",
+  "goruntulenme": 29.1,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.91,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Félix Trinidad",
+  "bolum": "unvan",
+  "bayt": 7343,
+  "tanim": "Boxing competition",
+  "goruntulenme": 29.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Miguel Cotto",
+  "bolum": "unvan",
+  "bayt": 18349,
+  "tanim": "2012 professional boxing match",
+  "goruntulenme": 28.7,
+  "ts": {
+   "hikaye": 0.62,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Shane Mosley",
+  "bolum": "mac",
+  "bayt": 20346,
+  "tanim": "2010 professional boxing match",
+  "goruntulenme": 27.9,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.42,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Anderson Silva",
+  "bolum": "mac",
+  "bayt": 7458,
+  "tanim": "2022 professional crossover boxing match",
+  "goruntulenme": 27.9,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.6,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2024 in Misfits Boxing",
+  "bolum": "mac",
+  "bayt": 64328,
+  "tanim": "",
+  "goruntulenme": 27.7,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.71,
+   "hassas": 0.02,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tyson Fury vs. Derek Chisora III",
+  "bolum": "unvan",
+  "bayt": 8301,
+  "tanim": "Boxing competition",
+  "goruntulenme": 27.4,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.21,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Riddick Bowe vs. Evander Holyfield II",
+  "bolum": "unvan",
+  "bayt": 14617,
+  "tanim": "1993 boxing match",
+  "goruntulenme": 27.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sugar Ray Leonard vs. Thomas Hearns II",
+  "bolum": "unvan",
+  "bayt": 10914,
+  "tanim": "Professional boxing match",
+  "goruntulenme": 27.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.86,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Joe Frazier II",
+  "bolum": "mac",
+  "bayt": 7984,
+  "tanim": "Boxing competition",
+  "goruntulenme": 27.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.57,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs Anthony Joshua II",
+  "bolum": "unvan",
+  "bayt": 22625,
+  "tanim": "Boxing match",
+  "goruntulenme": 26.8,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.85,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Marcos Maidana II",
+  "bolum": "unvan",
+  "bayt": 13351,
+  "tanim": "Boxing competition",
+  "goruntulenme": 26.6,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Pernell Whitaker vs. Oscar De La Hoya",
+  "bolum": "unvan",
+  "bayt": 12373,
+  "tanim": "Boxing match",
+  "goruntulenme": 26.5,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Miguel Cotto",
+  "bolum": "unvan",
+  "bayt": 15042,
+  "tanim": "2009 boxing match",
+  "goruntulenme": 26.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Alfredo Angulo",
+  "bolum": "mac",
+  "bayt": 25531,
+  "tanim": "Mexican boxer (born 1982)",
+  "goruntulenme": 26.3,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.5,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Marvis Frazier",
+  "bolum": "mac",
+  "bayt": 7251,
+  "tanim": "Boxing match",
+  "goruntulenme": 26.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.84,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sugar Ray Leonard vs. Roberto Durán III",
+  "bolum": "unvan",
+  "bayt": 8693,
+  "tanim": "Boxing match",
+  "goruntulenme": 25.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.29,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Marvin Hagler vs. Roberto Durán",
+  "bolum": "unvan",
+  "bayt": 11306,
+  "tanim": "1983 professional boxing match",
+  "goruntulenme": 25.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Jermell Charlo",
+  "bolum": "unvan",
+  "bayt": 20269,
+  "tanim": "Boxing match",
+  "goruntulenme": 25.1,
+  "ts": {
+   "hikaye": 0.77,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.12,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Hasim Rahman vs. Lennox Lewis II",
+  "bolum": "unvan",
+  "bayt": 9268,
+  "tanim": "Boxing competition",
+  "goruntulenme": 25.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ray Mercer vs. Tommy Morrison",
+  "bolum": "unvan",
+  "bayt": 7709,
+  "tanim": "Boxing match",
+  "goruntulenme": 25.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.88,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Thomas Hearns vs. Roberto Durán",
+  "bolum": "unvan",
+  "bayt": 11431,
+  "tanim": "Professional boxing match contested on June 15, 1984",
+  "goruntulenme": 24.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Mike Perry",
+  "bolum": "mac",
+  "bayt": 10063,
+  "tanim": "2024 professional crossover boxing match",
+  "goruntulenme": 24.5,
+  "ts": {
+   "hikaye": 0.61,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Clifford Etienne",
+  "bolum": "mac",
+  "bayt": 9166,
+  "tanim": "Boxing competition",
+  "goruntulenme": 24.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.83,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Timothy Bradley III",
+  "bolum": "mac",
+  "bayt": 11748,
+  "tanim": "Boxing match",
+  "goruntulenme": 23.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.47,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Sergey Kovalev",
+  "bolum": "unvan",
+  "bayt": 36056,
+  "tanim": "2019 professional boxing match",
+  "goruntulenme": 23.7,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.69,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Billy Joe Saunders",
+  "bolum": "unvan",
+  "bayt": 13157,
+  "tanim": "2021 professional boxing match",
+  "goruntulenme": 23.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Carl Froch vs. George Groves II",
+  "bolum": "unvan",
+  "bayt": 20355,
+  "tanim": "Boxing competition",
+  "goruntulenme": 23.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Keith Thurman",
+  "bolum": "unvan",
+  "bayt": 23415,
+  "tanim": "2019 boxing match",
+  "goruntulenme": 23.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Pernell Whitaker vs. Julio César Chávez",
+  "bolum": "unvan",
+  "bayt": 12760,
+  "tanim": "Boxing match",
+  "goruntulenme": 23.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Juan Manuel Márquez vs. Manny Pacquiao",
+  "bolum": "unvan",
+  "bayt": 11457,
+  "tanim": "Boxing match",
+  "goruntulenme": 23.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Juan Manuel Márquez",
+  "bolum": "mac",
+  "bayt": 14726,
+  "tanim": "2009 professional boxing match",
+  "goruntulenme": 23.3,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.38,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nikolai Valuev vs. David Haye",
+  "bolum": "unvan",
+  "bayt": 8073,
+  "tanim": "Boxing competition",
+  "goruntulenme": 23.2,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Henry Cooper II",
+  "bolum": "unvan",
+  "bayt": 9642,
+  "tanim": "Boxing match",
+  "goruntulenme": 23.1,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.86,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Joseph Parker",
+  "bolum": "unvan",
+  "bayt": 30528,
+  "tanim": "Boxing competition",
+  "goruntulenme": 23.0,
+  "ts": {
+   "hikaye": 0.76,
+   "dram": 0.33,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Miguel Cotto vs. Antonio Margarito",
+  "bolum": "unvan",
+  "bayt": 38918,
+  "tanim": "Boxing match",
+  "goruntulenme": 22.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Zab Judah",
+  "bolum": "unvan",
+  "bayt": 9009,
+  "tanim": "Boxing match",
+  "goruntulenme": 22.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Jeff Horn",
+  "bolum": "unvan",
+  "bayt": 24467,
+  "tanim": "2017 boxing match",
+  "goruntulenme": 22.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs. Tony Bellew",
+  "bolum": "unvan",
+  "bayt": 17404,
+  "tanim": "Boxing match",
+  "goruntulenme": 22.5,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.3,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Ben Askren",
+  "bolum": "mac",
+  "bayt": 13253,
+  "tanim": "2021 professional crossover boxing match",
+  "goruntulenme": 22.5,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Andre Berto",
+  "bolum": "unvan",
+  "bayt": 29594,
+  "tanim": "Boxing match",
+  "goruntulenme": 22.4,
+  "ts": {
+   "hikaye": 0.68,
+   "dram": 0.87,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Brian Nielsen",
+  "bolum": "mac",
+  "bayt": 10080,
+  "tanim": "Boxing competition",
+  "goruntulenme": 22.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.81,
+   "hassas": 0.04,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Amir Khan",
+  "bolum": "unvan",
+  "bayt": 42085,
+  "tanim": "2016 professional boxing match",
+  "goruntulenme": 22.2,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.32,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Caleb Plant",
+  "bolum": "unvan",
+  "bayt": 16885,
+  "tanim": "2021 professional boxing match",
+  "goruntulenme": 22.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Riddick Bowe vs. Evander Holyfield III",
+  "bolum": "mac",
+  "bayt": 9856,
+  "tanim": "1995 boxing match",
+  "goruntulenme": 22.0,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Salvador Sánchez vs. Wilfredo Gómez",
+  "bolum": "unvan",
+  "bayt": 8527,
+  "tanim": "1981 professional boxing match in Nevada",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.08,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Deontay Wilder vs. Luis Ortiz",
+  "bolum": "unvan",
+  "bayt": 15394,
+  "tanim": "Boxing competitions",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.64,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Cassius Clay vs. Doug Jones",
+  "bolum": "mac",
+  "bayt": 7840,
+  "tanim": "1963 boxing match",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Ron Lyle",
+  "bolum": "mac",
+  "bayt": 9412,
+  "tanim": "1976 professional boxing match",
+  "goruntulenme": 21.8,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Juan Manuel Márquez III",
+  "bolum": "unvan",
+  "bayt": 18808,
+  "tanim": "2011 boxing match",
+  "goruntulenme": 21.7,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Muhammad Ali vs. Ernie Terrell",
+  "bolum": "unvan",
+  "bayt": 10581,
+  "tanim": "Boxing competition",
+  "goruntulenme": 21.7,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.07,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Tyron Woodley",
+  "bolum": "mac",
+  "bayt": 9665,
+  "tanim": "2021 professional crossover boxing match",
+  "goruntulenme": 21.4,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Joshua Clottey",
+  "bolum": "unvan",
+  "bayt": 14413,
+  "tanim": "Boxing match",
+  "goruntulenme": 21.3,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.87,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Canelo Álvarez vs. Julio César Chávez Jr.",
+  "bolum": "mac",
+  "bayt": 15545,
+  "tanim": "2017 professional boxing match",
+  "goruntulenme": 21.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.27,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Shannon Briggs",
+  "bolum": "unvan",
+  "bayt": 11131,
+  "tanim": "Boxing match",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Oliver McCall",
+  "bolum": "unvan",
+  "bayt": 9307,
+  "tanim": "Boxing match",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "David Haye vs. Tony Bellew",
+  "bolum": "mac",
+  "bayt": 11736,
+  "tanim": "Boxing competition",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs Joe Fournier",
+  "bolum": "mac",
+  "bayt": 12357,
+  "tanim": "2023 crossover boxing match",
+  "goruntulenme": 20.6,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Julio César Chávez II",
+  "bolum": "unvan",
+  "bayt": 7302,
+  "tanim": "Boxing match",
+  "goruntulenme": 20.4,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.32,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Patterson vs. Sonny Liston",
+  "bolum": "unvan",
+  "bayt": 10642,
+  "tanim": "Boxing competition",
+  "goruntulenme": 20.4,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.82,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Wladimir Klitschko vs. David Haye",
+  "bolum": "unvan",
+  "bayt": 45993,
+  "tanim": "Boxing competition",
+  "goruntulenme": 20.3,
+  "ts": {
+   "hikaye": 0.69,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Iran Barkley vs. Roberto Durán",
+  "bolum": "unvan",
+  "bayt": 11696,
+  "tanim": "Boxing match",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. Tommy Morrison",
+  "bolum": "mac",
+  "bayt": 10749,
+  "tanim": "Boxing competition",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.76,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Julius Francis",
+  "bolum": "mac",
+  "bayt": 8519,
+  "tanim": "Boxing competition",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.88,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Larry Holmes vs. Michael Spinks",
+  "bolum": "unvan",
+  "bayt": 16167,
+  "tanim": "Boxing match",
+  "goruntulenme": 20.1,
+  "ts": {
+   "hikaye": 0.41,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Orlin Norris",
+  "bolum": "mac",
+  "bayt": 10267,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.9,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.82,
+   "hassas": 0.04,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Timothy Bradley II",
+  "bolum": "unvan",
+  "bayt": 10300,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.8,
+  "ts": {
+   "hikaye": 0.56,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Carlos Takam",
+  "bolum": "unvan",
+  "bayt": 19001,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.7,
+  "ts": {
+   "hikaye": 0.52,
+   "dram": 0.7,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Lou Savarese",
+  "bolum": "mac",
+  "bayt": 12858,
+  "tanim": "Boxing competition",
+  "goruntulenme": 19.6,
+  "ts": {
+   "hikaye": 0.67,
+   "dram": 0.94,
+   "hassas": 0.05,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Buster Mathis Jr.",
+  "bolum": "mac",
+  "bayt": 21283,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.5,
+  "ts": {
+   "hikaye": 0.73,
+   "dram": 0.83,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Larry Holmes",
+  "bolum": "unvan",
+  "bayt": 8266,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.4,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.59,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Miguel Cotto vs. Canelo Álvarez",
+  "bolum": "unvan",
+  "bayt": 20806,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.2,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Shane Mosley",
+  "bolum": "unvan",
+  "bayt": 11015,
+  "tanim": "Boxing match",
+  "goruntulenme": 19.1,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lennox Lewis vs. David Tua",
+  "bolum": "unvan",
+  "bayt": 8620,
+  "tanim": "Boxing competition",
+  "goruntulenme": 19.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.85,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Julio César Chávez vs. Greg Haugen",
+  "bolum": "unvan",
+  "bayt": 20289,
+  "tanim": "Boxing match",
+  "goruntulenme": 18.8,
+  "ts": {
+   "hikaye": 0.61,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Yordenis Ugás",
+  "bolum": "unvan",
+  "bayt": 20070,
+  "tanim": "2021 Boxing match",
+  "goruntulenme": 18.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.77,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Joe Calzaghe vs. Mikkel Kessler",
+  "bolum": "unvan",
+  "bayt": 14050,
+  "tanim": "Boxing competition",
+  "goruntulenme": 18.5,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.42,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Éric Molina",
+  "bolum": "unvan",
+  "bayt": 11342,
+  "tanim": "Boxing competition",
+  "goruntulenme": 18.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.26,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jersey Joe Walcott vs. Rocky Marciano",
+  "bolum": "unvan",
+  "bayt": 9160,
+  "tanim": "Boxing match",
+  "goruntulenme": 18.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "James Toney vs. Roy Jones Jr.",
+  "bolum": "unvan",
+  "bayt": 9201,
+  "tanim": "1994 boxing match in Nevada, US",
+  "goruntulenme": 18.3,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Shane Mosley",
+  "bolum": "unvan",
+  "bayt": 15732,
+  "tanim": "2011 boxing match",
+  "goruntulenme": 18.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Roberto Durán vs. Vinny Pazienza",
+  "bolum": "mac",
+  "bayt": 9682,
+  "tanim": "Boxing match",
+  "goruntulenme": 18.1,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Riddick Bowe vs. Andrew Golota II",
+  "bolum": "mac",
+  "bayt": 13035,
+  "tanim": "1996 boxing match",
+  "goruntulenme": 18.0,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.97,
+   "hassas": 0.06,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Dillian Whyte",
+  "bolum": "mac",
+  "bayt": 14750,
+  "tanim": "Boxing match",
+  "goruntulenme": 18.0,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "KSI vs FaZe Temperrr",
+  "bolum": "mac",
+  "bayt": 13259,
+  "tanim": "2023 crossover boxing match",
+  "goruntulenme": 17.9,
+  "ts": {
+   "hikaye": 0.82,
+   "dram": 0.73,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "José Luis Castillo vs. Floyd Mayweather Jr.",
+  "bolum": "unvan",
+  "bayt": 8381,
+  "tanim": "Boxing match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.87,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Robert Helenius",
+  "bolum": "mac",
+  "bayt": 11663,
+  "tanim": "Boxing match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.79,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Jimmy Young",
+  "bolum": "mac",
+  "bayt": 9931,
+  "tanim": "Boxing match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. James Toney",
+  "bolum": "mac",
+  "bayt": 9536,
+  "tanim": "2003 boxing match",
+  "goruntulenme": 17.4,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.63,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Marco Antonio Barrera vs. Manny Pacquiao",
+  "bolum": "unvan",
+  "bayt": 10043,
+  "tanim": "Boxing match",
+  "goruntulenme": 17.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Arturo Gatti vs. Floyd Mayweather Jr.",
+  "bolum": "unvan",
+  "bayt": 10489,
+  "tanim": "Boxing competition",
+  "goruntulenme": 17.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.64,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tony Bellew vs. David Haye II",
+  "bolum": "mac",
+  "bayt": 19107,
+  "tanim": "Boxing competition",
+  "goruntulenme": 17.1,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Gennady Golovkin vs. Kell Brook",
+  "bolum": "unvan",
+  "bayt": 15951,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Tony Tubbs",
+  "bolum": "unvan",
+  "bayt": 8829,
+  "tanim": "Boxing competition",
+  "goruntulenme": 16.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.58,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Melvin Jerusalem vs. Siyakholwa Kuse",
+  "bolum": "mac",
+  "bayt": 33620,
+  "tanim": "2025 boxing match",
+  "goruntulenme": 16.8,
+  "ts": {
+   "hikaye": 0.29,
+   "dram": 0.34,
+   "hassas": 0.01,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Jessie Vargas",
+  "bolum": "unvan",
+  "bayt": 16488,
+  "tanim": "2016 boxing match",
+  "goruntulenme": 16.7,
+  "ts": {
+   "hikaye": 0.75,
+   "dram": 0.27,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Evander Holyfield vs. Vitor Belfort",
+  "bolum": "mac",
+  "bayt": 10127,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.7,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.81,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oleksandr Usyk vs. Derek Chisora",
+  "bolum": "mac",
+  "bayt": 21540,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.7,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.27,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Vasiliy Lomachenko vs. Teófimo López",
+  "bolum": "unvan",
+  "bayt": 25228,
+  "tanim": "2020 boxing match in Nevada",
+  "goruntulenme": 16.6,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jess Willard vs. Jack Dempsey",
+  "bolum": "unvan",
+  "bayt": 11939,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.5,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.93,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Rocky Marciano vs. Archie Moore",
+  "bolum": "unvan",
+  "bayt": 8249,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.63,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anthony Joshua vs. Alexander Povetkin",
+  "bolum": "unvan",
+  "bayt": 22780,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.3,
+  "ts": {
+   "hikaye": 0.77,
+   "dram": 0.57,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Floyd Mayweather Jr. vs. Robert Guerrero",
+  "bolum": "unvan",
+  "bayt": 15399,
+  "tanim": "Boxing competition",
+  "goruntulenme": 16.2,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.65,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. DK Yoo",
+  "bolum": "mac",
+  "bayt": 9420,
+  "tanim": "2022 boxing match",
+  "goruntulenme": 16.2,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.38,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "Edgar Berlanga vs. Hamzah Sheeraz",
+  "bolum": "mac",
+  "bayt": 14923,
+  "tanim": "Boxing competition",
+  "goruntulenme": 16.1,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Teófimo López vs. George Kambosos Jr.",
+  "bolum": "unvan",
+  "bayt": 16365,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.0,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mike Tyson vs. Alex Stewart",
+  "bolum": "mac",
+  "bayt": 10635,
+  "tanim": "Boxing match",
+  "goruntulenme": 16.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.52,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Félix Trinidad vs. Bernard Hopkins",
+  "bolum": "unvan",
+  "bayt": 15560,
+  "tanim": "Boxing competition",
+  "goruntulenme": 15.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.69,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jack Dempsey vs. Gene Tunney",
+  "bolum": "unvan",
+  "bayt": 10200,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "George Foreman vs. Axel Schulz",
+  "bolum": "unvan",
+  "bayt": 10816,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "John Ruiz vs. Roy Jones Jr.",
+  "bolum": "unvan",
+  "bayt": 23102,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.4,
+  "ts": {
+   "hikaye": 0.52,
+   "dram": 0.69,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Fernando Vargas",
+  "bolum": "unvan",
+  "bayt": 9398,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Oscar De La Hoya vs. Shane Mosley II",
+  "bolum": "unvan",
+  "bayt": 10526,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.4,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Christy Martin vs. Deirdre Gogarty",
+  "bolum": "mac",
+  "bayt": 26563,
+  "tanim": "1996 women's boxing match",
+  "goruntulenme": 15.4,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Aaron Pryor vs. Alexis Argüello",
+  "bolum": "unvan",
+  "bayt": 12016,
+  "tanim": "Boxing competition",
+  "goruntulenme": 15.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Paul vs. Tyron Woodley II",
+  "bolum": "mac",
+  "bayt": 8057,
+  "tanim": "2021 professional crossover boxing rematch",
+  "goruntulenme": 15.1,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.6,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manny Pacquiao vs. Chris Algieri",
+  "bolum": "unvan",
+  "bayt": 13392,
+  "tanim": "Boxing match",
+  "goruntulenme": 15.0,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.33,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ }
+]

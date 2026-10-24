@@ -1,0 +1,7268 @@
+[
+ {
+  "baslik": "Real Madrid CF",
+  "bolum": "mac",
+  "bayt": 265889,
+  "tanim": "Association football club in Spain",
+  "goruntulenme": 8469.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.73,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Pep Guardiola",
+  "bolum": "tartisma",
+  "bayt": 217032,
+  "tanim": "Catalan football manager and player (born 1971)",
+  "goruntulenme": 7020.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Diego Maradona",
+  "bolum": "tartisma",
+  "bayt": 294139,
+  "tanim": "Argentine football player and manager (1960–2020)",
+  "goruntulenme": 3806.3,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.97,
+   "hassas": 0.1,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mykhailo Mudryk",
+  "bolum": "tartisma",
+  "bayt": 39348,
+  "tanim": "Ukrainian footballer (born 2001)",
+  "goruntulenme": 2884.4,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.11,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manchester City F.C. financial breaches scandal",
+  "bolum": "tartisma",
+  "bayt": 25722,
+  "tanim": "English football scandal since 2018",
+  "goruntulenme": 2860.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mason Greenwood",
+  "bolum": "tartisma",
+  "bayt": 89019,
+  "tanim": "English footballer (born 2001)",
+  "goruntulenme": 2778.2,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.95,
+   "hassas": 0.31,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Chronic traumatic encephalopathy",
+  "bolum": "tartisma",
+  "bayt": 99832,
+  "tanim": "Neurodegenerative disease caused by head injury",
+  "goruntulenme": 2729.3,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.12,
+   "hassas": 0.07,
+   "olmadi": 0.21,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Paul Pogba",
+  "bolum": "tartisma",
+  "bayt": 157032,
+  "tanim": "French footballer (born 1993)",
+  "goruntulenme": 2615.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mesut Özil",
+  "bolum": "tartisma",
+  "bayt": 202903,
+  "tanim": "German footballer (born 1988)",
+  "goruntulenme": 1684.1,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Death of Otávio Jordão da Silva",
+  "bolum": "tartisma",
+  "bayt": 9850,
+  "tanim": "2013 death of a Brazilian football referee",
+  "goruntulenme": 1595.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.95,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "2026 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 140457,
+  "tanim": "Football match between Spain and Argentina",
+  "goruntulenme": 1457.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.21,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Negreira case",
+  "bolum": "tartisma",
+  "bayt": 29953,
+  "tanim": "Spanish football scandal",
+  "goruntulenme": 1449.0,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.87,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Hillsborough disaster",
+  "bolum": "tartisma",
+  "bayt": 230561,
+  "tanim": "Fatal crowd crush during 1989 FA Cup semi-final",
+  "goruntulenme": 1324.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.9,
+   "hassas": 0.98,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Rio Ferdinand",
+  "bolum": "tartisma",
+  "bayt": 121412,
+  "tanim": "English former footballer and pundit (born 1978)",
+  "goruntulenme": 1299.8,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 36506,
+  "tanim": "Football match in Budapest, Hungary",
+  "goruntulenme": 1249.4,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.31,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Calciopoli",
+  "bolum": "tartisma",
+  "bayt": 310969,
+  "tanim": "2006 Italian association football scandal",
+  "goruntulenme": 1213.7,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "John Terry",
+  "bolum": "tartisma",
+  "bayt": 165368,
+  "tanim": "English footballer (born 1980)",
+  "goruntulenme": 1192.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "André Onana",
+  "bolum": "tartisma",
+  "bayt": 52372,
+  "tanim": "Cameroonian footballer (born 1996)",
+  "goruntulenme": 1182.1,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.61,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Edgar Davids",
+  "bolum": "tartisma",
+  "bayt": 63598,
+  "tanim": "Dutch footballer and manager (born 1973)",
+  "goruntulenme": 938.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.39,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Dani Alves",
+  "bolum": "tartisma",
+  "bayt": 136813,
+  "tanim": "Brazilian footballer (born 1983)",
+  "goruntulenme": 855.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.88,
+   "hassas": 0.19,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2027 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 10840,
+  "tanim": "Football match in Madrid, Spain",
+  "goruntulenme": 839.9,
+  "ts": {
+   "hikaye": 0.2,
+   "dram": 0.05,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Heysel Stadium disaster",
+  "bolum": "tartisma",
+  "bayt": 63944,
+  "tanim": "Fatal spectator riot in Brussels, Belgium in 1985",
+  "goruntulenme": 810.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.98,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2027 UEFA Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 11032,
+  "tanim": "International football competition",
+  "goruntulenme": 743.9,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.06,
+   "hassas": 0.01,
+   "olmadi": 0.97,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Samir Nasri",
+  "bolum": "tartisma",
+  "bayt": 123351,
+  "tanim": "French footballer (born 1987)",
+  "goruntulenme": 740.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jaap Stam",
+  "bolum": "tartisma",
+  "bayt": 41020,
+  "tanim": "Dutch footballer and manager (born 1972)",
+  "goruntulenme": 721.1,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.27,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Munich air disaster",
+  "bolum": "tartisma",
+  "bayt": 77500,
+  "tanim": "1958 aviation accident in West Germany",
+  "goruntulenme": 697.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.98,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 UEFA Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 35166,
+  "tanim": "International football competition",
+  "goruntulenme": 685.6,
+  "ts": {
+   "hikaye": 0.34,
+   "dram": 0.34,
+   "hassas": 0.01,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2005 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 64935,
+  "tanim": "Association football match",
+  "goruntulenme": 684.2,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.99,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kolo Touré",
+  "bolum": "tartisma",
+  "bayt": 46360,
+  "tanim": "Ivorian footballer (born 1981)",
+  "goruntulenme": 668.1,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.64,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Argentina v Benin",
+  "bolum": "mac",
+  "bayt": 15379,
+  "tanim": "International football friendly",
+  "goruntulenme": 661.7,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.63,
+   "hassas": 0.01,
+   "olmadi": 0.63,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Saido Berahino",
+  "bolum": "tartisma",
+  "bayt": 78147,
+  "tanim": "Burundian footballer (born 1993)",
+  "goruntulenme": 642.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sam Allardyce",
+  "bolum": "tartisma",
+  "bayt": 122221,
+  "tanim": "English footballer and manager (born 1954)",
+  "goruntulenme": 640.8,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Gianluca Prestianni",
+  "bolum": "tartisma",
+  "bayt": 18475,
+  "tanim": "Argentine footballer (born 2006)",
+  "goruntulenme": 633.2,
+  "ts": {
+   "hikaye": 0.13,
+   "dram": 0.93,
+   "hassas": 0.13,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 92021,
+  "tanim": "Football match in Madrid, Spain",
+  "goruntulenme": 622.5,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.72,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 69647,
+  "tanim": "Football match in Istanbul, Turkey",
+  "goruntulenme": 606.5,
+  "ts": {
+   "hikaye": 0.82,
+   "dram": 0.72,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2022 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 105569,
+  "tanim": "Men's World Cup final, held in Qatar",
+  "goruntulenme": 587.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Fred (footballer, born 1993)",
+  "bolum": "tartisma",
+  "bayt": 40571,
+  "tanim": "Brazilian footballer",
+  "goruntulenme": 544.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.1,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 47731,
+  "tanim": "Football match in Porto, Portugal",
+  "goruntulenme": 535.9,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.57,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2024 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 71163,
+  "tanim": "Football match in London, England",
+  "goruntulenme": 519.0,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2014 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 95412,
+  "tanim": "World Cup final, held in Brazil",
+  "goruntulenme": 512.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 51624,
+  "tanim": "Football match in Munich, Germany",
+  "goruntulenme": 506.6,
+  "ts": {
+   "hikaye": 0.69,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "John Fashanu",
+  "bolum": "tartisma",
+  "bayt": 22664,
+  "tanim": "English footballer (born 1962)",
+  "goruntulenme": 478.8,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.54,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Brazil v Germany (2014 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 83493,
+  "tanim": "Association football match between Brazil and Germany in 2014",
+  "goruntulenme": 463.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2008 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 106149,
+  "tanim": "Football match in Moscow, Russia",
+  "goruntulenme": 459.0,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "AS Adema 149–0 SO l'Emyrne",
+  "bolum": "tartisma",
+  "bayt": 11743,
+  "tanim": "Football match",
+  "goruntulenme": 456.8,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 120540,
+  "tanim": "Football match in Rome, Italy",
+  "goruntulenme": 454.3,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2006 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 163450,
+  "tanim": "World Cup final match, held in Germany",
+  "goruntulenme": 452.7,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1999 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 84271,
+  "tanim": "Association football match",
+  "goruntulenme": 446.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2012 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 44397,
+  "tanim": "Football match in Munich, Germany",
+  "goruntulenme": 442.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2022 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 59982,
+  "tanim": "Football match in Saint-Denis, France",
+  "goruntulenme": 440.7,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.94,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Thomas Partey",
+  "bolum": "tartisma",
+  "bayt": 68872,
+  "tanim": "Ghanaian footballer (born 1993)",
+  "goruntulenme": 433.8,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.96,
+   "hassas": 0.81,
+   "olmadi": 0.12,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2010 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 51307,
+  "tanim": "Football match in Madrid, Spain",
+  "goruntulenme": 432.4,
+  "ts": {
+   "hikaye": 0.6,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "European Super League",
+  "bolum": "tartisma",
+  "bayt": 202738,
+  "tanim": "Proposed annual football club competition",
+  "goruntulenme": 431.6,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.91,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Gabriel Barbosa",
+  "bolum": "tartisma",
+  "bayt": 78735,
+  "tanim": "Brazilian footballer (born 1996)",
+  "goruntulenme": 416.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2018 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 56346,
+  "tanim": "Football match in Kyiv, Ukraine",
+  "goruntulenme": 413.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Adrian Mutu",
+  "bolum": "tartisma",
+  "bayt": 145039,
+  "tanim": "Romanian footballer and manager (born 1979)",
+  "goruntulenme": 407.6,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2028 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 7689,
+  "tanim": "Association football match",
+  "goruntulenme": 407.4,
+  "ts": {
+   "hikaye": 0.18,
+   "dram": 0.04,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2010 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 84714,
+  "tanim": "World Cup final, held in South Africa",
+  "goruntulenme": 406.0,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ched Evans",
+  "bolum": "tartisma",
+  "bayt": 60654,
+  "tanim": "Welsh footballer (born 1988)",
+  "goruntulenme": 396.9,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.21,
+   "hassas": 0.16,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 28218,
+  "tanim": "Football match in Istanbul, Turkey",
+  "goruntulenme": 392.4,
+  "ts": {
+   "hikaye": 0.69,
+   "dram": 0.35,
+   "hassas": 0.01,
+   "olmadi": 0.31,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2006 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 43354,
+  "tanim": "Association football match",
+  "goruntulenme": 387.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2020 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 74976,
+  "tanim": "Football match in Lisbon, Portugal",
+  "goruntulenme": 385.0,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football hooliganism",
+  "bolum": "tartisma",
+  "bayt": 236528,
+  "tanim": "Violent behaviour by football spectators",
+  "goruntulenme": 383.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.35,
+   "hassas": 0.36,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 47756,
+  "tanim": "Association football match in London",
+  "goruntulenme": 381.1,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.34,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2015 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 68370,
+  "tanim": "Football match in Berlin, Germany",
+  "goruntulenme": 367.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football War",
+  "bolum": "tartisma",
+  "bayt": 38181,
+  "tanim": "1969 war between El Salvador and Honduras",
+  "goruntulenme": 362.3,
+  "ts": {
+   "hikaye": 0.25,
+   "dram": 0.59,
+   "hassas": 0.65,
+   "olmadi": 0.01,
+   "siyaset": 0.23
+  }
+ },
+ {
+  "baslik": "Bradford City stadium fire",
+  "bolum": "tartisma",
+  "bayt": 59669,
+  "tanim": "1985 disaster in Valley Parade Stadium, Bradford, England",
+  "goruntulenme": 360.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.81,
+   "hassas": 0.99,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2004 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 26760,
+  "tanim": "Association football match",
+  "goruntulenme": 360.2,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2018 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 110555,
+  "tanim": "World Cup final, held in Russia",
+  "goruntulenme": 359.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Bruce Grobbelaar",
+  "bolum": "tartisma",
+  "bayt": 47054,
+  "tanim": "Zimbabwean footballer and manager (born 1957)",
+  "goruntulenme": 355.7,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.31,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2017 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 50756,
+  "tanim": "Football match in Cardiff, Wales",
+  "goruntulenme": 354.4,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2014 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 49423,
+  "tanim": "Football match in Lisbon, Portugal",
+  "goruntulenme": 352.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mark Bosnich",
+  "bolum": "tartisma",
+  "bayt": 33198,
+  "tanim": "Australian soccer player and sports pundit",
+  "goruntulenme": 350.1,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.94,
+   "hassas": 0.03,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Frank de Boer",
+  "bolum": "tartisma",
+  "bayt": 55122,
+  "tanim": "Dutch football manager (born 1970)",
+  "goruntulenme": 349.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.44,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Borussia Dortmund team bus bombing",
+  "bolum": "tartisma",
+  "bayt": 24798,
+  "tanim": "2017 bomb attack in Germany",
+  "goruntulenme": 342.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.91,
+   "hassas": 0.68,
+   "olmadi": 0.01,
+   "siyaset": 0.07
+  }
+ },
+ {
+  "baslik": "Paddy Lacey",
+  "bolum": "tartisma",
+  "bayt": 18203,
+  "tanim": "English footballer",
+  "goruntulenme": 320.0,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.91,
+   "hassas": 0.03,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2007 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 62218,
+  "tanim": "Football match in Athens, Greece",
+  "goruntulenme": 317.6,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.76,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1998 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 85414,
+  "tanim": "Association football match in France",
+  "goruntulenme": 316.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Pierluigi Collina",
+  "bolum": "dunya_kupasi",
+  "bayt": 45725,
+  "tanim": "Italian football referee (born 1960)",
+  "goruntulenme": 305.6,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1966 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 35471,
+  "tanim": "World Cup final, held in England",
+  "goruntulenme": 304.9,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2016 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 42366,
+  "tanim": "Football match in Milan, Italy",
+  "goruntulenme": 304.9,
+  "ts": {
+   "hikaye": 0.75,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mario Vušković",
+  "bolum": "tartisma",
+  "bayt": 22350,
+  "tanim": "Croatian footballer",
+  "goruntulenme": 303.6,
+  "ts": {
+   "hikaye": 0.11,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2013 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 47426,
+  "tanim": "Football match in London, England",
+  "goruntulenme": 293.8,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.62,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "René Higuita",
+  "bolum": "tartisma",
+  "bayt": 25261,
+  "tanim": "Colombian footballer (born 1966)",
+  "goruntulenme": 286.0,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2029 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 7622,
+  "tanim": "Association football match",
+  "goruntulenme": 283.9,
+  "ts": {
+   "hikaye": 0.17,
+   "dram": 0.04,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Al-Saadi Gaddafi",
+  "bolum": "tartisma",
+  "bayt": 40289,
+  "tanim": "Libyan footballer and son of Muammar Gaddafi (born 1973)",
+  "goruntulenme": 260.9,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.78,
+   "hassas": 0.16,
+   "olmadi": 0.03,
+   "siyaset": 0.57
+  }
+ },
+ {
+  "baslik": "2025 UEFA Nations League final",
+  "bolum": "mac",
+  "bayt": 24744,
+  "tanim": "Football match",
+  "goruntulenme": 260.4,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.89,
+   "hassas": 0.05,
+   "olmadi": 0.11,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2027 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 8299,
+  "tanim": "Football match",
+  "goruntulenme": 259.9,
+  "ts": {
+   "hikaye": 0.39,
+   "dram": 0.03,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 UEFA Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 35874,
+  "tanim": "International football competition",
+  "goruntulenme": 258.8,
+  "ts": {
+   "hikaye": 0.39,
+   "dram": 0.5,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 Finalissima",
+  "bolum": "mac",
+  "bayt": 18396,
+  "tanim": "Football match",
+  "goruntulenme": 252.8,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.74,
+   "hassas": 0.06,
+   "olmadi": 0.97,
+   "siyaset": 0.07
+  }
+ },
+ {
+  "baslik": "2002 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 60678,
+  "tanim": "World Cup final, held in Japan",
+  "goruntulenme": 251.7,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 40774,
+  "tanim": "Football match",
+  "goruntulenme": 248.8,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.68,
+   "hassas": 0.01,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2022 Finalissima",
+  "bolum": "mac",
+  "bayt": 42663,
+  "tanim": "Football match",
+  "goruntulenme": 248.2,
+  "ts": {
+   "hikaye": 0.81,
+   "dram": 0.34,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2003 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 32365,
+  "tanim": "Association football match",
+  "goruntulenme": 242.2,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mamadou Sakho",
+  "bolum": "tartisma",
+  "bayt": 68946,
+  "tanim": "French footballer (born 1990)",
+  "goruntulenme": 235.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Southampton F.C. espionage incident",
+  "bolum": "tartisma",
+  "bayt": 39504,
+  "tanim": "2026 association football spying controversy",
+  "goruntulenme": 235.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.27,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kanjuruhan Stadium disaster",
+  "bolum": "tartisma",
+  "bayt": 125218,
+  "tanim": "2022 association football match disaster",
+  "goruntulenme": 233.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.99,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1994 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 56048,
+  "tanim": "World Cup final, held in the United States",
+  "goruntulenme": 231.1,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lee Bowyer",
+  "bolum": "tartisma",
+  "bayt": 53448,
+  "tanim": "English footballer and manager (born 1977)",
+  "goruntulenme": 230.7,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.31,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2024 final",
+  "bolum": "avrupa_finali",
+  "bayt": 61502,
+  "tanim": "Football match",
+  "goruntulenme": 226.6,
+  "ts": {
+   "hikaye": 0.63,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Merih Demiral",
+  "bolum": "tartisma",
+  "bayt": 46471,
+  "tanim": "Turkish footballer (born 1998)",
+  "goruntulenme": 226.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 UEFA Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 42784,
+  "tanim": "International football competition",
+  "goruntulenme": 224.0,
+  "ts": {
+   "hikaye": 0.38,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2016 final",
+  "bolum": "avrupa_finali",
+  "bayt": 71093,
+  "tanim": "European football match",
+  "goruntulenme": 219.6,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2002 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 23931,
+  "tanim": "Association football match",
+  "goruntulenme": 219.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kerolin",
+  "bolum": "tartisma",
+  "bayt": 38355,
+  "tanim": "Brazilian footballer (born 1999)",
+  "goruntulenme": 218.0,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.53,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2001 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 22682,
+  "tanim": "Association football match",
+  "goruntulenme": 213.9,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2020 final",
+  "bolum": "avrupa_finali",
+  "bayt": 156871,
+  "tanim": "Final match of the 2020 European Football Championship",
+  "goruntulenme": 212.3,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.97,
+   "hassas": 0.14,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Claudio Caniggia",
+  "bolum": "tartisma",
+  "bayt": 38254,
+  "tanim": "Argentine footballer",
+  "goruntulenme": 207.4,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 Trump–FIFA red card controversy",
+  "bolum": "tartisma",
+  "bayt": 61469,
+  "tanim": "Soccer officiating controversy involving Folarin Balogun",
+  "goruntulenme": 205.1,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.24,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "1996 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 22786,
+  "tanim": "Association football match",
+  "goruntulenme": 204.5,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.69,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1993 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 15698,
+  "tanim": "Association football match",
+  "goruntulenme": 202.9,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1995 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 13197,
+  "tanim": "Association football match",
+  "goruntulenme": 202.5,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Javier Tebas",
+  "bolum": "tartisma",
+  "bayt": 25586,
+  "tanim": "Spanish lawyer",
+  "goruntulenme": 202.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.67,
+   "hassas": 0.02,
+   "olmadi": 0.1,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "2000 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 18101,
+  "tanim": "Association football match",
+  "goruntulenme": 200.9,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nathaniel Mendez-Laing",
+  "bolum": "tartisma",
+  "bayt": 74467,
+  "tanim": "English footballer (born 1992)",
+  "goruntulenme": 198.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.71,
+   "hassas": 0.03,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 Upton Park riot",
+  "bolum": "tartisma",
+  "bayt": 21952,
+  "tanim": "Football riot in London, England",
+  "goruntulenme": 197.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.91,
+   "hassas": 0.11,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Argentina v England (1986 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 33909,
+  "tanim": "Football match",
+  "goruntulenme": 194.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 UEFA Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 40411,
+  "tanim": "Football tournament",
+  "goruntulenme": 193.2,
+  "ts": {
+   "hikaye": 0.4,
+   "dram": 0.42,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1997 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 20734,
+  "tanim": "Association football match",
+  "goruntulenme": 193.1,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Keita Baldé",
+  "bolum": "tartisma",
+  "bayt": 33997,
+  "tanim": "Footballer (born 1995)",
+  "goruntulenme": 187.2,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "United Kingdom football sexual abuse scandal",
+  "bolum": "tartisma",
+  "bayt": 190003,
+  "tanim": "Association football sexual abuse scandal in the United Kingdom",
+  "goruntulenme": 184.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.86,
+   "hassas": 0.97,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1990 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 25733,
+  "tanim": "World Cup final, held in Italy",
+  "goruntulenme": 182.3,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1994 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 16703,
+  "tanim": "Association football match",
+  "goruntulenme": 182.3,
+  "ts": {
+   "hikaye": 0.6,
+   "dram": 0.69,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Denis Kapustin (militant)",
+  "bolum": "tartisma",
+  "bayt": 33293,
+  "tanim": "Russian neo-Nazi and militant (born 1984)",
+  "goruntulenme": 178.4,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.52,
+   "hassas": 0.25,
+   "olmadi": 0.05,
+   "siyaset": 0.75
+  }
+ },
+ {
+  "baslik": "1998 UEFA Champions League final",
+  "bolum": "avrupa_finali",
+  "bayt": 15909,
+  "tanim": "Association football match",
+  "goruntulenme": 176.9,
+  "ts": {
+   "hikaye": 0.6,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1967 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 28969,
+  "tanim": "Football match",
+  "goruntulenme": 175.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Emre Belözoğlu",
+  "bolum": "tartisma",
+  "bayt": 76744,
+  "tanim": "Turkish football manager (born 1980)",
+  "goruntulenme": 175.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 ASEAN Championship final",
+  "bolum": "mac",
+  "bayt": 26842,
+  "tanim": "ASEAN Championsip final",
+  "goruntulenme": 171.9,
+  "ts": {
+   "hikaye": 0.38,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.36,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2028 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 8339,
+  "tanim": "Association football match",
+  "goruntulenme": 171.5,
+  "ts": {
+   "hikaye": 0.46,
+   "dram": 0.04,
+   "hassas": 0.01,
+   "olmadi": 0.97,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Christophe Dugarry",
+  "bolum": "tartisma",
+  "bayt": 20895,
+  "tanim": "French footballer (born 1972)",
+  "goruntulenme": 170.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.37,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "FIFA Forward Enterprise",
+  "bolum": "tartisma",
+  "bayt": 104800,
+  "tanim": "Proposed commercial subsidiary of FIFA",
+  "goruntulenme": 169.8,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.79,
+   "hassas": 0.01,
+   "olmadi": 0.93,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "1992 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 16734,
+  "tanim": "Association football match",
+  "goruntulenme": 169.5,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.76,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Paolo Guerrero",
+  "bolum": "tartisma",
+  "bayt": 83796,
+  "tanim": "Peruvian footballer (born 1984)",
+  "goruntulenme": 168.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Darijo Srna",
+  "bolum": "tartisma",
+  "bayt": 60238,
+  "tanim": "Croatian footballer (born 1982)",
+  "goruntulenme": 168.0,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.49,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1986 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 53145,
+  "tanim": "World Cup final, held in Mexico",
+  "goruntulenme": 167.7,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.73,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2004 final",
+  "bolum": "avrupa_finali",
+  "bayt": 56866,
+  "tanim": "Final match of Euro 2004",
+  "goruntulenme": 164.1,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 FIFA ASEAN Cup final",
+  "bolum": "mac",
+  "bayt": 17645,
+  "tanim": "Football match",
+  "goruntulenme": 157.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.79,
+   "hassas": 0.01,
+   "olmadi": 0.35,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Uruguay v Brazil (1950 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 41852,
+  "tanim": "World Cup final in Brazil",
+  "goruntulenme": 153.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Howard Webb",
+  "bolum": "dunya_kupasi",
+  "bayt": 50285,
+  "tanim": "English football referee (born 1971)",
+  "goruntulenme": 152.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Abel Xavier",
+  "bolum": "tartisma",
+  "bayt": 35047,
+  "tanim": "Portuguese football manager and former player",
+  "goruntulenme": 151.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.73,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 FIFA U-20 World Cup final",
+  "bolum": "mac",
+  "bayt": 23751,
+  "tanim": "Football match",
+  "goruntulenme": 151.3,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Slavko Vinčić",
+  "bolum": "dunya_kupasi",
+  "bayt": 12420,
+  "tanim": "Slovenian football referee (born 1979)",
+  "goruntulenme": 150.8,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Nuremberg (2006 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 18128,
+  "tanim": "Football match between Portugal and the Netherlands",
+  "goruntulenme": 150.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 59670,
+  "tanim": "Football match",
+  "goruntulenme": 149.7,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.56,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 36426,
+  "tanim": "Football match",
+  "goruntulenme": 149.3,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.69,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1991 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12108,
+  "tanim": "Football match",
+  "goruntulenme": 146.9,
+  "ts": {
+   "hikaye": 0.72,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1974 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 27730,
+  "tanim": "World Cup final, held in West Germany",
+  "goruntulenme": 143.7,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.75,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 34898,
+  "tanim": "Soccer match in East Rutherford, New Jersey",
+  "goruntulenme": 142.8,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.82,
+   "hassas": 0.01,
+   "olmadi": 0.15,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1958 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 15209,
+  "tanim": "World Cup final, held in Sweden",
+  "goruntulenme": 142.5,
+  "ts": {
+   "hikaye": 0.54,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2015 FIFA corruption case",
+  "bolum": "tartisma",
+  "bayt": 116381,
+  "tanim": "Cases of corruption by officials and associates connected with FIFA",
+  "goruntulenme": 141.5,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Angelo Peruzzi",
+  "bolum": "tartisma",
+  "bayt": 37564,
+  "tanim": "Italian footballer (born 1970)",
+  "goruntulenme": 136.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.18,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Australia 31–0 American Samoa",
+  "bolum": "dunya_kupasi",
+  "bayt": 27809,
+  "tanim": "2001 association football match",
+  "goruntulenme": 135.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2003 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 20886,
+  "tanim": "Football match",
+  "goruntulenme": 134.2,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1982 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 44256,
+  "tanim": "World Cup final, held in Spain",
+  "goruntulenme": 133.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.56,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 Africa Cup of Nations final",
+  "bolum": "tartisma",
+  "bayt": 39659,
+  "tanim": "",
+  "goruntulenme": 133.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.04,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1982 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11963,
+  "tanim": "Football match",
+  "goruntulenme": 132.2,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Saipan incident",
+  "bolum": "tartisma",
+  "bayt": 17933,
+  "tanim": "2002 scandal in Irish football",
+  "goruntulenme": 130.4,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1978 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 31614,
+  "tanim": "World Cup final, held in Argentina",
+  "goruntulenme": 130.2,
+  "ts": {
+   "hikaye": 0.45,
+   "dram": 0.42,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2029 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 7654,
+  "tanim": "Association football match",
+  "goruntulenme": 130.1,
+  "ts": {
+   "hikaye": 0.34,
+   "dram": 0.04,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Relocation of Wimbledon F.C. to Milton Keynes",
+  "bolum": "tartisma",
+  "bayt": 215727,
+  "tanim": "Relocation of sport club",
+  "goruntulenme": 127.3,
+  "ts": {
+   "hikaye": 0.71,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2022 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 32345,
+  "tanim": "Football match",
+  "goruntulenme": 127.1,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mark Clattenburg",
+  "bolum": "avrupa_finali",
+  "bayt": 37709,
+  "tanim": "English football referee (born 1975)",
+  "goruntulenme": 122.9,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.62,
+   "hassas": 0.02,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2017 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 31952,
+  "tanim": "Football match",
+  "goruntulenme": 122.9,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.47,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Lusail",
+  "bolum": "dunya_kupasi",
+  "bayt": 53278,
+  "tanim": "2022 FIFA World Cup Argentina–Netherlands quarter-final match",
+  "goruntulenme": 122.1,
+  "ts": {
+   "hikaye": 0.54,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1985 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 28779,
+  "tanim": "Football match",
+  "goruntulenme": 121.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.89,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 UEFA Europa Conference League final",
+  "bolum": "tartisma",
+  "bayt": 40804,
+  "tanim": "Football match",
+  "goruntulenme": 121.5,
+  "ts": {
+   "hikaye": 0.64,
+   "dram": 0.57,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1970 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 33084,
+  "tanim": "World Cup final, held in Mexico",
+  "goruntulenme": 120.8,
+  "ts": {
+   "hikaye": 0.61,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1968 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 30623,
+  "tanim": "Football match at Wembley Stadium, London",
+  "goruntulenme": 119.9,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1954 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 55100,
+  "tanim": "World Cup final, held in Switzerland",
+  "goruntulenme": 119.7,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 FIFA World Cup qualification (inter-confederation play-offs)",
+  "bolum": "dunya_kupasi",
+  "bayt": 25960,
+  "tanim": "",
+  "goruntulenme": 118.5,
+  "ts": {
+   "hikaye": 0.19,
+   "dram": 0.13,
+   "hassas": 0.01,
+   "olmadi": 0.31,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Roberto Rojas",
+  "bolum": "tartisma",
+  "bayt": 9886,
+  "tanim": "Chilean footballer (born 1957)",
+  "goruntulenme": 118.2,
+  "ts": {
+   "hikaye": 0.53,
+   "dram": 0.97,
+   "hassas": 0.05,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1979 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11681,
+  "tanim": "Football match",
+  "goruntulenme": 117.1,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1986 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 8757,
+  "tanim": "Football match",
+  "goruntulenme": 116.8,
+  "ts": {
+   "hikaye": 0.66,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ramadan Sobhi",
+  "bolum": "tartisma",
+  "bayt": 31800,
+  "tanim": "Egyptian footballer (born 1997)",
+  "goruntulenme": 116.6,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2012 final",
+  "bolum": "avrupa_finali",
+  "bayt": 67350,
+  "tanim": "Final game of the UEFA Euro 2012",
+  "goruntulenme": 115.5,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Casual (subculture)",
+  "bolum": "tartisma",
+  "bayt": 9190,
+  "tanim": "Subsection of association football culture",
+  "goruntulenme": 114.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.06,
+   "hassas": 0.03,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jake Livermore",
+  "bolum": "tartisma",
+  "bayt": 32979,
+  "tanim": "English footballer (born 1989)",
+  "goruntulenme": 112.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.13,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Paddy Kenny",
+  "bolum": "tartisma",
+  "bayt": 50484,
+  "tanim": "Ireland international footballer",
+  "goruntulenme": 112.8,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Estadio Nacional disaster",
+  "bolum": "tartisma",
+  "bayt": 11692,
+  "tanim": "May 1964 disaster in Lima, Peru",
+  "goruntulenme": 111.9,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.95,
+   "hassas": 0.99,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "South Korea v Italy (2002 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 35820,
+  "tanim": "2002 FIFA World Cup Round of 16 match",
+  "goruntulenme": 111.5,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2001 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 42842,
+  "tanim": "Football match between Liverpool and Alavés",
+  "goruntulenme": 110.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Danny Cadamarteri",
+  "bolum": "tartisma",
+  "bayt": 28423,
+  "tanim": "English footballer",
+  "goruntulenme": 108.4,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.77,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1984 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 23018,
+  "tanim": "Football match",
+  "goruntulenme": 107.6,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1930 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 17832,
+  "tanim": "Inaugural World Cup final, held in Uruguay",
+  "goruntulenme": 107.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.92,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Real Madrid v FC Barcelona (1943 Copa del Generalísimo)",
+  "bolum": "tartisma",
+  "bayt": 13933,
+  "tanim": "Football match",
+  "goruntulenme": 105.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Zahia affair",
+  "bolum": "tartisma",
+  "bayt": 13126,
+  "tanim": "2010 French underage prostitution case",
+  "goruntulenme": 104.5,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.89,
+   "hassas": 0.92,
+   "olmadi": 0.02,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "2000 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 78144,
+  "tanim": "Football match",
+  "goruntulenme": 104.0,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.93,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 32642,
+  "tanim": "Football match",
+  "goruntulenme": 103.5,
+  "ts": {
+   "hikaye": 0.81,
+   "dram": 0.82,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "João Pedro (footballer, born 1992)",
+  "bolum": "tartisma",
+  "bayt": 36204,
+  "tanim": "Brazilian-Italian footballer",
+  "goruntulenme": 102.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.54,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of the Buffet",
+  "bolum": "tartisma",
+  "bayt": 53166,
+  "tanim": "2004 English football match",
+  "goruntulenme": 102.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Boixos Nois",
+  "bolum": "tartisma",
+  "bayt": 14603,
+  "tanim": "Ultras supporter group of FC Barcelona",
+  "goruntulenme": 100.8,
+  "ts": {
+   "hikaye": 0.14,
+   "dram": 0.9,
+   "hassas": 0.43,
+   "olmadi": 0.06,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "2024 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 42485,
+  "tanim": "Football match",
+  "goruntulenme": 98.5,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2001 Germany v England football match",
+  "bolum": "dunya_kupasi",
+  "bayt": 20813,
+  "tanim": "Football match",
+  "goruntulenme": 96.4,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1980 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 9028,
+  "tanim": "Football match",
+  "goruntulenme": 94.9,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.35,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sebastián Villa (footballer)",
+  "bolum": "tartisma",
+  "bayt": 10843,
+  "tanim": "Colombian footballer (born 1996)",
+  "goruntulenme": 94.5,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.92,
+   "hassas": 0.17,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Yid",
+  "bolum": "tartisma",
+  "bayt": 16843,
+  "tanim": "Jewish ethnonym of Yiddish origin",
+  "goruntulenme": 93.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.16,
+   "hassas": 0.05,
+   "olmadi": 0.27,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2000 UEFA Cup semi-final violence",
+  "bolum": "tartisma",
+  "bayt": 21575,
+  "tanim": "Fights between English and Turkish football fans",
+  "goruntulenme": 92.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.95,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "Pedro Proença",
+  "bolum": "avrupa_finali",
+  "bayt": 15561,
+  "tanim": "Portuguese football official (born 1970)",
+  "goruntulenme": 92.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2026 Paris Saint-Germain celebration riots",
+  "bolum": "tartisma",
+  "bayt": 7385,
+  "tanim": "Football riots in Paris, France",
+  "goruntulenme": 92.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.85,
+   "hassas": 0.61,
+   "olmadi": 0.28,
+   "siyaset": 0.08
+  }
+ },
+ {
+  "baslik": "2008 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 35081,
+  "tanim": "Football match",
+  "goruntulenme": 92.2,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1977 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 22365,
+  "tanim": "European Cup final (1977)",
+  "goruntulenme": 91.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.51,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1872 Scotland v England football match",
+  "bolum": "mac",
+  "bayt": 19826,
+  "tanim": "First international football match",
+  "goruntulenme": 90.9,
+  "ts": {
+   "hikaye": 0.63,
+   "dram": 0.45,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1989 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 7883,
+  "tanim": "Football match",
+  "goruntulenme": 89.8,
+  "ts": {
+   "hikaye": 0.61,
+   "dram": 0.36,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Anwar El Ghazi",
+  "bolum": "tartisma",
+  "bayt": 37973,
+  "tanim": "Dutch footballer (born 1995)",
+  "goruntulenme": 89.6,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.71,
+   "hassas": 0.05,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1975 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 18973,
+  "tanim": "Football match",
+  "goruntulenme": 88.8,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jamie Stuart",
+  "bolum": "tartisma",
+  "bayt": 35110,
+  "tanim": "English footballer (born 1976)",
+  "goruntulenme": 88.5,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.85,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1987 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 8876,
+  "tanim": "Football match",
+  "goruntulenme": 88.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2000 final",
+  "bolum": "avrupa_finali",
+  "bayt": 44548,
+  "tanim": "Final game of the UEFA Euro 2000",
+  "goruntulenme": 87.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Fernando Couto",
+  "bolum": "tartisma",
+  "bayt": 25641,
+  "tanim": "Portuguese footballer (born 1969)",
+  "goruntulenme": 87.7,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "One team in Tallinn",
+  "bolum": "dunya_kupasi",
+  "bayt": 21202,
+  "tanim": "1996 cancelled association football game",
+  "goruntulenme": 86.3,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.08,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1981 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 22060,
+  "tanim": "Football match",
+  "goruntulenme": 86.2,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1990 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 8759,
+  "tanim": "Football match",
+  "goruntulenme": 86.2,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.56,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2010 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 40538,
+  "tanim": "Football match",
+  "goruntulenme": 86.1,
+  "ts": {
+   "hikaye": 0.76,
+   "dram": 0.49,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2006 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 22711,
+  "tanim": "Football match",
+  "goruntulenme": 85.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.28,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jorge Burruchaga",
+  "bolum": "tartisma",
+  "bayt": 23996,
+  "tanim": "Argentine footballer (born 1962)",
+  "goruntulenme": 84.4,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.91,
+   "hassas": 0.1,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Barbados 4–2 Grenada",
+  "bolum": "tartisma",
+  "bayt": 13171,
+  "tanim": "1994 anomalous football match",
+  "goruntulenme": 81.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Li Tie",
+  "bolum": "tartisma",
+  "bayt": 27537,
+  "tanim": "Chinese footballer (born 1977)",
+  "goruntulenme": 81.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.8,
+   "hassas": 0.03,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1962 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 12597,
+  "tanim": "World Cup final, held in Chile",
+  "goruntulenme": 81.2,
+  "ts": {
+   "hikaye": 0.62,
+   "dram": 0.69,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Szymon Marciniak",
+  "bolum": "dunya_kupasi",
+  "bayt": 43220,
+  "tanim": "Polish football referee (born 1981)",
+  "goruntulenme": 81.1,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.47,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mohamed Kallon",
+  "bolum": "tartisma",
+  "bayt": 43356,
+  "tanim": "Sierra Leonean manager and former footballer (born 1979)",
+  "goruntulenme": 81.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.3,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2008 final",
+  "bolum": "avrupa_finali",
+  "bayt": 52776,
+  "tanim": "Final game of the UEFA Euro 2008",
+  "goruntulenme": 80.8,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.38,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Disgrace of Gijón",
+  "bolum": "dunya_kupasi",
+  "bayt": 38114,
+  "tanim": "1982 association football match",
+  "goruntulenme": 80.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1978 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 21291,
+  "tanim": "Football match",
+  "goruntulenme": 79.9,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.58,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "November 2024 Amsterdam riots",
+  "bolum": "tartisma",
+  "bayt": 78269,
+  "tanim": "Riot in Amsterdam",
+  "goruntulenme": 79.8,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.9,
+   "hassas": 0.84,
+   "olmadi": 0.02,
+   "siyaset": 0.56
+  }
+ },
+ {
+  "baslik": "Marco Borriello",
+  "bolum": "tartisma",
+  "bayt": 42420,
+  "tanim": "Italian professional footballer (born 1982)",
+  "goruntulenme": 79.6,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.79,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2024 Copa América final",
+  "bolum": "tartisma",
+  "bayt": 49773,
+  "tanim": "International association football (soccer) match",
+  "goruntulenme": 77.7,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.93,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1988 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 9611,
+  "tanim": "Football match",
+  "goruntulenme": 76.7,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.63,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1983 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 7273,
+  "tanim": "Football match",
+  "goruntulenme": 74.1,
+  "ts": {
+   "hikaye": 0.68,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Dinamo–Red Star riot",
+  "bolum": "tartisma",
+  "bayt": 11639,
+  "tanim": "1990 football riot at Maksimir Stadium in Zagreb, SR Croatia",
+  "goruntulenme": 74.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.38,
+   "olmadi": 0.01,
+   "siyaset": 0.17
+  }
+ },
+ {
+  "baslik": "LGBTQ people in association football",
+  "bolum": "tartisma",
+  "bayt": 87918,
+  "tanim": "",
+  "goruntulenme": 73.9,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.64,
+   "hassas": 0.24,
+   "olmadi": 0.37,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Taking the knee",
+  "bolum": "tartisma",
+  "bayt": 22155,
+  "tanim": "Symbolic gesture protesting racism",
+  "goruntulenme": 73.9,
+  "ts": {
+   "hikaye": 0.22,
+   "dram": 0.77,
+   "hassas": 0.06,
+   "olmadi": 0.03,
+   "siyaset": 0.06
+  }
+ },
+ {
+  "baslik": "El Maracanazo",
+  "bolum": "dunya_kupasi",
+  "bayt": 14012,
+  "tanim": "Incident during the 1990 FIFA World Cup Conmebol Qualifiers",
+  "goruntulenme": 72.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1996 final",
+  "bolum": "avrupa_finali",
+  "bayt": 39296,
+  "tanim": "Final game of the UEFA Euro 1996",
+  "goruntulenme": 72.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1970 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12505,
+  "tanim": "Football match",
+  "goruntulenme": 72.3,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Daryl Murphy",
+  "bolum": "tartisma",
+  "bayt": 50028,
+  "tanim": "Irish footballer (born 1983)",
+  "goruntulenme": 70.9,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.15,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jonathan Morgan (footballer)",
+  "bolum": "tartisma",
+  "bayt": 8672,
+  "tanim": "English football coach and former player",
+  "goruntulenme": 70.8,
+  "ts": {
+   "hikaye": 0.14,
+   "dram": 0.94,
+   "hassas": 0.8,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jose Baxter",
+  "bolum": "tartisma",
+  "bayt": 27043,
+  "tanim": "English footballer (born 1992)",
+  "goruntulenme": 70.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2016 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 41178,
+  "tanim": "Football match",
+  "goruntulenme": 69.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.44,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Malaysian football naturalisation scandal",
+  "bolum": "tartisma",
+  "bayt": 45842,
+  "tanim": "2025 association football controversy",
+  "goruntulenme": 69.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Lucas Martínez Quarta",
+  "bolum": "tartisma",
+  "bayt": 11509,
+  "tanim": "Argentine footballer (born 1996)",
+  "goruntulenme": 69.1,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.16,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nathan Blake",
+  "bolum": "tartisma",
+  "bayt": 23311,
+  "tanim": "Welsh footballer",
+  "goruntulenme": 68.8,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.72,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Clément Turpin",
+  "bolum": "avrupa_finali",
+  "bayt": 12001,
+  "tanim": "French football referee (born 1982)",
+  "goruntulenme": 68.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.21,
+   "hassas": 0.01,
+   "olmadi": 0.14,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Querétaro–Atlas riot",
+  "bolum": "tartisma",
+  "bayt": 19315,
+  "tanim": "2022 football riot in Mexico",
+  "goruntulenme": 68.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.96,
+   "hassas": 0.37,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2020 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 26806,
+  "tanim": "Football match",
+  "goruntulenme": 67.3,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Chris Armstrong (footballer, born 1971)",
+  "bolum": "tartisma",
+  "bayt": 21284,
+  "tanim": "English footballer (born 1971)",
+  "goruntulenme": 65.9,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 UEFA Nations League final",
+  "bolum": "mac",
+  "bayt": 20709,
+  "tanim": "Football match",
+  "goruntulenme": 65.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.64,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mental health in association football",
+  "bolum": "tartisma",
+  "bayt": 42563,
+  "tanim": "",
+  "goruntulenme": 64.7,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.57,
+   "hassas": 0.52,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1960 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14813,
+  "tanim": "Football match",
+  "goruntulenme": 64.6,
+  "ts": {
+   "hikaye": 0.78,
+   "dram": 0.93,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1981 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 55402,
+  "tanim": "Association football match",
+  "goruntulenme": 64.0,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.69,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 UEFA Nations League final",
+  "bolum": "mac",
+  "bayt": 23037,
+  "tanim": "Football match",
+  "goruntulenme": 63.1,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.37,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 UEFA Nations League final",
+  "bolum": "mac",
+  "bayt": 17457,
+  "tanim": "Football match",
+  "goruntulenme": 63.1,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.39,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1915 British football match-fixing scandal",
+  "bolum": "tartisma",
+  "bayt": 7944,
+  "tanim": "",
+  "goruntulenme": 63.0,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.91,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1934 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 10622,
+  "tanim": "World Cup final, held in Italy",
+  "goruntulenme": 62.3,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Port Said Stadium riot",
+  "bolum": "tartisma",
+  "bayt": 31367,
+  "tanim": "February 2012 football stadium riot in Port Said, Egypt",
+  "goruntulenme": 61.7,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.97,
+   "olmadi": 0.01,
+   "siyaset": 0.11
+  }
+ },
+ {
+  "baslik": "French football bribery scandal",
+  "bolum": "tartisma",
+  "bayt": 36304,
+  "tanim": "Match-fixing scandal in 1993",
+  "goruntulenme": 61.5,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1993 Artemio Franchi Cup",
+  "bolum": "mac",
+  "bayt": 8194,
+  "tanim": "Football match",
+  "goruntulenme": 61.5,
+  "ts": {
+   "hikaye": 0.79,
+   "dram": 0.58,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1974 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12073,
+  "tanim": "Football match",
+  "goruntulenme": 61.3,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Bernard Lama",
+  "bolum": "tartisma",
+  "bayt": 15604,
+  "tanim": "French footballer (born 1963)",
+  "goruntulenme": 61.0,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2018 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 29153,
+  "tanim": "Football match",
+  "goruntulenme": 59.9,
+  "ts": {
+   "hikaye": 0.58,
+   "dram": 0.26,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1962 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13219,
+  "tanim": "Football match",
+  "goruntulenme": 59.2,
+  "ts": {
+   "hikaye": 0.64,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Stanley Rous",
+  "bolum": "tartisma",
+  "bayt": 13203,
+  "tanim": "6th President of FIFA (1895–1986)",
+  "goruntulenme": 59.2,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.61,
+   "hassas": 0.03,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1971 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 9197,
+  "tanim": "Football match",
+  "goruntulenme": 58.0,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Roman Eremenko",
+  "bolum": "tartisma",
+  "bayt": 33922,
+  "tanim": "Finnish footballer (born 1987)",
+  "goruntulenme": 57.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.74,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 Copa América final",
+  "bolum": "mac",
+  "bayt": 41520,
+  "tanim": "International football match",
+  "goruntulenme": 57.5,
+  "ts": {
+   "hikaye": 0.76,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 35670,
+  "tanim": "Football match",
+  "goruntulenme": 56.7,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.6,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football at the 2024 Summer Olympics – Men's tournament final",
+  "bolum": "kupa_finali",
+  "bayt": 16482,
+  "tanim": "Football match",
+  "goruntulenme": 56.6,
+  "ts": {
+   "hikaye": 0.72,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1992 final",
+  "bolum": "avrupa_finali",
+  "bayt": 39904,
+  "tanim": "Final game of the UEFA Euro 1992",
+  "goruntulenme": 56.1,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2025 CONCACAF Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 35350,
+  "tanim": "International football competition",
+  "goruntulenme": 55.8,
+  "ts": {
+   "hikaye": 0.31,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Richard Kingson",
+  "bolum": "tartisma",
+  "bayt": 28478,
+  "tanim": "Ghanaian footballer (born 1978)",
+  "goruntulenme": 55.8,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.26,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Copa América Centenario final",
+  "bolum": "mac",
+  "bayt": 21332,
+  "tanim": "International soccer match",
+  "goruntulenme": 54.6,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.88,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1961 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11413,
+  "tanim": "Football match",
+  "goruntulenme": 54.0,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1956 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11902,
+  "tanim": "Football match",
+  "goruntulenme": 54.0,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Rubiales case",
+  "bolum": "tartisma",
+  "bayt": 81934,
+  "tanim": "2023 controversy in Spain",
+  "goruntulenme": 54.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.8,
+   "olmadi": 0.01,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "1972 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 8431,
+  "tanim": "Football match",
+  "goruntulenme": 53.6,
+  "ts": {
+   "hikaye": 0.74,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1938 FIFA World Cup final",
+  "bolum": "dunya_kupasi",
+  "bayt": 9298,
+  "tanim": "World Cup final, held in France",
+  "goruntulenme": 53.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.56,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2013 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 30104,
+  "tanim": "Football match",
+  "goruntulenme": 53.5,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1973 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11498,
+  "tanim": "Football match",
+  "goruntulenme": 52.9,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.58,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "France v Gibraltar (UEFA Euro 2024 qualifying)",
+  "bolum": "mac",
+  "bayt": 15933,
+  "tanim": "2023 football match",
+  "goruntulenme": 52.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1964 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12049,
+  "tanim": "Football match",
+  "goruntulenme": 51.9,
+  "ts": {
+   "hikaye": 0.65,
+   "dram": 0.7,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Yeray Álvarez",
+  "bolum": "tartisma",
+  "bayt": 25499,
+  "tanim": "Spanish footballer",
+  "goruntulenme": 51.8,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.89,
+   "hassas": 0.04,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ismail Elfath",
+  "bolum": "dunya_kupasi",
+  "bayt": 19079,
+  "tanim": "American soccer referee (born 1982)",
+  "goruntulenme": 51.1,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.38,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1976 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 9691,
+  "tanim": "Football match",
+  "goruntulenme": 50.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1963 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11572,
+  "tanim": "Football match",
+  "goruntulenme": 49.3,
+  "ts": {
+   "hikaye": 0.63,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Green Brigade",
+  "bolum": "tartisma",
+  "bayt": 27384,
+  "tanim": "Celtic F.C. supporter ultra group",
+  "goruntulenme": 49.2,
+  "ts": {
+   "hikaye": 0.14,
+   "dram": 0.89,
+   "hassas": 0.05,
+   "olmadi": 0.04,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Hasan Şaş",
+  "bolum": "tartisma",
+  "bayt": 14632,
+  "tanim": "Turkish footballer and coach (born 1976)",
+  "goruntulenme": 49.2,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.85,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mohammed Noor",
+  "bolum": "tartisma",
+  "bayt": 10466,
+  "tanim": "Saudi Arabian footballer (born 1977)",
+  "goruntulenme": 49.1,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.58,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Bramall Lane",
+  "bolum": "tartisma",
+  "bayt": 38190,
+  "tanim": "2002 English First Division football match",
+  "goruntulenme": 48.6,
+  "ts": {
+   "hikaye": 0.99,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Magnus Hedman",
+  "bolum": "tartisma",
+  "bayt": 14720,
+  "tanim": "Swedish footballer",
+  "goruntulenme": 48.6,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.78,
+   "hassas": 0.02,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1966 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 8289,
+  "tanim": "Football match",
+  "goruntulenme": 48.4,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.64,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2007 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 16428,
+  "tanim": "Football match",
+  "goruntulenme": 48.4,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.85,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2012 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 26585,
+  "tanim": "Football match",
+  "goruntulenme": 48.1,
+  "ts": {
+   "hikaye": 0.84,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 takeover of Newcastle United F.C.",
+  "bolum": "tartisma",
+  "bayt": 48114,
+  "tanim": "Takeover of football club led by Public Investment Fund",
+  "goruntulenme": 48.0,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.12
+  }
+ },
+ {
+  "baslik": "2014 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 32661,
+  "tanim": "Football match",
+  "goruntulenme": 47.8,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.54,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Santiago (1962 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 16012,
+  "tanim": "Football match known for violence level",
+  "goruntulenme": 46.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.08,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1969 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 9424,
+  "tanim": "Football match",
+  "goruntulenme": 45.8,
+  "ts": {
+   "hikaye": 0.67,
+   "dram": 0.82,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2004 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 17849,
+  "tanim": "Football match",
+  "goruntulenme": 45.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.75,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lansdowne Road football riot",
+  "bolum": "tartisma",
+  "bayt": 14315,
+  "tanim": "Riot in Dublin, Ireland by English (1995)",
+  "goruntulenme": 45.8,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.16,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "1965 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 10461,
+  "tanim": "Football match",
+  "goruntulenme": 45.6,
+  "ts": {
+   "hikaye": 0.67,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2015 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 34098,
+  "tanim": "Football match",
+  "goruntulenme": 45.2,
+  "ts": {
+   "hikaye": 0.57,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1998 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 16005,
+  "tanim": "Football match",
+  "goruntulenme": 44.7,
+  "ts": {
+   "hikaye": 0.61,
+   "dram": 0.68,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2002 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 45443,
+  "tanim": "Football match",
+  "goruntulenme": 44.6,
+  "ts": {
+   "hikaye": 0.68,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "István Kovács (referee)",
+  "bolum": "avrupa_finali",
+  "bayt": 18110,
+  "tanim": "Romanian football referee (born 1984)",
+  "goruntulenme": 44.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.28,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1999 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14858,
+  "tanim": "Football match",
+  "goruntulenme": 44.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2028 final",
+  "bolum": "avrupa_finali",
+  "bayt": 11471,
+  "tanim": "Football match",
+  "goruntulenme": 44.0,
+  "ts": {
+   "hikaye": 0.26,
+   "dram": 0.05,
+   "hassas": 0.01,
+   "olmadi": 0.98,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 UEFA Europa League final",
+  "bolum": "avrupa_finali",
+  "bayt": 51051,
+  "tanim": "Football match",
+  "goruntulenme": 43.5,
+  "ts": {
+   "hikaye": 0.75,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Proposals for a European Super League in association football",
+  "bolum": "tartisma",
+  "bayt": 62591,
+  "tanim": "Advocacy for new tier of European football",
+  "goruntulenme": 43.4,
+  "ts": {
+   "hikaye": 0.32,
+   "dram": 0.87,
+   "hassas": 0.01,
+   "olmadi": 0.76,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Ebi Smolarek",
+  "bolum": "tartisma",
+  "bayt": 25258,
+  "tanim": "Polish footballer",
+  "goruntulenme": 43.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.57,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1958 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12457,
+  "tanim": "Football match",
+  "goruntulenme": 42.8,
+  "ts": {
+   "hikaye": 0.68,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Leon Jeanne",
+  "bolum": "tartisma",
+  "bayt": 29840,
+  "tanim": "Welsh footballer",
+  "goruntulenme": 42.8,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.85,
+   "hassas": 0.03,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Racism in association football",
+  "bolum": "tartisma",
+  "bayt": 241472,
+  "tanim": "Abuse of players, officials, and fans",
+  "goruntulenme": 42.6,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.51,
+   "hassas": 0.82,
+   "olmadi": 0.13,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Willie Johnston",
+  "bolum": "tartisma",
+  "bayt": 28714,
+  "tanim": "Scottish footballer (born 1946)",
+  "goruntulenme": 42.3,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.89,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Hans Segers",
+  "bolum": "tartisma",
+  "bayt": 13026,
+  "tanim": "Dutch footballer (born 1961)",
+  "goruntulenme": 41.8,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.85,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 13163,
+  "tanim": "Football match in Jeddah, Saudi Arabia",
+  "goruntulenme": 41.7,
+  "ts": {
+   "hikaye": 0.49,
+   "dram": 0.29,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2000 UEFA Cup final riots",
+  "bolum": "tartisma",
+  "bayt": 29635,
+  "tanim": "Football riots in Copenhagen, Denmark",
+  "goruntulenme": 41.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.12,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2025 FIFA Intercontinental Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 17076,
+  "tanim": "Football match",
+  "goruntulenme": 40.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.16,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2005 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 20257,
+  "tanim": "Football match",
+  "goruntulenme": 40.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.86,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1972 European Cup Winners' Cup final",
+  "bolum": "tartisma",
+  "bayt": 23302,
+  "tanim": "Football match",
+  "goruntulenme": 40.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1957 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 15472,
+  "tanim": "Football match",
+  "goruntulenme": 39.5,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 Copa América final",
+  "bolum": "mac",
+  "bayt": 18851,
+  "tanim": "Football match",
+  "goruntulenme": 39.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.47,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Match of the Century (1953 England v Hungary football match)",
+  "bolum": "mac",
+  "bayt": 21635,
+  "tanim": "Football match",
+  "goruntulenme": 39.1,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 Copa América final",
+  "bolum": "mac",
+  "bayt": 12121,
+  "tanim": "Football match",
+  "goruntulenme": 39.0,
+  "ts": {
+   "hikaye": 0.43,
+   "dram": 0.68,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Willie McKay",
+  "bolum": "tartisma",
+  "bayt": 8135,
+  "tanim": "Scottish football agent, based in Monaco (born 1996)",
+  "goruntulenme": 38.6,
+  "ts": {
+   "hikaye": 0.15,
+   "dram": 0.83,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mexico national football team results",
+  "bolum": "mac",
+  "bayt": 437289,
+  "tanim": "",
+  "goruntulenme": 38.2,
+  "ts": {
+   "hikaye": 0.01,
+   "dram": 0.06,
+   "hassas": 0.01,
+   "olmadi": 0.1,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Old Trafford",
+  "bolum": "tartisma",
+  "bayt": 29166,
+  "tanim": "Premier League association football match 2003",
+  "goruntulenme": 37.6,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Stan Lazaridis",
+  "bolum": "tartisma",
+  "bayt": 18256,
+  "tanim": "Australian soccer player (born 1972)",
+  "goruntulenme": 37.5,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.86,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1989 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13155,
+  "tanim": "Football match",
+  "goruntulenme": 37.1,
+  "ts": {
+   "hikaye": 0.5,
+   "dram": 0.51,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Eduard Streltsov",
+  "bolum": "tartisma",
+  "bayt": 48519,
+  "tanim": "Soviet footballer (1937–1990)",
+  "goruntulenme": 36.9,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.97,
+   "hassas": 0.51,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 16192,
+  "tanim": "Football match",
+  "goruntulenme": 36.6,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.34,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Antonio Mateu Lahoz",
+  "bolum": "avrupa_finali",
+  "bayt": 35847,
+  "tanim": "Spanish football referee (born 1977)",
+  "goruntulenme": 36.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.49,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "CONCACAF Cup",
+  "bolum": "mac",
+  "bayt": 26224,
+  "tanim": "Football match",
+  "goruntulenme": 36.0,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.41,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "United States v England (1950 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 30542,
+  "tanim": "Association football match at the 1950 FIFA World Cup",
+  "goruntulenme": 35.9,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2016 Scottish Cup final",
+  "bolum": "tartisma",
+  "bayt": 19799,
+  "tanim": "Football match",
+  "goruntulenme": 35.6,
+  "ts": {
+   "hikaye": 0.89,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Calciopoli trials",
+  "bolum": "tartisma",
+  "bayt": 179035,
+  "tanim": "Criminal proceedings in Italian football",
+  "goruntulenme": 35.4,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2016 English football scandal",
+  "bolum": "tartisma",
+  "bayt": 11214,
+  "tanim": "Sports corruption scandal",
+  "goruntulenme": 35.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.95,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Luzhniki disaster",
+  "bolum": "tartisma",
+  "bayt": 37551,
+  "tanim": "1982 human crush in Luzhniki Stadium, Moscow",
+  "goruntulenme": 35.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.83,
+   "hassas": 0.99,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2015 Copa América final",
+  "bolum": "mac",
+  "bayt": 16953,
+  "tanim": "Football match",
+  "goruntulenme": 35.1,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.81,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Alcohol in association football",
+  "bolum": "tartisma",
+  "bayt": 44955,
+  "tanim": "Aspect of culture in sports",
+  "goruntulenme": 35.0,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.44,
+   "hassas": 0.23,
+   "olmadi": 0.09,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 UEFA Women's Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 15416,
+  "tanim": "International football competition",
+  "goruntulenme": 34.9,
+  "ts": {
+   "hikaye": 0.3,
+   "dram": 0.31,
+   "hassas": 0.01,
+   "olmadi": 0.45,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 Paris Saint-Germain celebration riots",
+  "bolum": "tartisma",
+  "bayt": 10739,
+  "tanim": "Football riots in Paris, France",
+  "goruntulenme": 34.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.91,
+   "hassas": 0.54,
+   "olmadi": 0.21,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Matches of the Republic of Ireland national football team",
+  "bolum": "mac",
+  "bayt": 186708,
+  "tanim": "Irish association football international matches since 1924",
+  "goruntulenme": 34.8,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.15,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Fahad Al-Muwallad",
+  "bolum": "tartisma",
+  "bayt": 21587,
+  "tanim": "Saudi Arabian footballer (born 1994)",
+  "goruntulenme": 34.7,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.72,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2008 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 13790,
+  "tanim": "Football match",
+  "goruntulenme": 34.5,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.6,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Mohamed Salah Christmas photos",
+  "bolum": "tartisma",
+  "bayt": 14098,
+  "tanim": "Social media tradition of footballer Mohamed Salah",
+  "goruntulenme": 34.4,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1959 European Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 12604,
+  "tanim": "Football match",
+  "goruntulenme": 34.3,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.7,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1985 Luton riot",
+  "bolum": "tartisma",
+  "bayt": 25982,
+  "tanim": "1985 football riot in England",
+  "goruntulenme": 34.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.94,
+   "hassas": 0.11,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Ghost goal",
+  "bolum": "tartisma",
+  "bayt": 44776,
+  "tanim": "Goal wrongly awarded or not given in association football",
+  "goruntulenme": 34.0,
+  "ts": {
+   "hikaye": 0.28,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Tofiq Bahramov",
+  "bolum": "dunya_kupasi",
+  "bayt": 12159,
+  "tanim": "Soviet football referee (1925–1993)",
+  "goruntulenme": 33.7,
+  "ts": {
+   "hikaye": 0.52,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1976 final",
+  "bolum": "avrupa_finali",
+  "bayt": 52032,
+  "tanim": "Association football match",
+  "goruntulenme": 33.7,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1984 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14687,
+  "tanim": "Football match",
+  "goruntulenme": 33.4,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "José Enrique Angulo",
+  "bolum": "tartisma",
+  "bayt": 7847,
+  "tanim": "Ecuadorian footballer (born 1995)",
+  "goruntulenme": 33.2,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2007 Football League Cup final",
+  "bolum": "tartisma",
+  "bayt": 52425,
+  "tanim": "Football match",
+  "goruntulenme": 33.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1997 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13864,
+  "tanim": "Football match",
+  "goruntulenme": 32.9,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.58,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 Republic of Ireland v France football matches",
+  "bolum": "dunya_kupasi",
+  "bayt": 159302,
+  "tanim": "Association football matches",
+  "goruntulenme": 32.7,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "1987 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14374,
+  "tanim": "Football match",
+  "goruntulenme": 32.1,
+  "ts": {
+   "hikaye": 0.45,
+   "dram": 0.31,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1996 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14075,
+  "tanim": "Football match",
+  "goruntulenme": 31.8,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Italy v West Germany (1970 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 11034,
+  "tanim": "Semi-final of the 1970 FIFA World Cup",
+  "goruntulenme": 31.5,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Cüneyt Çakır",
+  "bolum": "avrupa_finali",
+  "bayt": 19878,
+  "tanim": "Turkish football referee",
+  "goruntulenme": 31.3,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.63,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Eliseu",
+  "bolum": "tartisma",
+  "bayt": 31541,
+  "tanim": "Portuguese footballer (born 1983)",
+  "goruntulenme": 31.2,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.66,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1984 final",
+  "bolum": "avrupa_finali",
+  "bayt": 37139,
+  "tanim": "Final game of the UEFA Euro 1984",
+  "goruntulenme": 30.9,
+  "ts": {
+   "hikaye": 0.79,
+   "dram": 0.29,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Serbia v Albania (UEFA Euro 2016 qualifying)",
+  "bolum": "tartisma",
+  "bayt": 61146,
+  "tanim": "Football match",
+  "goruntulenme": 30.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.7,
+   "olmadi": 0.03,
+   "siyaset": 0.06
+  }
+ },
+ {
+  "baslik": "Arthur Zwane",
+  "bolum": "tartisma",
+  "bayt": 9008,
+  "tanim": "South African soccer player",
+  "goruntulenme": 30.9,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.65,
+   "hassas": 0.02,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1954 Hungary v England football match",
+  "bolum": "mac",
+  "bayt": 10430,
+  "tanim": "Football match",
+  "goruntulenme": 30.9,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.94,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2022 UEFA Champions League final chaos",
+  "bolum": "tartisma",
+  "bayt": 53589,
+  "tanim": "Incidents at the Stade de France",
+  "goruntulenme": 30.6,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.94,
+   "hassas": 0.13,
+   "olmadi": 0.01,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "2024 FIFA Intercontinental Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 17477,
+  "tanim": "Football match",
+  "goruntulenme": 30.4,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.37,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sunderland A.F.C. 1–0 Liverpool F.C. (2009)",
+  "bolum": "tartisma",
+  "bayt": 19114,
+  "tanim": "Football match",
+  "goruntulenme": 30.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Walter Casagrande",
+  "bolum": "tartisma",
+  "bayt": 17522,
+  "tanim": "Brazilian footballer",
+  "goruntulenme": 30.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.61,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 18688,
+  "tanim": "Football match",
+  "goruntulenme": 30.2,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.53,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Youcef Belaïli",
+  "bolum": "tartisma",
+  "bayt": 37345,
+  "tanim": "Algerian footballer (born 1992)",
+  "goruntulenme": 30.1,
+  "ts": {
+   "hikaye": 0.12,
+   "dram": 0.92,
+   "hassas": 0.13,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Gabriel Fernández (footballer, born 1994)",
+  "bolum": "tartisma",
+  "bayt": 16529,
+  "tanim": "Uruguayan footballer (born 1994)",
+  "goruntulenme": 29.9,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.87,
+   "hassas": 0.13,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 Turkish football corruption and betting scandal",
+  "bolum": "tartisma",
+  "bayt": 66310,
+  "tanim": "",
+  "goruntulenme": 29.9,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Cachirules",
+  "bolum": "tartisma",
+  "bayt": 12269,
+  "tanim": "1988 association football scandal",
+  "goruntulenme": 29.6,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Argentina v Peru (1978 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 58512,
+  "tanim": "1978 FIFA World Cup match",
+  "goruntulenme": 29.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.96,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2024 ASEAN Championship final",
+  "bolum": "mac",
+  "bayt": 24658,
+  "tanim": "Football match",
+  "goruntulenme": 29.2,
+  "ts": {
+   "hikaye": 0.5,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2012 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 19654,
+  "tanim": "Football match",
+  "goruntulenme": 29.1,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.47,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "May Your Village Burn",
+  "bolum": "tartisma",
+  "bayt": 16906,
+  "tanim": "Political chant",
+  "goruntulenme": 28.5,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.73,
+   "hassas": 0.58,
+   "olmadi": 0.05,
+   "siyaset": 0.2
+  }
+ },
+ {
+  "baslik": "Hungary v El Salvador (1982 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 27362,
+  "tanim": "International association football match",
+  "goruntulenme": 28.3,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "East Germany v West Germany (1974 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 14182,
+  "tanim": "Football match in 1974",
+  "goruntulenme": 28.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "R v Terry",
+  "bolum": "tartisma",
+  "bayt": 16090,
+  "tanim": "2012 English criminal law case",
+  "goruntulenme": 27.6,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.95,
+   "hassas": 0.54,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "West Germany v France (1982 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 17192,
+  "tanim": "Football match",
+  "goruntulenme": 27.5,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2024 CONCACAF Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 30945,
+  "tanim": "International football competition",
+  "goruntulenme": 27.5,
+  "ts": {
+   "hikaye": 0.35,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2007 Copa América final",
+  "bolum": "mac",
+  "bayt": 12095,
+  "tanim": "Football match",
+  "goruntulenme": 27.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.39,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1992 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13594,
+  "tanim": "Football match",
+  "goruntulenme": 27.2,
+  "ts": {
+   "hikaye": 0.75,
+   "dram": 0.57,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Hamraoui case",
+  "bolum": "tartisma",
+  "bayt": 21034,
+  "tanim": "Case involving assault of Kheira Hamraoui",
+  "goruntulenme": 27.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.94,
+   "hassas": 0.5,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Arijan Ademi",
+  "bolum": "tartisma",
+  "bayt": 32923,
+  "tanim": "Macedonian footballer",
+  "goruntulenme": 27.0,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football Lads Alliance",
+  "bolum": "tartisma",
+  "bayt": 12201,
+  "tanim": "British far-right-wing movement",
+  "goruntulenme": 26.8,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.71,
+   "hassas": 0.28,
+   "olmadi": 0.04,
+   "siyaset": 0.23
+  }
+ },
+ {
+  "baslik": "Massimo Busacca",
+  "bolum": "avrupa_finali",
+  "bayt": 12905,
+  "tanim": "Swiss football referee",
+  "goruntulenme": 26.6,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.92,
+   "hassas": 0.04,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1980 final",
+  "bolum": "avrupa_finali",
+  "bayt": 28653,
+  "tanim": "Final game of the UEFA Euro 1980",
+  "goruntulenme": 26.6,
+  "ts": {
+   "hikaye": 0.71,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Murder of Michalis Katsouris",
+  "bolum": "tartisma",
+  "bayt": 25555,
+  "tanim": "2023 incident in Nea Filadelfia, Greece",
+  "goruntulenme": 26.6,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.96,
+   "olmadi": 0.02,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "2025 CONCACAF Gold Cup final",
+  "bolum": "mac",
+  "bayt": 14219,
+  "tanim": "Football match",
+  "goruntulenme": 26.6,
+  "ts": {
+   "hikaye": 0.54,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.11,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Omar Ortiz",
+  "bolum": "tartisma",
+  "bayt": 12080,
+  "tanim": "Mexican footballer (born 1976)",
+  "goruntulenme": 26.4,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.92,
+   "hassas": 0.14,
+   "olmadi": 0.03,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Andrea Carnevale",
+  "bolum": "tartisma",
+  "bayt": 11025,
+  "tanim": "Italian footballer (born 1961)",
+  "goruntulenme": 26.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.68,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Shawfield Stadium",
+  "bolum": "mac",
+  "bayt": 34436,
+  "tanim": "Stadium in Glasgow City, Scotland",
+  "goruntulenme": 25.8,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.33,
+   "hassas": 0.05,
+   "olmadi": 0.17,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1968 final",
+  "bolum": "avrupa_finali",
+  "bayt": 38543,
+  "tanim": "European football tournament final match",
+  "goruntulenme": 25.7,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.55,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Michael Arroyo",
+  "bolum": "tartisma",
+  "bayt": 21258,
+  "tanim": "Ecuadorian footballer (born 1987)",
+  "goruntulenme": 25.7,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.82,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1995 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 17617,
+  "tanim": "Football match",
+  "goruntulenme": 25.6,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 CONCACAF Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 27039,
+  "tanim": "International football competition",
+  "goruntulenme": 25.6,
+  "ts": {
+   "hikaye": 0.33,
+   "dram": 0.89,
+   "hassas": 0.05,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nicola Rizzoli",
+  "bolum": "dunya_kupasi",
+  "bayt": 17189,
+  "tanim": "Italian football referee",
+  "goruntulenme": 25.5,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.86,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Rui Jorge",
+  "bolum": "tartisma",
+  "bayt": 23521,
+  "tanim": "Portuguese football manager and former player (born 1973)",
+  "goruntulenme": 25.5,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.79,
+   "hassas": 0.02,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football at the 2020 Summer Olympics – Men's tournament final",
+  "bolum": "kupa_finali",
+  "bayt": 17350,
+  "tanim": "Football match",
+  "goruntulenme": 25.2,
+  "ts": {
+   "hikaye": 0.39,
+   "dram": 0.78,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2004 Copa América final",
+  "bolum": "mac",
+  "bayt": 9020,
+  "tanim": "Football match",
+  "goruntulenme": 25.2,
+  "ts": {
+   "hikaye": 0.28,
+   "dram": 0.16,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Italy v Brazil (1982 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 20829,
+  "tanim": "Football match",
+  "goruntulenme": 25.1,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Battle of Berne (1954 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 14007,
+  "tanim": "1954 FIFA World Cup match between Hungary and Brazil",
+  "goruntulenme": 24.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.97,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2019 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 28174,
+  "tanim": "Football match",
+  "goruntulenme": 24.8,
+  "ts": {
+   "hikaye": 0.7,
+   "dram": 0.52,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Show Racism the Red Card",
+  "bolum": "tartisma",
+  "bayt": 11256,
+  "tanim": "English anti-racism education charity",
+  "goruntulenme": 24.8,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.07,
+   "hassas": 0.09,
+   "olmadi": 0.08,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "Age fraud in association football",
+  "bolum": "tartisma",
+  "bayt": 22376,
+  "tanim": "Use of false documentation",
+  "goruntulenme": 24.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.33,
+   "hassas": 0.03,
+   "olmadi": 0.11,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Raniel",
+  "bolum": "tartisma",
+  "bayt": 27033,
+  "tanim": "Brazilian footballer (born 1996)",
+  "goruntulenme": 24.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.66,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Brian Fernández",
+  "bolum": "tartisma",
+  "bayt": 26183,
+  "tanim": "Argentine footballer",
+  "goruntulenme": 24.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.67,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1963 African Cup of Nations",
+  "bolum": "mac",
+  "bayt": 11634,
+  "tanim": "4th edition of the Africa Cup of Nations",
+  "goruntulenme": 23.9,
+  "ts": {
+   "hikaye": 0.16,
+   "dram": 0.55,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manuele Blasi",
+  "bolum": "tartisma",
+  "bayt": 28777,
+  "tanim": "Italian footballer (born 1980)",
+  "goruntulenme": 23.6,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.64,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1965 African Cup of Nations",
+  "bolum": "mac",
+  "bayt": 16927,
+  "tanim": "5th edition of the Africa Cup of Nations",
+  "goruntulenme": 23.5,
+  "ts": {
+   "hikaye": 0.25,
+   "dram": 0.5,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1993 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13397,
+  "tanim": "Football match",
+  "goruntulenme": 23.1,
+  "ts": {
+   "hikaye": 0.58,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1972 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13464,
+  "tanim": "Football match",
+  "goruntulenme": 23.0,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.72,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Karen Hills (footballer)",
+  "bolum": "tartisma",
+  "bayt": 13811,
+  "tanim": "English footballer",
+  "goruntulenme": 22.8,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.61,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Spot-fixing",
+  "bolum": "tartisma",
+  "bayt": 11650,
+  "tanim": "Class of illegal activity related to sports betting",
+  "goruntulenme": 22.7,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.22,
+   "hassas": 0.03,
+   "olmadi": 0.17,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1967 Intercontinental Cup",
+  "bolum": "tartisma",
+  "bayt": 43736,
+  "tanim": "Football match",
+  "goruntulenme": 22.6,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.96,
+   "hassas": 0.03,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1960 European Nations' Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 27287,
+  "tanim": "Association football match",
+  "goruntulenme": 22.5,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.47,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Bahrain 10–0 Indonesia",
+  "bolum": "dunya_kupasi",
+  "bayt": 12432,
+  "tanim": "Football match",
+  "goruntulenme": 22.4,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.96,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jack Taylor (referee)",
+  "bolum": "dunya_kupasi",
+  "bayt": 16033,
+  "tanim": "English association football referee",
+  "goruntulenme": 22.3,
+  "ts": {
+   "hikaye": 0.32,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Björn Kuipers",
+  "bolum": "avrupa_finali",
+  "bayt": 30472,
+  "tanim": "Dutch football referee (born 1973)",
+  "goruntulenme": 22.2,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.25,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1964 British football match-fixing scandal",
+  "bolum": "tartisma",
+  "bayt": 12730,
+  "tanim": "Association football scandal",
+  "goruntulenme": 22.2,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.9,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Match fixing in association football",
+  "bolum": "tartisma",
+  "bayt": 48669,
+  "tanim": "",
+  "goruntulenme": 22.1,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.6,
+   "hassas": 0.04,
+   "olmadi": 0.08,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "2026 Campeonato Mineiro final",
+  "bolum": "tartisma",
+  "bayt": 27257,
+  "tanim": "Football match",
+  "goruntulenme": 22.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Damir Skomina",
+  "bolum": "avrupa_finali",
+  "bayt": 16149,
+  "tanim": "Slovenian football referee",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.9,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1964 European Nations' Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 34745,
+  "tanim": "International football match",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.73,
+   "dram": 0.28,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Morocco national football team results (2020–present)",
+  "bolum": "mac",
+  "bayt": 94506,
+  "tanim": "",
+  "goruntulenme": 21.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.06,
+   "hassas": 0.02,
+   "olmadi": 0.28,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2016 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 29172,
+  "tanim": "Football match",
+  "goruntulenme": 21.8,
+  "ts": {
+   "hikaye": 0.86,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Daniele Orsato",
+  "bolum": "avrupa_finali",
+  "bayt": 15783,
+  "tanim": "Italian football referee",
+  "goruntulenme": 21.7,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.91,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Apito Dourado",
+  "bolum": "tartisma",
+  "bayt": 24606,
+  "tanim": "Football corruption scandal in Portugal",
+  "goruntulenme": 21.6,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.94,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kick It Out (organisation)",
+  "bolum": "tartisma",
+  "bayt": 12393,
+  "tanim": "Campaign in football against racism",
+  "goruntulenme": 21.6,
+  "ts": {
+   "hikaye": 0.08,
+   "dram": 0.54,
+   "hassas": 0.14,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Doping in association football",
+  "bolum": "tartisma",
+  "bayt": 75290,
+  "tanim": "",
+  "goruntulenme": 21.5,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.68,
+   "hassas": 0.05,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Clarence Acuña",
+  "bolum": "tartisma",
+  "bayt": 9685,
+  "tanim": "Chilean footballer (born 1975)",
+  "goruntulenme": 21.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.41,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Murder of Gabriele Sandri",
+  "bolum": "tartisma",
+  "bayt": 13814,
+  "tanim": "2007 police shooting in Italy",
+  "goruntulenme": 21.5,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.87,
+   "hassas": 0.94,
+   "olmadi": 0.02,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "1985 Wales v Scotland football match",
+  "bolum": "dunya_kupasi",
+  "bayt": 86644,
+  "tanim": "Association football match",
+  "goruntulenme": 21.4,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.93,
+   "hassas": 0.45,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1976 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 26534,
+  "tanim": "Football match",
+  "goruntulenme": 21.4,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.82,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2013 FIFA Confederations Cup final",
+  "bolum": "mac",
+  "bayt": 21964,
+  "tanim": "Football match",
+  "goruntulenme": 21.3,
+  "ts": {
+   "hikaye": 0.72,
+   "dram": 0.89,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1994 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13120,
+  "tanim": "Football match",
+  "goruntulenme": 21.2,
+  "ts": {
+   "hikaye": 0.56,
+   "dram": 0.19,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 FIFA U-20 World Cup final",
+  "bolum": "mac",
+  "bayt": 10030,
+  "tanim": "Football match",
+  "goruntulenme": 21.1,
+  "ts": {
+   "hikaye": 0.55,
+   "dram": 0.81,
+   "hassas": 0.01,
+   "olmadi": 0.12,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1991 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 11915,
+  "tanim": "Football match",
+  "goruntulenme": 21.0,
+  "ts": {
+   "hikaye": 0.73,
+   "dram": 0.24,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 CONCACAF Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 35273,
+  "tanim": "International football competition",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.34,
+   "dram": 0.51,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2008 UEFA Cup final riots",
+  "bolum": "tartisma",
+  "bayt": 27768,
+  "tanim": "Football disorder in Manchester, England",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.93,
+   "hassas": 0.05,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "Bambo Diaby",
+  "bolum": "tartisma",
+  "bayt": 13169,
+  "tanim": "Senegalese footballer (born 1997)",
+  "goruntulenme": 20.9,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2005 FIFA Club World Championship final",
+  "bolum": "kupa_finali",
+  "bayt": 24294,
+  "tanim": "Association football match",
+  "goruntulenme": 20.7,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.49,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2014 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 13267,
+  "tanim": "Football match",
+  "goruntulenme": 20.7,
+  "ts": {
+   "hikaye": 0.54,
+   "dram": 0.6,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Famine Song",
+  "bolum": "tartisma",
+  "bayt": 10287,
+  "tanim": "Ulster loyalist song",
+  "goruntulenme": 20.7,
+  "ts": {
+   "hikaye": 0.19,
+   "dram": 0.75,
+   "hassas": 0.28,
+   "olmadi": 0.03,
+   "siyaset": 0.07
+  }
+ },
+ {
+  "baslik": "2011–12 Italian football match-fixing scandal",
+  "bolum": "tartisma",
+  "bayt": 47646,
+  "tanim": "",
+  "goruntulenme": 20.7,
+  "ts": {
+   "hikaye": 0.9,
+   "dram": 0.9,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1980 Totonero",
+  "bolum": "tartisma",
+  "bayt": 7352,
+  "tanim": "Scandal of football match fixing in Italy in 1980",
+  "goruntulenme": 20.6,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 Turkish football match-fixing scandal",
+  "bolum": "tartisma",
+  "bayt": 45921,
+  "tanim": "Association football and political scandal",
+  "goruntulenme": 20.5,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.92,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "UEFA Euro 2016 riots",
+  "bolum": "tartisma",
+  "bayt": 42662,
+  "tanim": "Series of football riots in France",
+  "goruntulenme": 20.5,
+  "ts": {
+   "hikaye": 0.34,
+   "dram": 0.86,
+   "hassas": 0.08,
+   "olmadi": 0.02,
+   "siyaset": 0.06
+  }
+ },
+ {
+  "baslik": "1980 Scottish Cup final",
+  "bolum": "tartisma",
+  "bayt": 13687,
+  "tanim": "Scottish football match",
+  "goruntulenme": 20.3,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.96,
+   "hassas": 0.07,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2020 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 24621,
+  "tanim": "Final of the 2020 edition of Club World Cup",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.73,
+   "dram": 0.75,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 Old Trafford protests",
+  "bolum": "tartisma",
+  "bayt": 21604,
+  "tanim": "Protests against the Glazer ownership of Manchester United",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.95,
+   "hassas": 0.03,
+   "olmadi": 0.03,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Albeiro Usuriaga",
+  "bolum": "tartisma",
+  "bayt": 8366,
+  "tanim": "Colombian footballer (1966–2004)",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.91,
+   "hassas": 0.93,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2017 FIFA Confederations Cup final",
+  "bolum": "mac",
+  "bayt": 27854,
+  "tanim": "Football match",
+  "goruntulenme": 20.2,
+  "ts": {
+   "hikaye": 0.69,
+   "dram": 0.66,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Felix Brych",
+  "bolum": "avrupa_finali",
+  "bayt": 17480,
+  "tanim": "German football referee",
+  "goruntulenme": 20.0,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Manchester United–Arsenal brawl (1990)",
+  "bolum": "tartisma",
+  "bayt": 27658,
+  "tanim": "Football League First Division controversy",
+  "goruntulenme": 20.0,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.97,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Argentina v Colombia (1994 FIFA World Cup qualification)",
+  "bolum": "dunya_kupasi",
+  "bayt": 15086,
+  "tanim": "Football match",
+  "goruntulenme": 19.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Paul Riley (footballer)",
+  "bolum": "tartisma",
+  "bayt": 22602,
+  "tanim": "English football coach (born 1963)",
+  "goruntulenme": 19.7,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.87,
+   "hassas": 0.71,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Judenklub",
+  "bolum": "tartisma",
+  "bayt": 9124,
+  "tanim": "Derogatory, antisemitic term used throughout the Nazi era in Germany and Austria",
+  "goruntulenme": 19.7,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.66,
+   "hassas": 0.55,
+   "olmadi": 0.06,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "Markus Merk",
+  "bolum": "avrupa_finali",
+  "bayt": 20978,
+  "tanim": "German football referee (born 1962)",
+  "goruntulenme": 19.6,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Sándor Puhl",
+  "bolum": "dunya_kupasi",
+  "bayt": 10133,
+  "tanim": "Hungarian football referee (1955–2021)",
+  "goruntulenme": 19.5,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.93,
+   "hassas": 0.08,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 Africa Cup of Nations final",
+  "bolum": "mac",
+  "bayt": 45409,
+  "tanim": "Football match played in February 2024",
+  "goruntulenme": 19.4,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.83,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Disputes involving the Spain women's national football team",
+  "bolum": "tartisma",
+  "bayt": 35935,
+  "tanim": "Issues involving Spain's WNT",
+  "goruntulenme": 19.3,
+  "ts": {
+   "hikaye": 0.32,
+   "dram": 0.96,
+   "hassas": 0.65,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Mbulelo Mabizela",
+  "bolum": "tartisma",
+  "bayt": 29792,
+  "tanim": "South African footballer (born 1980)",
+  "goruntulenme": 19.3,
+  "ts": {
+   "hikaye": 0.04,
+   "dram": 0.83,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Football at the 2016 Summer Olympics – Men's tournament final",
+  "bolum": "kupa_finali",
+  "bayt": 17590,
+  "tanim": "Football match",
+  "goruntulenme": 19.2,
+  "ts": {
+   "hikaye": 0.85,
+   "dram": 0.68,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "The Other Final",
+  "bolum": "mac",
+  "bayt": 15029,
+  "tanim": "2003 documentary film by Johan Kramer",
+  "goruntulenme": 19.2,
+  "ts": {
+   "hikaye": 0.91,
+   "dram": 0.78,
+   "hassas": 0.02,
+   "olmadi": 0.02,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Smoking in association football",
+  "bolum": "tartisma",
+  "bayt": 22222,
+  "tanim": "Aspect of culture in sports",
+  "goruntulenme": 18.9,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.4,
+   "hassas": 0.25,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jean-Jacques Eydelie",
+  "bolum": "tartisma",
+  "bayt": 7554,
+  "tanim": "French footballer (born 1966)",
+  "goruntulenme": 18.7,
+  "ts": {
+   "hikaye": 0.4,
+   "dram": 0.96,
+   "hassas": 0.03,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1988 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 14944,
+  "tanim": "Football match",
+  "goruntulenme": 18.5,
+  "ts": {
+   "hikaye": 0.53,
+   "dram": 0.43,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Christianity and association football",
+  "bolum": "tartisma",
+  "bayt": 18066,
+  "tanim": "",
+  "goruntulenme": 18.4,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.08,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Disaster of Sweden",
+  "bolum": "dunya_kupasi",
+  "bayt": 16571,
+  "tanim": "Football match",
+  "goruntulenme": 18.3,
+  "ts": {
+   "hikaye": 0.95,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2005 FIFA Confederations Cup final",
+  "bolum": "mac",
+  "bayt": 8624,
+  "tanim": "Football match",
+  "goruntulenme": 18.3,
+  "ts": {
+   "hikaye": 0.41,
+   "dram": 0.18,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Kim Milton Nielsen",
+  "bolum": "avrupa_finali",
+  "bayt": 9458,
+  "tanim": "Danish football referee",
+  "goruntulenme": 18.2,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.93,
+   "hassas": 0.02,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Quim (footballer, born 1975)",
+  "bolum": "tartisma",
+  "bayt": 30879,
+  "tanim": "Portuguese footballer",
+  "goruntulenme": 18.2,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.04,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2005 FIFA World Youth Championship final",
+  "bolum": "mac",
+  "bayt": 23985,
+  "tanim": "Football match",
+  "goruntulenme": 18.1,
+  "ts": {
+   "hikaye": 0.88,
+   "dram": 0.65,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2023 AFC Asian Cup final",
+  "bolum": "mac",
+  "bayt": 12025,
+  "tanim": "Association football match",
+  "goruntulenme": 18.0,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.74,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Austria v Switzerland (1954 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 10231,
+  "tanim": "Football match",
+  "goruntulenme": 17.9,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.98,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1974 FIFA World Cup qualification (UEFA–CONMEBOL play-off)",
+  "bolum": "dunya_kupasi",
+  "bayt": 18820,
+  "tanim": "Football match",
+  "goruntulenme": 17.9,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.94,
+   "hassas": 0.43,
+   "olmadi": 0.06,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "Sexual harassment in the NWSL",
+  "bolum": "tartisma",
+  "bayt": 65250,
+  "tanim": "Allegations of abuse during the 2021 NWSL season",
+  "goruntulenme": 17.8,
+  "ts": {
+   "hikaye": 0.69,
+   "dram": 0.91,
+   "hassas": 0.94,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Néstor Pitana",
+  "bolum": "dunya_kupasi",
+  "bayt": 12780,
+  "tanim": "Argentine football referee",
+  "goruntulenme": 17.7,
+  "ts": {
+   "hikaye": 0.15,
+   "dram": 0.94,
+   "hassas": 0.02,
+   "olmadi": 0.03,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Accra Sports Stadium disaster",
+  "bolum": "tartisma",
+  "bayt": 13405,
+  "tanim": "2001 stadium disaster in Ghana",
+  "goruntulenme": 17.7,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.91,
+   "hassas": 0.99,
+   "olmadi": 0.01,
+   "siyaset": 0.04
+  }
+ },
+ {
+  "baslik": "UEFA Euro 1972 final",
+  "bolum": "avrupa_finali",
+  "bayt": 38356,
+  "tanim": "European football tournament final match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.8,
+   "dram": 0.2,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2022 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 17407,
+  "tanim": "Football match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.55,
+   "dram": 0.88,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1969 Intercontinental Cup",
+  "bolum": "tartisma",
+  "bayt": 12942,
+  "tanim": "Football match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.94,
+   "dram": 0.97,
+   "hassas": 0.07,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1999 FIFA Confederations Cup final",
+  "bolum": "mac",
+  "bayt": 11649,
+  "tanim": "Football match",
+  "goruntulenme": 17.6,
+  "ts": {
+   "hikaye": 0.64,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1985 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13706,
+  "tanim": "Football match",
+  "goruntulenme": 17.5,
+  "ts": {
+   "hikaye": 0.49,
+   "dram": 0.29,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2015 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 16026,
+  "tanim": "Football match",
+  "goruntulenme": 17.5,
+  "ts": {
+   "hikaye": 0.54,
+   "dram": 0.25,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Aaron McCarey",
+  "bolum": "tartisma",
+  "bayt": 39045,
+  "tanim": "Irish footballer",
+  "goruntulenme": 17.5,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.59,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Lucas Bernardi",
+  "bolum": "tartisma",
+  "bayt": 9544,
+  "tanim": "Argentine footballer",
+  "goruntulenme": 17.3,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.23,
+   "hassas": 0.01,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Nicolás Figal",
+  "bolum": "tartisma",
+  "bayt": 9316,
+  "tanim": "Argentine footballer",
+  "goruntulenme": 17.3,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.59,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1986 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 15798,
+  "tanim": "Football match",
+  "goruntulenme": 17.0,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.95,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Edson Buddle",
+  "bolum": "tartisma",
+  "bayt": 24910,
+  "tanim": "American soccer player (born 1981)",
+  "goruntulenme": 17.0,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.68,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2011 AFC Asian Cup final",
+  "bolum": "mac",
+  "bayt": 17663,
+  "tanim": "Football match",
+  "goruntulenme": 16.7,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.37,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1982 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13905,
+  "tanim": "Football match",
+  "goruntulenme": 16.6,
+  "ts": {
+   "hikaye": 0.52,
+   "dram": 0.71,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2007 AS Roma–Manchester United F.C. conflict",
+  "bolum": "tartisma",
+  "bayt": 11837,
+  "tanim": "Football riot in Rome, Italy",
+  "goruntulenme": 16.5,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.95,
+   "hassas": 0.08,
+   "olmadi": 0.01,
+   "siyaset": 0.03
+  }
+ },
+ {
+  "baslik": "2002 FIFA World Cup qualification (UEFA–AFC play-off)",
+  "bolum": "mac",
+  "bayt": 15692,
+  "tanim": "Football match",
+  "goruntulenme": 16.4,
+  "ts": {
+   "hikaye": 0.87,
+   "dram": 0.32,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Horacio Elizondo",
+  "bolum": "dunya_kupasi",
+  "bayt": 18971,
+  "tanim": "Argentine football referee (born 1963)",
+  "goruntulenme": 16.3,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.85,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Brian Fok",
+  "bolum": "tartisma",
+  "bayt": 13259,
+  "tanim": "Hong Kong footballer",
+  "goruntulenme": 16.3,
+  "ts": {
+   "hikaye": 0.09,
+   "dram": 0.89,
+   "hassas": 0.03,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Albert Ebossé Bodjongo",
+  "bolum": "tartisma",
+  "bayt": 8987,
+  "tanim": "Cameroonian footballer (1989-2014)",
+  "goruntulenme": 16.3,
+  "ts": {
+   "hikaye": 0.22,
+   "dram": 0.93,
+   "hassas": 0.96,
+   "olmadi": 0.02,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Jean Paul Pineda",
+  "bolum": "tartisma",
+  "bayt": 18165,
+  "tanim": "Chilean footballer (born 1989)",
+  "goruntulenme": 16.2,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.77,
+   "hassas": 0.07,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1990 UEFA Cup final",
+  "bolum": "avrupa_finali",
+  "bayt": 13167,
+  "tanim": "Football match",
+  "goruntulenme": 16.1,
+  "ts": {
+   "hikaye": 0.83,
+   "dram": 0.67,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2024 UEFA Women's Nations League Finals",
+  "bolum": "kupa_finali",
+  "bayt": 13690,
+  "tanim": "International football competition",
+  "goruntulenme": 16.1,
+  "ts": {
+   "hikaye": 0.24,
+   "dram": 0.16,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "1998 FIFA World Cup qualification (AFC–OFC play-off)",
+  "bolum": "dunya_kupasi",
+  "bayt": 17258,
+  "tanim": "Football match",
+  "goruntulenme": 15.9,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.96,
+   "hassas": 0.04,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Valyantsin Byalkevich",
+  "bolum": "tartisma",
+  "bayt": 9578,
+  "tanim": "Belarusian footballer (1973–2014)",
+  "goruntulenme": 15.8,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.72,
+   "hassas": 0.31,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Francesco Flachi",
+  "bolum": "tartisma",
+  "bayt": 13031,
+  "tanim": "Italian footballer (born 1975)",
+  "goruntulenme": 15.8,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.84,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2017 Turin stampede",
+  "bolum": "tartisma",
+  "bayt": 8062,
+  "tanim": "Fatal stampede in Italy",
+  "goruntulenme": 15.8,
+  "ts": {
+   "hikaye": 0.97,
+   "dram": 0.76,
+   "hassas": 0.96,
+   "olmadi": 0.01,
+   "siyaset": 0.05
+  }
+ },
+ {
+  "baslik": "2019 AFC Asian Cup final",
+  "bolum": "mac",
+  "bayt": 53454,
+  "tanim": "Association football match",
+  "goruntulenme": 15.8,
+  "ts": {
+   "hikaye": 0.92,
+   "dram": 0.84,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "National Football League (South Africa)",
+  "bolum": "tartisma",
+  "bayt": 24328,
+  "tanim": "Professional football league of South Africa",
+  "goruntulenme": 15.7,
+  "ts": {
+   "hikaye": 0.07,
+   "dram": 0.77,
+   "hassas": 0.08,
+   "olmadi": 0.03,
+   "siyaset": 0.02
+  }
+ },
+ {
+  "baslik": "Chris Cornes",
+  "bolum": "tartisma",
+  "bayt": 23504,
+  "tanim": "English footballer",
+  "goruntulenme": 15.6,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.8,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "United States v Iran (1998 FIFA World Cup)",
+  "bolum": "dunya_kupasi",
+  "bayt": 38161,
+  "tanim": "Association football match",
+  "goruntulenme": 15.5,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.92,
+   "hassas": 0.02,
+   "olmadi": 0.01,
+   "siyaset": 0.12
+  }
+ },
+ {
+  "baslik": "Ibrahim Tanko",
+  "bolum": "tartisma",
+  "bayt": 12502,
+  "tanim": "Ghanaian retired footballer (born 1977)",
+  "goruntulenme": 15.5,
+  "ts": {
+   "hikaye": 0.02,
+   "dram": 0.65,
+   "hassas": 0.02,
+   "olmadi": 0.07,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2021 Africa Cup of Nations final",
+  "bolum": "mac",
+  "bayt": 47814,
+  "tanim": "Football match",
+  "goruntulenme": 15.4,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2009 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 10787,
+  "tanim": "Football match",
+  "goruntulenme": 15.3,
+  "ts": {
+   "hikaye": 0.93,
+   "dram": 0.77,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2018 FIFA Club World Cup final",
+  "bolum": "kupa_finali",
+  "bayt": 34319,
+  "tanim": "Football match",
+  "goruntulenme": 15.3,
+  "ts": {
+   "hikaye": 0.59,
+   "dram": 0.8,
+   "hassas": 0.01,
+   "olmadi": 0.01,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Viktor Kassai",
+  "bolum": "avrupa_finali",
+  "bayt": 14034,
+  "tanim": "Hungarian football referee",
+  "goruntulenme": 15.2,
+  "ts": {
+   "hikaye": 0.05,
+   "dram": 0.83,
+   "hassas": 0.01,
+   "olmadi": 0.05,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Hong Kong v Inter Miami",
+  "bolum": "tartisma",
+  "bayt": 94930,
+  "tanim": "Football match",
+  "goruntulenme": 15.2,
+  "ts": {
+   "hikaye": 0.98,
+   "dram": 0.96,
+   "hassas": 0.01,
+   "olmadi": 0.02,
+   "siyaset": 0.07
+  }
+ },
+ {
+  "baslik": "Jon Conway",
+  "bolum": "tartisma",
+  "bayt": 10225,
+  "tanim": "American soccer player (born 1977)",
+  "goruntulenme": 15.1,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.28,
+   "hassas": 0.01,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "Highlands Park F.C.",
+  "bolum": "tartisma",
+  "bayt": 11076,
+  "tanim": "Football club",
+  "goruntulenme": 15.1,
+  "ts": {
+   "hikaye": 0.03,
+   "dram": 0.35,
+   "hassas": 0.02,
+   "olmadi": 0.06,
+   "siyaset": 0.01
+  }
+ },
+ {
+  "baslik": "2025 ban of Maccabi Tel Aviv fans in Birmingham",
+  "bolum": "tartisma",
+  "bayt": 44185,
+  "tanim": "Policing scandal in the UK",
+  "goruntulenme": 15.1,
+  "ts": {
+   "hikaye": 0.96,
+   "dram": 0.88,
+   "hassas": 0.05,
+   "olmadi": 0.23,
+   "siyaset": 0.38
+  }
+ },
+ {
+  "baslik": "Racism in English football",
+  "bolum": "tartisma",
+  "bayt": 199952,
+  "tanim": "",
+  "goruntulenme": 15.0,
+  "ts": {
+   "hikaye": 0.06,
+   "dram": 0.6,
+   "hassas": 0.75,
+   "olmadi": 0.08,
+   "siyaset": 0.01
+  }
+ }
+]

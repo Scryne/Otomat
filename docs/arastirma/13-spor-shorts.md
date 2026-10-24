@@ -56,4 +56,6 @@ Hukuki analiz yok: yalnız platformun ve hak sahiplerinin sahada ne yaptığı.
 - Yayın görüntüsü olmadan aynı biçim mümkün: gerçek olay + anlatım + kendi görsel hattımız (film hattının FLUX/Wan
   canlandırması), Commons'taki lisanslı fotoğraflar, istatistik grafiği. Bu biçimin büyüdüğüne dair kanıt zayıf
   (Football Destiny 1,1K).
-- Karar Scryne'ın: bkz. konuşma 2026-10-24.
+- **K-37 (2026-10-24):** Scryne "herşeyi sana bırakıyorum, para kazanayım yeterli, günde 2-3 shorts" dedi. Seçilen
+  yol yayın görüntüsüz: sıfırdan yeni kanal (Arena Lore), sahne biçimi, üç seri (futbol, mma, boks), günde üç video.
+  Ayrıntı Roadmap Faz 19.

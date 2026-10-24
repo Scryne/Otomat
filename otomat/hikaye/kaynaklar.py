@@ -4,6 +4,8 @@
   tanımı. Makale metni üretim anında Wikipedia API'den çekilir (CC BY-SA 4.0, açıklamada atıf).
 - `ezop` (Orbit → masal kanalı, genel kitle; K-24): Aesop's Fables, V. S. Vernon Jones çevirisi (1912), Project
   Gutenberg #11339, kamu malı. Metin havuzda.
+- `spor` (spor kanalı; futbol, mma, boks serileri, K-37): Wikipedia'nın maç/dövüş/olay makaleleri, kategori ağacından
+  toplanıp görüntülemeyle sıralandı (spikes/s17_spor_havuz.py). Yayın görüntüsü yok: sahneler illüstrasyon (K-37).
 
 Havuzlar bir kez çıkarılıp TypeSafe (jev-1.13.0) ile süzüldü (K-18, docs/arastirma/08). Puanlar havuzda durur,
 eşikler burada: anlam kararı modelde, kural kodda.
@@ -109,7 +111,46 @@ def _ezop(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
     ]
 
 
-KAYNAKLAR = {"tuhaf": _tuhaf, "ezop": _ezop}
+DRAM_YUKSEK = 0.7
+
+
+def spor_uygun(ts: dict, olay_esigi: float = 0.5) -> bool:
+    """Tek bir olayı (maç, dövüş, final, skandal) sırasıyla anlatan, sıradan bir taraftarın dramatik bulacağı makale;
+    trajedi (stadyum felaketi, ölüm), güncel siyaset ve henüz olmamış (planlanan, iptal, önerilen) maç değil (K-37,
+    spikes/s17_spor_havuz.py). `olay_esigi` (profil): dövüş organizasyonu makalesi çoğunlukla maç kartıdır, hikâye
+    puanı düşük çıkar (UFC 229: 0,48, UFC 202: 0,33; dram 0,9+); çok dramatik olanı bu eşikle de girer. MMA havuzu
+    594 adaydan 33'te kalıyordu."""
+    if ts["hassas"] >= 0.5 or ts["siyaset"] >= 0.5 or ts["olmadi"] >= 0.5:
+        return False
+    return (ts["hikaye"] >= 0.5 and ts["dram"] >= 0.5) or (ts["hikaye"] >= olay_esigi and ts["dram"] >= DRAM_YUKSEK)
+
+
+def _spor(havuz: list[dict], cekildi: str) -> list[OlguPaketi]:
+    """Spor serileri (futbol, mma, boks): kanal başına ayrı havuz, son 60 günün günlük görüntülemesiyle (popülerlik)
+    seçim ağırlığı. Ağırlık karekökle: en popüler birkaç makale her gün seçilmesin, ama 15 görüntülemelik bir maç da
+    Ali-Frazier kadar çıkmasın."""
+    sonuc, gorulen, esik = [], set(), kanal.aktif().olay_esigi
+    for h in havuz:
+        if not spor_uygun(h["ts"], esik) or h["baslik"] in gorulen or HAKARET.search(h["baslik"]):
+            continue
+        gorulen.add(h["baslik"])
+        url = "https://en.wikipedia.org/wiki/" + urllib.parse.quote(h["baslik"].replace(" ", "_"))
+        sonuc.append(
+            OlguPaketi(
+                kol=h["bolum"],
+                tur="spor",
+                anahtar=f"wiki:{h['baslik']}",
+                konu=h["tanim"] or h["baslik"],
+                olgular={},
+                gorsel={"sablon": "illustrasyon", "baslik": h["baslik"], "agirlik": round(h["goruntulenme"] ** 0.5, 2)},
+                kaynak=Kaynak("Wikipedia", url, "CC BY-SA 4.0", cekildi),
+                etiketler=list(dict.fromkeys([*kanal.aktif().etiketler, "sports history", "true story"])),
+            )
+        )
+    return sonuc
+
+
+KAYNAKLAR = {"tuhaf": _tuhaf, "ezop": _ezop, "spor": _spor}
 
 
 def topla() -> tuple[list[OlguPaketi], list[str]]:

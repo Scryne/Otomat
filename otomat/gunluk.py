@@ -80,7 +80,11 @@ def sec(paketler: list[OlguPaketi], db, bugun: dt.date, deneme: int = 0) -> tupl
 
         kaliplar = list(anlatim.KALIPLAR)
     kol, kalip, log = haydut.sec(db, bugun, sorted({p.kol for p in taze}), kaliplar, r)
-    paket = r.choice([p for p in taze if p.kol == kol])
+    adaylar = [p for p in taze if p.kol == kol]
+    if any("agirlik" in p.gorsel for p in adaylar):  # spor: popüler maç daha sık (kaynaklar._spor)
+        paket = r.choices(adaylar, weights=[p.gorsel.get("agirlik", 1.0) for p in adaylar])[0]
+    else:
+        paket = r.choice(adaylar)
     if HIKAYE:
         return paket, kalip, paket.gorsel["sablon"], log
     from otomat.gorsel import sablonlar

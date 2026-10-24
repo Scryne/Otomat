@@ -24,6 +24,10 @@ KALIPLAR = {
     "sorun": "Open with the problem or temptation the main animal faces, stated plainly.",
     "ders": "Open with the uncomfortable truth the fable proves, stated as a flat rule of life; the story then shows "
     "it.",
+    # spor (sonuc_once ve kisi ortak)
+    "an": "Open inside the decisive moment, as if the camera is already rolling: the punch, the shot, the save, the "
+    "whistle. The next lines rewind to how it got there.",
+    "ihtimal": "Open with how impossible the outcome looked beforehand: who everyone expected to win, and why.",
 }
 
 ISTEM = {
@@ -68,6 +72,33 @@ Rules:
 - Keep the fable's plot, characters and moral; add no new events, characters or modern objects.
 - No "subscribe", "like", "comment" or links. No brand names. No "Once upon a time".
 title: a curiosity title under 55 characters that names the main animals and hints at the twist, not the moral.""",
+    "spor": """You write scripts for 35-second YouTube Shorts that tell ONE true story from sports history to fans.
+Viewers swipe away in one second unless the first line grabs them, so the story must pull them to the end.
+
+Source (Wikipedia article "{baslik}"):
+<<<
+{metin}
+>>>
+What it is: {konu}
+
+Write 7-8 scenes, 75-90 words in total. Each scene = one spoken line (5-12 words) + one illustration.
+Opening line: {kalip}
+Then tell it like a storyteller who was in the crowd, not like a match report: who was expected to win and why, the
+moment it turned, how it ended, what it changed. Name the fighters, players or teams in every line about them; call
+someone "the champion" or "the challenger" only if the source gives them that title for this event. Every line must
+state something that happened: no filler about buzz, anticipation or atmosphere, no "forever", "made history" or "the
+rest is history". A line that only lists results or statistics is a wasted line. Use at most two numbers in the whole
+script
+(a score counts as one): the most striking ones.
+Last line: the payoff or the consequence, short and memorable, so the viewer wants to watch again.
+Rules:
+- Spoken, plain English that reads naturally aloud. Past tense. No "did you know", no questions to the viewer, no
+  "subscribe", no betting talk. No symbols or abbreviations (write "versus", "percent", "round three").
+- EVERY fact, number, name, date and cause must be stated in the source. If the source is unsure, say "reportedly".
+  Do not merge different matches or fights. Do not round or change numbers; write a number as digits only if the
+  source does.
+title: a title under 60 characters that names the people or teams and only uses facts from the source; no clickbait
+words.""",
 }
 
 GORSEL_KURALI = {
@@ -83,6 +114,17 @@ GORSEL_KURALI = {
     "Never show blood, wounds or a dead body; show the moment before, or the aftermath through faces. Each "
     "scene shows one place at one moment from one camera: never several places, a montage, a split view or a "
     "before-and-after in one picture.",
+    # K-37: yayın görüntüsü yok, gerçek kişinin benzeri de çizilmez (sporcular adsız figür); marka/logo yok
+    "spor": "The illustrator cannot draw writing: never describe anything that carries words or numbers (signs, "
+    "banners, scoreboards, numbered shirts, tickets, newspapers, trophies with engravings) and never quote words. "
+    "Never try to draw a real, recognizable person: every athlete, coach and referee is an anonymous figure described "
+    "only by build, hair, skin tone and the colors of their kit, shorts or gloves, and real names never appear in an "
+    "image description, a cast name or a cast look: name the cast by role (the champion, the challenger, the striker, "
+    "the keeper). Role names are for the illustrator only; spoken lines always use the real names. Kits are plain "
+    "solid colors: no logos, crests, badges, sponsor marks or league branding. Never show blood, cuts, swollen faces "
+    "or injuries: show a punch as motion and the crowd's reaction, a fallen fighter from behind, a referee stepping "
+    "in. Each scene shows one place at one moment from one camera: "
+    "never several places, a montage, a split view or a before-and-after in one picture.",
 }
 
 # İlk kare kaydırmayı durdurmalı (Shorts feed'inde küçük resim yok; ilk saniye izlendi/kaydırıldı oranını belirler)
@@ -91,6 +133,8 @@ ILK_KARE = {
     "subject that shows what the opening line says.",
     "masal": "The first scene's image must stop a scrolling viewer: a close, dramatic portrait of the main animal in "
     "the moment the opening line describes, one clear subject, strong light.",
+    "spor": "The first scene's image must stop a scrolling viewer: the peak of the action in a close, low-angle shot "
+    "(a fist in mid-swing, a ball leaving a boot, a keeper at full stretch), hard arena light, one clear subject.",
 }
 
 SAHNE_ISTEMI = """
@@ -147,6 +191,8 @@ Flag a line (title = line 0) only if it:
 - the title gives away the moral or names an animal that is not in the fable.
 Do not flag wry wording, small added details that fit the fable, or style choices. Return only real problems.""",
 }
+# spor da olgu denetimi: aynı hakem (sayı, ad, tarih, sıra; kim kimi yendi)
+HAKEM_ISTEM["spor"] = HAKEM_ISTEM["tuhaf"]
 
 ONARIM_ISTEM = """SOURCE:
 <<<
@@ -257,8 +303,9 @@ ONARIM_SEMA = {
     },
     "required": ["fixes"],
 }
-SAHNE_SAYISI = {"tuhaf": (7, 8), "masal": (7, 7)}
-KELIME = {"tuhaf": (60, 100), "masal": (50, 95)}  # toplam kelime; dışı onarıma girer
+SAHNE_SAYISI = {"tuhaf": (7, 8), "masal": (7, 7), "spor": (7, 8)}
+KELIME = {"tuhaf": (60, 100), "masal": (50, 95), "spor": (60, 100)}  # toplam kelime; dışı onarıma girer
+OLGU_TURLERI = ("tuhaf", "spor")  # gerçek olay: sayı/ad kapısı ve sayı sınırı
 SATIR_KELIME = 14
 SAYI_SINIRI = 3  # istem 2 der; bir pay bırakılır
 SAYI_HEDEF = 2  # sınır aşılınca ilk ikisinden sonraki sayıları taşıyan her satır onarıma gider
@@ -440,7 +487,7 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
     for i, s in enumerate([baslik, *satirlar]):
         if bulunan := HAKARET.findall(s):
             sorun.append((i, f"remove the slur or profanity: {', '.join(bulunan)}"))
-    if tur == "tuhaf":
+    if tur in OLGU_TURLERI:
         sorun += [(i, h) for i, s in enumerate([baslik, *satirlar]) for h in sayi_ad_kapisi(s, kaynak, adlar=i > 0)]
         # sayı yığını hikâyeyi ölçü listesine çeviriyordu (Molasses: "50-foot, 90-foot tank held 2.3 million gallons").
         # Yalnız son sayılı satır işaretlenince onarım öbürlerine dokunmuyordu, sorun 4 turda kapanmadı (Loret, 10-12).
@@ -603,11 +650,58 @@ KAYNAK_SINIR = 6000  # model ve hakeme giden kaynak; uzun makalede baş ve son k
 KAYNAK_SON = 1500
 
 
-def kisalt(kaynak: str) -> str:
+def kisalt(kaynak: str, tur: str = "tuhaf") -> str:
     """Uzun makalede sonuç/epilog modele görünsün: düz kesim (`[:6000]`) hikâyenin sonunu atıyordu."""
     if len(kaynak) <= KAYNAK_SINIR:
         return kaynak
+    if tur == "spor" and (secilen := _olay_bolumleri(kaynak)):
+        return secilen
     return f"{kaynak[: KAYNAK_SINIR - KAYNAK_SON]}\n[...]\n{kaynak[-KAYNAK_SON:]}"
+
+
+# Spor makalesinde olay ortadadır: baş (arka plan) + son (miras) kesimi maçın kendisini atıyordu (1986
+# Arjantin-İngiltere, 14.134 karakter: "Hand of God" bölümü modele hiç gitmedi, senaryo uydurdu ve 4 turda düştü;
+# 10-24 denemesi)
+OLAY_BASLIGI = re.compile(
+    r"\b(?:match|fight|bout|game|first half|second half|extra time|penalt\w*|goal\w*|rounds?|final|summary|"
+    r"aftermath|incident|controvers\w*|brawl|result|knockout|decision|legacy|reaction)\b",
+    re.I,
+)
+
+
+TABLO_BASLIGI = re.compile(
+    r"\b(?:details|scorecards?|results|line-?ups?|statistics|records?|viewership|broadcast\w*|bonus|payouts?|"
+    r"undercard|fight card|officials|squads?|attendance|purse|ratings|see also)\b",
+    re.I,
+)
+
+
+def _olay_bolumleri(kaynak: str) -> str | None:
+    """Giriş + ilk olay başlığından (maç, dövüş, raunt…) itibaren sıradaki anlatı bölümleri, tablo/istatistik bölümleri
+    atlanarak, KAYNAK_SINIR'a kadar; olay başlığı yoksa None. Olayın alt başlıkları her zaman anahtar kelime taşımaz
+    ("The 'Hand of God'"): ilk olay başlığından sonra sıra izlenir. Düz metin özütünde başlıklar kendi satırındadır
+    (kaynaklar.metin, exsectionformat=plain): kısa, noktasız satır."""
+    satirlar = kaynak.split("\n")
+    bolumler: list[tuple[str, list[str]]] = [("", [])]
+    for s in satirlar:
+        if 0 < len(s) <= 60 and not s.rstrip().endswith((".", ":", '"', "”")) and len(s.split()) <= 8:
+            bolumler.append((s, []))
+        else:
+            bolumler[-1][1].append(s)
+    giris = "\n".join(bolumler[0][1]).strip()
+    ilk = next((i for i, (b, _) in enumerate(bolumler) if i and OLAY_BASLIGI.search(b) and not TABLO_BASLIGI.search(b)),
+               None)  # fmt: skip
+    if ilk is None:
+        return None
+    olay = [(b, "\n".join(g).strip()) for b, g in bolumler[ilk:] if not TABLO_BASLIGI.search(b) and "".join(g).strip()]
+    parcalar, toplam = [giris[:1500]], min(len(giris), 1500)
+    for b, g in olay:
+        if toplam >= KAYNAK_SINIR:
+            break
+        g = g[: KAYNAK_SINIR - toplam]
+        parcalar.append(f"{b}\n{g}")
+        toplam += len(g) + len(b) + 1
+    return "\n\n".join(parcalar)
 
 
 def oyuncular(ham: list) -> list[str]:
@@ -624,7 +718,7 @@ def oyuncular(ham: list) -> list[str]:
 
 
 def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> Senaryo:
-    kisa = kisalt(kaynak)
+    kisa = kisalt(kaynak, tur)
     istem = ISTEM[tur].format(baslik=baslik, metin=kisa, konu=konu, kalip=KALIPLAR[kalip]) + SAHNE_ISTEMI.format(
         gorsel_kurali=GORSEL_KURALI[tur], ilk_kare=ILK_KARE[tur]
     )

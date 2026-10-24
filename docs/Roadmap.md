@@ -22,6 +22,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 16 | Kart biçimi ve izlenme deneyi | ✅ Tamamlandı | Earth kart biçiminde (K-25) ≥ 5 video yayında; her birinin ilk saniyeleri geçen oranı (engaged / görüntüleme) ve ortalama izlenme %'si (döngü; görüntüleme tekrarı sayar) ölçüldü ve sahneli dönemle (%25-38) kıyaslandı; karar yazıldı: oran ≥ %50 → günde 3 video (slot kimliği), değilse biçim yeniden; Orbit'in genel kitle haftası (10-15'ten) değerlendirildi, kart mı sahne mi kararı yazıldı (Orbit K-33 ile durdu; Earth K-35 ile durdu) |
 | 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot One Ticket Back'te public; ikinci ve üçüncü film farklı yapıda yayında |
 | 18 | Film ölçümü ve biçim kararı | ⏳ Bekliyor | İlk üç filmin (Klondike, Violet Jessop, Lowell) yayın + 7 günlük sayıları haftalık film raporunda (görüntüleme, ortalama izlenme %, 30. sn'de kalan, abone, trafik kaynağı; gösterim ve tıklama oranı Studio'dan); biçimler (What if you / kişi) yan yana; Faz 18 detayındaki önceden yazılmış eşiklerle karar yazıldı (biçim, giriş, kapak/başlık, süre); kapak ya da başlık değişecekse planlı filmlere API ile uygulandı; üçüncü ayın dört konusu bu karara göre seçildi |
+| 19 | Spor Shorts kanalı (Arena Lore) | 🔄 Devam Ediyor | Üç seri (futbol, mma, boks) profili, TypeSafe ile süzülmüş havuzlar (seri başına ≥ 120 hikâye) ve `spor` senaryo türü main'de, test + CI yeşil; her seriden ≥ 1 uçtan uca video senaryo, kare (gerçek kişi benzeri, logo, yazı, kan yok) ve ses denetiminden geçti; Scryne kanalı açtı, Buffer'a bağladı ve yetki verdi (ayrı günler); üç seri matriste, ilk planlı videolar public (oturumsuz doğrulandı); 14 gün kesintisiz günde 3 video; Faz 19 detayındaki ölçüm ve devam kuralı yazıldı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi film hattıyla gerçekleşti: bir ayın 4 filmi + 12 kesiti planlandığı saatte, kaçan ve çift olmadan yayına çıktı; haftalık film raporu 4 hafta üst üste kendiliğinden düştü; yayın ve rapor tarafında kod müdahalesi yok (sayaç Faz 18 kararından sonraki ilk planlı filmle başlar); Scryne'ın dokunuşu haftada ≤ 10 dk; bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | One Ticket Back, ilk public filmden (10-24) 8 hafta sonra (12-19): Faz 8 detayındaki eşik ölçüldü; karar (sürdür / biçim değiştir / kapat) yazıldı |
 | 9 | Kesitlerin çapraz yayını (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: film kesitleri Facebook/Instagram Reels'e, filmin bağlantısıyla; ölçüm haftalık raporda |
@@ -727,6 +728,37 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   tarafında iki kez (veri, sahneli) önce üretip sonra izlenmediğini öğrendik. Klondike kapağı ("ONE TON.", tek
   karakter, koyu zemin) ve açıklaması (ilk satır özet, 8 bölüm, kaynak, müzik atfı, AI beyanı) incelendi; veri olmadan
   değiştirilmedi.
+
+### Faz 19: Spor Shorts kanalı (2026-10-24, K-37)
+- **Neden:** Scryne (10-24): "shorts kanalı açalım… gerçek görüntüler kullanalım, anlatımlı, bir olayı anlatsın,
+  popüler şeyler (mma, futbol)"; araştırmadan sonra "herşeyi sana bırakıyorum, para kazanayım yeterli, günde 2-3
+  shorts". K-36'yı (yeni Shorts kanalı açılmaz) Scryne'ın kararı açar. Önceki dört Shorts denemesinin ortak zaafı
+  hazır kitlesi olmayan konuydu (%31 Kalan, `docs/arastirma/12`); spor hazır talebe bağlanır (PitchnCage: UFC kurgusu,
+  28 günde 7,4M görüntüleme, `docs/arastirma/13`).
+- **K-37 (karar):**
+  - Sıfırdan yeni kanal **Arena Lore** (İngilizce, Sports), One Ticket Back'ten ayrı. Yayın görüntüsü ve fotoğraf
+    yok: lisans yolu yok (UFC/PL/LaLiga/UEFA creator programı bulunamadı), talepli Short'un geliri hak sahibine gider,
+    3 ihtar kişiyi kapatır ve One Ticket Back'i de götürür (support 2814000, 2802168).
+  - Hikâye motorunun sahne biçimi (anlatıcı + 7-8 illüstrasyon, ~35 sn), yeni `spor` senaryo türü: aynı olgu hakemi,
+    sayı/ad kapısı; görsel kuralı gerçek kişinin benzerini, logo/armayı, numaralı formayı ve kanı yasaklar, kadro rol
+    adıyla (the champion, the striker). Stil grafik roman (gerçekçi değil: sentetik içerik etiketi gerekmez).
+  - Üç seri üç profil (`kanallar/futbol`, `mma`, `boks`, `grup = "spor"`): ad, token (`YT_TOKEN_JSON_SPOR`) ve Buffer
+    kanalı ortak; havuz, durum, rapor, haydut ve yayın saati (16:00 / 01:00 / 21:00 UTC) seri başına. Motor günde bir
+    slot bilir (`durum.yayin_slotu`, `secimler.tarih` birincil anahtar): üç profil günde üç video verir, slot
+    mantığına dokunulmaz.
+  - Havuz: Wikipedia kategori ağacından maç/dövüş/olay makaleleri, son 60 günün görüntülemesiyle (≥ 15/gün) ve
+    TypeSafe `jev-1.14.0` ile süzüldü (`spikes/s17_spor_havuz.py`; `hikaye`, `dram` ≥ 0,5; `hassas`, `siyaset`,
+    `olmadi` < 0,5). Seçim kol içinde görüntülemenin kareköküyle ağırlıklı.
+  - Diller: İngilizce + es, pt (altyazı izi dil başına 400 birim; YouTube kotası film kanalıyla ortak).
+- **Risk ve önlem:** günde 3 otomatik video spam politikasının (2801973) hedefi olabilir: her video ayrı gerçek olay,
+  olgu hakeminden geçmeyen yayına çıkmaz, açıklamada kaynak ve "Illustrations made with AI".
+- **Ölçüm ve devam kuralı (önceden yazıldı):** ilk public videodan 30 gün sonra (~90 video), seri başına Kalan
+  (engaged / görüntüleme, Faz 16'daki ölçü) ve görüntüleme. Para eşiği yeni kanal için 90 günde 20M Shorts
+  görüntülemesi (2027-02'den; `docs/arastirma/12`), yani 30 günde ~6,7M.
+  - Kalan ≥ %50 ve 30 günde ≥ 1M görüntüleme: sürer; en iyi seri ikinci slota çıkar (günde 4-5 video).
+  - Kalan %40-50 ya da 1M altı: biçim tek değişkenle denenir (önce ilk kare/kanca), en kötü seri durur.
+  - Kalan < %40 ve 30 günde < 300K: kanal durur (K-35'in kuralı).
+- **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
 - **Neden:** Sekiz film ve 24 kesit tek bir izleyici verisi olmadan üretildi. Üçüncü ay ancak ilk filmlerin sayılarıyla
