@@ -19,6 +19,7 @@ yayin_saati_utc = 16  # 19:00 TR; Avrupa akşamı, ABD öğlesi (futbol kitlesi 
 diller = ["es", "pt"]  # futbolun en büyük iki dil kitlesi; altyazı izi dil başına 400 birim, film kanalıyla ortak kota
 kategori = "17"  # Sports
 sir_eki = "_SPOR"  # YT_TOKEN_JSON_SPOR (üç seri ortak)
+buffer_kanal_id = "6add2263778b240e2fb4d130"  # Arena Lore (2026-10-25 bağlandı; adla arama iki sorgu)
 mfk = false
 ornekler = ""
 kaliplar = ["an", "ihtimal", "sonuc_once", "kisi"]

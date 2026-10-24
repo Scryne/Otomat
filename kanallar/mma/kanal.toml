@@ -17,6 +17,7 @@ yayin_saati_utc = 1  # 04:00 TR; ABD doğusu 21:00 (UFC kitlesi ABD akşamı)
 diller = ["es", "pt"]  # Brezilya ve Latin Amerika MMA kitlesi
 kategori = "17"  # Sports
 sir_eki = "_SPOR"
+buffer_kanal_id = "6add2263778b240e2fb4d130"  # Arena Lore (2026-10-25 bağlandı; adla arama iki sorgu)
 mfk = false
 ornekler = ""
 kaliplar = ["an", "ihtimal", "sonuc_once", "kisi"]
