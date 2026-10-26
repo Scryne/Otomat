@@ -944,7 +944,13 @@ def main() -> None:
             from otomat.yayin import buffer
 
             (kayitlar[-1] if kayitlar else genel)["buffer_istek"] = buffer.ISTEK["sayi"]
-            if (toplam := buffer_istekleri(bugun) + buffer.ISTEK["sayi"]) > BUFFER_ESIK:
+            # finally içinde: sayım hatası günün rapor satırını düşürüp asıl hatayı örtmesin
+            try:
+                toplam = buffer_istekleri(bugun) + buffer.ISTEK["sayi"]
+            except Exception as e:  # noqa: BLE001
+                toplam = None
+                alarmlar.append(f"**Buffer istek sayımı okunamadı:** {type(e).__name__}: {e}"[:300])
+            if toplam is not None and toplam > BUFFER_ESIK:
                 alarmlar.append(
                     f"**Buffer API sınırına yaklaşıldı:** son 30 günde {toplam} / {BUFFER_SINIR} istek (tüm kanallar). "
                     "Aşılırsa Buffer yayını durur (video kanala çıkmaz; pist tamponu biter, slot boş kalır)."
