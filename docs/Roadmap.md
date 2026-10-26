@@ -764,6 +764,23 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - 10-24: marka kiti `docs/marka/arenalore/` (kemer kapılı A: arenanın kapısı; altın `#FFD84D` / mürekkep siyahı
     `#121214`, Barlow Condensed; `docs/marka/arena_gorselleri.py`) ve `kanallar/futbol/marka.toml` (açıklama en/es/pt,
     anahtar kelime, banner, filigran). Kimliği ilk koşu uygular; profil resmi Studio'dan Scryne yükler.
+  - 10-25: Buffer bağlandı (gün 2), kanal kimliği üç profile yazıldı.
+  - 10-26: YouTube yetkisi (gün 3) Arena Lore'a ait doğrulandı, `YT_TOKEN_JSON_SPOR` secret'ta. Deneme videoları
+    (yerel, `calisma/hikaye_deneme*`) üç kusur sınıfı gösterdi, kalıcı düzeltildi (`otomat/hikaye/senaryo.py`):
+    - **Yanlış sonuç hakemden geçti:** Rumble in the Jungle "the champion retained his title" (unvan el değiştirmişti).
+      Ortak istem 3 denemede 1 yakaladı. Spor hakemi önce sonucu kaynaktan yazıyor (`SORUN_SEMA_SPOR`: kazanan,
+      kaybeden, unvan önce/sonra; 5/4) ve iki kez soruluyor (`HAKEM_TEKRAR`, birleşik kaçırma ~%4).
+    - **Kadro yanlış görünüşle çizildi:** rol adıyla (the champion/challenger) Foreman beyaz çıktı, model figürleri ten
+      rengiyle ayırmıştı. Kadro adı forma rengiyle; kadroda gerçek kişi `person` alanında (çizere gitmez);
+      `kadro_denetle` görünüşü gerçek kişiyle kıyaslıyor (3/3 düzeltti, doğru kadroya dokunmadı), yalnız emin
+      olduğunda (`certain`; UFC 193'te Herb Dean'i yanlış yöne çevirdi). Model kurala rağmen kadroya gerçek ad yazınca
+      (`Rousey`, `Holm`) `adsiz_kadro` kodla "the figure in red"e çeviriyor.
+    - **Hikâye yerine liste / sonuçsuz bitiş:** MMA havuzunun 151 adayının 143'ü organizasyon makalesi; UFC 332 kart
+      dökümü oldu. İstem en dramatik tek dövüşü anlatır; kanca sonrası zaman sırası; sonuç söylenmeden bitemez (İstanbul
+      2005 penaltılar başlarken bitmişti; hakem son satırı işaretler).
+    Düzeltilmiş Rumble: sonuç doğru, sıra doğru, iki figür de doğru; 2.383 neuron. Video başına 1.700-3.500 neuron
+    (hakem turuna göre): günde 3 video bedava 10.000'e sığar, pist dolarken kotaya takılan slot sonraki koşuya kalır.
+    Matris earth → futbol, mma, boks (`OTOMAT_YAYIN_*` = buffer); 21:37 telafi cron'u geri geldi. 379 test.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

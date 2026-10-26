@@ -70,6 +70,9 @@ def test_spor_secimi_populerligi_agirlik_yapar(kanal_sec, tmp_path, monkeypatch)
     from otomat import durum, gunluk, haydut
 
     kanal_sec("boks")
+    # gunluk kanalı import anında bağlar: tek başına koşunca varsayılan kanalın (earth) kalıplarıyla geliyordu
+    monkeypatch.setattr(gunluk, "_K", kanal.aktif())
+    monkeypatch.setattr(gunluk, "HIKAYE", True)
     paketler = [p for p in kaynaklar.topla()[0] if p.kol == "unvan"]
     monkeypatch.setattr(haydut, "sec", lambda db, gun, kollar, kaliplar, r: ("unvan", kaliplar[0], {}))
     db = durum.baglan(tmp_path / "d.db")
@@ -103,8 +106,86 @@ def test_spor_olgu_kapisi_ve_istemleri():
     sorun = senaryo.kod_kontrolu("spor", "Ali versus Frazier", satirlar, kaynak)
     assert (3, "name not in source: Foreman") in sorun and (3, "name not in source: Kinshasa") in sorun
     assert "real names never appear" in senaryo.GORSEL_KURALI["spor"] and "no logos" in senaryo.GORSEL_KURALI["spor"]
-    assert senaryo.HAKEM_ISTEM["spor"] == senaryo.HAKEM_ISTEM["tuhaf"]
+    ortak = senaryo.HAKEM_ISTEM["tuhaf"].removesuffix(" Return only real problems.")
+    assert senaryo.HAKEM_ISTEM["spor"].startswith(ortak)
+    assert "a champion who loses no longer holds" in senaryo.HAKEM_ISTEM["spor"]
+    assert "never by a title such as champion" in senaryo.GORSEL_KURALI["spor"]
+    assert "single most dramatic fight" in senaryo.ISTEM["spor"]
     assert {"an", "ihtimal"} <= set(senaryo.KALIPLAR)
+
+
+def test_spor_hakemi_iki_kez_sorulur_bulgular_birlesir(monkeypatch):
+    """Tek çağrı yanlış sonucu (Rumble in the Jungle: "the champion retained his title") 5 denemenin 1'inde kaçırdı."""
+    cevaplar = iter([[{"line": 3, "reason": "a"}], [{"line": 3, "reason": "b"}, {"line": 7, "reason": "title"}]])
+    semalar = []
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: semalar.append(sema) or {"problems": next(cevaplar)})
+    assert senaryo._hakem("spor", "k", "B", ["x"] * 8, "an") == [(3, "a"), (7, "title")]
+    assert len(semalar) == 2 and "result" in semalar[0]["properties"]  # önce sonucu yazar, sonra işaretler
+
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: semalar.append(sema) or {"problems": []})
+    senaryo._hakem("tuhaf", "k", "B", ["x"] * 8, "detay")
+    assert len(semalar) == 3 and "result" not in semalar[2]["properties"]  # öbür türler tek çağrı, eski şema
+
+
+def test_kadro_denetimi_gercek_gorunusu_duzeltir(monkeypatch):
+    """10-26: rol adıyla çizilen Foreman beyaz çıktı. Model kadro adını "the"sız dönebiliyor; sahneye kopyalanan eski
+    görünüş de değişir, eşleşen figüre dokunulmaz."""
+    eski = "a massive white man, shaved head"
+    sc = senaryo.Senaryo("B", "m", "d", [f"the fighter in blue: {eski}.", "the fighter in red: a lean Black man."],
+                         ["x"] * 7, [f"Close-up of {eski}, mid-swing."] + ["y"] * 6)  # fmt: skip
+    sc.kisiler = {"the fighter in blue": "George Foreman", "the fighter in red": "Muhammad Ali"}
+    istemler = []
+    yeni = "a massive Black man, shaved head"
+    cevap = {
+        "figures": [
+            {"name": "fighter in blue", "real_look": "Black", "certain": True, "matches": False, "new_look": yeni},
+            {"name": "the fighter in red", "real_look": "Black", "certain": True, "matches": True, "new_look": ""},
+        ]
+    }
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: istemler.append(istem) or cevap)
+    senaryo.kadro_denetle(sc, "The Rumble in the Jungle")
+    assert sc.oyuncular == [f"the fighter in blue: {yeni}", "the fighter in red: a lean Black man."]
+    assert sc.gorseller[0] == f"Close-up of {yeni}, mid-swing."
+    assert sc.kadro_onarim == [["the fighter in blue", f"{eski}.", yeni]]
+    assert "George Foreman" in istemler[0]
+
+    # emin olmadığı figüre dokunmaz (UFC 193: hakem Herb Dean'i yanlış yöne "düzeltti")
+    cevap["figures"][1].update(certain=False, matches=False, new_look="a pale man with red hair, plain red trunks")
+    senaryo.kadro_denetle(sc, "The Rumble in the Jungle")
+    assert sc.oyuncular[1] == "the fighter in red: a lean Black man."
+
+    sc.kisiler = {}  # gerçek kişisi bilinmeyen kadro (öbür türler) için çağrı yok
+    senaryo.kadro_denetle(sc, "B")
+    assert len(istemler) == 2
+
+
+def test_kadroda_gercek_ad_adsiz_etikete_doner():
+    """UFC 193 (10-26): model kuralı çiğneyip kadroya "Rousey", "Holm", "Dean" yazdı; ad her sahne istemine girer."""
+    sc = senaryo.Senaryo(
+        "B",
+        "m",
+        "Las Vegas arena, Rousey's corner lit.",
+        [
+            "Rousey: a woman with blonde hair, red shorts.",
+            "Holm: a woman with dark hair, red top.",
+            "Dean: a bald man, black shirt.",
+            "red_player: a man in a red shirt.",
+        ],
+        ["x"] * 7,
+        ["Holm kicks Rousey.", "Dean steps in between Holm and rousey."] + ["y"] * 5,
+    )
+    sc.kisiler = {"Rousey": "Ronda Rousey", "Holm": "Holly Holm", "Dean": "Herb Dean",
+                  "red_player": "The Liverpool players"}  # fmt: skip
+    sc.degisimler = [{"kim": "Rousey", "sahne": 3, "gorunum": "g", "soru": "s?", "beklenen": True}]
+    senaryo.adsiz_kadro(sc)
+    assert [o.partition(":")[0] for o in sc.oyuncular] == [
+        "the figure in red", "the first figure", "the figure in black", "red_player"]  # fmt: skip
+    assert sc.gorseller[:2] == [
+        "the first figure kicks the figure in red.",
+        "the figure in black steps in between the first figure and the figure in red.",
+    ]
+    assert "Rousey" not in sc.dunya and sc.degisimler[0]["kim"] == "the figure in red"
+    assert sc.kisiler["the figure in red"] == "Ronda Rousey" and "Rousey" not in sc.kisiler
 
 
 def test_sayi_ad_kapisi():

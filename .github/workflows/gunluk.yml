@@ -5,18 +5,17 @@ name: Günlük üretim
 # haftanın raporu. Sorun olursa "alarm" etiketli issue (Scryne'a bildirim).
 # GitHub planlı koşuları saatlerce geciktirip bazen hiç başlatmıyor (2026-10-05, 2026-10-09, 2026-10-13'te 06:17 koşusu
 # 14:10'da başladı, 16:47 hiç gelmedi): diğer cron'lar yedektir. Pist doluysa koşu ilk adımda biter (~20 sn).
-# 11:37 Earth'ün 14:00 yayınından, 21:37 kotanın kayan penceresi açıldıktan sonra telafi içindir.
 # buffer/api modunda kanal birkaç günlük planlı video stoğu (pist, durum.PIST_GUN) tutar; pist doluysa koşu
 # "Üretilecek iş var mı" adımında biter (teslim modunda: gün zaten üretildiyse).
 # Çok kanal: her kanal ayrı matris işi (kanallar/<id>/kanal.toml); biri düşerse diğerleri sürer, alarm kanal başına.
 # Matristeki kanal yayına hazırdır (token + Buffer bağlantısı); hazırlıktaki kanal buraya eklenmez (test_kanal.py).
-# SHORTS DURDU (2026-10-23, K-35): Earth'ün kart deneyi Faz 16 eşiğinde kaldı (Kalan %31, eşik %50); `uret` ve
-# `portfoy` işleri kapalı, yalnız film raporu koşar. Geri açmak için iki işteki `if: false` satırını kaldır ve
-# 11:37 / 21:37 cron'larını geri ekle (Earth'ün telafi koşuları).
+# Earth ve Orbit durdu (K-33, K-35): matriste yalnız Arena Lore'un üç serisi var (K-37, 2026-10-26'dan). `portfoy`
+# kapalı. 21:37: Cloudflare kotasının kayan penceresi açıldıktan sonra telafi (pistin kotaya takılan slotları).
 on:
   schedule:
     - cron: "17 6 * * *"
     - cron: "47 16 * * *"  # film raporunun yedeği: GitHub planlı koşuyu bazen hiç başlatmıyor
+    - cron: "37 21 * * *"
   workflow_dispatch:
 
 permissions:
@@ -26,7 +25,6 @@ permissions:
 
 jobs:
   uret:
-    if: false  # Shorts durdu (K-35, 2026-10-23); profil, token ve durum duruyor
     # sürüm sabit: ubuntu-latest 2026-10-19'dan itibaren Ubuntu 26'ya geçiyor (ffmpeg/onnxruntime riski; 10-09'da
     # ffprobe eksikliği bir günü yaktı). Yükseltme bilinçli yapılır.
     runs-on: ubuntu-24.04
@@ -37,8 +35,12 @@ jobs:
         # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
         # uzay (Lanternbug Tales) 2026-10-18'de durduruldu (K-33: 28 günde 158 izlenme, 0 abone); geri açmak için:
         #   - { kanal: uzay, sir: "_UZAY", etiket: teslim-uzay }
+        # earth 2026-10-23'te durdu (K-35): - { kanal: earth, sir: "", etiket: teslim }
+        # Arena Lore (K-37): üç seri tek kanal, token ve Buffer kanalı ortak; durum, havuz ve yayın saati seri başına
         include:
-          - { kanal: earth, sir: "", etiket: teslim }
+          - { kanal: futbol, sir: "_SPOR", etiket: teslim-futbol }
+          - { kanal: mma, sir: "_SPOR", etiket: teslim-mma }
+          - { kanal: boks, sir: "_SPOR", etiket: teslim-boks }
     concurrency:
       # dal denemesi main'in kuyruğunu geciktirmesin, bekleyen main koşusunu da iptal ettirmesin
       group: gunluk-${{ matrix.kanal }}-${{ github.ref_name }}

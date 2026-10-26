@@ -83,13 +83,18 @@ What it is: {konu}
 
 Write 7-8 scenes, 75-90 words in total. Each scene = one spoken line (5-12 words) + one illustration.
 Opening line: {kalip}
+If the source covers a whole event or fight card, pick its single most dramatic fight or moment and tell only that
+story; mention another fight only if it changed this one.
 Then tell it like a storyteller who was in the crowd, not like a match report: who was expected to win and why, the
 moment it turned, how it ended, what it changed. Name the fighters, players or teams in every line about them; call
-someone "the champion" or "the challenger" only if the source gives them that title for this event. Every line must
+someone "the champion" or "the challenger" only if the source gives them that title for this event, and remember that
+a champion who loses no longer holds the title. Every line must
 state something that happened: no filler about buzz, anticipation or atmosphere, no "forever", "made history" or "the
 rest is history". A line that only lists results or statistics is a wasted line. Use at most two numbers in the whole
 script
 (a score counts as one): the most striking ones.
+After the opening line, tell the rest in time order; a line that goes back in time says so ("Before the bout…").
+The script must say how it ended (who won, the final score or how the fight was stopped) before or in the last line.
 Last line: the payoff or the consequence, short and memorable, so the viewer wants to watch again.
 Rules:
 - Spoken, plain English that reads naturally aloud. Past tense. No "did you know", no questions to the viewer, no
@@ -119,8 +124,11 @@ GORSEL_KURALI = {
     "banners, scoreboards, numbered shirts, tickets, newspapers, trophies with engravings) and never quote words. "
     "Never try to draw a real, recognizable person: every athlete, coach and referee is an anonymous figure described "
     "only by build, hair, skin tone and the colors of their kit, shorts or gloves, and real names never appear in an "
-    "image description, a cast name or a cast look: name the cast by role (the champion, the challenger, the striker, "
-    "the keeper). Role names are for the illustrator only; spoken lines always use the real names. Kits are plain "
+    "image description, a cast name or a cast look: name the cast by side and kit color (the fighter in red, the "
+    "fighter in blue, the striker in white, the keeper in green), never by a title such as champion, challenger or "
+    "favorite, and write the real athlete or team only in the cast's person field. Give each figure the real "
+    "athlete's skin tone, build and hair at that event; never change them to tell two figures apart: the kit colors "
+    "do that. Role names are for the illustrator only; spoken lines always use the real names. Kits are plain "
     "solid colors: no logos, crests, badges, sponsor marks or league branding. Never show blood, cuts, swollen faces "
     "or injuries: show a punch as motion and the crowd's reaction, a fallen fighter from behind, a referee stepping "
     "in. Each scene shows one place at one moment from one camera: "
@@ -191,8 +199,20 @@ Flag a line (title = line 0) only if it:
 - the title gives away the moral or names an animal that is not in the fable.
 Do not flag wry wording, small added details that fit the fable, or style choices. Return only real problems.""",
 }
-# spor da olgu denetimi: aynı hakem (sayı, ad, tarih, sıra; kim kimi yendi)
-HAKEM_ISTEM["spor"] = HAKEM_ISTEM["tuhaf"]
+# spor: aynı olgu hakemi + sonuç ve unvan denetimi. Ortak istemle Rumble in the Jungle (10-26 denemesi) "Ali won by
+# knockout, the champion retained his title" satırını temiz geçti: şampiyon Foreman'dı, unvan el değiştirdi.
+HAKEM_ISTEM["spor"] = HAKEM_ISTEM["tuhaf"].replace(
+    " Return only real problems.",
+    """
+Sports results are where scripts go wrong. For every line check who won and who lost, the score, the round or minute,
+the method, and who held which title or status before and after the event: a champion who loses no longer holds the
+title, and a challenger who wins becomes the champion. Flag "the champion", "the challenger", "the favorite" or "the
+underdog" when it points to the wrong person, or when the line does not make clear who it means. Flag the last line
+if no line says how it ended (who won, the final score or how the fight was stopped).
+First fill "result" from the SOURCE alone (who won, who lost, how it ended, who held the title or status before and
+after; "none" if there was no title), then check every line against it.
+Return only real problems.""",
+)
 
 ONARIM_ISTEM = """SOURCE:
 <<<
@@ -289,6 +309,29 @@ SORUN_SEMA = {
     },
     "required": ["problems"],
 }
+# spor hakemi önce sonucu kaynaktan yazar, sonra satırları ona göre işaretler: düz şemayla aynı satırı 3 denemenin
+# 2'sinde yakaladı (Rumble in the Jungle, 10-26); alan sırası modelin düşünme sırasıdır
+SORUN_SEMA_SPOR = {
+    "type": "object",
+    "properties": {
+        "result": {
+            "type": "object",
+            "properties": {
+                "winner": {"type": "string"},
+                "loser": {"type": "string"},
+                "how": {"type": "string"},
+                "title_before": {"type": "string"},
+                "title_after": {"type": "string"},
+            },
+            "required": ["winner", "loser", "how", "title_before", "title_after"],
+        },
+        **SORUN_SEMA["properties"],
+    },
+    "required": ["result", "problems"],
+}
+# Spor hakemi iki kez sorulur, bulgular birleşir: tek çağrı yanlış sonucu 5 denemenin 1'inde kaçırdı (10-26). Yanlış
+# skor/kazanan kanalı götürür; fazladan işaret yalnız bir onarım turuna mal olur.
+HAKEM_TEKRAR = {"spor": 2}
 ONARIM_SEMA = {
     "type": "object",
     "properties": {
@@ -344,6 +387,9 @@ class Senaryo:
     # hikâyede değişen görünüş (Fox Without A Tail, 10-13: kuyruk 2. satırda koptu, 3 karede yerindeydi):
     # {"kim", "sahne" (1'den), "gorunum", "soru", "beklenen"}; istem kodla eklenir, kare görme modeliyle denetlenir
     degisimler: list[dict] = field(default_factory=list)
+    # spor: kadro adı → canlandırdığı gerçek kişi/takım (çizere gitmez) ve görünüş denetiminin düzelttikleri
+    kisiler: dict[str, str] = field(default_factory=dict)
+    kadro_onarim: list[list[str]] = field(default_factory=list)  # [ad, eski görünüş, yeni görünüş]
 
 
 def sema(tur: str, moodlar: list[str]) -> dict:
@@ -360,8 +406,12 @@ def sema(tur: str, moodlar: list[str]) -> dict:
                 "type": "array",
                 "items": {
                     "type": "object",
-                    "properties": {"name": {"type": "string"}, "look": {"type": "string"}},
-                    "required": ["name", "look"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "look": {"type": "string"},
+                        **({"person": {"type": "string"}} if tur in KADRO_DENETIMI else {}),
+                    },
+                    "required": ["name", "look", *(["person"] if tur in KADRO_DENETIMI else [])],
                 },
             },
             "changes": {
@@ -614,8 +664,14 @@ def _hakem(tur: str, kisa: str, baslik: str, satirlar: list[str], kalip: str) ->
     veriyor" diye işaretleyince kanca onarıma gidip kalıbını kaybediyordu. Aralık dışı satır numarası düşer: onarım
     onu hiç düzeltemez, senaryo boşuna düşerdi."""
     istem = HAKEM_ISTEM[tur].format(metin=kisa, baslik=baslik, satirlar=_numarali(satirlar), acilis=KALIPLAR[kalip])
-    h = cf.sohbet(istem, SORUN_SEMA)
-    return [(p["line"], p["reason"]) for p in h["problems"] if 0 <= p["line"] <= len(satirlar)]
+    sorun: list[tuple[int, str]] = []
+    for i in range(HAKEM_TEKRAR.get(tur, 1)):
+        h = cf.sohbet(istem, SORUN_SEMA_SPOR if tur == "spor" else SORUN_SEMA)
+        onceki = {n for n, _ in sorun}
+        # ikinci çağrı yalnız ilkinin işaretlemediği satırları ekler: aynı satır iki kez onarıma gitmesin
+        sorun += [(p["line"], p["reason"]) for p in h["problems"]
+                  if 0 <= p["line"] <= len(satirlar) and (i == 0 or p["line"] not in onceki)]  # fmt: skip
+    return sorun
 
 
 def satir_cikar(tur: str, sc: Senaryo, sorun: list[tuple[int, str]], kaynak: str, kisa: str, kalip: str) -> bool:
@@ -717,6 +773,103 @@ def oyuncular(ham: list) -> list[str]:
     return sonuc
 
 
+KADRO_DENETIMI = ("spor",)
+KADRO_ISTEM = """These are the recurring figures of an illustrated short video about the real sports event "{baslik}".
+The illustrator never sees who a figure stands for, only its look, so the look alone must match the real person.
+{kadro}
+
+For every figure: first write how that real athlete, team or official looked at this event (skin tone, build, hair,
+age, sex), then whether you clearly know this (certain: false for a lesser-known person or a whole team), then whether
+the given look matches on all of these. If it does not, write the complete new look in plain visual words, keeping its
+kit colors and everything else that was right, with no names; if it matches, leave the new look empty."""
+# alan sırası düşünme sırası: önce gerçek görünüş, sonra kıyas (düz "fixes" listesi beyaz çizilen Foreman'ı 3/3 geçti).
+# `certain`: az bilinen kişide model yanılıyor (UFC 193, 10-26: hakem Herb Dean'i açık tenli yaptı), o zaman dokunulmaz
+KADRO_SEMA = {
+    "type": "object",
+    "properties": {
+        "figures": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string"},
+                    "real_look": {"type": "string"},
+                    "certain": {"type": "boolean"},
+                    "matches": {"type": "boolean"},
+                    "new_look": {"type": "string"},
+                },
+                "required": ["name", "real_look", "certain", "matches", "new_look"],
+            },
+        }
+    },
+    "required": ["figures"],
+}
+
+
+def _kadro_anahtari(ad: str) -> str:
+    """Model kadro adını kısaltıp dönebiliyor ("the challenger" → "challenger")."""
+    return re.sub(r"^the\s+", "", ad.strip().lower())
+
+
+def kadro_denetle(sc: Senaryo, baslik: str) -> None:
+    """Kadro gerçek kişinin görünüşüne uyuyor mu (Rumble in the Jungle, 10-26: rol adıyla çizilen Foreman beyaz ve kel
+    çıktı; model iki figürü ten rengiyle ayırmıştı). Görünüş kaynakta yazmaz, modelin genel bilgisinden gelir.
+    Düzeltilen görünüş sahne tariflerine de kopyalanmışsa orada da değişir."""
+    if not sc.kisiler:
+        return
+    kadro = []
+    for o in sc.oyuncular:
+        ad, _, tarif = o.partition(":")
+        if kisi := sc.kisiler.get(ad.strip()):
+            kadro.append(f"- {ad.strip()} = {kisi}; look: {tarif.strip()}")
+    if not kadro:
+        return
+    f = cf.sohbet(KADRO_ISTEM.format(baslik=baslik, kadro="\n".join(kadro)), KADRO_SEMA)
+    yeni = {_kadro_anahtari(d["name"]): d["new_look"].strip() for d in f["figures"]
+            if d.get("certain") and not d["matches"] and len(d["new_look"].split()) >= DEGISIM_KELIME}  # fmt: skip
+    for i, o in enumerate(sc.oyuncular):
+        ad, _, tarif = o.partition(":")
+        if (gorunum := yeni.get(_kadro_anahtari(ad))) and gorunum != tarif.strip():
+            sc.oyuncular[i] = f"{ad.strip()}: {gorunum}"
+            sc.gorseller = [g.replace(tarif.strip().rstrip("."), gorunum.rstrip(".")) for g in sc.gorseller]
+            sc.kadro_onarim.append([ad.strip(), tarif.strip(), gorunum])
+
+
+RENKLER = ("red", "blue", "white", "black", "green", "yellow", "gold", "orange", "purple", "gray", "grey", "pink",
+           "navy", "maroon", "silver", "brown")  # fmt: skip
+SIRA = ("first", "second", "third", "fourth")
+
+
+def _ozel_adlar(metin: str) -> set[str]:
+    """Büyük harfle başlayan kelimeler, küçük harfle ("The Liverpool players" kadro adıyla "the"de eşleşmesin)."""
+    return {k.lower() for k in re.findall(r"[^\W\d_]{3,}", metin) if k[0].isupper()} - {"the"}
+
+
+def adsiz_kadro(sc: Senaryo) -> None:
+    """Kadro adı gerçek kişinin adını taşıyorsa (UFC 193, 10-26: "Rousey", "Holm", "Dean") forma rengiyle adsız
+    etikete çevrilir ("the figure in red"): ad her sahne istemine girer, çizer gerçek kişinin benzerini dener (K-37).
+    Model bu kuralı istemde açıkça yazmasına rağmen çiğnedi. Etiket sahne tariflerinde ve değişimlerde de değişir."""
+    kullanilan = {o.partition(":")[0].strip().lower() for o in sc.oyuncular}
+    for i, o in enumerate(sc.oyuncular):
+        ad, _, tarif = o.partition(":")
+        ad = ad.strip()
+        kisi = sc.kisiler.get(ad, "")
+        if not {k.lower() for k in re.findall(r"[^\W\d_]{3,}", ad)} & _ozel_adlar(kisi):
+            continue
+        renk = next((r for r in RENKLER if re.search(rf"\b{r}\b", tarif, re.I)), None)
+        adaylar = ([f"the figure in {renk}"] if renk else []) + [f"the {s} figure" for s in SIRA]
+        yeni = next(a for a in adaylar if a not in kullanilan)
+        kullanilan.add(yeni)
+        desen = re.compile(rf"\b{re.escape(ad)}\b", re.I)
+        sc.oyuncular[i] = f"{yeni}: {tarif.strip()}"
+        sc.gorseller = [desen.sub(yeni, g) for g in sc.gorseller]
+        sc.dunya = desen.sub(yeni, sc.dunya)
+        for d in sc.degisimler:
+            if d["kim"] == ad:
+                d["kim"] = yeni
+        sc.kisiler[yeni] = sc.kisiler.pop(ad)
+
+
 def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list[str]) -> Senaryo:
     kisa = kisalt(kaynak, tur)
     istem = ISTEM[tur].format(baslik=baslik, metin=kisa, konu=konu, kalip=KALIPLAR[kalip]) + SAHNE_ISTEMI.format(
@@ -732,10 +885,15 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         gorseller=[x["image"] for x in s["scenes"]],
     )
     sc.degisimler = degisimler(s.get("changes"), sc.oyuncular, len(sc.gorseller))
+    if tur in KADRO_DENETIMI:
+        sc.kisiler = {str(o["name"]).replace(":", " ").strip(): str(o.get("person", "")).strip()
+                      for o in s["cast"] if isinstance(o, dict) and str(o.get("person", "")).strip()}  # fmt: skip
+        adsiz_kadro(sc)
     for tur_no in range(TUR_SAYISI):
         sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar, kalip)
         sc.turlar.append([[n, r[:300]] for n, r in sorun])
         if not sorun or (tur_no == TUR_SAYISI - 1 and satir_cikar(tur, sc, sorun, kaynak, kisa, kalip)):
+            kadro_denetle(sc, baslik)  # yalnız geçen senaryoya: düşecek senaryoya kota harcanmasın
             gorsel_temizle(sc)
             return sc
         if tur_no == TUR_SAYISI - 1:

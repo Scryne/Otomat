@@ -13,9 +13,9 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
-      matrix:  # yayındaki her kanalın token'ı (uzay 2026-10-18'de durdu, K-33; geri açılırsa buraya da eklenir)
+      matrix:  # yayındaki her kanalın token'ı (earth 10-23, uzay 10-18'de durdu; geri açılırsa buraya da eklenir)
         include:
-          - { kanal: earth, sir: "" }
+          - { kanal: futbol, sir: "_SPOR" }  # Arena Lore: üç seri tek token, futbol profili yeter
     env:
       OTOMAT_KANAL: ${{ matrix.kanal }}
     # sırlar yalnız onları kullanan adımda (gunluk.yml gibi): checkout, setup-uv ve uv sync görmesin
