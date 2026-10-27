@@ -421,6 +421,7 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
 
     db = durum.baglan(tmp_path / "d.db")
     monkeypatch.setenv("OTOMAT_YAYIN", "buffer")
+    monkeypatch.setenv("GITHUB_REF_NAME", "main")  # PR koşusunda "N/merge" gelir, marka adımı atlanırdı
     monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
     monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
     monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
