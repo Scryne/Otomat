@@ -424,6 +424,7 @@ def _hikaye_main(tmp_path, monkeypatch) -> tuple[list, list]:
     monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
     monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
     monkeypatch.setattr(gunluk, "rapor_yollari", lambda: {tmp_path / "gunluk.jsonl"})  # depodaki gerçek raporlar değil
+    monkeypatch.setattr(cf, "harcanan", lambda *a, **k: 0)  # gerçek Cloudflare analitiği değil
     monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
     monkeypatch.setattr(gunluk.rapor, "RAPORLAR", tmp_path)
     monkeypatch.setattr(gunluk, "HIKAYE", True)
@@ -476,6 +477,8 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
 
 
 def test_harcanan_neuron_son_24_saati_ve_bu_kosuyu_toplar(tmp_path, monkeypatch):
+    from otomat.hikaye import cf
+
     simdi = dt.datetime(2026, 10, 28, 21, 40, tzinfo=UTC)
     a, b = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
     a.write_text("\n".join(json.dumps(r) for r in [
@@ -487,7 +490,67 @@ def test_harcanan_neuron_son_24_saati_ve_bu_kosuyu_toplar(tmp_path, monkeypatch)
                              "dusen_hikayeler": [{"neuron": 700}]}) + "\n", encoding="utf-8")  # fmt: skip
     monkeypatch.setattr(gunluk, "rapor_yollari", lambda: {a, b})
     bu = [{"kosu_ani": "2026-10-28T21:37+00:00", "neuron": 1000}]
-    assert gunluk.harcanan_neuron(simdi, bu) == 3155 + 80 + 646 + 4 + 700 + 1000
+    rapordan = 3155 + 80 + 646 + 4 + 700 + 1000
+
+    def okunamaz(*a, **k):
+        raise cf.CFHatasi("analitik okunamadı")
+
+    monkeypatch.setattr(cf, "harcanan", okunamaz)
+    assert gunluk.harcanan_neuron(simdi, bu) == rapordan
+    # 10-28 00:43: raporlar ~3.100 neuron'u kaçırdı, Cloudflare'in sayımı büyükse o geçer (ve tersi)
+    monkeypatch.setattr(cf, "harcanan", lambda *a, **k: 9000)
+    assert gunluk.harcanan_neuron(simdi, bu) == 9000
+    monkeypatch.setattr(cf, "harcanan", lambda *a, **k: 10)
+    assert gunluk.harcanan_neuron(simdi, bu) == rapordan
+
+
+def test_cf_harcanan_analitik_gruplarini_toplar_hatada_cfhatasi(monkeypatch):
+    from otomat.hikaye import cf
+
+    monkeypatch.setattr(cf, "kimlik", lambda: ("hesap", "belirtec"))
+    istekler = []
+
+    def urlopen(istek, timeout):
+        istekler.append(json.loads(istek.data))
+        return _Yanit(json.dumps({"data": {"viewer": {"accounts": [{"aiInferenceAdaptiveGroups": [
+            {"sum": {"totalNeurons": 6881.4}}, {"sum": {"totalNeurons": 938.2}}]}]}}}).encode())  # fmt: skip
+
+    monkeypatch.setattr(cf.urllib.request, "urlopen", urlopen)
+    an = dt.datetime(2026, 10, 28, 15, 0, tzinfo=UTC).timestamp()
+    assert cf.harcanan(an) == 7820
+    assert istekler[0]["variables"] == {
+        "a": "hesap",
+        "s": "2026-10-27T15:00:00+00:00",
+        "e": "2026-10-28T15:00:00+00:00",
+    }
+    monkeypatch.setattr(cf.urllib.request, "urlopen",
+                        lambda istek, timeout: _Yanit(b'{"errors": [{"message": "not authorized"}]}'))  # fmt: skip
+    with pytest.raises(cf.CFHatasi, match="not authorized"):
+        cf.harcanan(an)
+
+
+@pytest.mark.parametrize(
+    "simdi, yayin, var",
+    [
+        ("2026-10-28T21:40", "2026-10-29T01:00", False),  # MMA: 06:17 geç kalır
+        ("2026-10-28T21:40", "2026-10-29T16:00", True),  # futbol: 06:17 yetişir
+        ("2026-10-29T06:20", "2026-10-29T16:00", False),  # 16:47 geç kalır
+        ("2026-10-29T16:50", "2026-10-29T21:00", False),  # boks: 21:37 geç kalır
+        ("2026-10-29T16:50", "2026-10-30T21:00", True),
+    ],
+)
+def test_yetisen_kosu_var(simdi, yayin, var):
+    an, slot = (dt.datetime.fromisoformat(x + "+00:00") for x in (simdi, yayin))
+    assert gunluk.yetisen_kosu_var(slot, an) is var
+
+
+def test_kosu_saatleri_is_akisinin_cronlariyla_ayni():
+    import yaml
+
+    is_akisi = yaml.safe_load((gunluk.KOK / ".github" / "workflows" / "gunluk.yml").read_text(encoding="utf-8"))
+    cronlar = is_akisi[True]["schedule"] if True in is_akisi else is_akisi["on"]["schedule"]  # YAML 1.1: on → True
+    saatler = sorted((int(c["cron"].split()[1]), int(c["cron"].split()[0])) for c in cronlar)
+    assert tuple(saatler) == gunluk.KOSU_SAATLERI
 
 
 def test_gercek_rapor_yollari_kotayi_paylasan_kanallari_kapsar():
@@ -497,14 +560,14 @@ def test_gercek_rapor_yollari_kotayi_paylasan_kanallari_kapsar():
             "raporlar/boks/gunluk.jsonl"} <= yollar  # fmt: skip
 
 
-@pytest.mark.parametrize("acil_saat, video", [(0, 0), (10**6, gunluk.EN_COK)])
-def test_kota_butcesi_yetmezken_uzak_slot_baslamaz_yakin_slot_denenir(tmp_path, monkeypatch, acil_saat, video):
-    """10-28: üç seri aynı anda üretirken futbol ve MMA kotaya yarı yolda takıldı, ~1.950 neuron boşa yandı."""
+@pytest.mark.parametrize("yetisen, video", [(True, 0), (False, gunluk.EN_COK)])
+def test_kota_butcesi_yetmezken_yetisen_kosusu_olan_slot_baslamaz(tmp_path, monkeypatch, yetisen, video):
+    """10-28: üç seri aynı anda üretirken futbol ve MMA kotaya yarı yolda takıldı, video çıkmadan neuron yandı."""
     an = dt.datetime.now(UTC).isoformat(timespec="minutes")
-    (tmp_path / "gunluk.jsonl").write_text(json.dumps({"kosu_ani": an, "neuron": 7000}) + "\n", encoding="utf-8")
-    monkeypatch.setattr(gunluk, "ACIL_SAAT", acil_saat)
+    (tmp_path / "gunluk.jsonl").write_text(json.dumps({"kosu_ani": an, "neuron": 7500}) + "\n", encoding="utf-8")
+    monkeypatch.setattr(gunluk, "yetisen_kosu_var", lambda yayin, simdi: yetisen)
     yayinlanan, _ = _hikaye_main(tmp_path, monkeypatch)
     assert len(yayinlanan) == video
     if not video:
         son = durum.jsonl_oku(tmp_path / "gunluk.jsonl")[-1]
-        assert son["durum"] == "bos" and son["cf_kalan"] == 3000
+        assert son["durum"] == "bos" and son["cf_kalan"] == 2500

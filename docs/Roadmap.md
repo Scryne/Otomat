@@ -789,13 +789,17 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     - Spor hakeminin ikinci çağrısı ara turda yalnız temiz görünen senaryoya (`_hakem(ara=, kirli=)`); kabul edilen
       metin yine iki çağrıdan geçer. Ertelenen bulgu için spor bir tur fazla alır (`EK_TUR`). Beklenen: video başına
       ~500 neuron az (~2.750 çeviri dahil, günde ~8.250).
-    - Seri işleri sırayla (`max-parallel: 1`, sıra MMA → futbol → boks, yayın saatine göre); `gunluk.harcanan_neuron`
-      bütün kanalların son 24 saatini rapor satırlarından toplar, kalan < 3.800 iken yayınına ≥ 24 saat olan slot
-      başlamaz (yakın slot yine denenir).
-    - Açık soru: kota penceresi. 10-27 21:00 koşusu ~10.300 harcadıktan sonra 00:43 koşusu ~5.200 daha harcayabildi;
-      ne düz kayan 24 saate ne 00:00 sıfırlamasına uyuyor (ya da bizim görsel tahminimiz Cloudflare'in sayımından
-      farklı). Cloudflare token'ında Account Analytics okuma yetkisi yok; eklenirse saatlik gerçek harcama okunur.
-    Ölçülecek: 10-29…11-04 haftasında video başına neuron (hedef ≤ 2.900) ve boş slot sayısı (hedef 0).
+    - Seri işleri sırayla (`max-parallel: 1`, sıra MMA → futbol → boks, yayın saatine göre).
+    - Scryne token'a Account Analytics: Read ekledi; Cloudflare'in saatlik sayımı (`aiInferenceAdaptiveGroups`):
+      10-27 21:00 koşusu 6.009 metin + 2.605 görsel = 8.614 (üç video, ~2.870/video), 10-28 00:43 koşusu 6.881 + 938.
+      **Görsel karesi 104,2 neuron** (4 karo; biz 6 karo, 156 sayıyorduk: `cf.GORSEL_NEURON` düzeltildi). Maliyetin
+      ~%75'i metin. 00:43 koşusunda raporlar ~3.100 metin neuron'unu kaçırdı (kaynağı bulunamadı; zaman aşımı yok).
+      Pencere kayan 24 saat, engel gecikmeli: 00:43'te pencerede 8,9k varken üç paralel iş 7,8k daha harcayabildi,
+      sonra 12:57'de (günlük sayaç 7,8k iken) kapalıydı. Paralel taşma ertesi günün bütçesini de yiyor.
+    - Bütçe (`gunluk.harcanan_neuron`): Cloudflare analitiği (`cf.harcanan`) ile rapor satırlarının büyüğü, analitik
+      okunamazsa raporlar. Kalan < 3.300 iken, önünde ona yetişen (slottan ≥ 2 sa önce başlayan) cron koşusu olan slot
+      başlamaz; yetişen koşusu olmayan slot yine denenir (`yetisen_kosu_var`, `KOSU_SAATLERI` cron'larla testte eşli).
+    Ölçülecek: 10-29…11-04 haftasında video başına neuron (Cloudflare sayımıyla hedef ≤ 2.500) ve boş slot (hedef 0).
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

@@ -25,8 +25,10 @@ METIN_MODELI = "@cf/openai/gpt-oss-120b"
 GORSEL_MODELI = "@cf/black-forest-labs/flux-2-klein-4b"
 # S13 (10-13): kuyruklu/kuyruksuz tilki 11 karenin 10'unda doğru, ~51 neuron; mistral-small JSON'u bozdu
 GORME_MODELI = "@cf/meta/llama-4-scout-17b-16e-instruct"
-GORSEL_BOYUT = (768, 1344)  # 9:16'ya en yakın; 6 karo × 26,05 neuron
-GORSEL_NEURON = 6 * 26.05
+GORSEL_BOYUT = (768, 1344)  # 9:16'ya en yakın
+# 4 karo × 26,05 (piksel / 512², yukarı yuvarlanır): Cloudflare analitiği 10-27 21:00'de 25 kareye 2.605, 10-28
+# 00:00'da 9 kareye 938 neuron saydı. Eskiden 6 karo (kenar başına yuvarlama) sayılıyordu, %50 fazla
+GORSEL_NEURON = 4 * 26.05
 REFERANS_NEURON = 5.37  # 512² altı girdi görseli başına (Workers AI fiyat sayfası, 10-13)
 REFERANS_KENAR = 504  # klein girdi görselleri 512x512'den küçük olmalı
 REFERANS_EN_COK = 4  # input_image_0..3
@@ -80,6 +82,36 @@ def kimlik() -> tuple[str, str]:
         raise CFHatasi("Cloudflare kimliği yok: CF_ACCOUNT_ID/CF_API_TOKEN ya da sirlar/cloudflare.json")
     d = json.loads(yol.read_text(encoding="utf-8"))
     return d["account_id"], d["api_token"]
+
+
+HARCAMA_SORGUSU = """query($a: String!, $s: Time!, $e: Time!) { viewer { accounts(filter: {accountTag: $a}) {
+  aiInferenceAdaptiveGroups(limit: 100, filter: {datetime_geq: $s, datetime_leq: $e}) { sum { totalNeurons } } } } }"""
+
+
+def harcanan(simdi: float | None = None, saat: int = 24) -> int:
+    """Hesabın son `saat` saatte harcadığı neuron, Cloudflare analitiğinden (token'da Account Analytics: Read, 10-28).
+    Bizim sayaç 10-28 00:43 koşusunda ~3.100 neuron'u kaçırdı: bütçe bu sayıya bakar. Hata CFHatasi olur."""
+    import datetime as dt
+
+    son = dt.datetime.fromtimestamp(simdi or time.time(), dt.UTC)
+    bas = son - dt.timedelta(hours=saat)
+    hesap, belirtec = kimlik()
+    degisken = {"a": hesap, "s": bas.isoformat(timespec="seconds"), "e": son.isoformat(timespec="seconds")}
+    govde = json.dumps({"query": HARCAMA_SORGUSU, "variables": degisken}).encode()
+    try:
+        istek = urllib.request.Request(
+            "https://api.cloudflare.com/client/v4/graphql",
+            govde,
+            {"Authorization": f"Bearer {belirtec}", "Content-Type": "application/json"},
+        )
+        with urllib.request.urlopen(istek, timeout=30) as yanit:
+            y = json.load(yanit)
+        if y.get("errors"):
+            raise CFHatasi(f"analitik: {str(y['errors'])[:200]}")
+        gruplar = y["data"]["viewer"]["accounts"][0]["aiInferenceAdaptiveGroups"]
+        return round(sum(g["sum"]["totalNeurons"] for g in gruplar))
+    except (*AG_HATALARI, ValueError, KeyError, IndexError, TypeError) as e:
+        raise CFHatasi(f"analitik okunamadı: {type(e).__name__}: {e}") from e
 
 
 def duzelt(x):

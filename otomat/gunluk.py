@@ -47,10 +47,12 @@ EN_COK = 2  # buffer/api: bir koşuda en çok video (~2.000 neuron/video; iki ka
 IKINCI_VIDEO_SN = 12 * 60  # koşu bu kadar sürdüyse ikinci video başlamaz (Üret adımının sınırı 33 dk)
 # Cloudflare bütçesi: kota hesap başına (bütün kanallar ortak), kayan 24 saat (hikaye/cf.py). Pistin uzak slotu, son 24
 # saatin harcaması bir videoya yer bırakmıyorsa başlatılmaz: 10-28'de üç seri aynı anda üretirken futbol ve MMA
-# kotaya yarı yolda takıldı, ~1.950 neuron video çıkmadan yandı. Yakın slot yine denenir (sonraki koşu yetişmeyebilir)
+# kotaya yarı yolda takıldı, video çıkmadı. Pencere kayan olduğu için boşa harcanan neuron ertesi günün bütçesinden de
+# düşer. Önünde yetişen başka koşu olmayan slot yine denenir
 CF_GUNLUK = 10_000
-VIDEO_BUTCE = 3_800  # spor videosu çeviri dahil 2.700-4.000 (10-27/28)
-ACIL_SAAT = 24  # yayınına bundan az kalan slot bütçeye bakılmadan denenir
+VIDEO_BUTCE = 3_300  # spor videosu, Cloudflare'in sayımıyla çeviri dahil ~2.900 (10-27 21:00, hakem kısılmadan)
+KOSU_SAATLERI = ((6, 17), (16, 47), (21, 37))  # gunluk.yml cron'ları (UTC; test eşleşmeyi denetler)
+YETISME_SAAT = 2  # slottan en az bu kadar önce başlayan koşu ona yetişir (üretim + Buffer ≤ ~45 dk, cron gecikmesi)
 BASLANGIC = time.monotonic()
 
 
@@ -708,8 +710,11 @@ def rapor_yollari() -> set[Path]:
 
 
 def harcanan_neuron(simdi: dt.datetime, bu_kosu: list[dict]) -> int:
-    """Son 24 saatte bütün kanalların harcadığı neuron: günlük raporlar (seri işleri sırayla koşar, öncekinin satırı
-    commit'lenmiş olur) ve bu koşunun henüz yazılmamış kayıtları. Koşu anı harcamanın başıdır: yaklaşık pencere."""
+    """Son 24 saatte hesabın harcadığı neuron: Cloudflare analitiği ile günlük raporların (seri işleri sırayla koşar,
+    öncekinin satırı commit'lenmiş olur; bu koşunun yazılmamış kayıtları dahil) büyüğü. Analitik birkaç dakika geriden
+    gelebilir, raporlar ise 10-28 00:43'te ~3.100 neuron'u kaçırdı; analitik okunamazsa raporlar."""
+    from otomat.hikaye import cf
+
     sinir = simdi - dt.timedelta(hours=24)
     toplam = 0
     for r in [s for y in rapor_yollari() for s in durum.jsonl_oku(y)] + bu_kosu:
@@ -719,7 +724,23 @@ def harcanan_neuron(simdi: dt.datetime, bu_kosu: list[dict]) -> int:
             continue
         if an >= sinir:
             toplam += kayit_neuron(r)
-    return toplam
+    try:
+        return max(toplam, cf.harcanan(simdi.timestamp()))
+    except cf.CFHatasi as e:
+        print(f"Cloudflare analitiği okunamadı ({e}); bütçe rapor satırlarından.")
+        return toplam
+
+
+def yetisen_kosu_var(yayin_ani: dt.datetime, simdi: dt.datetime) -> bool:
+    """Şimdiden sonra, `yayin_ani`ndan en az YETISME_SAAT önce başlayan bir cron koşusu var mı."""
+    son = yayin_ani - dt.timedelta(hours=YETISME_SAAT)
+    gun = simdi.date()
+    while (bas := dt.datetime.combine(gun, dt.time(0), dt.UTC)) <= son:
+        for s, d in KOSU_SAATLERI:
+            if simdi < bas.replace(hour=s, minute=d) <= son:
+                return True
+        gun += dt.timedelta(days=1)
+    return False
 
 
 def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:
@@ -918,7 +939,7 @@ def main() -> None:
                 if yayin_ani.date() > bugun + dt.timedelta(days=durum.PIST_GUN):
                     break
                 an = dt.datetime.now(dt.UTC)
-                if HIKAYE and yayin_ani - an > dt.timedelta(hours=ACIL_SAAT):
+                if HIKAYE and yetisen_kosu_var(yayin_ani, an):
                     kalan = CF_GUNLUK - harcanan_neuron(an, kayitlar)
                     if kalan < VIDEO_BUTCE:
                         (kayitlar[-1] if kayitlar else genel)["cf_kalan"] = kalan
