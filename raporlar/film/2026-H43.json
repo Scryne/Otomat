@@ -1,0 +1,47 @@
+{
+ "hafta": {
+  "views": 4,
+  "saat": 0.05,
+  "abone_net": 0
+ },
+ "abone_toplam": 0,
+ "public_video": 1,
+ "ypp_saat": 0.05,
+ "filmler": [
+  {
+   "id": "bx557A2rIHQ",
+   "baslik": "What If You Joined the Klondike Gold Rush in 1897?",
+   "yayin": "2026-10-24",
+   "sure": 638,
+   "bicim": "What if you",
+   "pencere_gun": 2,
+   "views": 4,
+   "saat": 0.05,
+   "ort_sn": 95,
+   "ort_yuzde": 15.02,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 4
+  }
+ ],
+ "kesitler": [],
+ "trafik": [
+  [
+   "YT_SEARCH",
+   2
+  ],
+  [
+   "RELATED_VIDEO",
+   1
+  ],
+  [
+   "YT_OTHER_PAGE",
+   1
+  ],
+  [
+   "NO_LINK_OTHER",
+   0
+  ]
+ ],
+ "son": "2026-10-25"
+}
