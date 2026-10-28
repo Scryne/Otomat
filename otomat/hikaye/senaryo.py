@@ -330,8 +330,13 @@ SORUN_SEMA_SPOR = {
     "required": ["result", "problems"],
 }
 # Spor hakemi iki kez sorulur, bulgular birleşir: tek çağrı yanlış sonucu 5 denemenin 1'inde kaçırdı (10-26). Yanlış
-# skor/kazanan kanalı götürür; fazladan işaret yalnız bir onarım turuna mal olur.
+# skor/kazanan kanalı götürür; fazladan işaret yalnız bir onarım turuna mal olur. Ara turda ikinci çağrı yalnız temiz
+# görünen senaryoya gider (bulunan sorun zaten onarıma gidiyor): 10-27/28'in dört spor videosu dört turun hepsini
+# kullandı, ikinci çağrılar video başına ~3.100 neuron'un ~500'üydü ve günde 3 video bedava 10.000'e sığmadı.
 HAKEM_TEKRAR = {"spor": 2}
+# Ertelenen ikinci çağrının bulgusu bir tur sonra onarılır: spor senaryosu bir tur fazla alır (tur yalnız gerekirse
+# harcanır; düşen hikâye yenisinin bütün maliyetine mal olur)
+EK_TUR = {"spor": 1}
 ONARIM_SEMA = {
     "type": "object",
     "properties": {
@@ -659,13 +664,18 @@ def _numarali(satirlar: list[str]) -> str:
     return "\n".join(f"{i}. {s}" for i, s in enumerate(satirlar, 1))
 
 
-def _hakem(tur: str, kisa: str, baslik: str, satirlar: list[str], kalip: str) -> list[tuple[int, str]]:
+def _hakem(
+    tur: str, kisa: str, baslik: str, satirlar: list[str], kalip: str, ara: bool = False, kirli: bool = False
+) -> list[tuple[int, str]]:
     """Hakem açılış kalıbını görür: `sonuc_once` sonucu, `ders` dersi baştan söyler; hakem bunu "sonu baştan
     veriyor" diye işaretleyince kanca onarıma gidip kalıbını kaybediyordu. Aralık dışı satır numarası düşer: onarım
-    onu hiç düzeltemez, senaryo boşuna düşerdi."""
+    onu hiç düzeltemez, senaryo boşuna düşerdi. `ara`: ara turda tekrar çağrısı yalnız ilk çağrı (ve `kirli` ise kod
+    kontrolü) temiz bulduysa yapılır; kabul edilen senaryo her zaman bütün çağrılardan geçmiş olur."""
     istem = HAKEM_ISTEM[tur].format(metin=kisa, baslik=baslik, satirlar=_numarali(satirlar), acilis=KALIPLAR[kalip])
     sorun: list[tuple[int, str]] = []
     for i in range(HAKEM_TEKRAR.get(tur, 1)):
+        if i and ara and (kirli or sorun):
+            break
         h = cf.sohbet(istem, SORUN_SEMA_SPOR if tur == "spor" else SORUN_SEMA)
         onceki = {n for n, _ in sorun}
         # ikinci çağrı yalnız ilkinin işaretlemediği satırları ekler: aynı satır iki kez onarıma gitmesin
@@ -889,14 +899,17 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
         sc.kisiler = {str(o["name"]).replace(":", " ").strip(): str(o.get("person", "")).strip()
                       for o in s["cast"] if isinstance(o, dict) and str(o.get("person", "")).strip()}  # fmt: skip
         adsiz_kadro(sc)
-    for tur_no in range(TUR_SAYISI):
-        sorun = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak) + _hakem(tur, kisa, sc.baslik, sc.satirlar, kalip)
+    tur_sayisi = TUR_SAYISI + EK_TUR.get(tur, 0)
+    for tur_no in range(tur_sayisi):
+        son = tur_no == tur_sayisi - 1
+        kod = kod_kontrolu(tur, sc.baslik, sc.satirlar, kaynak)
+        sorun = kod + _hakem(tur, kisa, sc.baslik, sc.satirlar, kalip, ara=not son, kirli=bool(kod))
         sc.turlar.append([[n, r[:300]] for n, r in sorun])
-        if not sorun or (tur_no == TUR_SAYISI - 1 and satir_cikar(tur, sc, sorun, kaynak, kisa, kalip)):
+        if not sorun or (son and satir_cikar(tur, sc, sorun, kaynak, kisa, kalip)):
             kadro_denetle(sc, baslik)  # yalnız geçen senaryoya: düşecek senaryoya kota harcanmasın
             gorsel_temizle(sc)
             return sc
-        if tur_no == TUR_SAYISI - 1:
+        if son:
             break
         f = cf.sohbet(
             ONARIM_ISTEM.format(
@@ -912,4 +925,4 @@ def yaz(tur: str, baslik: str, kaynak: str, konu: str, kalip: str, moodlar: list
                 sc.baslik = d["text"].strip()
             elif 1 <= d["line"] <= len(sc.satirlar):
                 sc.satirlar[d["line"] - 1] = d["text"].strip()
-    raise SenaryoHatasi(f"senaryo {TUR_SAYISI} turda hakemden geçmedi", sc.turlar)
+    raise SenaryoHatasi(f"senaryo {tur_sayisi} turda hakemden geçmedi", sc.turlar)

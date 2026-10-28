@@ -31,7 +31,8 @@ def _jsonl(k, satirlar):
 
 def test_matris_kanallari_okunur():
     # uzay 10-18'de, earth 10-23'te durdu (K-33, K-35); Arena Lore'un üç serisi 10-26'da açıldı (K-37)
-    assert [k.id for k in portfoy.aktif_kanallar()] == ["futbol", "mma", "boks"]
+    # matris sırası yayın saatine göre (seri işleri sırayla koşar, 10-28)
+    assert [k.id for k in portfoy.aktif_kanallar()] == ["mma", "futbol", "boks"]
 
 
 def test_portfoy_kanallari_yan_yana_ve_kotalar(kanallar):

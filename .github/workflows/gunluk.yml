@@ -31,6 +31,10 @@ jobs:
     timeout-minutes: 45
     strategy:
       fail-fast: false
+      # sırayla: Cloudflare kotası hesap başına ortak. Aynı anda üreten seriler birbirinin harcamasını göremiyor, kota
+      # yarı yolda bitince video çıkmadan neuron yanıyordu (10-28); sırayla koşan iş öncekinin rapor satırını görür
+      # (gunluk.harcanan_neuron). Sıra yayın saatine göre: MMA 01:00, futbol 16:00, boks 21:00 UTC
+      max-parallel: 1
       matrix:
         # sir: token secret eki (YT_TOKEN_JSON<sir>); etiket: Plan B Release öneki
         # uzay (Lanternbug Tales) 2026-10-18'de durduruldu (K-33: 28 günde 158 izlenme, 0 abone); geri açmak için:
@@ -38,8 +42,8 @@ jobs:
         # earth 2026-10-23'te durdu (K-35): - { kanal: earth, sir: "", etiket: teslim }
         # Arena Lore (K-37): üç seri tek kanal, token ve Buffer kanalı ortak; durum, havuz ve yayın saati seri başına
         include:
-          - { kanal: futbol, sir: "_SPOR", etiket: teslim-futbol }
           - { kanal: mma, sir: "_SPOR", etiket: teslim-mma }
+          - { kanal: futbol, sir: "_SPOR", etiket: teslim-futbol }
           - { kanal: boks, sir: "_SPOR", etiket: teslim-boks }
     concurrency:
       # dal denemesi main'in kuyruğunu geciktirmesin, bekleyen main koşusunu da iptal ettirmesin

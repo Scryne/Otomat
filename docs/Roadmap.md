@@ -781,6 +781,21 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     Düzeltilmiş Rumble: sonuç doğru, sıra doğru, iki figür de doğru; 2.383 neuron. Video başına 1.700-3.500 neuron
     (hakem turuna göre): günde 3 video bedava 10.000'e sığar, pist dolarken kotaya takılan slot sonraki koşuya kalır.
     Matris earth → futbol, mma, boks (`OTOMAT_YAYIN_*` = buffer); 21:37 telafi cron'u geri geldi. 379 test.
+  - 10-28: ilk public video (MMA, Pride 33) ~12 saatte 72 görüntüleme, 3 beğeni (Earth videoları ömür boyu 3-63).
+    **Günde 3 video bedava kotaya sığmadı:** 10-27/28'in dört videosu 2.666-3.715 neuron (+80-165 çeviri; üçünün
+    toplamı 10.334); 10-28'in iki koşusunda futbol ve MMA `KotaHatasi` ile düştü, yarı yolda ~1.950 neuron yandı,
+    10-29'un futbol/MMA slotu boş kaldı. Döküm (artifact meta.json): görsel sabit ~1.250-1.400 (8 × 156), kalanı
+    metin; her video dört hakem turunun hepsini kullandı ve her turda hakem iki kez soruldu. Düzeltme:
+    - Spor hakeminin ikinci çağrısı ara turda yalnız temiz görünen senaryoya (`_hakem(ara=, kirli=)`); kabul edilen
+      metin yine iki çağrıdan geçer. Ertelenen bulgu için spor bir tur fazla alır (`EK_TUR`). Beklenen: video başına
+      ~500 neuron az (~2.750 çeviri dahil, günde ~8.250).
+    - Seri işleri sırayla (`max-parallel: 1`, sıra MMA → futbol → boks, yayın saatine göre); `gunluk.harcanan_neuron`
+      bütün kanalların son 24 saatini rapor satırlarından toplar, kalan < 3.800 iken yayınına ≥ 24 saat olan slot
+      başlamaz (yakın slot yine denenir).
+    - Açık soru: kota penceresi. 10-27 21:00 koşusu ~10.300 harcadıktan sonra 00:43 koşusu ~5.200 daha harcayabildi;
+      ne düz kayan 24 saate ne 00:00 sıfırlamasına uyuyor (ya da bizim görsel tahminimiz Cloudflare'in sayımından
+      farklı). Cloudflare token'ında Account Analytics okuma yetkisi yok; eklenirse saatlik gerçek harcama okunur.
+    Ölçülecek: 10-29…11-04 haftasında video başına neuron (hedef ≤ 2.900) ve boş slot sayısı (hedef 0).
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

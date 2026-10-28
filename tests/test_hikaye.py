@@ -127,6 +127,33 @@ def test_spor_hakemi_iki_kez_sorulur_bulgular_birlesir(monkeypatch):
     assert len(semalar) == 3 and "result" not in semalar[2]["properties"]  # öbür türler tek çağrı, eski şema
 
 
+@pytest.mark.parametrize(
+    "ilk, kirli, cagri",
+    [([{"line": 3, "reason": "a"}], False, 1), ([], True, 1), ([], False, 2)],
+)
+def test_spor_hakeminin_ikinci_cagrisi_ara_turda_yalniz_temiz_senaryoya(monkeypatch, ilk, kirli, cagri):
+    """10-27/28: dört videonun hepsi dört turu kullandı; ara turda bulunan sorun zaten onarıma giderken ikinci çağrı
+    video başına ~500 neuron'du (günde 3 video bedava kotaya sığmadı)."""
+    cevaplar = iter([ilk, [{"line": 5, "reason": "b"}]])
+    cagrilar = []
+    monkeypatch.setattr(senaryo.cf, "sohbet", lambda istem, sema: cagrilar.append(1) or {"problems": next(cevaplar)})
+    senaryo._hakem("spor", "k", "B", ["x"] * 8, "an", ara=True, kirli=kirli)
+    assert len(cagrilar) == cagri
+
+
+def test_spor_senaryosu_kabulden_once_iki_hakemden_gecer_bir_tur_fazla_alir(monkeypatch):
+    """Ertelenen ikinci çağrının bulgusu sonraki turda onarılır: kabul edilen metin yine iki çağrıdan da geçmiştir."""
+    satirlar = [f"The champion threw punch number {k} that night." for k in "abcdefgh"]
+    sorunlu = [(4, "x")]
+    # her ara turda ilk çağrı sorun bulur (ikinci çağrı yok); son turda iki çağrı da temiz
+    hakemler = [sorunlu] * (senaryo.TUR_SAYISI + senaryo.EK_TUR["spor"] - 1) + [[], []]
+    _senaryo_yaz(monkeypatch, satirlar, hakemler)
+    monkeypatch.setattr(senaryo, "kod_kontrolu", lambda *a: [])
+    monkeypatch.setattr(senaryo, "kadro_denetle", lambda *a: None)
+    sc = senaryo.yaz("spor", "Fight", "the champion threw punches that night", "", "an", ["m"])
+    assert len(sc.turlar) == senaryo.TUR_SAYISI + 1 and sc.turlar[-1] == []
+
+
 def test_kadro_denetimi_gercek_gorunusu_duzeltir(monkeypatch):
     """10-26: rol adıyla çizilen Foreman beyaz çıktı. Model kadro adını "the"sız dönebiliyor; sahneye kopyalanan eski
     görünüş de değişir, eşleşen figüre dokunulmaz."""

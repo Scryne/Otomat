@@ -45,6 +45,12 @@ HIKAYE_DENEME = 3  # senaryo hakemden geçmezse o hikâye düşer, sıradaki den
 HAVUZ_ESIK = 21  # anlatılmamış hikâye bunun altına inince alarm (havuz genişletme işi ~3 hafta önceden görünsün)
 EN_COK = 2  # buffer/api: bir koşuda en çok video (~2.000 neuron/video; iki kanal günlük 10.000'lik kotayı paylaşır)
 IKINCI_VIDEO_SN = 12 * 60  # koşu bu kadar sürdüyse ikinci video başlamaz (Üret adımının sınırı 33 dk)
+# Cloudflare bütçesi: kota hesap başına (bütün kanallar ortak), kayan 24 saat (hikaye/cf.py). Pistin uzak slotu, son 24
+# saatin harcaması bir videoya yer bırakmıyorsa başlatılmaz: 10-28'de üç seri aynı anda üretirken futbol ve MMA
+# kotaya yarı yolda takıldı, ~1.950 neuron video çıkmadan yandı. Yakın slot yine denenir (sonraki koşu yetişmeyebilir)
+CF_GUNLUK = 10_000
+VIDEO_BUTCE = 3_800  # spor videosu çeviri dahil 2.700-4.000 (10-27/28)
+ACIL_SAAT = 24  # yayınına bundan az kalan slot bütçeye bakılmadan denenir
 BASLANGIC = time.monotonic()
 
 
@@ -687,6 +693,35 @@ def son_kayit() -> dict | None:
         return None
 
 
+def kayit_neuron(r: dict) -> int:
+    return (
+        r.get("neuron", 0)
+        + r.get("ceviri_neuron", 0)
+        + r.get("onarim_neuron", 0)
+        + sum(d.get("neuron", 0) for d in r.get("dusen_hikayeler", []))
+    )
+
+
+def rapor_yollari() -> set[Path]:
+    """Cloudflare hesabını paylaşan bütün kanalların günlük raporları (Earth'ün raporu kökte: kanal profilinden)."""
+    return {kanal.yukle(i).raporlar / "gunluk.jsonl" for i in kanal.hepsi()}
+
+
+def harcanan_neuron(simdi: dt.datetime, bu_kosu: list[dict]) -> int:
+    """Son 24 saatte bütün kanalların harcadığı neuron: günlük raporlar (seri işleri sırayla koşar, öncekinin satırı
+    commit'lenmiş olur) ve bu koşunun henüz yazılmamış kayıtları. Koşu anı harcamanın başıdır: yaklaşık pencere."""
+    sinir = simdi - dt.timedelta(hours=24)
+    toplam = 0
+    for r in [s for y in rapor_yollari() for s in durum.jsonl_oku(y)] + bu_kosu:
+        try:
+            an = dt.datetime.fromisoformat(r["kosu_ani"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        if an >= sinir:
+            toplam += kayit_neuron(r)
+    return toplam
+
+
 def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:
     """Hikâye havuzunda anlatılmamış kaç hikâye kaldı; azalınca alarm (havuz sessizce bitip kanal durmasın)."""
     kalan = sum(durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN) for p in paketler)
@@ -882,6 +917,14 @@ def main() -> None:
                 yayin_ani = yayin_slotu(db, dt.datetime.now(dt.UTC))
                 if yayin_ani.date() > bugun + dt.timedelta(days=durum.PIST_GUN):
                     break
+                an = dt.datetime.now(dt.UTC)
+                if HIKAYE and yayin_ani - an > dt.timedelta(hours=ACIL_SAAT):
+                    kalan = CF_GUNLUK - harcanan_neuron(an, kayitlar)
+                    if kalan < VIDEO_BUTCE:
+                        (kayitlar[-1] if kayitlar else genel)["cf_kalan"] = kalan
+                        print(f"{yayin_ani:%Y-%m-%d %H:%M}: Cloudflare'de ~{kalan} neuron kaldı (son 24 sa); uzak "
+                              "slot sonraki koşuya kalır.")  # fmt: skip
+                        break
             else:
                 yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)
             gun = yayin_ani.date() if pist else bugun

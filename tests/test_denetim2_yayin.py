@@ -412,9 +412,8 @@ def test_cloudflare_kesintisi_hikayeyi_yakmaz_kosuyu_dusurmez(tmp_path, monkeypa
 # --- main(), hikâye modunda uçtan uca ---------------------------------------------------------------------------
 
 
-def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monkeypatch):
-    """Bütün main() testleri HIKAYE=False koşuyordu: canlı kanalların akışı (havuz, marka, çeviri onarımı, neuron
-    alanları) hiç sınanmıyordu."""
+def _hikaye_main(tmp_path, monkeypatch) -> tuple[list, list]:
+    """main() hikâye modunda, sahte üretim (video başına 1.800 + 250 çeviri neuron): (yayınlananlar, çeviri onarımı)."""
     from otomat.hikaye import cf
     from otomat.hikaye import kaynaklar as hk
     from otomat.yayin import marka
@@ -424,6 +423,7 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
     monkeypatch.setenv("GITHUB_REF_NAME", "main")  # PR koşusunda "N/merge" gelir, marka adımı atlanırdı
     monkeypatch.setattr(gunluk.durum, "baglan", lambda: db)
     monkeypatch.setattr(gunluk, "RAPOR", tmp_path / "gunluk.jsonl")
+    monkeypatch.setattr(gunluk, "rapor_yollari", lambda: {tmp_path / "gunluk.jsonl"})  # depodaki gerçek raporlar değil
     monkeypatch.setattr(gunluk, "ALARM", tmp_path / "alarm.md")
     monkeypatch.setattr(gunluk.rapor, "RAPORLAR", tmp_path)
     monkeypatch.setattr(gunluk, "HIKAYE", True)
@@ -457,9 +457,15 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
         gunluk, "yayinla_buffer", lambda d, an, ad, al, db=None, yuklendi=None: yayinlanan.append(an) or f"v{ad}"
     )
     onarim = []
-    monkeypatch.setattr(gunluk, "ceviri_onarimi", lambda db_, yt, kayit, al: onarim.append(kayit["video_id"]))
-
+    monkeypatch.setattr(gunluk, "ceviri_onarimi", lambda db_, yt, kayit, al: onarim.append(kayit.get("video_id")))
     gunluk.main()
+    return yayinlanan, onarim
+
+
+def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monkeypatch):
+    """Bütün main() testleri HIKAYE=False koşuyordu: canlı kanalların akışı (havuz, marka, çeviri onarımı, neuron
+    alanları) hiç sınanmıyordu."""
+    yayinlanan, onarim = _hikaye_main(tmp_path, monkeypatch)
     satirlar = durum.jsonl_oku(tmp_path / "gunluk.jsonl")
     assert len(satirlar) == gunluk.EN_COK == len(yayinlanan) and onarim == [satirlar[-1]["video_id"]]
     for s in satirlar:
@@ -467,3 +473,38 @@ def test_main_hikaye_modunda_pisti_doldurur_kaydi_eksiksiz_yazar(tmp_path, monke
         assert s["neuron"] == 1800 + 250 and s["ceviri_neuron"] == 250 and s["ceviri_atlanan"] == ["es"]
         assert s["diller"] == ["de"] and s["video_id"].startswith("v")
     assert not (tmp_path / "alarm.md").exists()
+
+
+def test_harcanan_neuron_son_24_saati_ve_bu_kosuyu_toplar(tmp_path, monkeypatch):
+    simdi = dt.datetime(2026, 10, 28, 21, 40, tzinfo=UTC)
+    a, b = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    a.write_text("\n".join(json.dumps(r) for r in [
+        {"kosu_ani": "2026-10-27T21:00+00:00", "neuron": 9000},  # pencerenin dışında
+        {"kosu_ani": "2026-10-28T00:43+00:00", "neuron": 3155, "ceviri_neuron": 80},
+        {"kosu": "2026-10-28", "neuron": 500},  # koşu anı yok: sayılmaz
+    ]) + "\n{bozuk", encoding="utf-8")  # fmt: skip
+    b.write_text(json.dumps({"kosu_ani": "2026-10-28T12:57+00:00", "neuron": 646, "onarim_neuron": 4,
+                             "dusen_hikayeler": [{"neuron": 700}]}) + "\n", encoding="utf-8")  # fmt: skip
+    monkeypatch.setattr(gunluk, "rapor_yollari", lambda: {a, b})
+    bu = [{"kosu_ani": "2026-10-28T21:37+00:00", "neuron": 1000}]
+    assert gunluk.harcanan_neuron(simdi, bu) == 3155 + 80 + 646 + 4 + 700 + 1000
+
+
+def test_gercek_rapor_yollari_kotayi_paylasan_kanallari_kapsar():
+    """Kota hesap başına: duran Earth'ün kökteki raporu ve üç spor serisinin raporu bütçeye girer."""
+    yollar = {y.relative_to(gunluk.KOK).as_posix() for y in gunluk.rapor_yollari()}
+    assert {"raporlar/gunluk.jsonl", "raporlar/futbol/gunluk.jsonl", "raporlar/mma/gunluk.jsonl",
+            "raporlar/boks/gunluk.jsonl"} <= yollar  # fmt: skip
+
+
+@pytest.mark.parametrize("acil_saat, video", [(0, 0), (10**6, gunluk.EN_COK)])
+def test_kota_butcesi_yetmezken_uzak_slot_baslamaz_yakin_slot_denenir(tmp_path, monkeypatch, acil_saat, video):
+    """10-28: üç seri aynı anda üretirken futbol ve MMA kotaya yarı yolda takıldı, ~1.950 neuron boşa yandı."""
+    an = dt.datetime.now(UTC).isoformat(timespec="minutes")
+    (tmp_path / "gunluk.jsonl").write_text(json.dumps({"kosu_ani": an, "neuron": 7000}) + "\n", encoding="utf-8")
+    monkeypatch.setattr(gunluk, "ACIL_SAAT", acil_saat)
+    yayinlanan, _ = _hikaye_main(tmp_path, monkeypatch)
+    assert len(yayinlanan) == video
+    if not video:
+        son = durum.jsonl_oku(tmp_path / "gunluk.jsonl")[-1]
+        assert son["durum"] == "bos" and son["cf_kalan"] == 3000
