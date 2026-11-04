@@ -1,0 +1,81 @@
+{
+ "hafta": {
+  "views": 108,
+  "saat": 0.23333333333333334,
+  "abone_net": 1
+ },
+ "abone_toplam": 1,
+ "public_video": 5,
+ "ypp_saat": 0.05,
+ "filmler": [
+  {
+   "id": "bx557A2rIHQ",
+   "baslik": "What If You Joined the Klondike Gold Rush in 1897?",
+   "yayin": "2026-10-24",
+   "sure": 638,
+   "bicim": "What if you",
+   "pencere_gun": 7,
+   "views": 5,
+   "saat": 0.05,
+   "ort_sn": 70,
+   "ort_yuzde": 11.01,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 6
+  },
+  {
+   "id": "RZVJfNXbYyk",
+   "baslik": "Titanic Was Only Her Second Disaster at Sea",
+   "yayin": "2026-10-31",
+   "sure": 463,
+   "bicim": "anlatı",
+   "pencere_gun": 2,
+   "views": 0,
+   "saat": 0.0,
+   "ort_sn": 0,
+   "ort_yuzde": 0,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 0
+  }
+ ],
+ "kesitler": [
+  {
+   "id": "Unycrp_k0ps",
+   "baslik": "You Just Caught Klondicitis",
+   "yayin": "2026-10-26",
+   "sure": 49,
+   "film_id": "bx557A2rIHQ",
+   "views": 2,
+   "engaged": 1,
+   "ort_yuzde": 12.64
+  },
+  {
+   "id": "ynN_CDbuPkc",
+   "baslik": "1,500 Steps of Ice, Thirty Times",
+   "yayin": "2026-10-28",
+   "sure": 44,
+   "film_id": "bx557A2rIHQ",
+   "views": 60,
+   "engaged": 14,
+   "ort_yuzde": 14.19
+  },
+  {
+   "id": "x5jnVcow9A8",
+   "baslik": "A Single Egg Cost $3 in Dawson City",
+   "yayin": "2026-10-30",
+   "sure": 35,
+   "film_id": "bx557A2rIHQ",
+   "views": 44,
+   "engaged": 8,
+   "ort_yuzde": 241.1
+  }
+ ],
+ "trafik": [
+  [
+   "YT_CHANNEL",
+   2
+  ]
+ ],
+ "son": "2026-11-01"
+}
