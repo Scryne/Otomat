@@ -1,0 +1,126 @@
+{
+ "hafta": {
+  "views": 1756,
+  "saat": 3.216666666666667,
+  "abone_net": 3
+ },
+ "abone_toplam": 4,
+ "public_video": 9,
+ "ypp_saat": 0.05,
+ "filmler": [
+  {
+   "id": "bx557A2rIHQ",
+   "baslik": "What If You Joined the Klondike Gold Rush in 1897?",
+   "yayin": "2026-10-24",
+   "sure": 638,
+   "bicim": "What if you",
+   "pencere_gun": 7,
+   "views": 5,
+   "saat": 0.05,
+   "ort_sn": 70,
+   "ort_yuzde": 11.01,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 8
+  },
+  {
+   "id": "RZVJfNXbYyk",
+   "baslik": "Titanic Was Only Her Second Disaster at Sea",
+   "yayin": "2026-10-31",
+   "sure": 463,
+   "bicim": "anlatı",
+   "pencere_gun": 7,
+   "views": 0,
+   "saat": 0.0,
+   "ort_sn": 0,
+   "ort_yuzde": 0,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 0
+  },
+  {
+   "id": "114LWGoPTLM",
+   "baslik": "What If You Were a Lowell Mill Girl in 1836?",
+   "yayin": "2026-11-07",
+   "sure": 507,
+   "bicim": "What if you",
+   "pencere_gun": 2,
+   "views": 4,
+   "saat": 0.0,
+   "ort_sn": 0,
+   "ort_yuzde": 0,
+   "kalan_30": null,
+   "abone": 0,
+   "toplam_views": 4
+  }
+ ],
+ "kesitler": [
+  {
+   "id": "Unycrp_k0ps",
+   "baslik": "You Just Caught Klondicitis",
+   "yayin": "2026-10-26",
+   "sure": 49,
+   "film_id": "bx557A2rIHQ",
+   "views": 2,
+   "engaged": 1,
+   "ort_yuzde": 12.64
+  },
+  {
+   "id": "ynN_CDbuPkc",
+   "baslik": "1,500 Steps of Ice, Thirty Times",
+   "yayin": "2026-10-28",
+   "sure": 44,
+   "film_id": "bx557A2rIHQ",
+   "views": 60,
+   "engaged": 14,
+   "ort_yuzde": 14.19
+  },
+  {
+   "id": "x5jnVcow9A8",
+   "baslik": "A Single Egg Cost $3 in Dawson City",
+   "yayin": "2026-10-30",
+   "sure": 35,
+   "film_id": "bx557A2rIHQ",
+   "views": 44,
+   "engaged": 8,
+   "ort_yuzde": 241.1
+  },
+  {
+   "id": "HntNOEW2_qM",
+   "baslik": "She Jumped From a Lifeboat on Purpose",
+   "yayin": "2026-11-02",
+   "sure": 39,
+   "film_id": "RZVJfNXbYyk",
+   "views": 33,
+   "engaged": 12,
+   "ort_yuzde": 53.86
+  },
+  {
+   "id": "7U4UgKdHgg8",
+   "baslik": "An Officer Handed Her a Baby on the Titanic",
+   "yayin": "2026-11-04",
+   "sure": 42,
+   "film_id": "RZVJfNXbYyk",
+   "views": 1287,
+   "engaged": 216,
+   "ort_yuzde": 56.03
+  },
+  {
+   "id": "ivLA_2unepM",
+   "baslik": "The Phone Call That Couldn't Have Happened",
+   "yayin": "2026-11-06",
+   "sure": 55,
+   "film_id": "RZVJfNXbYyk",
+   "views": 431,
+   "engaged": 212,
+   "ort_yuzde": 41.9
+  }
+ ],
+ "trafik": [
+  [
+   "YT_SEARCH",
+   6
+  ]
+ ],
+ "son": "2026-11-08"
+}
