@@ -1,0 +1,21 @@
+{
+ "kanal": "mma",
+ "hafta": {
+  "views": 2023,
+  "engaged_views": 743,
+  "abone_net": 3,
+  "abone_toplam": 12,
+  "video_sayisi": 31
+ },
+ "son_56_gun": {
+  "views": 5283,
+  "engaged_views": 1847,
+  "abone_net": 12,
+  "abone_toplam": 12,
+  "video_sayisi": 31,
+  "bas": "2026-10-28",
+  "son": "2026-11-08"
+ },
+ "analitik_hatasi": null,
+ "yazildi": "2026-11-11"
+}
