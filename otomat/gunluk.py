@@ -20,6 +20,7 @@ import random
 import re
 import shutil
 import signal
+import sqlite3
 import time
 from pathlib import Path
 
@@ -743,6 +744,36 @@ def yetisen_kosu_var(yayin_ani: dt.datetime, simdi: dt.datetime) -> bool:
     return False
 
 
+def grup_bos_slotlari(simdi: dt.datetime) -> dict[str, dt.datetime]:
+    """Aynı gruptaki öteki serilerin (K-37: spor → mma, futbol, boks) pistteki en yakın boş slotu. Durum veritabanları
+    salt-okunur açılır (öteki serinin işi commit'leyeceği dosyaya yazılmaz); pisti doluysa ya da veritabanı yoksa seri
+    listede yer almaz."""
+    ben = kanal.aktif()
+    if not ben.grup:
+        return {}
+    sinir = simdi.date() + dt.timedelta(days=durum.PIST_GUN)
+    slotlar = {}
+    for kimlik in kanal.hepsi():
+        k = kanal.yukle(kimlik)
+        if k.id == ben.id or k.grup != ben.grup or not k.durum.exists():
+            continue
+        db = sqlite3.connect(f"file:{k.durum.as_posix()}?mode=ro", uri=True)
+        try:
+            slot = durum.yayin_slotu(db, simdi, k.yayin_saati_utc)
+        finally:
+            db.close()
+        if slot.date() <= sinir:
+            slotlar[k.id] = slot
+    return slotlar
+
+
+def oncelikli_seriler(yayin_ani: dt.datetime, simdi: dt.datetime) -> list[str]:
+    """Bütçede bu slottan önce gelen seriler: en yakın boş slotu `yayin_ani`ndan erken olanlar. Ortak Cloudflare
+    bütçesi slot zamanına göre dağıtılır (11-14 kararı): 11-06'dan beri MMA ve futbol (sırada önce koşuyorlar) pistin
+    iki gün ötesini doldururken boksun yarınki slotuna bütçe kalmadı, boks bir hafta hiç üretmedi."""
+    return sorted(k for k, slot in grup_bos_slotlari(simdi).items() if slot < yayin_ani)
+
+
 def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:
     """Hikâye havuzunda anlatılmamış kaç hikâye kaldı; azalınca alarm (havuz sessizce bitip kanal durmasın)."""
     kalan = sum(durum.taze_mi(db, p, bugun, HIKAYE_TEKRAR_GUN) for p in paketler)
@@ -941,10 +972,16 @@ def main() -> None:
                 an = dt.datetime.now(dt.UTC)
                 if HIKAYE and yetisen_kosu_var(yayin_ani, an):
                     kalan = CF_GUNLUK - harcanan_neuron(an, kayitlar)
-                    if kalan < VIDEO_BUTCE:
-                        (kayitlar[-1] if kayitlar else genel)["cf_kalan"] = kalan
-                        print(f"{yayin_ani:%Y-%m-%d %H:%M}: Cloudflare'de ~{kalan} neuron kaldı (son 24 sa); uzak "
-                              "slot sonraki koşuya kalır.")  # fmt: skip
+                    # erken slotu boş olan her öteki seriye bir video payı bırakılır (önce her serinin en yakın slotu)
+                    once = oncelikli_seriler(yayin_ani, an)
+                    if kalan < VIDEO_BUTCE * (1 + len(once)):
+                        hedef = kayitlar[-1] if kayitlar else genel
+                        hedef["cf_kalan"] = kalan
+                        if once:
+                            hedef["oncelik"] = once
+                        print(f"{yayin_ani:%Y-%m-%d %H:%M}: Cloudflare'de ~{kalan} neuron kaldı (son 24 sa)"
+                              + (f", önce {', '.join(once)} serisinin daha erken slotu" if once else "")
+                              + "; uzak slot sonraki koşuya kalır.")  # fmt: skip
                         break
             else:
                 yayin_ani = dt.datetime.combine(bugun + dt.timedelta(days=1), dt.time(YAYIN_SAATI_UTC), dt.UTC)

@@ -800,6 +800,20 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
       okunamazsa raporlar. Kalan < 3.300 iken, önünde ona yetişen (slottan ≥ 2 sa önce başlayan) cron koşusu olan slot
       başlamaz; yetişen koşusu olmayan slot yine denenir (`yetisen_kosu_var`, `KOSU_SAATLERI` cron'larla testte eşli).
     Ölçülecek: 10-29…11-04 haftasında video başına neuron (Cloudflare sayımıyla hedef ≤ 2.500) ve boş slot (hedef 0).
+  - 11-14 (bitirme denetimi; karar ana oturumda, Scryne'ın "kalan her şeyi bitir" yetkisiyle): **boks 11-06'dan beri
+    hiç video üretmedi.** Son 7 günün her boks koşusu `bos` (cf_kalan 697-2.986). Sırada önce koşan MMA ve futbol her
+    koşuda iki video üretip pistin iki gün ötesini dolduruyor, boksun ertesi günkü slotuna bütçe kalmıyordu: 11-14
+    sabahı MMA ve futbol 11-15/16'ya kadar dolu, boksun son videosu 11-06. Kural "bütçe ≥ 3.300 ise üret"ti; seri
+    sırası (yayın saatine göre MMA → futbol → boks) fiilen öncelik sırası olmuştu.
+    **Karar: ortak bütçe slot zamanına göre paylaşılır.** Yetişen koşusu olan bir slot için eşik `3.300 × (1 + n)`;
+    n, aynı gruptaki ve en yakın boş slotu bu slottan erken olan öteki seri sayısı (`gunluk.oncelikli_seriler`,
+    `grup_bos_slotlari`: öteki serilerin durum veritabanı salt-okunur). Böylece en erken boş slot her zaman bütçenin
+    ilk payını alır; hiçbir seri başkasının uzak slotu yüzünden yakın slotunu kaçırmaz. Yetişen koşusu olmayan slot
+    eskisi gibi yine denenir. Testler: `test_ortak_butce_once_erken_slotu_bos_seriye_kalir` (eski eşikle iki durum
+    düşüyor), `test_grup_bos_slotlari_oteki_serilerin_en_yakin_bos_slotu`. Kuru koşu (gerçek durumlar, bellekte;
+    11-14 06:17, 10.000 neuron): eski kural MMA 11-15 + 11-16, futbol 11-16; boks ertelenir. Yeni kural MMA 11-15 + 11-16,
+    futbol ertelenir (11-15'e kadar dolu), boks 11-14'ü üretir. 6.000 neuron'la: eski kuralda yalnız MMA, yeni kuralda
+    yalnız boks (en erken boş slot). Ölçülecek: 11-15…11-21 haftasında üç serinin boş slotu (hedef 0).
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

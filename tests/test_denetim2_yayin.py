@@ -412,7 +412,7 @@ def test_cloudflare_kesintisi_hikayeyi_yakmaz_kosuyu_dusurmez(tmp_path, monkeypa
 # --- main(), hikâye modunda uçtan uca ---------------------------------------------------------------------------
 
 
-def _hikaye_main(tmp_path, monkeypatch) -> tuple[list, list]:
+def _hikaye_main(tmp_path, monkeypatch, grup: dict | None = None) -> tuple[list, list]:
     """main() hikâye modunda, sahte üretim (video başına 1.800 + 250 çeviri neuron): (yayınlananlar, çeviri onarımı)."""
     from otomat.hikaye import cf
     from otomat.hikaye import kaynaklar as hk
@@ -432,6 +432,8 @@ def _hikaye_main(tmp_path, monkeypatch) -> tuple[list, list]:
     monkeypatch.setattr(gunluk, "buffer_istekleri", lambda _: 0)
     monkeypatch.setattr(gunluk, "analitik_adimi", lambda *a: (object(), object()))
     monkeypatch.setattr(gunluk, "pist_denetimi", lambda *a: None)
+    # öteki serilerin boş slotu (simdi'ye göre); depodaki gerçek seri veritabanları değil
+    monkeypatch.setattr(gunluk, "grup_bos_slotlari", lambda simdi: {k: simdi + f for k, f in (grup or {}).items()})
     monkeypatch.setattr(marka, "kontrol", lambda yt: "tamam")
     paketler = [_hikaye_paketi(f"H{i}") for i in range(30)]
     monkeypatch.setattr(hk, "topla", lambda: (paketler, []))
@@ -571,3 +573,51 @@ def test_kota_butcesi_yetmezken_yetisen_kosusu_olan_slot_baslamaz(tmp_path, monk
     if not video:
         son = durum.jsonl_oku(tmp_path / "gunluk.jsonl")[-1]
         assert son["durum"] == "bos" and son["cf_kalan"] == 2500
+
+
+@pytest.mark.parametrize(
+    "grup, video",
+    [
+        ({"futbol": dt.timedelta(minutes=30), "boks": dt.timedelta(minutes=40)}, 0),  # ikisinin slotu daha erken
+        ({"futbol": dt.timedelta(minutes=30), "boks": dt.timedelta(days=10)}, 1),  # yalnız futbol erken: bir pay
+        ({"futbol": dt.timedelta(days=10), "boks": dt.timedelta(days=10)}, gunluk.EN_COK),  # öncelikli seri yok
+    ],
+)
+def test_ortak_butce_once_erken_slotu_bos_seriye_kalir(tmp_path, monkeypatch, grup, video):
+    """11-06'dan beri boks hiç üretmedi: sırada önce koşan MMA ve futbol pistin iki gün ötesini doldururken ortak
+    Cloudflare bütçesini yiyordu. Bütçe 7.000 neuron'ken (eski kural: ≥3.300 yeter) erken slotu boş iki seri varsa
+    yetişen koşusu olan slot başlamaz; tek seri varsa bir video, hiç yoksa iki video."""
+    an = dt.datetime.now(UTC).isoformat(timespec="minutes")
+    (tmp_path / "gunluk.jsonl").write_text(json.dumps({"kosu_ani": an, "neuron": 3000}) + "\n", encoding="utf-8")
+    monkeypatch.setattr(gunluk, "yetisen_kosu_var", lambda yayin, simdi: True)
+    yayinlanan, _ = _hikaye_main(tmp_path, monkeypatch, grup)
+    assert len(yayinlanan) == video
+    son = durum.jsonl_oku(tmp_path / "gunluk.jsonl")[-1]
+    if video < gunluk.EN_COK:
+        assert son["oncelik"] == sorted(k for k, f in grup.items() if f < dt.timedelta(days=1))
+
+
+def test_grup_bos_slotlari_oteki_serilerin_en_yakin_bos_slotu(tmp_path, monkeypatch):
+    """Aynı grubun öteki serileri: boks pisti boş → yarının 21:00'i; futbolun önümüzdeki üç günü dolu → listede yok;
+    grubu olmayan earth sayılmaz. Veritabanları salt-okunur açılır."""
+    import dataclasses
+
+    simdi = dt.datetime(2026, 11, 14, 2, 0, tzinfo=UTC)
+    profiller = {}
+    for kimlik in ("mma", "futbol", "boks", "earth"):
+        db_yolu = tmp_path / f"{kimlik}.db"
+        durum.baglan(db_yolu).close()
+        profiller[kimlik] = dataclasses.replace(kanal.yukle(kimlik), durum=db_yolu)
+    db = sqlite3.connect(profiller["futbol"].durum)
+    for g in range(4):
+        an = dt.datetime(2026, 11, 14 + g, 16, tzinfo=UTC).isoformat()
+        db.execute("INSERT INTO secimler (tarih, anahtar, hash, konu, kalip, sablon, baslik, yayin_ani, video_id)"
+                   " VALUES (?, 'a', 'h', 'k', 'p', 's', 'b', ?, ?)", (f"2026-11-{14 + g}", an, f"v{g}"))  # fmt: skip
+    db.commit()
+    db.close()
+    monkeypatch.setattr(kanal, "aktif", lambda: profiller["mma"])
+    monkeypatch.setattr(kanal, "hepsi", lambda: sorted(profiller))
+    monkeypatch.setattr(kanal, "yukle", lambda k: profiller[k])
+    assert gunluk.grup_bos_slotlari(simdi) == {"boks": dt.datetime(2026, 11, 14, 21, tzinfo=UTC)}
+    assert gunluk.oncelikli_seriler(dt.datetime(2026, 11, 15, 1, tzinfo=UTC), simdi) == ["boks"]
+    assert gunluk.oncelikli_seriler(dt.datetime(2026, 11, 14, 16, tzinfo=UTC), simdi) == []
