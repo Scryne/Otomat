@@ -767,11 +767,37 @@ def grup_bos_slotlari(simdi: dt.datetime) -> dict[str, dt.datetime]:
     return slotlar
 
 
+DUSEN_PENCERE_SAAT = 4  # en kısa cron aralığı (16:47 → 21:37) 4,8 sa: yalnız bu koşu turundaki düşüş sayılır
+
+
+def bu_turda_dustu(kimlik: str, simdi: dt.datetime) -> bool:
+    """Seri bu koşu turunda (son DUSEN_PENCERE_SAAT) hikâyesi hakemden düşerek bitti mi. Seriler aynı turda sırayla
+    koşar (mma → futbol → boks); düşen serinin bir sonraki şansı sonraki turdur ve o tur bütçeye kendisi bakar."""
+    satirlar = durum.jsonl_oku(kanal.yukle(kimlik).raporlar / "gunluk.jsonl")
+    if not satirlar:
+        return False
+    son = satirlar[-1]
+    try:
+        an = dt.datetime.fromisoformat(son["kosu_ani"])
+    except (KeyError, TypeError, ValueError):
+        return False
+    return (
+        simdi - an <= dt.timedelta(hours=DUSEN_PENCERE_SAAT)
+        and son.get("durum") == "hata"
+        and "HikayeDustu" in str(son.get("hata", ""))
+    )
+
+
 def oncelikli_seriler(yayin_ani: dt.datetime, simdi: dt.datetime) -> list[str]:
     """Bütçede bu slottan önce gelen seriler: en yakın boş slotu `yayin_ani`ndan erken olanlar. Ortak Cloudflare
     bütçesi slot zamanına göre dağıtılır (11-14 kararı): 11-06'dan beri MMA ve futbol (sırada önce koşuyorlar) pistin
-    iki gün ötesini doldururken boksun yarınki slotuna bütçe kalmadı, boks bir hafta hiç üretmedi."""
-    return sorted(k for k, slot in grup_bos_slotlari(simdi).items() if slot < yayin_ani)
+    iki gün ötesini doldururken boksun yarınki slotuna bütçe kalmadı, boks bir hafta hiç üretmedi.
+
+    Bu turda hikâyesi düşen seriye pay ayrılmaz: 11-15 21:18'de MMA'nın üç hikâyesi de hakemden düştü, futbol yine
+    MMA'ya pay bırakıp boş geçti, bütçe o gece kullanılmadı. Kota hatası (KotaHatasi) düşüş sayılmaz."""
+    return sorted(
+        k for k, slot in grup_bos_slotlari(simdi).items() if slot < yayin_ani and not bu_turda_dustu(k, simdi)
+    )
 
 
 def havuz_adimi(paketler: list[OlguPaketi], db, bugun: dt.date, kayit: dict, alarmlar: list[str]) -> None:

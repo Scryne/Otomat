@@ -238,6 +238,26 @@ def test_kod_kontrolu_sembol_ve_uzunluk():
     assert any("too long" in s for _, s in senaryo.kod_kontrolu("masal", "B", uzun, ""))
 
 
+def test_kisa_senaryo_ara_satirlari_uzatmaya_isaretler():
+    # 11-15 mma: 55 kelime; sorun yalnız son satıra yazılınca onarım açığı kapatamıyordu
+    satirlar = (
+        ["Two fighters met in a sold out arena."]
+        + ["He kept moving forward."] * 5
+        + ["The judges gave the fight to Evans."]
+    )
+    sorun = senaryo.kod_kontrolu("spor", "Teixeira versus Evans", satirlar, "")
+    uzat = [n for n, s in sorun if "lengthen this line" in s]
+    assert uzat and 1 not in uzat and len(satirlar) not in uzat
+    # işaretlenen satırların payı açığı kapatır
+    toplam = sum(len(s.split()) for s in satirlar)
+    pay = sum(senaryo.UZATMA_HEDEF - len(satirlar[n - 1].split()) for n in uzat)
+    assert toplam + pay >= senaryo.KELIME["spor"][0]
+    assert not any("words in total" in s for _, s in sorun)
+    # uzun senaryo eski davranış: toplam sorunu son satırda
+    uzun = ["One two three four five six seven eight nine ten eleven twelve thirteen."] * 8
+    assert any(n == 8 and "words in total" in s for n, s in senaryo.kod_kontrolu("spor", "Baslik", uzun, ""))
+
+
 def test_kod_kontrolu_sayi_yigini():
     kaynak = "In 1919 a 50 foot tank of 2.3 million gallons burst at 12:30 and 21 died."
     dolu = ["In 1919 the tank burst open.", "It was 50 feet tall, holding 2.3 million gallons.", "At 12:30 it went."]

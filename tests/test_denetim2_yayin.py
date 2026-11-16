@@ -607,7 +607,9 @@ def test_grup_bos_slotlari_oteki_serilerin_en_yakin_bos_slotu(tmp_path, monkeypa
     for kimlik in ("mma", "futbol", "boks", "earth"):
         db_yolu = tmp_path / f"{kimlik}.db"
         durum.baglan(db_yolu).close()
-        profiller[kimlik] = dataclasses.replace(kanal.yukle(kimlik), durum=db_yolu)
+        rapor = tmp_path / "raporlar" / kimlik
+        rapor.mkdir(parents=True)
+        profiller[kimlik] = dataclasses.replace(kanal.yukle(kimlik), durum=db_yolu, raporlar=rapor)
     db = sqlite3.connect(profiller["futbol"].durum)
     for g in range(4):
         an = dt.datetime(2026, 11, 14 + g, 16, tzinfo=UTC).isoformat()
@@ -621,3 +623,17 @@ def test_grup_bos_slotlari_oteki_serilerin_en_yakin_bos_slotu(tmp_path, monkeypa
     assert gunluk.grup_bos_slotlari(simdi) == {"boks": dt.datetime(2026, 11, 14, 21, tzinfo=UTC)}
     assert gunluk.oncelikli_seriler(dt.datetime(2026, 11, 15, 1, tzinfo=UTC), simdi) == ["boks"]
     assert gunluk.oncelikli_seriler(dt.datetime(2026, 11, 14, 16, tzinfo=UTC), simdi) == []
+    # Bu turda hikâyesi düşen seriye pay ayrılmaz (11-15 21:18 MMA); kota hatası ve eski tur düşüşü sayılmaz.
+    yol = profiller["boks"].raporlar / "gunluk.jsonl"
+
+    def son_kayit(saat_once: float, hata: str) -> None:
+        an = (simdi - dt.timedelta(hours=saat_once)).isoformat(timespec="minutes")
+        yol.write_text(json.dumps({"kosu_ani": an, "durum": "hata", "hata": hata}) + "\n", encoding="utf-8")
+
+    yarin = dt.datetime(2026, 11, 15, 1, tzinfo=UTC)
+    son_kayit(0.5, "HikayeDustu: 3 hikâye de hakemden geçmedi")
+    assert gunluk.oncelikli_seriler(yarin, simdi) == []
+    son_kayit(0.5, "KotaHatasi: günlük kota")
+    assert gunluk.oncelikli_seriler(yarin, simdi) == ["boks"]
+    son_kayit(9, "HikayeDustu: 3 hikâye de hakemden geçmedi")
+    assert gunluk.oncelikli_seriler(yarin, simdi) == ["boks"]

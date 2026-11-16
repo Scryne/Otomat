@@ -225,7 +225,8 @@ LINES:
 PROBLEMS:
 {sorun}
 
-Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less. Use only what the
+Rewrite ONLY the flagged lines (line 0 = title) so every problem is fixed; if unsure, say less (except where a line
+is flagged to be lengthened: then add a detail the source states). Use only what the
 source states: add no new detail, purpose, cause or number. Common fixes:
 - a word or adjective the source does not support: delete it, keep the rest of the line;
 - an event the source calls legend, tradition, rumor or possibly exaggerated: keep it, but mark it ("reportedly",
@@ -561,9 +562,39 @@ def kod_kontrolu(tur: str, baslik: str, satirlar: list[str], kaynak: str) -> lis
             sorun.append((i, f"too long ({len(s.split())} words); keep it under {SATIR_KELIME}"))
         elif len(s.split()) < 3:  # onarım satırı boşaltabiliyor; yayın kabulü 3 kelimeden kısa satırı reddeder
             sorun.append((i, "too short; write a full spoken line of 4-12 words"))
-    if not en_az <= toplam <= en_cok:
+    if toplam < en_az:
+        sorun += kisa_senaryo(satirlar, toplam, en_az, en_cok)
+    elif toplam > en_cok:
         sorun.append((len(satirlar), f"script has {toplam} words in total; it must be {en_az}-{en_cok}"))
     return sorun
+
+
+UZATMA_HEDEF = 11  # uzatılan satırın hedefi (SATIR_KELIME 14'ün altında pay)
+
+
+def kisa_senaryo(satirlar: list[str], toplam: int, en_az: int, en_cok: int) -> list[tuple[int, str]]:
+    """Toplam kelime alt sınırın altında: açığı kapatacak kadar en kısa ara satır uzatılmak üzere işaretlenir.
+    Sorun yalnız son satıra yazıldığında onarım tek satırı birkaç kelime uzatıyor, "emin değilsen az söyle" kuralı
+    da öbür satırları kısaltıyordu; 11-15 mma (55 kelime) ve boks senaryoları bu yüzden son turda düştü.
+    İlk satır (kanca) ve son satır (vurgu/sonuç) uzatılmaz."""
+    acik = en_az - toplam + 3  # onarım bir iki kelimeyi yine kırpabilir
+    adaylar = sorted(range(2, len(satirlar)), key=lambda n: (len(satirlar[n - 1].split()), n))
+    secilen = []
+    for n in adaylar:
+        if acik <= 0:
+            break
+        pay = UZATMA_HEDEF - len(satirlar[n - 1].split())
+        if pay <= 0:
+            continue
+        secilen.append(n)
+        acik -= pay
+    if not secilen:  # ara satırlar zaten dolu: eski davranış
+        return [(len(satirlar), f"script has {toplam} words in total; it must be {en_az}-{en_cok}")]
+    mesaj = (
+        f"the script has only {toplam} words but needs at least {en_az}: lengthen this line to about "
+        f"{UZATMA_HEDEF} words with another detail the source states (who, where, how it unfolded)"
+    )
+    return [(n, mesaj) for n in sorted(secilen)]
 
 
 def yazi_tasiyanlar(dunya: str, gorseller: list[str]) -> list[tuple[int, str]]:
