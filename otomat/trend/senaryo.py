@@ -142,6 +142,9 @@ the sources, causal claims the sources do not make, and anything that presents s
 Do NOT flag style. Do NOT flag claims that are clearly supported. A headline shortened without changing its meaning
 is fine. A sentence from a Wikipedia article is Wikipedia's narration, not a quote of a person: flag it if the script
 presents it as someone's spoken quote.
+Photo captions ("etiket") describe the photo of that scene ("gorsel" id): every name, year, role, film or event in a
+caption must appear in that image's title in the IMAGE LIST (e.g. "Pattinson as Batman, 2022" over an image titled
+"Robert Pattinson-65808" is unsupported: fix it to what the title says, e.g. "Robert Pattinson").
 Return ONLY JSON: {"sorunlar": [{"sahne": index, "alan": field, "sorun": what is wrong, "duzeltme": a corrected
 version that the sources support (or "REMOVE")}]}. Empty list if everything is supported."""
 
