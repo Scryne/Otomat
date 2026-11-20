@@ -836,6 +836,19 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   - 100-500: konu seçimi (radar ağırlıkları / editör) ve kapak tek değişkenle denenir.
   - < 100 ve kesitler de < 1.000: kanal durur (K-35'in kuralı).
   Kaynak: vidIQ yeni kanal medyanı ilk uzun video için 30 günde 180 görüntüleme [İ].
+- **İlerleme (2026-11-20):**
+  - Hat uçtan uca çalışıyor; iki gerçek trend konusunda video + 3 kesit üretildi:
+    GTA VI çıkışı (5:24, elle senaryo onayı: kelime alt sınırı 750 → 650) ve **tamamen otomatik** Anthropic halka arzı
+    (5:34; radar → editör → senaryo olgu denetiminden 0 sorunla geçti). İkisi de -14,1 LUFS, 1080p30; kesitler 25-51 sn.
+  - Çıkan ve kalıcı düzeltilen kusurlar: kimi-k3 tek parça senaryoda token sınırı (iskelet + bölüm yazımı, düşünme
+    kapalı); glm denetçide akıl yürütme döngüsü (gemini-4-argon); sahnenin ana öğesi geç gelince boş zemin (ana öğe
+    ≤ 0,12 sn, rakam söylenince sayaç); kare 0 boş (açılış sahnesi fotoğraf); parlak zeminde başlık (koyu kutu);
+    çift kapanış, görsel tekrarı, tek olaylı zaman çizgisi, anlamsız "1" sayısı (kodla `yapi_onar`); anlamsız görsel
+    (eleştirmen fotoğrafı kaldırır); Shorts altyazısında sarı-sarı (etkin kelime koyu kutuda).
+  - Video başına metin maliyeti ~0,6-1,2 pay (OpenCode Go); üretim süresi ~45-60 dk (senaryo ~10, ses ~8, harita ~3,
+    eleştirmen ~8, render ~6, kesitler ~6).
+  - Kalan: kanal (T1) ve yetki (T2) Scryne'da; ardından `araclar/trend/gunluk.cmd` Görev Zamanlayıcı'ya ve
+    `.claude/nobet.json`'a eklenir.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
