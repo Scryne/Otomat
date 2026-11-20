@@ -700,6 +700,10 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
     for i, (g, uyum) in atama.items():
         if s[i].get("tur") == "harita":
             continue
+        # alt yazı (etiket) yazarın seçtiği fotoğrafı tanımlar; görsel değişirse yazı yanlış kişinin altında kalır
+        # (11-20 Bond: "Pattinson, Venice" alt yazısı Daniel Craig balmumu heykelinin altına düştü)
+        if s[i].get("etiket") and s[i].get("gorsel"):
+            continue
         if s[i].get("gorsel") != g:
             yapilan.append(f"sahne {i}: {s[i].get('gorsel')} → {g} (uyum {uyum})")
             s[i]["gorsel"] = g
@@ -726,7 +730,12 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
             continue
         komsu = i > 0 and str(s[i - 1].get("gorsel")) == str(g)
         if komsu or _gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK:
-            yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
+            metin = " ".join(str(sh.get(k) or "") for k in ("anlatim", "baslik", "metin", "etiket", "kim"))
+            say = _gorsel_say(s)
+            yasak = {str(s[j].get("gorsel")) for j in (i - 1, i + 1) if 0 <= j < len(s)}
+            aday = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in yasak and say[f"G{k}"] < GORSEL_EN_COK
+                    and _kisi_uygun(kisiler.get(f"G{k}"), metin, konu)]  # fmt: skip
+            yeni = min(aday, key=lambda k: (say[k], int(k[1:]))) if aday else None
             if yeni:
                 yapilan.append(f"sahne {i}: sınır {g} → {yeni}")
                 sh["gorsel"], sh["gorsel_uyum"] = yeni, 0

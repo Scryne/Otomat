@@ -353,6 +353,11 @@ def _sayi_bicim(deger: float) -> tuple[int, str]:
     return min(2, len(str(deger).split(".")[1])), ","
 
 
+def _sayac_bas(deger: float, son: str) -> float:
+    """Sayacın başlangıcı: sıra sayısı (25th) ve 10'dan küçük sayı sayılmaz, doğrudan iner ("0TH" anlamsız, 11-20)."""
+    return deger if son.strip().lower() in ("st", "nd", "rd", "th") or abs(deger) < 10 else 0
+
+
 def kisalt(deger: float, son: str) -> tuple[float, str]:
     """Ekranda 10 milyon ve üstü kısaltılır (1,800,000,000 → 1.8B); son ek zaten verilmişse dokunulmaz."""
     if son:
@@ -400,7 +405,7 @@ def sahne_sayi(sh: dict, gecis: str, tohum: int) -> str:
           "const d = S('.deger'); const p = {v:0};",
           f"const yaz = () => {{ d.textContent = p.v.toLocaleString('en-US', {{minimumFractionDigits:{ondalik}, "
           f"maximumFractionDigits:{ondalik}}}); }};",
-          f"tl.fromTo(p, {{v:0}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
+          f"tl.fromTo(p, {{v:{_sayac_bas(deger, son)}}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
           "tl.fromTo(S('.sayi'), {y:60, opacity:0}, {y:0, opacity:1, duration:.35, ease:'expo.out'}, 0.06);",
           f"tl.fromTo(S('.cizgi'), {{scaleX:0}}, {{scaleX:1, duration:.5, ease:'expo.out'}}, {t0 + 0.2:.3f});",
           _kelime_girisi(f"#{sid}-etk", min(t0 + sayac * 0.7, 0.35), 0.06)]  # fmt: skip

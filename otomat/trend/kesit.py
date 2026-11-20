@@ -22,6 +22,7 @@ from otomat.trend.kurgu import (
     _kelime_girisi,
     _kelime_spanlari,
     _ortak_css,
+    _sayac_bas,
     _yayilim,
     ilk_an,
     ipucu_zamani,
@@ -149,7 +150,7 @@ def d_sayi(sh: dict, gecis: str, tohum: int) -> str:
     js = [giris, z_js, "const d = S('.deger'); const p = {v:0};",
           f"const yaz = () => {{ d.textContent = p.v.toLocaleString('en-US', {{minimumFractionDigits:{ondalik}, "
           f"maximumFractionDigits:{ondalik}}}); }};",
-          f"tl.fromTo(p, {{v:0}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
+          f"tl.fromTo(p, {{v:{_sayac_bas(deger, son)}}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
           f"tl.fromTo(S('.cizgi'), {{scaleX:0}}, {{scaleX:1, duration:.45, ease:'expo.out'}}, {t0 + 0.2:.3f});",
           _kelime_girisi(f"#{sid}-etk", min(t0 + sayac * 0.6, 0.35), 0.06)]  # fmt: skip
     return _sahne_html(sid, sure, govde, css, "\n".join(js))

@@ -194,3 +194,11 @@ def test_kisi_uygun_yalniz_adi_gecen_kisi():
     assert senaryo._kisi_uygun("Pierce Brosnan", "Brosnan shrugged it off", "Robert Pattinson")
     assert not senaryo._kisi_uygun("Pierce Brosnan", "Piers Morgan issued a verdict", "Robert Pattinson")
     assert senaryo._kisi_uygun(None, "anything", "x")  # kişisiz görsel her yere uyar
+
+
+def test_sayac_sira_sayisi_ve_kucuk_sayi_sayilmaz():
+    assert kurgu._sayac_bas(25, "th") == 25 and kurgu._sayac_bas(7, "") == 7
+    assert kurgu._sayac_bas(1800, "M") == 0
+    html = kurgu.sahne_sayi({"id": "s1", "sure": 4.0, "deger": "25", "son": "th", "etiket": "film", "kelimeler": []},
+                            "kesme", 1)  # fmt: skip
+    assert "{v:25.0}, {v:25.0" in html
