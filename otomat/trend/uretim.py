@@ -320,6 +320,14 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
           f"{len(kay['gorseller'])} görsel", flush=True)  # fmt: skip
     gorselleri_hazirla(d, kay)
     sen = asama_senaryo(d, oturum, secim, kay)
+    if not sen.get("gorsel_eslendi"):  # anlamla görsel ataması (yanlış kişiyi göstermesin); bir kez, kayıtlı
+        from otomat.trend import senaryo as senaryo_m
+
+        gmetin = senaryo_m.gorsel_listesi([_gorsel_nesne(g) for g in kay["gorseller"]])
+        degisen = senaryo_m.gorsel_eslestir(oturum, sen, gmetin, len(kay["gorseller"]),
+                                              konu=secim["secim"].get("wiki_baslik", ""))
+        _yaz(d / "senaryo.json", sen)
+        print(f"görsel eşleştirme: {len(degisen)} değişiklik", flush=True)
     n = sum(len(s["anlatim"].split()) for s in sen["sahneler"])
     print(f"senaryo: {len(sen['sahneler'])} sahne, {n} kelime | tez: {sen.get('tez')}", flush=True)
     z = asama_ses(d, sen)

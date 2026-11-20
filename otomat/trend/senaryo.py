@@ -646,3 +646,89 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
                   "sahne": len(s.get("sahneler", []))})  # fmt: skip
     print(f"senaryo son: {len(cikar)} sahne çıkarıldı, kod {len(kod)}", flush=True)
     return s
+
+
+SISTEM_ESLE = """You are the picture editor of a documentary explainer. Every scene shows one photo behind its
+graphics. You get the scenes (index, type, narration, on-screen text) and the IMAGE LIST (id: Wikimedia file title).
+Pick ONE image per scene. Rules, in order:
+1. Never show a person the line is not about. If the line names or is about a person, use a photo of THAT person;
+   if no photo of them exists, use a place/object/event image connected to the line (a building, a car, a stage),
+   never a photo of someone else.
+2. Otherwise pick the image that best shows what the line says (the place, the object, the film, the event).
+3. If nothing fits, pick a neutral image of the story's setting with no identifiable person.
+4. Use each image at most 3 times and never in two neighbouring scenes; spread the images out.
+For each scene also say "uyum": 2 (shows exactly what the line is about), 1 (related context), 0 (neutral filler).
+Also list, for EVERY image, the identifiable person it shows (from its title; null for places, objects, crowds).
+Return ONLY JSON: {"kisiler": {"G1": "Full Name" or null, ...}, "atamalar": [{"i": scene index, "gorsel": "G..",
+"uyum": 0|1|2}]} covering every scene."""
+
+
+def _kisi_uygun(kisi: str | None, metin: str, konu: str) -> bool:
+    """Görseldeki kişi sahnede ya da videonun konusunda adıyla geçiyor mu (soyadı/ad parçası, ≥ 4 harf)."""
+    if not kisi:
+        return True
+    hedef = f"{metin} {konu}".lower()
+    return any(len(p) >= 4 and p in hedef for p in re.findall(r"[a-zà-ÿ]+", kisi.lower()))
+
+
+def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_sayisi: int,
+                    model: str = BOLUM_MODEL, konu: str = "") -> list[str]:  # fmt: skip
+    """Sahne → görsel atamasını anlam üzerinden yeniden yapar (yerinde). Neden: v2'de her sahnede görsel zorunlu
+    (K-44); kodun "en az kullanılan" ataması 11-20 Bond videosunda Pattinson'ın doğum yerini Daniel Craig'in,
+    Seydoux alıntısını Pierce Brosnan'ın fotoğrafıyla gösterdi (eleştirmen 29 P0 "anlamsız görsel").
+    Sonra kod sınırları uygular (en çok GORSEL_EN_COK, komşu tekrar yok). Dönüş: değişiklik listesi."""
+    s = senaryo.get("sahneler") or []
+    satirlar = []
+    for i, sh in enumerate(s):
+        if sh.get("tur") == "harita":
+            continue
+        ekran = " ".join(str(x) for x in (sh.get("baslik"), sh.get("metin"), sh.get("etiket"), sh.get("kim")) if x)
+        satirlar.append(f"{i}. [{sh.get('tur')}] {sh.get('anlatim', '')}" + (f" || on screen: {ekran}" if ekran else ""))
+    mesaj = f"=== IMAGE LIST ===\n{gorsel_metni}\n\n=== SCENES ===\n" + "\n".join(satirlar)
+    y = oturum.json_sor(SISTEM_ESLE, mesaj, model=model, en_cok=8000, sicaklik=0.2, dusun=False)
+    atama = {}
+    for a in (y.get("atamalar") or []) if isinstance(y, dict) else []:
+        try:
+            i, g = int(a["i"]), str(a["gorsel"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        m = re.fullmatch(r"G(\d+)", g)
+        if 0 <= i < len(s) and m and 1 <= int(m.group(1)) <= gorsel_sayisi:
+            atama[i] = (g, int(a.get("uyum", 1) or 0))
+    kisiler = {str(k): v for k, v in ((y.get("kisiler") or {}) if isinstance(y, dict) else {}).items()}
+    yapilan = []
+    for i, (g, uyum) in atama.items():
+        if s[i].get("tur") == "harita":
+            continue
+        if s[i].get("gorsel") != g:
+            yapilan.append(f"sahne {i}: {s[i].get('gorsel')} → {g} (uyum {uyum})")
+            s[i]["gorsel"] = g
+        s[i]["gorsel_uyum"] = uyum
+    # sert kural: sahnede/konuda adı geçmeyen birinin fotoğrafı gösterilmez (11-20: Piers Morgan satırında Brosnan)
+    kisisiz = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if not kisiler.get(f"G{k}")]
+    for i, sh in enumerate(s):
+        g = sh.get("gorsel")
+        if not g or sh.get("tur") == "harita":
+            continue
+        metin = " ".join(str(sh.get(k) or "") for k in ("anlatim", "baslik", "metin", "etiket", "kim"))
+        if not _kisi_uygun(kisiler.get(str(g)), metin, konu):
+            komsu = {str(s[j].get("gorsel")) for j in (i - 1, i + 1) if 0 <= j < len(s)}
+            say = _gorsel_say(s)
+            aday = [k for k in kisisiz if k not in komsu and say[k] < GORSEL_EN_COK]
+            if aday:
+                yeni = min(aday, key=lambda k: say[k])
+                yapilan.append(f"sahne {i}: {g} ({kisiler.get(str(g))}) adı geçmiyor → {yeni}")
+                sh["gorsel"], sh["gorsel_uyum"] = yeni, 0
+    # sınırlar: fazla kullanım ve komşu tekrar, uyumu düşük olandan başlayarak çözülür
+    for i, sh in enumerate(s):
+        g = sh.get("gorsel")
+        if not g or sh.get("tur") == "harita":
+            continue
+        komsu = i > 0 and str(s[i - 1].get("gorsel")) == str(g)
+        if komsu or _gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK:
+            yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
+            if yeni:
+                yapilan.append(f"sahne {i}: sınır {g} → {yeni}")
+                sh["gorsel"], sh["gorsel_uyum"] = yeni, 0
+    senaryo["gorsel_eslendi"] = True
+    return yapilan

@@ -177,7 +177,7 @@ def d_alinti(sh: dict, gecis: str, tohum: int) -> str:
     n = max(1, len(_kelime_ayir(sh["metin"])))
     aralik = max(0.04, min(0.15, (sure * 0.6) / n))
     js = [giris, z_js,
-          f"tl.fromTo(SA('#{sid}-metin .w'), {{opacity:.18}}, {{opacity:1, duration:.12, stagger:{aralik:.3f}}}, {t0:.3f});",
+          f"tl.fromTo(SA('#{sid}-metin .w'), {{opacity:.38}}, {{opacity:1, duration:.12, stagger:{aralik:.3f}}}, {t0:.3f});",
           f"tl.fromTo(S('.kim'), {{opacity:0}}, {{opacity:1, duration:.3}}, {min(sure - 0.5, t0 + n * aralik):.3f});"]  # fmt: skip
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 

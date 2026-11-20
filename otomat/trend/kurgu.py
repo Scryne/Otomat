@@ -433,7 +433,7 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
     aralik = max(0.04, min(0.16, (sure * 0.6) / n))
     js = [giris, z_js,
           "tl.fromTo(S('.tirnak'), {scale:.6, opacity:0}, {scale:1, opacity:1, duration:.4, ease:'back.out(1.6)'}, .05);",
-          f"tl.fromTo(SA('#{sid}-metin .w'), {{opacity:.18}}, {{opacity:1, duration:.12, stagger:{aralik:.3f}}}, {t0:.3f});",
+          f"tl.fromTo(SA('#{sid}-metin .w'), {{opacity:.38}}, {{opacity:1, duration:.12, stagger:{aralik:.3f}}}, {t0:.3f});",
           f"tl.fromTo(S('.kim'), {{opacity:0, x:-30}}, {{opacity:1, x:0, duration:.4, ease:'expo.out'}}, "
           f"{min(sure - 0.6, t0 + n * aralik):.3f});"]  # fmt: skip
     return _sahne_html(sid, sure, govde, css, "\n".join(js))

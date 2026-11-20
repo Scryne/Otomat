@@ -172,7 +172,8 @@ def test_muzik_bolumleri_ve_zarf():
     konusma = np.zeros((sr * 4, 2), np.float32)
     konusma[: sr * 2] = 0.3 * np.sin(np.linspace(0, 2000, sr * 2))[:, None]
     k = muzik.zarf(konusma, len(konusma), [])
-    assert 20 * np.log10(k[int(sr * 1.5)]) < -18 and 20 * np.log10(k[int(sr * 3.8)]) > -13
+    assert abs(20 * np.log10(k[int(sr * 1.5)]) - muzik.KONUSMA_DB) < 0.5
+    assert abs(20 * np.log10(k[int(sr * 3.8)]) - muzik.BOSLUK_DB) < 1.5
 
 
 def test_ton_talimati():
@@ -186,3 +187,10 @@ def test_kesit_kirp_uzun_kosuyu_sinira_ceker():
     assert k["sahneler"][0] == 1  # baştaki bölüm kartı atıldı
     assert senaryo.kesit_gecerli(k, sh) and len(k["sahneler"]) == 5  # 125 kelime
     assert not senaryo.kesit_gecerli({"sahneler": [1, 3], "kanca": "x"}, sh)  # ardışık değil
+
+
+def test_kisi_uygun_yalniz_adi_gecen_kisi():
+    assert senaryo._kisi_uygun("Robert Pattinson", "He was born in Barnes", "Robert Pattinson")  # ana konu
+    assert senaryo._kisi_uygun("Pierce Brosnan", "Brosnan shrugged it off", "Robert Pattinson")
+    assert not senaryo._kisi_uygun("Pierce Brosnan", "Piers Morgan issued a verdict", "Robert Pattinson")
+    assert senaryo._kisi_uygun(None, "anything", "x")  # kişisiz görsel her yere uyar
