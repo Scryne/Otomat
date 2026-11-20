@@ -15,6 +15,8 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 | D2 ✅ 2026-10-03 (kendi hesabında) | Google Cloud projesinde YouTube Data API'yi açıp OAuth onayını vermek | Kimlik doğrulama sahibin elinde | 10 dk (adım adım rehberle) |
 | D3 ✅ 2026-10-03 | API denetim (audit) formunu göndermek | Başvuru sahibi beyanı | 5 dk (metni ben hazırlarım) |
 | D5 ✅ 2026-10-05 | Buffer ücretsiz hesap + kanalı bağlama + API anahtarı (`.env`) | Hesap ve OAuth onayı sahibin elinde | 5 dk |
+| T1 | Trend kanalı (K-38): ayrı Google hesabında YouTube kanalı "Why It's Everywhere", profil resmi + banner `docs/marka/trend/` | Hesap kişiye ait; kapatma kişiye gider, film/spor kanallarından ayrık | 10 dk |
+| T2 | Trend kanalına yetki: `uv run --extra ses python -m otomat.trend.yukle yetki` (tarayıcıda izin ekranı, trend kanalını seç) | OAuth onayı sahibin elinde | 2 dk |
 | D4 | Para kazanma eşiği aşılınca: AdSense, kimlik/PIN, 20/B istisna belgesi | Yasal kimlik, posta, vergi dairesi | eşik anında, ~1 gün |
 
 ## Süren
@@ -22,4 +24,5 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 |---|---|---|---|
 | R1 | (isteğe bağlı) Haftalık raporu okumak (vault + Kokpit); Scryne 10-05: "hiçbir şeye dokunmayayım" | haftalık | 2 dk |
 | ~~R2~~ | ~~Studio'da toplu "herkese açık"~~ — 2026-10-05'ten beri yok: `OTOMAT_YAYIN=buffer` yayını kendisi yapar | — | — |
+| R3 | Trend kesitlerine Studio'da "ilgili video" bağlantısı (Shorts → uzun video; API'de yok, support 14075157) | yükleme başına 3 kesit | 1 dk |
 | A1 | (yalnız alarm issue'su token düştü derse) yerelde yeniden yetki: tarayıcıda izin, sonra secret güncelleme | olay | 2 dk |
