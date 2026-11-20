@@ -376,11 +376,19 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
+def kronolojik(olaylar: list[dict]) -> list[dict]:
+    """Her tarihte 4 haneli yıl varsa olaylar yıla göre sıralanır (yazar 2023'ü 2015'ten önce koymuştu, 11-20)."""
+    yillar = [re.search(r"(1[5-9]|20)[0-9]{2}", str(o.get("tarih", ""))) for o in olaylar]
+    if olaylar and all(yillar):
+        return [o for _, o in sorted(zip([int(y.group(0)) for y in yillar], olaylar, strict=True), key=lambda t: t[0])]
+    return olaylar
+
+
 def sahne_zaman(sh: dict, gecis: str, tohum: int) -> str:
     """Zaman çizgisi: 4 olaya kadar tek kadrajda (kaydırma yok, eşit aralık); fazlası kamera kaydırmalı."""
     sid, sure = sh["id"], sh["sure"]
     perde, giris = _giris_js(gecis, sid)
-    olaylar = sh.get("olaylar") or []
+    olaylar = kronolojik(sh.get("olaylar") or [])
     n = max(1, len(olaylar))
     kenar = 230
     adim = (GENISLIK - 2 * kenar - 420) / max(1, n - 1) if n <= 4 else 560
@@ -415,7 +423,7 @@ def sahne_zaman(sh: dict, gecis: str, tohum: int) -> str:
     .tarih {{ font-size:170px; color:#111; }}
     .olay {{ font-size:50px; font-weight:700; line-height:1.15; margin-top:6px; }}
     """
-    zamanlar = _yayilim(sure, len(olaylar), 0.05, 0.7)
+    zamanlar = _yayilim(sure, len(olaylar), 0.05, 0.45)
     js = [giris, f"tl.fromTo(S('.hat'), {{scaleX:0}}, {{scaleX:1, duration:{max(0.8, sure * 0.8):.2f}, "
                  f"ease:'power1.inOut'}}, 0);"]  # fmt: skip
     onceki_x = 0.0

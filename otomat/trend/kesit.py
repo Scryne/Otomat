@@ -180,7 +180,7 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
     """Dikey zaman çizgisi: yukarıdan aşağı akar."""
     sid, sure = sh["id"], sh["sure"]
     perde, giris = _giris_js(gecis, sid)
-    ol = (sh.get("olaylar") or [])[:4]
+    ol = kurgu.kronolojik(sh.get("olaylar") or [])[:4]
     adim = (ICERIK_ALT - UST - 260) / max(1, len(ol) - 1) if len(ol) > 1 else 0
     dug = []
     for i, o in enumerate(ol):
@@ -200,7 +200,7 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
     .tarih {{ font-size:120px; }}
     .olay {{ font-size:48px; font-weight:700; line-height:1.15; }}
     """
-    zam = _yayilim(sure, len(ol), 0.05, 0.65)
+    zam = _yayilim(sure, len(ol), 0.05, 0.45)
     js = [
         giris,
         f"tl.fromTo(S('.hat'), {{scaleY:0}}, {{scaleY:1, duration:{max(0.8, sure * 0.75):.2f}, ease:'none'}}, 0);",

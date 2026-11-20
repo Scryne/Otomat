@@ -262,6 +262,12 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         else:
             s[i] = {**sh, "tur": "ifade", "metin": sh.get("etiket") or ham}
             yapilan.append(f"sahne {i}: sayısız sayi → ifade")
+    # 2b. tek olaylı zaman çizgisi kareyi boş bırakıyor (11-20 GTA VI, "2023" tek düğüm): tarihli büyük ifadeye döner
+    for i, sh in enumerate(s):
+        if sh.get("tur") == "zaman" and len(sh.get("olaylar") or []) < 2:
+            o = (sh.get("olaylar") or [{}])[0]
+            s[i] = {**sh, "tur": "ifade", "metin": f"{o.get('tarih', '')}: {o.get('olay', '')}".strip(": ")}
+            yapilan.append(f"sahne {i}: tek olaylı zaman → ifade")
     # 3. görsel en çok 2 kez
     for i, sh in enumerate(s):
         g = sh.get("gorsel")
