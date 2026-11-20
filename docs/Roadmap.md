@@ -23,6 +23,7 @@ Durum sütunu session-start hook'u tarafından otomatik okunur — format bozulm
 | 17 | Uzun animasyonlu hikâye (film hattı) | 🔄 Devam Ediyor | `otomat/film` main'de (senaryo denetimi, yerel FLUX.2 klein karakter kartı + sahne, Wan 2.2 i2v, Chatterbox anlatım + Whisper kapısı, kurgu, kapak, bölümlü açıklama), test + CI yeşil; pilot (Violet Jessop) kare, ses ve olgu denetiminden geçti; yayın yolu deneyle seçildi (K-30) ve pilot One Ticket Back'te public; ikinci ve üçüncü film farklı yapıda yayında |
 | 18 | Film ölçümü ve biçim kararı | ⏳ Bekliyor | İlk üç filmin (Klondike, Violet Jessop, Lowell) yayın + 7 günlük sayıları haftalık film raporunda (görüntüleme, ortalama izlenme %, 30. sn'de kalan, abone, trafik kaynağı; gösterim ve tıklama oranı Studio'dan); biçimler (What if you / kişi) yan yana; Faz 18 detayındaki önceden yazılmış eşiklerle karar yazıldı (biçim, giriş, kapak/başlık, süre); kapak ya da başlık değişecekse planlı filmlere API ile uygulandı; üçüncü ayın dört konusu bu karara göre seçildi |
 | 19 | Spor Shorts kanalı (Arena Lore) | 🔄 Devam Ediyor | Üç seri (futbol, mma, boks) profili, TypeSafe ile süzülmüş havuzlar (seri başına ≥ 120 hikâye) ve `spor` senaryo türü main'de, test + CI yeşil; her seriden ≥ 1 uçtan uca video senaryo, kare (gerçek kişi benzeri, logo, yazı, kan yok) ve ses denetiminden geçti; Scryne kanalı açtı, Buffer'a bağladı ve yetki verdi (ayrı günler); üç seri matriste, ilk planlı videolar public (oturumsuz doğrulandı); 14 gün kesintisiz günde 3 video; Faz 19 detayındaki ölçüm ve devam kuralı yazıldı |
+| 20 | Küresel trend açıklayıcı kanalı (Why It's Everywhere) | 🔄 Devam Ediyor | `otomat/trend` main'de (radar, kaynak, TypeSafe eleme + LLM editör, senaryo + olgu denetimi, Chatterbox + kelime zamanı, HyperFrames kurgu, görsel eleştirmen, kapak, dikey kesitler), test + CI yeşil; en az iki gerçek trend konusunda uçtan uca video + 3 kesit kare, ses ve olgu denetiminden geçti; Scryne kanalı ayrı Google hesabında açtı ve yetki verdi (ayrı günler); ilk video public; günlük/iki günlük zamanlanmış koşu; Faz 20 detayındaki ölçüm ve devam kuralı yazıldı |
 | 7 | Gerçek kullanım | ⏳ Bekliyor | Final-Doküman'daki "bitti = kullanıldı" cümlesi film hattıyla gerçekleşti: bir ayın 4 filmi + 12 kesiti planlandığı saatte, kaçan ve çift olmadan yayına çıktı; haftalık film raporu 4 hafta üst üste kendiliğinden düştü; yayın ve rapor tarafında kod müdahalesi yok (sayaç Faz 18 kararından sonraki ilk planlı filmle başlar); Scryne'ın dokunuşu haftada ≤ 10 dk; bulgular roadmap'e işlendi |
 | 8 | Öldürme kriteri değerlendirmesi (tetiklemeli) | ⏳ Bekliyor | One Ticket Back, ilk public filmden (10-24) 8 hafta sonra (12-19): Faz 8 detayındaki eşik ölçüldü; karar (sürdür / biçim değiştir / kapat) yazıldı |
 | 9 | Kesitlerin çapraz yayını (koşullu) | ⏳ Bekliyor | Faz 8 "sürdür" derse: film kesitleri Facebook/Instagram Reels'e, filmin bağlantısıyla; ölçüm haftalık raporda |
@@ -814,6 +815,27 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
     11-14 06:17, 10.000 neuron): eski kural MMA 11-15 + 11-16, futbol 11-16; boks ertelenir. Yeni kural MMA 11-15 + 11-16,
     futbol ertelenir (11-15'e kadar dolu), boks 11-14'ü üretir. 6.000 neuron'la: eski kuralda yalnız MMA, yeni kuralda
     yalnız boks (en erken boş slot). Ölçülecek: 11-15…11-21 haftasında üç serinin boş slotu (hedef 0).
+- **Bitti Kriteri:** tablodaki gibi.
+
+### Faz 20: Küresel trend açıklayıcı kanalı (2026-11-20, K-38…K-41)
+- **Neden:** Scryne (11-20): "global olarak dünyada trend olan şeylerle alakalı videolar… bir çok insan gündemde olan
+  şeyi videoyu karşısına çıkınca merak edip tıklayacak… yeni bir kanalda… uzun video, sonrasında shorts… video
+  üretirken daha iyi olmalısın." Kanal analizi (11-20): One Ticket Back filmleri gösterim almıyor (ömür boyu 2-11
+  görüntüleme), Arena Lore'da arama trafiği %18 ve en iyiler isimli/aranan olaylar. Araştırma ve kararlar:
+  `docs/arastirma/14-trend-kanali.md`.
+- **Mimari (`otomat/trend/`):** `radar` (GT RSS 10 geo + Wikipedia artış) → `secici` (Jev jev-1.14.0 sert eleme +
+  kimi-k3 editör: hikâye, tez, görsel aramaları) → `kaynak` (Wikipedia sabit revizyon + Google News + Commons serbest
+  lisanslı görsel) → `senaryo` (kimi-k3 yazar, kod kapıları: yapı/çeşitlilik/sayı; glm-5.3 olgu denetimi; onarım ≤ 4
+  tur) → `zamanla` (film hattının Chatterbox + Whisper kapısı, kelime zamanı hizalama) → `kurgu` (HyperFrames 0.9.19,
+  9 sahne türü, geçiş/SFX planı) → `elestirmen` (gemini-4-argon inceleme sayfaları, kural tabanlı onarım) → render →
+  -14 LUFS → `kapak` → `kesit` (dikey yeniden kurulum, kanca 0. karede, kelime vurgulu altyazı).
+  Radar ve kaynak modülleri ustaya devredildi (glm-5.3; ikisi de ilk turda kabul, biri küçük düzeltmeyle).
+- **Metin modeli:** OpenCode Go doğrudan uç (`otomat/trend/llm.py`); Cloudflare bütçesine ve Claude limitine dokunmaz.
+- **Ölçüm ve devam kuralı (önceden yazıldı):** ilk public videodan 30 gün sonra (~10-15 uzun video):
+  - Uzun videoların medyan 7 günlük görüntülemesi ≥ 500 ve ortalama izlenme ≥ %30: sürer, sıklık günde bire çıkar.
+  - 100-500: konu seçimi (radar ağırlıkları / editör) ve kapak tek değişkenle denenir.
+  - < 100 ve kesitler de < 1.000: kanal durur (K-35'in kuralı).
+  Kaynak: vidIQ yeni kanal medyanı ilk uzun video için 30 günde 180 görüntüleme [İ].
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

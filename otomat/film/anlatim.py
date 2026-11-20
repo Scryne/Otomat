@@ -237,10 +237,15 @@ def _uret(isler: list[dict], ref: Path, dizin: Path) -> None:
     subprocess.run([str(CHATTERBOX_PY), str(Path(__file__).with_name("cb_isci.py")), str(gorev)], check=True)
 
 
-def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Path, list[Zaman], list[dict]]:
-    """bloklar: (bölüm no, anlatım). Tek WAV + blok başına zaman aralığı + parça denetim kaydı döner."""
+def seslendir(
+    bloklar: list[tuple[int, str]], ses: str, dizin: Path, aralar: tuple[float, float, float] | None = None
+) -> tuple[Path, list[Zaman], list[dict]]:
+    """bloklar: (bölüm no, anlatım). Tek WAV + blok başına zaman aralığı + parça denetim kaydı döner.
+
+    aralar: (parça, blok, bölüm) arası sessizlik; verilmezse filmin sabitleri (trend hattı daha sıkı tempo ister)."""
     from faster_whisper import WhisperModel
 
+    ara_parca, ara_blok, ara_bolum = aralar or (ARA_PARCA, ARA_BLOK, ARA_BOLUM)
     dizin.mkdir(parents=True, exist_ok=True)
     ref = referans(ses, dizin)
     parcalar = [(bi, pi, p) for bi, (_, metin) in enumerate(bloklar) for pi, p in enumerate(parcala(metin))]
@@ -273,7 +278,7 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
     toplam, zamanlar, an = [], [], 0.0
     for bi, (bolum, _) in enumerate(bloklar):
         if bi:
-            ara = ARA_BOLUM if bolum != bloklar[bi - 1][0] else ARA_BLOK
+            ara = ara_bolum if bolum != bloklar[bi - 1][0] else ara_blok
             toplam.append(np.zeros(int(ara * SR), np.float32))
             an += ara
         bas = an
@@ -283,8 +288,8 @@ def seslendir(bloklar: list[tuple[int, str]], ses: str, dizin: Path) -> tuple[Pa
             toplam.append(x)
             an += len(x) / SR
             if j < len(pis) - 1:
-                toplam.append(np.zeros(int(ARA_PARCA * SR), np.float32))
-                an += ARA_PARCA
+                toplam.append(np.zeros(int(ara_parca * SR), np.float32))
+                an += ara_parca
         zamanlar.append(Zaman(round(bas, 3), round(an, 3)))
     yol = dizin / "anlatim.wav"
     wav_yaz(yol, np.concatenate(toplam))

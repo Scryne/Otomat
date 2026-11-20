@@ -1,0 +1,8 @@
+{
+  "name": "otomat-hyperframes",
+  "private": true,
+  "description": "Trend hattının render motoru (otomat/trend/kurgu.py). Sürüm sabit; güncelleme bilinçli karar.",
+  "dependencies": {
+    "hyperframes": "0.9.19"
+  }
+}
