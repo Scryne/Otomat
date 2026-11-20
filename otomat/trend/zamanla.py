@@ -1,7 +1,9 @@
 """Senaryo → anlatım sesi + sahne başına kelime zamanları (kurgunun saati).
 
-Ses film hattının `seslendir`iyle üretilir (Chatterbox, Kokoro'dan sentetik referans ses, parça başına Whisper
-kapısı). Ardından bitmiş WAV faster-whisper ile kelime zamanlı çözülür ve senaryonun kendi kelimelerine hizalanır:
+Ses film hattının `seslendir`iyle üretilir: Qwen3-TTS CustomVoice "Ryan" + sahne başına ton talimatı, parça başına
+Whisper kapısı. 11-20 geri bildirimi "dümdüz, AI olduğu belli" (Chatterbox + Kokoro referansı); ölçüm: perde yayılımı
+3,5 → 5,6 yarım ton, cümleler arası konuşmacı benzerliği 0,84 (VoiceDesign 0,70 ile kimlik kayıyordu).
+Ardından bitmiş WAV faster-whisper ile kelime zamanlı çözülür ve senaryonun kendi kelimelerine hizalanır:
 ipuçları ("bu parça anlatıcı X dediğinde gelsin") senaryo kelimesiyle yazıldığı için zaman da senaryo kelimesine
 bağlanır. Rakamlar sözlü okunur ("750,000"), Whisper rakam yazar: iki taraf `kelimeler()` ile aynı birime iner.
 """
@@ -14,6 +16,9 @@ from pathlib import Path
 
 from otomat.film.anlatim import SR, kelimeler, seslendir, wav_oku
 
+MOTOR = "qwen"
+KONUSMACI = "Ryan"
+TON_TABAN = "Natural, engaging documentary storyteller, conversational and confident."
 ARALAR = (0.22, 0.38, 0.85)  # parça, sahne, bölüm arası sessizlik (film: 0.30 / 0.65 / 1.40)
 ONCE = 0.12  # görüntü sesten biraz önce keser (J-kesme hissi)
 SON_PAY = 2.6  # kapanış sahnesi anlatımdan sonra tutar
@@ -86,7 +91,13 @@ def whisper_kelimeleri(wav: Path, model: str = "small.en") -> list[tuple[str, fl
     return [(k.word.strip(), k.start, k.end) for p in parcalar for k in (p.words or [])]
 
 
-def seslendir_ve_zamanla(sahneler: list[dict], dizin: Path, ses: str = "am_michael") -> dict:
+def ton_talimati(sh: dict) -> str:
+    """Sahnenin `ton` notu (yazar modelden, ≤ 12 kelime) + sabit taban; boşsa yalnız taban."""
+    ton = re.sub(r"\s+", " ", str(sh.get("ton") or "")).strip()[:120]
+    return f"{TON_TABAN} {ton}".strip()
+
+
+def seslendir_ve_zamanla(sahneler: list[dict], dizin: Path, ses: str = KONUSMACI) -> dict:
     """Her sahnenin `anlatim`ı bir blok; `bolum` sahnesi bölüm sınırıdır (uzun duraklama).
     Dönüş: {"wav", "sure", "sahneler": [{bas, sure, kelimeler}], "denetim"} — sahne zamanı videonun saatidir."""
     bolum, bloklar = 0, []
@@ -94,7 +105,8 @@ def seslendir_ve_zamanla(sahneler: list[dict], dizin: Path, ses: str = "am_micha
         if sh["tur"] == "bolum":
             bolum += 1
         bloklar.append((bolum, sh["anlatim"]))
-    wav, araliklar, denetim = seslendir(bloklar, ses, dizin, aralar=ARALAR)
+    tonlar = [ton_talimati(sh) for sh in sahneler]
+    wav, araliklar, denetim = seslendir(bloklar, ses, dizin, aralar=ARALAR, motor=MOTOR, tonlar=tonlar)
     toplam_ses = len(wav_oku(wav)) / SR
     wk = whisper_kelimeleri(wav)
     out = []

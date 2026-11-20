@@ -24,14 +24,6 @@ from otomat.trend.llm import Oturum
 
 CALISMA = KOK / "calisma" / "trend"
 GECMIS = KOK / "durum" / "trend_gecmis.json"
-MUZIK = KOK / "modeller" / "muzik"
-MUZIK_SECIM = {  # Kevin MacLeod (CC BY 4.0); kategoriye göre yatak
-    "video_game": ["Volatile Reaction.mp3", "Hitman.mp3"], "film_tv": ["Investigations.mp3", "Darkling.mp3"],
-    "music": ["Floating Cities.mp3"], "technology_ai": ["Floating Cities.mp3", "Investigations.mp3"],
-    "science_space": ["Lightless Dawn.mp3", "Floating Cities.mp3"], "sports": ["Heroic Age.mp3", "Ready Aim Fire.mp3"],
-    "celebrity": ["Sneaky Snitch.mp3", "Investigations.mp3"], "internet_viral": ["Sneaky Snitch.mp3", "Merry Go.mp3"],
-    "business_money": ["Investigations.mp3", "Hitman.mp3"], "history_culture": ["Sovereign.mp3", "Spellbound.mp3"],
-    "other": ["Investigations.mp3"]}  # fmt: skip
 KANAL_ADI = "Why It's Everywhere"  # çalışma adı (K-38); kanal açılınca kanallar/trend/kanal.toml
 
 
@@ -180,6 +172,8 @@ def asama_ses(d: Path, sen: dict) -> dict:
 
 
 def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple[dict, dict[str, Path]]:
+    from otomat.trend import derinlik
+
     gorsel = kay["gorseller"]
     varlik: dict[str, Path] = {"assets/ses/anlatim.wav": Path(z["wav"])}
     sahneler = []
@@ -191,9 +185,14 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
             gi = int(str(g)[1:]) - 1
             if 0 <= gi < len(gorsel):
                 hedef = f"assets/img/g{gi + 1:02d}.jpg"
-                varlik[hedef] = Path(gorsel[gi]["hazir"])
+                hazir = Path(gorsel[gi]["hazir"])
+                varlik[hedef] = hazir
                 p["gorsel"] = hedef
                 p["kredi"] = gorsel[gi]["kredi_satiri"]
+                # 2.5D parallax için derinlik haritası (kurgu.zemin): düz kare + yavaş zoom "slayt" gibiydi (11-20)
+                dh = derinlik.harita(hazir, hazir.parent.parent / "derinlik" / f"g{gi + 1:02d}.png")
+                varlik[f"assets/derinlik/g{gi + 1:02d}.png"] = dh
+                p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
             else:
                 p.pop("gorsel")
         if sh["tur"] == "kapanis":
@@ -214,12 +213,24 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 print(f"harita düştü ({sh.get('yer')}): {str(e)[:120]}", flush=True)
                 p.update(tur="ifade", metin=sh.get("yer", ""))
         sahneler.append(p)
-    secenek = MUZIK_SECIM.get(kategori) or MUZIK_SECIM["other"]
-    muzik = MUZIK / secenek[len(gecmis()) % len(secenek)]
-    varlik["assets/muzik/yatak.mp3"] = muzik
-    plan = {"sure": z["sure"], "sahneler": sahneler, "muzik": {"dosya": "assets/muzik/yatak.mp3", "ses": 0.11},
-            "muzik_ad": muzik.stem}  # fmt: skip
+    # müzik anlatıma önceden karıştırılır (asama_muzik): kökte ayrı müzik izi yok
+    plan = {"sure": z["sure"], "sahneler": sahneler, "muzik": None}
     return plan, varlik
+
+
+def asama_muzik(d: Path, sen: dict, plan: dict, z: dict) -> Path:
+    """Bölüm başına üretilen müzik + kısılma zarfı, anlatımla tek WAV (muzik.py)."""
+    from otomat.trend import muzik
+
+    hedef = d / "ses" / "karisim.wav"
+    bolumler = muzik.bolumler(plan["sahneler"], sen.get("muzik_plani"), plan["sure"])
+    tohum = sum(map(ord, d.name)) % 1000
+    parcalar = muzik.uret(bolumler, d / "muzik", tohum)
+    if not hedef.exists() or any(p.stat().st_mtime > hedef.stat().st_mtime for p in parcalar):
+        muzik.karistir(Path(z["wav"]), parcalar, bolumler, plan["sahneler"], plan["sure"], hedef)
+    _yaz(d / "muzik" / "bolumler.json", bolumler)
+    print("müzik: " + ", ".join(f"{b['ruh']} {b['son'] - b['bas']:.0f} sn" for b in bolumler), flush=True)
+    return hedef
 
 
 def gorselleri_hazirla(d: Path, kay: dict) -> None:
@@ -276,7 +287,7 @@ def metadata(sen: dict, plan: dict, kay: dict, bag: dict) -> dict:
                 "\n\nPhotos (Wikimedia Commons):\n" + "\n".join(krediler) +
                 ("\nSatellite imagery: Esri, Maxar, Earthstar Geographics."
                  if any(sh["tur"] == "harita" for sh in plan["sahneler"]) else "") +
-                f"\n\nMusic: \"{plan['muzik_ad']}\" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0."
+                "\n\nMusic: original score composed for this video (ACE-Step 1.5, MIT)."
                 "\nSound effects: Pixabay Content License."
                 "\nNarration is AI-generated (synthetic voice). Script researched from the sources above and "
                 "fact-checked line by line against them.")  # fmt: skip
@@ -314,6 +325,7 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
             if a.get("wiki") and a["wiki"].replace("_", " ") == secim["secim"]["wiki_baslik"]:
                 kategori = (a.get("ts") or {}).get("kategori", "other")
     plan, varlik = plan_kur(sen, kay, z, secim, kategori)
+    varlik["assets/ses/anlatim.wav"] = asama_muzik(d, sen, plan, z)
     if (d / "elestiri.json").exists():  # önceki eleştirinin düzeltmeleri her koşuda yeniden uygulanır
         from otomat.trend import elestirmen
 
@@ -367,13 +379,18 @@ def asama_kapak(d: Path, sen: dict, kay: dict) -> Path:
 
 def asama_kesitler(d: Path, sen: dict, plan: dict, varlik: dict, kay: dict) -> list[Path]:
     """Senaryodaki kesitler: dikey yeniden kurulum, render, ses seviyesi. Kesit başına en çok ~58 sn."""
-    from otomat.trend import kesit
+    from otomat.trend import derinlik, kesit
 
     out = []
     dikey = {}
+    kullanilan = {sh["gorsel"].rsplit("/", 1)[-1] for sh in plan["sahneler"] if sh.get("gorsel")}
     for i, g in enumerate(kay["gorseller"]):
-        hedef = d / "gorsel_dikey" / f"g{i + 1:02d}.jpg"
-        dikey[f"assets/dikey/g{i + 1:02d}.jpg"] = medya.hazirla(Path(g["yerel"]), hedef, (1080, 1920))
+        ad = f"g{i + 1:02d}"
+        if f"{ad}.jpg" not in kullanilan:
+            continue
+        hedef = medya.hazirla(Path(g["yerel"]), d / "gorsel_dikey" / f"{ad}.jpg", (1080, 1920))
+        dikey[f"assets/dikey/{ad}.jpg"] = hedef
+        dikey[f"assets/dikey_derinlik/{ad}.png"] = derinlik.harita(hedef, d / "derinlik_dikey" / f"{ad}.png")
     for ki, k in enumerate(sen.get("kesitler") or []):
         idx = [int(x) for x in k.get("sahneler", []) if 0 <= int(x) < len(plan["sahneler"])]
         if not idx:

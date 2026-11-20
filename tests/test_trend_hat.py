@@ -100,13 +100,81 @@ def test_sahne_sablonlari_kayit_ve_gecis():
 def test_yapi_onar_gorsel_kapanis_sayi_duragan():
     s = _gecerli_senaryo()
     s["sahneler"][2]["deger"] = "<475"  # sayi
-    for i in (3, 5, 7):  # aynı görsel üç kez
+    for i in (3, 5, 7, 9):  # aynı görsel dört kez (sınır GORSEL_EN_COK = 3)
         s["sahneler"][i]["gorsel"] = "G2"
+    s["sahneler"][12]["gorsel"] = s["sahneler"][13]["gorsel"] = "G5"  # komşu sahnede aynı görsel
     s["sahneler"].insert(10, _sahne("kapanis", "early end", metin="x"))
     yapilan = senaryo.yapi_onar(s, gorsel_sayisi=40)
     assert yapilan
     assert s["sahneler"][2]["deger"] == "475"
-    assert sum(1 for sh in s["sahneler"] if sh.get("gorsel") == "G2") <= 2
+    assert sum(1 for sh in s["sahneler"] if sh.get("gorsel") == "G2") <= senaryo.GORSEL_EN_COK
+    gl = [sh.get("gorsel") for sh in s["sahneler"]]
+    assert all(a != b for a, b in zip(gl, gl[1:], strict=False) if a)  # komşu tekrar yok
+    assert all(sh.get("gorsel") for sh in s["sahneler"] if sh["tur"] != "harita")  # her sahnede görsel
     assert [sh["tur"] for sh in s["sahneler"]].count("kapanis") == 1
     assert s["sahneler"][-1]["tur"] == "kapanis"
     assert not [h for h in senaryo.yapi_kapisi(s, 40) if "görsel" in h or "kapanis" in h or "sayi.deger" in h]
+
+
+def test_zemin_parallax_klip_ve_yedek():
+    sh = {"id": "s07", "sure": 5.0, "gorsel": "assets/img/g01.jpg", "derinlik": "assets/derinlik/g01.png"}
+    h, js = kurgu.zemin(sh, 3, "karart")
+    assert 'class="px"' in h and "assets/derinlik/g01.png" in h  # derinlikli parallax tuvali
+    assert "window.PX.ciz" in js and "buildReady['s07-px']" in js
+    assert "radial-gradient" in h  # karartma katmanı
+    h2, js2 = kurgu.zemin({"id": "s08", "sure": 4.0, "gorsel": "assets/img/g02.jpg"}, 1)
+    assert "<img" in h2 and "canvas" not in h2 and "scale" in js2  # derinlik yoksa kamera hareketi
+    h3, _ = kurgu.zemin({"id": "s09", "sure": 4.0, "klip": "assets/klip/a.mp4"}, 2)
+    assert "<video" in h3 and 'data-duration="4.000"' in h3
+    h4, js4 = kurgu.zemin({"id": "s10", "sure": 4.0}, 0)
+    assert "leke" in h4 and "tl.fromTo" in js4  # görsel yoksa bile hareketli zemin, düz renk değil
+
+
+def test_sablonlarda_duz_renk_zemin_yok():
+    ortak = {"sure": 6.0, "kelimeler": [], "anlatim": "x", "gorsel": "assets/img/g01.jpg",
+             "derinlik": "assets/derinlik/g01.png"}  # fmt: skip
+    ornek = {
+        "sayi": {"deger": "1800000000", "etiket": "dollars in a day"},
+        "alinti": {"metin": "We did it", "kim": "CEO"},
+        "zaman": {"olaylar": [{"tarih": "2013", "olay": "a"}, {"tarih": "2020", "olay": "b"}]},
+        "ikili": {"sol": {"etiket": "a", "deger": "1"}, "sag": {"etiket": "b", "deger": "2"}},
+        "ifade": {"metin": "A big claim"},
+        "manset": {"mansetler": [{"kaynak": "BBC", "baslik": "Something happened"}]},
+        "bolum": {"no": "01", "baslik": "Act one"},
+        "kapanis": {"metin": "Remember this", "kanal": "X"},
+    }
+    for tur, alan in ornek.items():
+        sh = {**ortak, **alan, "id": f"t-{tur}", "tur": tur}
+        html = kurgu.SAHNELER[tur](sh, "kesme", 2)
+        assert 'class="px"' in html, tur
+        assert "background:#FFD60A; color:#111\">" not in html and "background:#F4F2EC; color:#111" not in html, tur
+        dh = kesit.DIKEY[tur]({**sh, "id": f"d-{tur}"}, "kesme", 2)
+        assert 'class="px"' in dh, f"dikey {tur}"
+
+
+def test_muzik_bolumleri_ve_zarf():
+    import numpy as np
+
+    from otomat.trend import muzik
+
+    sahneler = [{"tur": "foto", "bas": 0.0, "sure": 30.0}, {"tur": "bolum", "bas": 30.0, "sure": 3.0},
+                {"tur": "sayi", "bas": 33.0, "sure": 40.0, "kelimeler": [{"w": "$265", "s": 2.0, "e": 2.6}]},
+                {"tur": "bolum", "bas": 73.0, "sure": 3.0}, {"tur": "foto", "bas": 76.0, "sure": 60.0},
+                {"tur": "foto", "bas": 136.0, "sure": 8.0}, {"tur": "kapanis", "bas": 144.0, "sure": 6.0}]  # fmt: skip
+    plan = {"kanca": "merak", "bolumler": ["gerilim", "dram"], "kapanis": "umut"}
+    b = muzik.bolumler(sahneler, plan, 150.0)
+    assert [x["ruh"] for x in b] == ["merak", "gerilim", "dram", "umut"]  # son iki sahne kapanış parçası
+    kisa = sahneler[:-2] + [{"tur": "kapanis", "bas": 136.0, "sure": 6.0}]
+    assert muzik.bolumler(kisa, plan, 142.0)[-1]["ruh"] == "dram"  # 6 sn'lik kapanış önceki bölüme katılır
+    assert b[0]["bas"] == 0 and b[-1]["son"] == 150.0 and b[1]["bas"] == 30.0
+    # zarf: konuşma altında kısık, boşlukta açık
+    sr = muzik.SR
+    konusma = np.zeros((sr * 4, 2), np.float32)
+    konusma[: sr * 2] = 0.3 * np.sin(np.linspace(0, 2000, sr * 2))[:, None]
+    k = muzik.zarf(konusma, len(konusma), [])
+    assert 20 * np.log10(k[int(sr * 1.5)]) < -18 and 20 * np.log10(k[int(sr * 3.8)]) > -13
+
+
+def test_ton_talimati():
+    assert zamanla.ton_talimati({"ton": "hushed,  building suspense"}).endswith("hushed, building suspense")
+    assert zamanla.ton_talimati({}) == zamanla.TON_TABAN

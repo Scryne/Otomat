@@ -27,6 +27,9 @@ PARCA_KELIME = 32  # Chatterbox uzun girdide kelime atlıyor/uyduruyor; cümlele
 HATA_ESIGI = 0.12  # Whisper'ın duyduğu ile metin arasındaki fark; üstündeyse parça yeniden üretilir
 DENEME = 3
 CHATTERBOX_PY = Path(os.environ.get("OTOMAT_CHATTERBOX_PY", Path.home() / "tts-chatterbox/.venv/Scripts/python.exe"))
+QWEN_PY = Path(os.environ.get("OTOMAT_QWEN_PY", Path.home() / "tts-qwen3/.venv/Scripts/python.exe"))
+QWEN_MODEL = "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice"
+QWEN_PARCA_KELIME = 60  # Qwen sahne boyu metni (≤ 40 kelime) tek parçada okur; bölmek tonlamayı kırar
 REFERANS_METNI = (
     "This is a story about a girl who should not have survived. She was born far from the sea, on the open grasslands, "
     "and yet the ocean would shape her whole life. Three great ships. One extraordinary woman."
@@ -226,6 +229,15 @@ def referans(ses: str, dizin: Path) -> Path:
     return yol
 
 
+def _uret_qwen(isler: list[dict], konusmaci: str, dizin: Path) -> None:
+    bekleyen = [i for i in isler if not Path(i["hedef"]).exists()]
+    if not bekleyen:
+        return
+    gorev = dizin / "qwen_is.json"
+    gorev.write_text(json.dumps({"model": QWEN_MODEL, "konusmaci": konusmaci, "isler": bekleyen}), encoding="utf-8")
+    subprocess.run([str(QWEN_PY), "-I", str(Path(__file__).with_name("qwen_isci.py")), str(gorev)], check=True)
+
+
 def _uret(isler: list[dict], ref: Path, dizin: Path) -> None:
     bekleyen = [i for i in isler if not Path(i["hedef"]).exists()]
     if not bekleyen:
@@ -238,17 +250,21 @@ def _uret(isler: list[dict], ref: Path, dizin: Path) -> None:
 
 
 def seslendir(
-    bloklar: list[tuple[int, str]], ses: str, dizin: Path, aralar: tuple[float, float, float] | None = None
+    bloklar: list[tuple[int, str]], ses: str, dizin: Path, aralar: tuple[float, float, float] | None = None,
+    motor: str = "chatterbox", tonlar: list[str] | None = None,
 ) -> tuple[Path, list[Zaman], list[dict]]:
     """bloklar: (bölüm no, anlatım). Tek WAV + blok başına zaman aralığı + parça denetim kaydı döner.
 
-    aralar: (parça, blok, bölüm) arası sessizlik; verilmezse filmin sabitleri (trend hattı daha sıkı tempo ister)."""
+    aralar: (parça, blok, bölüm) arası sessizlik; verilmezse filmin sabitleri (trend hattı daha sıkı tempo ister).
+    motor: "chatterbox" (film; `ses` Kokoro referans sesi) ya da "qwen" (trend; `ses` Qwen konuşmacısı, `tonlar` blok
+    başına doğal dil ton talimatı)."""
     from faster_whisper import WhisperModel
 
     ara_parca, ara_blok, ara_bolum = aralar or (ARA_PARCA, ARA_BLOK, ARA_BOLUM)
     dizin.mkdir(parents=True, exist_ok=True)
-    ref = referans(ses, dizin)
-    parcalar = [(bi, pi, p) for bi, (_, metin) in enumerate(bloklar) for pi, p in enumerate(parcala(metin))]
+    ref = referans(ses, dizin) if motor == "chatterbox" else None
+    sinir = QWEN_PARCA_KELIME if motor == "qwen" else PARCA_KELIME
+    parcalar = [(bi, pi, p) for bi, (_, metin) in enumerate(bloklar) for pi, p in enumerate(parcala(metin, sinir))]
     secim: dict[tuple[int, int], tuple[float, Path]] = {}
     kayit: list[dict] = []
     whisper = WhisperModel("small.en", device="cpu", compute_type="int8")
@@ -257,9 +273,16 @@ def seslendir(
         isler = []
         for bi, pi, p in acik:
             metin = soylenis(p)
-            iz = hashlib.sha1(metin.encode()).hexdigest()[:8]  # metin değişince eski ses kullanılmasın
-            isler.append({"metin": metin, "hedef": str(dizin / f"p{bi:03d}_{pi}_{deneme}_{iz}.wav"), "tohum": deneme})
-        _uret(isler, ref, dizin)
+            ton = (tonlar[bi] if tonlar and bi < len(tonlar) else "") if motor == "qwen" else ""
+            # metin ya da ton değişince eski ses kullanılmasın
+            anahtar = f"{motor}|{ses}|{metin}|{ton}" if motor == "qwen" else metin
+            iz = hashlib.sha1(anahtar.encode()).hexdigest()[:8]
+            isler.append({"metin": metin, "hedef": str(dizin / f"p{bi:03d}_{pi}_{deneme}_{iz}.wav"), "tohum": deneme,
+                          "ton": ton})  # fmt: skip
+        if motor == "qwen":
+            _uret_qwen(isler, ses, dizin)
+        else:
+            _uret(isler, ref, dizin)  # type: ignore[arg-type]
         kalan = []
         for (bi, pi, p), is_ in zip(acik, isler, strict=True):
             x = wav_oku(Path(is_["hedef"]))

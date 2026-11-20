@@ -8,6 +8,9 @@ Kurallar nereden geliyor (docs/arastirma/14-trend-kanali.md):
 - HyperFrames film.md: sahne başına ~19 kelime (en çok 30), görünen her parça söylendiği an gelir.
 - vox-explainer: statik sahne ≤ 1/3, ardışık iki sahne aynı türde olmaz.
 - open-edit: ekrandaki her sayı kaynakta geçer (kod kapısı `sayi_kapisi`).
+- 11-20 izleyici geri bildirimi ("dümdüz metin anlatıyor", "düz renk zeminde yazılar sıkıcı"): yazar hikâye anlatıcısı
+  gibi yazar (karakter, an, gerilim, açık döngü, ritim), her sahneye anlatıcı için `ton` notu verir; her sahnenin
+  altında görsel olur (kod atar, `gorsel_ata`), bölümler müzik ruh hali taşır (`MUZIK_RUHLARI`).
 """
 
 from __future__ import annotations
@@ -24,6 +27,8 @@ STATIK = ("ifade", "ikili", "alinti")  # tek başına poster gibi duran türler
 KELIME_HEDEF = (650, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
 BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
 SAHNE_KELIME_EN_COK = 34
+GORSEL_EN_COK = 3  # her sahnenin altında görsel var (11-20); havuz ~36 görsel, komşu sahnede tekrar yok
+MUZIK_RUHLARI = ("merak", "gerilim", "dram", "umut", "enerji", "sakin", "karanlik")
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
                "delve", "tapestry", "in today's fast-paced", "buckle up", "let's dive in", "dive into",
                "without further ado", "smash that", "don't forget to subscribe", "in conclusion")  # fmt: skip
@@ -32,8 +37,19 @@ SISTEM_YAZAR = """You are the head writer of a fast, smart YouTube explainer cha
 about right now. Faceless, narrated, motion-graphics heavy. Viewers arrive curious ("why is everyone talking about X?")
 and must leave understanding it better than their friends do.
 
-Write in clear, spoken, energetic but trustworthy English (like a great documentary narrator, not a hype YouTuber).
-Short sentences. Concrete nouns. Real numbers only from the sources. No filler, no throat-clearing, no channel intro.
+VOICE: you are a storyteller talking to one smart friend, not a newsreader. The best explainer hosts (Johnny Harris,
+Wendover, ColdFusion) sound like this: they set a scene ("It's 9:30 on a Wednesday morning in Manhattan..."), follow
+people with names, build tension, then flip it. Our last videos failed because the narration read like a list of
+facts: flat, one sentence per fact, no story. Fix that:
+- Story over summary. Every chapter has a person or group who wants something, an obstacle, and a turn.
+- Open loops: tease what's coming ("hold on to that number, it comes back"), then pay it off later.
+- Rhythm: mix short punches (2-5 words: "It worked." "Then it didn't.") with longer flowing sentences. Never three
+  sentences of the same length in a row.
+- Talk to the viewer: "you", contractions, the occasional real question. Show surprise where the facts are
+  surprising. Causality, not lists: "but", "so", "which meant", "and that's the problem".
+- Make numbers feel physical with comparisons built only from numbers in the sources.
+- End each chapter on a hook into the next.
+Clear spoken English, trustworthy, never hype. Real numbers only from the sources. No filler, no channel intro.
 
 HARD RULES
 1. Every factual claim must come from the SOURCE PACK. Cite source ids per scene in "kaynak". If the sources don't say
@@ -43,8 +59,11 @@ HARD RULES
 3. The first scene (hook) states the promise within ~8 seconds: what happened + why it is bigger than it looks.
    Never start with "In this video", a greeting, or the channel name.
 4. Re-hook every ~90 seconds with a new question or turn ("But here's the part nobody's talking about...").
-5. Each scene's narration ("anlatim") is 8-30 words, one idea. Scenes of type sayi, ikili, ifade and alinti hold one
-   still graphic, so their narration is at most 20 words. Total narration 950-1350 words.
+5. Each scene's narration ("anlatim") is 8-30 words: one beat of the story, often two sentences (a long one and a
+   short punch). Scenes of type sayi, ikili, ifade and alinti hold one graphic, so their narration is at most 20 words.
+   Total narration 950-1350 words. Every scene also has "ton": a 3-10 word delivery note for the narrator (how to
+   SAY it: e.g. "hushed, building suspense", "wry, amused", "fast and urgent", "slow, let it land", "warm, curious").
+   Vary it with the story; most scenes are natural and conversational, the big turns get the strong notes.
 6. Scene types (field "tur") and their fields — use the type that SHOWS the line, vary them, never the same type twice
    in a row, and keep ifade+ikili+alinti under one third of scenes:
    - "foto": a real photo from the IMAGE LIST. fields: gorsel (image id like "G3"), baslik (optional on-screen headline,
@@ -70,7 +89,9 @@ HARD RULES
    - "kapanis": final scene only. fields: metin (the one idea to remember, ≤ 8 words), vurgu (1 word)
 7. 3-5 chapters ("bolum" scenes) after the hook. Last scene is "kapanis". No "subscribe" begging; at most one natural
    line inviting viewers to share what they think, inside the last two scenes.
-8. Use images from the IMAGE LIST only by id. Use each image at most twice. Prefer images that show what the line says.
+8. Use images from the IMAGE LIST only by id. EVERY scene except harita gets a "gorsel" (it moves behind the
+   graphics; there are no plain colour backgrounds). Use each image at most 3 times, never in two neighbouring scenes.
+   Prefer images that show what the line says.
 9. On-screen text never repeats the narration word for word (except quotes and ifade's key line).
 10. Banned words/phrases: unlock, seamless, supercharge, game-changer, revolutionize, effortless, delve, tapestry,
     "let's dive in", "buckle up", "without further ado", "in conclusion".
@@ -86,8 +107,10 @@ YOUR TASK NOW: plan the video, do not write scenes yet. Return ONLY JSON:
 {"tez": the one-sentence thesis,
  "kanca": what the first 2-3 scenes (before chapter 01) must establish, 1-2 sentences,
  "bolumler": [{"no": "01", "baslik": 2-5 words, "amac": what this chapter shows and how it moves the thesis forward
-   (2 sentences), "kaynaklar": [source ids to use], "kelime": target narration words for the chapter}],   (3-5 chapters;
+   (2 sentences), "kaynaklar": [source ids to use], "kelime": target narration words for the chapter,
+   "muzik": the music mood under this chapter, one of merak|gerilim|dram|umut|enerji|sakin|karanlik}],   (3-5 chapters;
    hook ~110 words, chapters together ~950-1150 words, closing ~60 words)
+ "kanca_muzik": music mood under the hook (same options), "kapanis_muzik": music mood under the ending,
  "kapanis": the closing idea (1 sentence),
  "baslik_adaylari": 5 YouTube titles, 45-70 characters, concrete story frame, not ending with "?", the trending thing
    named in the first 40 characters,
@@ -101,7 +124,8 @@ SISTEM_BOLUM = (
 
 YOUR TASK NOW: write the scenes for ONE part of the video (the plan and the scenes written so far are given). Continue
 naturally from the previous scene (no repeated facts, no repeated scene type at the boundary). Hit the target word
-count for this part. Return ONLY JSON: {"sahneler": [{"tur": str, "anlatim": str, "kaynak": [ids], ...type fields}]}"""
+count for this part. Return ONLY JSON: {"sahneler": [{"tur": str, "anlatim": str, "ton": str, "kaynak": [ids], "gorsel": "G..",
+...type fields}]}"""
 )
 
 SISTEM_KESIT = """You pick Shorts from a finished explainer script. Each Short is a run of CONSECUTIVE scenes whose
@@ -227,7 +251,7 @@ def _en_az_kullanilan(sahneler: list[dict], gorsel_sayisi: int, i: int) -> str |
     """i. sahne için en az kullanılmış görsel (komşu sahnelerinkinden farklı)."""
     say = _gorsel_say(sahneler)
     komsu = {str(sahneler[j].get("gorsel")) for j in (i - 1, i + 1) if 0 <= j < len(sahneler)}
-    adaylar = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in komsu and say[f"G{k}"] < 2]
+    adaylar = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in komsu and say[f"G{k}"] < GORSEL_EN_COK]
     return min(adaylar, key=lambda g: (say[g], int(g[1:]))) if adaylar else None
 
 
@@ -268,10 +292,11 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             o = (sh.get("olaylar") or [{}])[0]
             s[i] = {**sh, "tur": "ifade", "metin": f"{o.get('tarih', '')}: {o.get('olay', '')}".strip(": ")}
             yapilan.append(f"sahne {i}: tek olaylı zaman → ifade")
-    # 3. görsel en çok 2 kez
+    # 3. görsel en çok GORSEL_EN_COK kez ve komşu sahnede aynı görsel yok
     for i, sh in enumerate(s):
         g = sh.get("gorsel")
-        if g and _gorsel_say(s[: i + 1])[str(g)] > 2:
+        komsu = i > 0 and g and str(s[i - 1].get("gorsel")) == str(g)
+        if g and (_gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK or komsu):
             yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
             if yeni:
                 sh["gorsel"] = yeni
@@ -331,6 +356,13 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
                 break
             if sh.get("tur") == tur and _foto_yap(i):
                 yapilan.append(f"sahne {i}: durağan {tur} → foto")
+    # 5. görselsiz sahne kalmasın (harita kendi uydu görüntüsünü taşır): düz renk zemin yok (11-20 geri bildirimi)
+    for i, sh in enumerate(s):
+        if sh.get("tur") != "harita" and not sh.get("gorsel"):
+            g = _en_az_kullanilan(s, gorsel_sayisi, i)
+            if g:
+                sh["gorsel"] = g
+                yapilan.append(f"sahne {i}: görsel atandı {g}")
     senaryo["sahneler"] = s
     return yapilan
 
@@ -384,8 +416,8 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             if y in metin:
                 hata.append(f"sahne {i}: yasak ifade '{y}'")
     for g, n in gorsel_kullanim.items():
-        if n > 2:
-            hata.append(f"görsel {g} {n} kez kullanılmış (en çok 2)")
+        if n > GORSEL_EN_COK:
+            hata.append(f"görsel {g} {n} kez kullanılmış (en çok {GORSEL_EN_COK})")
     for i, sh in enumerate(s[:-1]):
         if sh.get("tur") == "kapanis":
             hata.append(f"sahne {i}: kapanis yalnız son sahne olabilir (fazlasını sil)")
@@ -453,6 +485,8 @@ def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model:
         print(f"senaryo: {ad.split(':')[0].split('(')[0].strip()} -> toplam {len(sahneler)} sahne", flush=True)
     s = {k: plan.get(k) for k in ("tez", "baslik_adaylari", "kapak_metni", "kapak_gorsel", "aciklama")}
     s["sahneler"] = sahneler
+    s["muzik_plani"] = {"kanca": plan.get("kanca_muzik"), "bolumler": [b.get("muzik") for b in plan.get("bolumler") or []],
+                        "kapanis": plan.get("kapanis_muzik")}  # fmt: skip
     s["kesitler"] = kesit_sec(oturum, sahneler)
     return s
 
