@@ -74,19 +74,39 @@ HARD RULES
     "let's dive in", "buckle up", "without further ado", "in conclusion".
 11. Numbers in narration: write them as digits ("750,000", "2013", "$265 million") — the voice engine reads digits.
 
-Also produce:
-- "baslik_adaylari": 5 YouTube titles, 45-70 characters, concrete story frame, no clickbait lies, not ending with "?",
-  name the trending thing in the first 40 characters.
-- "kapak_metni": 2-5 punchy words for the thumbnail (not the title).
-- "kapak_gorsel": image id for the thumbnail.
-- "aciklama": a 2-3 sentence YouTube description opening (no hashtags).
-- "kesitler": 3 Shorts cut from the video: each {"sahneler": [list of scene indexes, consecutive, 25-50 seconds of
-  narration total], "baslik": Shorts title ≤ 60 chars, "kanca": the first line on screen ≤ 7 words}. Each Short must
-  make sense on its own and start with a strong line.
+"""
 
-Return ONLY JSON:
-{"tez": str, "baslik_adaylari": [..], "kapak_metni": str, "kapak_gorsel": str, "aciklama": str,
- "sahneler": [{"tur": str, "anlatim": str, "kaynak": [ids], ...type fields}], "kesitler": [..]}"""
+SISTEM_ISKELET = (
+    SISTEM_YAZAR
+    + """
+
+YOUR TASK NOW: plan the video, do not write scenes yet. Return ONLY JSON:
+{"tez": the one-sentence thesis,
+ "kanca": what the first 2-3 scenes (before chapter 01) must establish, 1-2 sentences,
+ "bolumler": [{"no": "01", "baslik": 2-5 words, "amac": what this chapter shows and how it moves the thesis forward
+   (2 sentences), "kaynaklar": [source ids to use], "kelime": target narration words for the chapter}],   (3-5 chapters;
+   hook ~110 words, chapters together ~950-1150 words, closing ~60 words)
+ "kapanis": the closing idea (1 sentence),
+ "baslik_adaylari": 5 YouTube titles, 45-70 characters, concrete story frame, not ending with "?", the trending thing
+   named in the first 40 characters,
+ "kapak_metni": 2-5 punchy thumbnail words (not the title), "kapak_gorsel": image id for the thumbnail,
+ "aciklama": 2-3 sentence YouTube description opening (no hashtags)}"""
+)
+
+SISTEM_BOLUM = (
+    SISTEM_YAZAR
+    + """
+
+YOUR TASK NOW: write the scenes for ONE part of the video (the plan and the scenes written so far are given). Continue
+naturally from the previous scene (no repeated facts, no repeated scene type at the boundary). Hit the target word
+count for this part. Return ONLY JSON: {"sahneler": [{"tur": str, "anlatim": str, "kaynak": [ids], ...type fields}]}"""
+)
+
+SISTEM_KESIT = """You pick Shorts from a finished explainer script. Each Short is a run of CONSECUTIVE scenes whose
+narration totals 70-130 words (25-50 seconds), makes sense on its own without the rest of the video, starts with a
+strong line and ends on a payoff. Pick the 3 strongest, non-overlapping. Avoid runs that start with a chapter card.
+Return ONLY JSON: {"kesitler": [{"sahneler": [indexes], "baslik": Shorts title of at most 60 chars, "kanca": the first
+line on screen, at most 7 words (a hook, not a summary)}]}"""
 
 SISTEM_DENETCI = """You are a meticulous fact-checker for a documentary explainer. You get a SOURCE PACK and a SCRIPT
 (JSON scenes). For every scene, check every factual claim in "anlatim" and in on-screen fields (baslik, etiket, deger,
@@ -97,10 +117,16 @@ Do NOT flag style. Do NOT flag claims that are clearly supported.
 Return ONLY JSON: {"sorunlar": [{"sahne": index, "alan": field, "sorun": what is wrong, "duzeltme": a corrected
 version that the sources support (or "REMOVE")}]}. Empty list if everything is supported."""
 
-SISTEM_ONARIM = """You revise a documentary explainer script (JSON) to fix the listed fact-check problems. Change only
-what is needed; keep scene count roughly the same, keep the structure, types and style. If a claim can't be supported,
-rewrite the line with a supported fact or remove the scene. Keep all HARD RULES of the original brief (types, fields,
-word counts, no same type twice in a row). Return ONLY the full corrected JSON object (same schema)."""
+SISTEM_ONARIM = (
+    SISTEM_YAZAR
+    + """
+
+YOUR TASK NOW: fix the listed problems by rewriting ONLY the affected scenes (you get each problem with its scene index
+and the neighbouring scenes for context). Keep each rewritten scene's role in the story; replace an unsupported claim
+with a supported fact, change a scene's type when the problem is a repeated type, or delete the scene when nothing
+supported fits. Return ONLY JSON: {"duzeltmeler": [{"i": scene index, "sahne": full corrected scene object, or null to
+delete}]}"""
+)
 
 
 def kaynak_paketi(wiki, haberler: list, ek_metinler: list[tuple[str, str]] | None = None,
@@ -259,34 +285,104 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
 
 
 # ------------------------------------------------------------------------------------------------- akış
+def _mesaj_kaynak(kaynak_metni: str, gorsel_metni: str) -> str:
+    return f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== IMAGE LIST (real, licensed; use by id) ===\n{gorsel_metni}\n\n"
+
+
+def iskelet(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3") -> dict:
+    mesaj = (f"TOPIC: {konu['ad']}\nWHY IT IS TRENDING: {konu.get('neden', '')}\n"
+             f"EDITOR'S SUGGESTED ANGLE (sharpen it): {konu.get('aci', '')}\n\n" + _mesaj_kaynak(kaynak_metni, gorsel_metni)
+             + "Plan the video now.")  # fmt: skip
+    return oturum.json_sor(SISTEM_ISKELET, mesaj, model=model, en_cok=12000, sicaklik=0.7)
+
+
+def _ozet(sahneler: list[dict]) -> str:
+    return "\n".join(f"{i}. [{sh.get('tur')}] {sh.get('anlatim', '')}" for i, sh in enumerate(sahneler))
+
+
 def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3") -> dict:
-    mesaj = (f"TOPIC: {konu['ad']}\nWHY IT IS TRENDING (from the radar): {konu.get('neden', '')}\n"
-             f"EDITOR'S SUGGESTED ANGLE (you may sharpen it): {konu.get('aci', '')}\n\n"
-             f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== IMAGE LIST (real, licensed; use by id) ===\n{gorsel_metni}\n\n"
-             "Write the full script JSON now.")  # fmt: skip
-    return oturum.json_sor(SISTEM_YAZAR, mesaj, model=model, en_cok=16000, sicaklik=0.75)
+    """İskelet (düşünerek, kısa) → kanca → her bölüm (düşünmeden, kısa JSON) → kapanış → kesit seçimi.
+    Tek çağrıda ~60 sahnelik JSON 32k token'a sığmadı ve aboneliğin ~1,9 birimini yedi (11-20)."""
+    plan = iskelet(oturum, konu, kaynak_metni, gorsel_metni, model)
+    sahneler: list[dict] = []
+    kaynak = _mesaj_kaynak(kaynak_metni, gorsel_metni)
+    plan_metni = json.dumps({k: plan.get(k) for k in ("tez", "kanca", "bolumler", "kapanis")}, ensure_ascii=False)
+    parcalar = [("HOOK (scenes before chapter 01; no chapter card)", "~110 words", plan.get("kanca", ""))]
+    for b in plan.get("bolumler") or []:
+        parcalar.append((f"CHAPTER {b.get('no')}: start with ONE 'bolum' scene (no {b.get('no')}, baslik "
+                         f"\"{b.get('baslik')}\"), then its scenes", f"~{b.get('kelime', 250)} words", b.get("amac", "")))  # fmt: skip
+    parcalar.append(
+        ("CLOSING (last 2-3 scenes; the very last scene is 'kapanis')", "~60 words", plan.get("kapanis", ""))
+    )
+    for ad, hedef, amac in parcalar:
+        mesaj = (kaynak + f"=== PLAN ===\n{plan_metni}\n\n=== SCENES SO FAR ===\n{_ozet(sahneler) or '(none)'}\n\n"
+                 f"=== WRITE NOW ===\n{ad}. Target: {hedef}. Goal: {amac}")  # fmt: skip
+        y = oturum.json_sor(SISTEM_BOLUM, mesaj, model=model, en_cok=9000, sicaklik=0.75, dusun=False)
+        yeni = y.get("sahneler") if isinstance(y, dict) else y
+        sahneler += [sh for sh in (yeni or []) if isinstance(sh, dict)]
+        print(f"senaryo: {ad.split(':')[0].split('(')[0].strip()} -> toplam {len(sahneler)} sahne", flush=True)
+    s = {k: plan.get(k) for k in ("tez", "baslik_adaylari", "kapak_metni", "kapak_gorsel", "aciklama")}
+    s["sahneler"] = sahneler
+    s["kesitler"] = kesit_sec(oturum, sahneler, model)
+    return s
+
+
+def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = "kimi-k3") -> list[dict]:
+    y = oturum.json_sor(
+        SISTEM_KESIT, f"SCRIPT:\n{_ozet(sahneler)}", model=model, en_cok=3000, sicaklik=0.4, dusun=False
+    )
+    return list(y.get("kesitler") or []) if isinstance(y, dict) else []
 
 
 def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "glm-5.3") -> list[dict]:
     sade = {"sahneler": [{k: v for k, v in sh.items() if k != "kaynak"} | {"i": i}
                          for i, sh in enumerate(senaryo.get("sahneler", []))]}  # fmt: skip
     mesaj = f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== SCRIPT ===\n{json.dumps(sade, ensure_ascii=False)}"
-    y = oturum.json_sor(SISTEM_DENETCI, mesaj, model=model, en_cok=8000, sicaklik=0.0)
+    y = oturum.json_sor(SISTEM_DENETCI, mesaj, model=model, en_cok=12000, sicaklik=0.0)
     return list(y.get("sorunlar", [])) if isinstance(y, dict) else []
+
+
+def _sahne_no(metin: str) -> int | None:
+    m = re.search(r"sahne (\d+)", metin)
+    return int(m.group(1)) if m else None
 
 
 def onar(oturum: Oturum, senaryo: dict, sorunlar: list, kaynak_metni: str, gorsel_metni: str,
          model: str = "kimi-k3") -> dict:  # fmt: skip
-    mesaj = (f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== IMAGE LIST ===\n{gorsel_metni}\n\n=== ORIGINAL BRIEF ===\n"
-             f"{SISTEM_YAZAR}\n\n=== CURRENT SCRIPT ===\n{json.dumps(senaryo, ensure_ascii=False)}\n\n"
-             f"=== PROBLEMS TO FIX ===\n{json.dumps(sorunlar, ensure_ascii=False, indent=1)}")  # fmt: skip
-    return oturum.json_sor(SISTEM_ONARIM, mesaj, model=model, en_cok=16000, sicaklik=0.3)
+    """Yalnız sorunlu sahneler yeniden yazılır (tam metni yeniden üretmek uzun ve pahalı)."""
+    sahneler = senaryo.get("sahneler", [])
+    ilgili: set[int] = set()
+    for s_ in sorunlar:
+        i = s_.get("sahne") if "sahne" in s_ else _sahne_no(str(s_.get("kod_kurali", "")))
+        if isinstance(i, int) and 0 <= i < len(sahneler):
+            ilgili.add(i)
+    baglam = sorted({j for i in ilgili for j in (i - 1, i, i + 1) if 0 <= j < len(sahneler)})
+    mesaj = (_mesaj_kaynak(kaynak_metni, gorsel_metni) + "=== FULL SCRIPT (index. [type] narration) ===\n"
+             + _ozet(sahneler) + "\n\n=== SCENES IN CONTEXT (full objects) ===\n"
+             + json.dumps({i: sahneler[i] for i in baglam}, ensure_ascii=False)
+             + f"\n\n=== PROBLEMS ===\n{json.dumps(sorunlar, ensure_ascii=False, indent=1)}")  # fmt: skip
+    y = oturum.json_sor(SISTEM_ONARIM, mesaj, model=model, en_cok=9000, sicaklik=0.3, dusun=False)
+    duz = (y.get("duzeltmeler") or []) if isinstance(y, dict) else []
+    yeni = list(sahneler)
+    silinen = set()
+    for d in duz:
+        try:
+            i = int(d.get("i"))
+        except (TypeError, ValueError, AttributeError):
+            continue
+        if not 0 <= i < len(yeni):
+            continue
+        if d.get("sahne") is None:
+            silinen.add(i)
+        elif isinstance(d["sahne"], dict):
+            yeni[i] = d["sahne"]
+    return {**senaryo, "sahneler": [sh for i, sh in enumerate(yeni) if i not in silinen]}
 
 
 def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorsel_sayisi: int,
          tur_sayisi: int = 4, kayit: list | None = None) -> dict:  # fmt: skip
-    """Yaz → (kod kapıları + olgu denetimi) → onar döngüsü. Turlar bitince hâlâ desteklenmeyen sahne çıkarılır
-    (son çare, Shorts hattındaki satır çıkarmanın karşılığı); kod kapısı yine geçmezse çağıran düşürür."""
+    """Yaz → (kod kapıları + olgu denetimi) → sahne onarımı döngüsü. Turlar bitince hâlâ desteklenmeyen sahne çıkarılır
+    (son çare); kod kapısı yine geçmezse çağıran düşürür."""
     kayit = kayit if kayit is not None else []
     print("senaryo: yazılıyor", flush=True)
     s = yaz(oturum, konu, kaynak_metni, gorsel_metni)
@@ -297,14 +393,16 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
         print(f"senaryo tur {tur}: {len(s.get('sahneler', []))} sahne, kod {len(kod)}, olgu {len(olgu)}", flush=True)
         if not kod and not olgu:
             return s
-        sorunlar = [{"kod_kurali": k} for k in kod] + olgu
-        s = onar(oturum, s, sorunlar, kaynak_metni, gorsel_metni)
+        s = onar(oturum, s, [{"kod_kurali": k} for k in kod] + olgu, kaynak_metni, gorsel_metni)
+        if any("kesit" in k for k in kod) or len(s.get("kesitler") or []) < 3:
+            s["kesitler"] = kesit_sec(oturum, s["sahneler"])
     olgu = denetle(oturum, s, kaynak_metni)
     korunan = {"bolum", "kapanis"}
     cikar = {int(o["sahne"]) for o in olgu if str(o.get("sahne", "")).isdigit()}
     cikar = {i for i in cikar if 0 < i < len(s.get("sahneler", [])) and s["sahneler"][i].get("tur") not in korunan}
     if cikar:
         s["sahneler"] = [sh for i, sh in enumerate(s["sahneler"]) if i not in cikar]
+        s["kesitler"] = kesit_sec(oturum, s["sahneler"])
     kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
     kayit.append({"tur": tur_sayisi, "kod": kod, "olgu": olgu, "cikarilan": sorted(cikar),
                   "sahne": len(s.get("sahneler", []))})  # fmt: skip

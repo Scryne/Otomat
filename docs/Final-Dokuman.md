@@ -41,6 +41,15 @@ ve kancanın tuttuğunu öğrenir. GitHub Actions'ta her gün kendiliğinden ça
 > Short'un geliri hak sahibine gider, ihtar kişiye ve One Ticket Back'e uzanır (`docs/arastirma/13-spor-shorts.md`).
 > Görsel grafik roman illüstrasyonu, sporcular adsız rol figürü. Kanıt ve faz: Roadmap Faz 19.
 
+> **Trend açıklayıcı kanalı (2026-11-20, K-38…K-41).** Scryne: "global olarak dünyada trend olan şeylerle alakalı
+> videolar… yeni bir kanalda… uzun video, sonrasında shorts… video üretirken daha iyi olmalısın." Yeni kol
+> `otomat/trend` (çalışma adı **Why It's Everywhere**, ayrı Google hesabında açılacak): Google Trends + Wikipedia artış
+> radarı → TypeSafe eleme + LLM editör → Wikipedia/Google News/Commons kaynakları → olgu denetimli senaryo (OpenCode Go)
+> → Chatterbox + kelime zamanı → HyperFrames motoru (10 sahne türü, anlatıcı söyledikçe gelen grafikler, uydu harita
+> uçuşu) → görsel eleştirmen → kapak → dikey kesitler (kanca 0. karede, kelime vurgulu altyazı). Komutlar
+> `uv run --extra ses python -m otomat.trend.uretim` / `otomat.trend.yukle`; günlük betik `araclar/trend/gunluk.cmd`.
+> Kanal analizi, araştırma ve kararlar: `docs/arastirma/14-trend-kanali.md`; faz: Roadmap Faz 20.
+
 ## Güncel mimari (film, 2026-10-23)
 
 | | |

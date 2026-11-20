@@ -264,6 +264,16 @@ def _sayi_bicim(deger: float) -> tuple[int, str]:
     return min(2, len(str(deger).split(".")[1])), ","
 
 
+def kisalt(deger: float, son: str) -> tuple[float, str]:
+    """Ekranda 10 milyon ve üstü kısaltılır (1,800,000,000 → 1.8B); son ek zaten verilmişse dokunulmaz."""
+    if son:
+        return deger, son
+    for esik, ek in ((1e12, "T"), (1e9, "B"), (1e7, "M")):
+        if abs(deger) >= esik:
+            return round(deger / (esik if ek != "M" else 1e6), 1), ek
+    return deger, son
+
+
 def sahne_sayi(sh: dict, gecis: str, tohum: int) -> str:
     sid, sure = sh["id"], sh["sure"]
     perde, giris = _giris_js(gecis if gecis != "perde" else "sel", sid)
@@ -271,19 +281,22 @@ def sahne_sayi(sh: dict, gecis: str, tohum: int) -> str:
     zemin_hex = RENK.get(zemin, RENK["vurgu"])
     yazi = "#111" if zemin == "vurgu" else "#fff"
     deger = float(sh["deger"])
-    ondalik, _ = _sayi_bicim(deger)
     on, son = sh.get("on") or "", sh.get("son") or ""
+    deger, son = kisalt(deger, son)
+    ondalik, _ = _sayi_bicim(deger)
+    uzunluk = len(f"{deger:,.{ondalik}f}") + 0.55 * (len(on) + len(son))
+    boy = int(min(430, 1600 / (0.46 * max(uzunluk, 1))))
     govde = f"""
     <div class="icerik tam" style="background:{zemin_hex}; color:{yazi}">
       <div class="sayi gb" id="{sid}-sayi"><span class="on">{_e(on)}</span><span class="deger">0</span><span
         class="son">{_e(son)}</span></div>
       <div class="etk" id="{sid}-etk">{_kelime_spanlari(sh.get("etiket", ""), sh.get("vurgu"), sid)}</div>
     </div>{perde}"""
-    css = """
-    .sayi { position:absolute; left:120px; right:120px; top:150px; font-size:430px; white-space:nowrap; }
-    .sayi .on, .sayi .son { font-size:.55em; }
-    .etk { position:absolute; left:126px; right:200px; top:640px; font-size:62px; font-weight:700; line-height:1.15; }
-    .etk .vurgu { background:#111; color:#FFD60A; padding:0 10px; }
+    css = f"""
+    .sayi {{ position:absolute; left:120px; right:120px; top:150px; font-size:{boy}px; white-space:nowrap; }}
+    .sayi .on, .sayi .son {{ font-size:.55em; }}
+    .etk {{ position:absolute; left:126px; right:200px; top:640px; font-size:62px; font-weight:700; line-height:1.15; }}
+    .etk .vurgu {{ background:#111; color:#FFD60A; padding:0 10px; }}
     """
     t0 = ipucu_zamani(sh, sh.get("ipucu"), min(0.3, sure * 0.08))
     sayac = max(1.2, min(1.6, sure * 0.3))

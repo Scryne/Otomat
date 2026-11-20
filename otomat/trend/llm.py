@@ -80,9 +80,13 @@ class Oturum:
         self.kullanim: list[dict] = []
 
     def sor(self, sistem: str, mesaj: str, model: str = VARSAYILAN, en_cok: int = 8000, sicaklik: float = 0.7,
-            deneme: int = 3) -> str:  # fmt: skip
+            deneme: int = 3, dusun: bool = True) -> str:  # fmt: skip
+        """dusun=False: modelin akıl yürütme token'ları kapatılır (glm/kimi'de çıktı 4-5 kat kısalıyor, 11-20 ölçümü);
+        uzun yapılandırılmış çıktıda (sahne JSON'u) kesilmeyi ve abonelik payını önler."""
         govde = {"model": model, "max_tokens": en_cok, "temperature": sicaklik, "system": sistem,
                  "messages": [{"role": "user", "content": mesaj}]}  # fmt: skip
+        if not dusun:
+            govde["thinking"] = {"type": "disabled"}
         modeller = [model, *[m for m in YEDEKLER if m != model]]
         son = None
         for m in modeller:
@@ -115,7 +119,7 @@ class Oturum:
         except ValueError:
             onar = self.sor("You fix malformed JSON. Return only valid JSON, nothing else.",
                             f"Fix this into valid JSON with the same content:\n\n{metin}", model=kw.get("model", VARSAYILAN),
-                            en_cok=kw.get("en_cok", 8000), sicaklik=0.0)  # fmt: skip
+                            en_cok=kw.get("en_cok", 8000), sicaklik=0.0, dusun=False)  # fmt: skip
             return json_cikar(onar)
 
     def _akis(self, govde: dict) -> dict:
@@ -156,7 +160,9 @@ class Oturum:
         except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
             raise LLMHatasi(f"5xx bağlantı: {e}") from None
         print(
-            f"llm {govde['model']}: {usage.get('output_tokens')} token, {time.time() - bas:.0f} sn, {dur}", flush=True
+            f"llm {govde['model']}: {usage.get('output_tokens')} token, {time.time() - bas:.0f} sn, {dur}, "
+            f"pay {(usage.get('opencode') or {}).get('allowance')}",
+            flush=True,
         )
         return {"content": [{"type": "text", "text": "".join(parcalar)}], "usage": usage, "stop_reason": dur}
 

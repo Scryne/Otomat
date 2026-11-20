@@ -117,14 +117,14 @@ def d_sayi(sh: dict, gecis: str, tohum: int) -> str:
     perde, giris = _giris_js(gecis if gecis != "perde" else "sel", sid)
     zemin = sh.get("renk") or ("vurgu" if tohum % 2 == 0 else "kirmizi")
     yazi = "#111" if zemin == "vurgu" else "#fff"
-    deger = float(sh["deger"])
-    ondalik = 0 if deger.is_integer() else min(2, len(str(sh["deger"]).split(".")[1]))
-    uzun = len(f"{deger:,.{ondalik}f}") + len(sh.get("on") or "") + len(sh.get("son") or "")
+    deger, son = kurgu.kisalt(float(sh["deger"]), sh.get("son") or "")
+    ondalik = 0 if float(deger).is_integer() else 1
+    uzun = len(f"{deger:,.{ondalik}f}") + len(sh.get("on") or "") + len(son)
     boy = 300 if uzun <= 5 else (240 if uzun <= 8 else 180)
     govde = f"""
     <div class="icerik tam" style="background:{RENK.get(zemin, RENK["vurgu"])}; color:{yazi}">
       <div class="sayi gb"><span class="on">{_e(sh.get("on") or "")}</span><span class="deger">0</span><span
-        class="son">{_e(sh.get("son") or "")}</span></div>
+        class="son">{_e(son)}</span></div>
       <div class="etk" id="{sid}-etk">{_kelime_spanlari(sh.get("etiket", ""), sh.get("vurgu"), sid)}</div>
     </div>{perde}"""
     css = f"""
