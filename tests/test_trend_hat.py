@@ -202,3 +202,14 @@ def test_sayac_sira_sayisi_ve_kucuk_sayi_sayilmaz():
     html = kurgu.sahne_sayi({"id": "s1", "sure": 4.0, "deger": "25", "son": "th", "etiket": "film", "kelimeler": []},
                             "kesme", 1)  # fmt: skip
     assert "{v:25.0}, {v:25.0" in html
+
+
+def test_stok_uygun_ai_klip_ve_kisa_klip_elenir():
+    from otomat.trend import stok
+
+    iyi = {"tags": "london, street, night", "duration": 12, "videos": {"medium": {"url": "u", "width": 1920}}}
+    assert stok.uygun(iyi, 8.0)
+    assert not stok.uygun({**iyi, "tags": "ai generated, london"}, 8.0)  # üretilmiş görüntü gerçek gibi gösterilmez
+    assert not stok.uygun({**iyi, "duration": 3}, 8.0)
+    assert not stok.uygun({**iyi, "videos": {"medium": {"url": "u", "width": 960}}}, 8.0)
+    assert stok.gecerli_klip({"klip": {"id": 123, "url": "u"}}) and not stok.gecerli_klip({"klip": "x.mp4"})

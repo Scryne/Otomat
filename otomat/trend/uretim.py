@@ -178,7 +178,7 @@ def asama_ses(d: Path, sen: dict) -> dict:
 
 
 def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple[dict, dict[str, Path]]:
-    from otomat.trend import derinlik
+    from otomat.trend import derinlik, stok
 
     gorsel = kay["gorseller"]
     varlik: dict[str, Path] = {"assets/ses/anlatim.wav": Path(z["wav"])}
@@ -201,6 +201,17 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
             else:
                 p.pop("gorsel")
+        p.pop("klip", None)
+        if stok.gecerli_klip(sh):
+            k = sh["klip"]
+            try:
+                hit = {"id": k["id"], "duration": k.get("sure"), "videos": {"medium": {"url": k["url"]}}}
+                yol = stok.hazirla(hit, zz["sure"], Path(z["wav"]).parent.parent / "klip")
+                varlik[f"assets/klip/{yol.name}"] = yol
+                p["klip"] = f"assets/klip/{yol.name}"
+                p["kredi"] = "Video: Pixabay"
+            except Exception as e:  # noqa: BLE001 — klip inmezse sahne fotoğrafta kalır
+                print(f"stok klip düştü ({k.get('id')}): {str(e)[:120]}", flush=True)
         if sh["tur"] == "kapanis":
             p["kanal"] = KANAL_ADI
         if sh["tur"] == "harita":
@@ -282,6 +293,8 @@ def metadata(sen: dict, plan: dict, kay: dict, bag: dict) -> dict:
         if f"assets/img/g{i + 1:02d}.jpg" in kullanilan:
             krediler.append(f"- {g['dosya'].removeprefix('File:')}: {g['yazar'] or 'Wikimedia Commons'}, {g['lisans']} "
                             f"({g['sayfa']})")  # fmt: skip
+    stok_kredi = sorted({f"{sh['klip']['yazar']} ({sh['klip']['sayfa']})" for sh in sen["sahneler"]
+                         if isinstance(sh.get("klip"), dict) and sh["klip"].get("sayfa")})  # fmt: skip
     kaynaklar = [f"- Wikipedia, \"{kay['wiki']['baslik']}\" (revision {kay['wiki']['revid']}): "
                  f"https://en.wikipedia.org/w/index.php?oldid={kay['wiki']['revid']} (CC BY-SA 4.0)"]  # fmt: skip
     kullanilan_n = sorted({k for sh in sen["sahneler"] for k in (sh.get("kaynak") or []) if str(k).startswith("N")})
@@ -291,6 +304,7 @@ def metadata(sen: dict, plan: dict, kay: dict, bag: dict) -> dict:
     bolumler = "\n".join(f"{_dk(t)} {b}" for t, b in bolum_zamanlari(plan))
     aciklama = (f"{sen.get('aciklama', '').strip()}\n\n{bolumler}\n\nSources:\n" + "\n".join(kaynaklar) +
                 "\n\nPhotos (Wikimedia Commons):\n" + "\n".join(krediler) +
+                ("\nStock footage (Pixabay Content License): " + ", ".join(stok_kredi) if stok_kredi else "") +
                 ("\nSatellite imagery: Esri, Maxar, Earthstar Geographics."
                  if any(sh["tur"] == "harita" for sh in plan["sahneler"]) else "") +
                 "\n\nMusic: original score composed for this video (ACE-Step 1.5, MIT)."
@@ -334,6 +348,14 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     print(f"senaryo: {len(sen['sahneler'])} sahne, {n} kelime | tez: {sen.get('tez')}", flush=True)
     z = asama_ses(d, sen)
     print(f"ses: {z['sure']:.1f} sn", flush=True)
+    if not sen.get("stok_secildi"):  # kişiye özgü olmayan sahnelere stok video (stok.py); bir kez, kayıtlı
+        from otomat.trend import stok
+
+        sureler = {i: zz["sure"] for i, zz in enumerate(z["sahneler"])}
+        yapilan = stok.uygula(oturum, sen["sahneler"], sureler)
+        sen["stok_secildi"] = True
+        _yaz(d / "senaryo.json", sen)
+        print(f"stok video: {len([y for y in yapilan if y.startswith('sahne')])} sahne", flush=True)
     kategori = "other"
     if (d / "adaylar.json").exists():
         for a in _oku(d / "adaylar.json")["adaylar"]:
