@@ -213,3 +213,9 @@ def test_stok_uygun_ai_klip_ve_kisa_klip_elenir():
     assert not stok.uygun({**iyi, "duration": 3}, 8.0)
     assert not stok.uygun({**iyi, "videos": {"medium": {"url": "u", "width": 960}}}, 8.0)
     assert stok.gecerli_klip({"klip": {"id": 123, "url": "u"}}) and not stok.gecerli_klip({"klip": "x.mp4"})
+
+
+def test_eslestirme_altyazili_fotografi_korur():
+    assert senaryo._altyazili({"tur": "foto", "etiket": "Barnes, London", "gorsel": "G1"})
+    assert not senaryo._altyazili({"tur": "sayi", "etiket": "films in the series", "gorsel": "G1"})
+    assert not senaryo._altyazili({"tur": "foto", "gorsel": "G1"})

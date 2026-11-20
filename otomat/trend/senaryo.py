@@ -142,8 +142,9 @@ the sources, causal claims the sources do not make, and anything that presents s
 Do NOT flag style. Do NOT flag claims that are clearly supported. A headline shortened without changing its meaning
 is fine. A sentence from a Wikipedia article is Wikipedia's narration, not a quote of a person: flag it if the script
 presents it as someone's spoken quote.
-Photo captions ("etiket") describe the photo of that scene ("gorsel" id): every name, year, role, film or event in a
-caption must appear in that image's title in the IMAGE LIST (e.g. "Pattinson as Batman, 2022" over an image titled
+Photo captions ("etiket" of "foto" scenes; in "sayi" scenes etiket labels the number instead) describe the photo of
+that scene ("gorsel" id): every name, year, role, film or event in a caption must appear in that image's title in the
+IMAGE LIST (e.g. "Pattinson as Batman, 2022" over an image titled
 "Robert Pattinson-65808" is unsupported: fix it to what the title says, e.g. "Robert Pattinson").
 Return ONLY JSON: {"sorunlar": [{"sahne": index, "alan": field, "sorun": what is wrong, "duzeltme": a corrected
 version that the sources support (or "REMOVE")}]}. Empty list if everything is supported."""
@@ -674,6 +675,11 @@ def _kisi_uygun(kisi: str | None, metin: str, konu: str) -> bool:
     return any(len(p) >= 4 and p in hedef for p in re.findall(r"[a-zà-ÿ]+", kisi.lower()))
 
 
+def _altyazili(sh: dict) -> bool:
+    """Fotoğraf sahnesinin alt yazısı (etiket) o fotoğrafı tanımlar; sayı sahnesindeki etiket rakamın açıklamasıdır."""
+    return sh.get("tur") == "foto" and bool(sh.get("etiket")) and bool(sh.get("gorsel"))
+
+
 def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_sayisi: int,
                     model: str = BOLUM_MODEL, konu: str = "") -> list[str]:  # fmt: skip
     """Sahne → görsel atamasını anlam üzerinden yeniden yapar (yerinde). Neden: v2'de her sahnede görsel zorunlu
@@ -707,7 +713,7 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
             continue
         # alt yazı (etiket) yazarın seçtiği fotoğrafı tanımlar; görsel değişirse yazı yanlış kişinin altında kalır
         # (11-20 Bond: "Pattinson, Venice" alt yazısı Daniel Craig balmumu heykelinin altına düştü)
-        if s[i].get("etiket") and s[i].get("gorsel"):
+        if _altyazili(s[i]):
             continue
         if s[i].get("gorsel") != g:
             yapilan.append(f"sahne {i}: {s[i].get('gorsel')} → {g} (uyum {uyum})")
@@ -734,6 +740,8 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
         if not g or sh.get("tur") == "harita":
             continue
         komsu = i > 0 and str(s[i - 1].get("gorsel")) == str(g)
+        if _altyazili(sh):  # alt yazılı fotoğraf yerinde kalır; sınır diğer sahnelerden çözülür
+            continue
         if komsu or _gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK:
             metin = " ".join(str(sh.get(k) or "") for k in ("anlatim", "baslik", "metin", "etiket", "kim"))
             say = _gorsel_say(s)
