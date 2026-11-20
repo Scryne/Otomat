@@ -148,3 +148,29 @@ HyperFrames telemetrisi kapalı çalıştırılır (`HYPERFRAMES_NO_TELEMETRY=1`
 - **K-41: seçim.** Radar (GT RSS 10 geo + Wikipedia artış) → Jev sert eleme (trajedi < 0,5, siyaset < 0,5, küresel ≥
   0,4, açıklanabilirlik ≥ 1,4/3) → LLM editör hikâye + tez + görsel aramaları. Kapsanan hikâye listesi
   `durum/trend_gecmis.json`.
+
+## 7. İlk uçtan uca üretim (GTA VI, 11-20) [Ö]
+
+| Aşama | Sonuç |
+| --- | --- |
+| Seçim | radar 36 aday → Jev elemesi → kimi-k3 editör: "GTA VI çıkışı"; tez: "asıl rekor 1,8 milyar değil, hastalık izinleri: oyun ekonomik veride görünen ilk çıkış" |
+| Kaynak | Wikipedia 38.590 karakter (sabit revizyon) + 20 haber + 36 serbest Commons görseli (reklam panoları, Toronto metrosu, Edinburgh, Miami) |
+| Senaryo | 56 sahne, 712 kelime; 4 olgu turu: sorun 9 → 1-2; 4 desteklenmeyen sahne son çare çıkarıldı |
+| Ses | Chatterbox + Whisper kapısı, 5 dk 24 sn; kelime hizalama rakamlarda da doğru |
+| Kurgu denetimi | HyperFrames check: hatalar 12 → 0; eleştirmen P0 bulguları 73 → 34 (kalanların çoğu kesimdeki 1-3 karelik geçiş) |
+
+**Metin modeli dersleri (OpenCode Go, "pay" = abonelik birimi):**
+- Tek çağrıda ~60 sahnelik JSON: kimi-k3 16k ve 32k token sınırına takıldı (akıl yürütme token'ları), bir çağrı ~1,93
+  pay. Çözüm: iskelet (düşünerek, 3k token, ~0,29) + bölüm bölüm sahne (düşünme kapalı, `thinking: disabled`).
+- Düşünme kapatılınca glm/kimi çıktısı 4-5 kat kısalıyor. Bölüm yazımı: kimi-k3 ~0,07/çağrı, glm-5.3 ~0,001/çağrı
+  (glm'nin metni editoryal olarak yeterli çıktı; varsayılan glm-5.3).
+- Olgu denetimi: glm-5.3 düşünürken 32k token'ı akıl yürütmeye harcayıp boş döndü; gemini-4-argon düşünmesiz
+  ~0,06/çağrı, 10-16 sn, isabetli. Denetçiye görsel listesi verilmezse fotoğraf alt yazılarını kaynaksız sayıyor.
+- LLM onarımı anlam sorunlarını düzeltiyor, biçim kurallarını (görsel tekrarı, durağan oran, çift kapanış) düzeltemiyor
+  → `senaryo.yapi_onar` bunları kodla düzeltir.
+- Video başına metin maliyeti (yaklaşık): iskelet 0,29 + bölümler 0,01 + kesit seçimi 0,02 + 4 denetim 0,25 + 4 onarım
+  (kimi) ~0,6 ≈ **1,2 pay**; onarımı glm'ye taşımak ~0,6'ya indirir.
+
+**Kurgu dersleri:** sahnenin ana öğesi anlatımdaki ipucu kelimesine bağlıyken ipucu geç gelince ekran 5 sn'ye kadar
+boş renk zemin gösterdi (eleştirmen + `dead_stretch`). Kural: ana öğe ≤ 0,12 sn'de, sayı rakam söylenince sayar,
+durağan sahnede tek yavaş itiş (1.0 → 1.04). Fotoğraf başlığı koyu kutuda (parlak tabela üstünde beyaz yazı okunmadı).
