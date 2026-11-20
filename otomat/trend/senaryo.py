@@ -291,7 +291,16 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             return False
         if i + 2 < len(s) and s[i + 1].get("tur") == "foto" == s[i + 2].get("tur"):
             return False
-        baslik = sh.get("metin") or sh.get("baslik") or ""
+        baslik = sh.get("metin") or sh.get("baslik") or sh.get("etiket") or ""
+        if sh.get("tur") == "sayi" and sh.get("deger"):
+            from otomat.trend.kurgu import kisalt
+
+            try:
+                d, ek = kisalt(float(str(sh["deger"]).replace(",", "")), sh.get("son") or "")
+                d = f"{d:,.0f}" if float(d).is_integer() else f"{d}"
+            except ValueError:
+                d, ek = sh["deger"], sh.get("son") or ""
+            baslik = f"{sh.get('on') or ''}{d}{ek} {sh.get('etiket', '')}"
         if sh.get("tur") == "ikili":
             baslik = f"{sh.get('sol', {}).get('deger', '')} vs {sh.get('sag', {}).get('deger', '')}".strip(" vs")
         s[i] = {"tur": "foto", "anlatim": sh.get("anlatim", ""), "kaynak": sh.get("kaynak", []), "gorsel": g,
@@ -301,7 +310,8 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         return True
 
     for i in range(1, len(s)):
-        if s[i].get("tur") in STATIK and s[i].get("tur") == s[i - 1].get("tur") and _foto_yap(i):
+        tur = s[i].get("tur")
+        if tur not in ("foto", "bolum", "kapanis") and tur == s[i - 1].get("tur") and _foto_yap(i):
             yapilan.append(f"sahne {i}: ardışık {s[i - 1].get('tur')} → foto")
     for tur in ("ifade", "ikili", "alinti"):
         for i, sh in enumerate(s):
