@@ -161,7 +161,7 @@ def _giris_js(gecis: str, sid: str) -> tuple[str, str]:
     if gecis == "sel":  # mürekkep seli: karartıp açılır (dip cut)
         return (
             f'<div class="perde" id="{sid}-perde" style="background:{RENK["murekkep"]}"></div>',
-            "tl.fromTo(S('.perde'), {opacity: 1}, {opacity: 0, duration: .28, ease: 'power2.out'}, 0);",
+            "tl.fromTo(S('.perde'), {opacity: .7}, {opacity: 0, duration: .3, ease: 'power2.out'}, 0);"  # tam siyah ilk kare kesimde flaş gibiydi (11-20),
         )
     return "", ""
 
@@ -427,7 +427,8 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
     </div>{perde}"""
     css = f"""
     .tirnak {{ position:absolute; left:96px; top:40px; font-size:340px; color:{RENK["vurgu"]}; line-height:1; }}
-    .metin {{ position:absolute; left:120px; width:1050px; top:280px; font-size:70px; font-weight:700;
+    .metin {{ position:absolute; left:90px; width:1080px; top:250px; font-size:66px; font-weight:700; padding:34px 40px;
+              background:rgba(8,8,10,.62);
               line-height:1.18; margin:0; text-shadow:0 4px 30px rgba(0,0,0,.6); }}
     .metin .w {{ color:#fff; }}
     .kim {{ position:absolute; left:124px; bottom:110px; font-size:38px; color:{RENK["vurgu"]}; font-weight:700;

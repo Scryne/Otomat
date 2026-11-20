@@ -23,7 +23,7 @@ def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), ka
         cikti = ImageOps.fit(im, boyut, Image.LANCZOS, centering=(0.5, 0.4))
     else:
         zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(38))
-        zemin = Image.blend(zemin, Image.new("RGB", boyut, (12, 12, 14)), 0.45)
+        zemin = Image.blend(zemin, Image.new("RGB", boyut, (12, 12, 14)), 0.3)
         kopya = im.copy()
         kopya.thumbnail((int(gw * 0.94), int(gh * 0.94)), Image.LANCZOS)
         zemin.paste(kopya, ((gw - kopya.width) // 2, (gh - kopya.height) // 2))

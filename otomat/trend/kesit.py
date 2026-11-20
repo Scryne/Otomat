@@ -169,7 +169,8 @@ def d_alinti(sh: dict, gecis: str, tohum: int) -> str:
     </div>{perde}"""
     css = f"""
     .tirnak {{ position:absolute; left:60px; top:{UST}px; font-size:260px; color:{RENK["vurgu"]}; }}
-    .metin {{ position:absolute; left:70px; right:70px; top:{UST + 230}px; font-size:64px;
+    .metin {{ position:absolute; left:50px; right:50px; top:{UST + 230}px; font-size:60px; padding:28px 30px;
+              background:rgba(8,8,10,.62);
               font-weight:700; line-height:1.18; margin:0; color:#fff; text-shadow:0 4px 26px rgba(0,0,0,.6); }}
     .kim {{ position:absolute; left:72px; right:72px; top:{ICERIK_ALT - 70}px; font-size:38px; color:{RENK["vurgu"]};
             font-weight:700; }}

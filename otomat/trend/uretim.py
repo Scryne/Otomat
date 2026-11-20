@@ -14,6 +14,7 @@ import argparse
 import datetime as dt
 import json
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -357,6 +358,8 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
             proje = kurgu.proje_yaz(plan, d / "proje", varlik)
             _yaz(d / "denetim.json", kurgu.denetle(proje))
         print(f"eleştirmen: {len(bulgular)} bulgu, {len(yapilan)} düzeltme", flush=True)
+        # inceleme kareleri ~4,5 GB tutuyor; render ise geçici kare için ~16 GB istiyor (11-20 disk dolup render düştü)
+        shutil.rmtree(proje / ".hyperframes" / "artifacts" / "snapshots", ignore_errors=True)
     bag = _oku(d / "senaryo_kayit.json")["kaynak_bag"] if (d / "senaryo_kayit.json").exists() else {}
     _yaz(d / "meta.json", metadata(sen, plan, kay, bag))
     if not render_yap:
