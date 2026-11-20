@@ -211,3 +211,13 @@ Scryne iki videoyu izledi: "bu halle atamayız". Üç somut şikâyet:
   Metadata'da "original score" yazar; Kevin MacLeod kalktı.
 - **K-44: düz renk zemin yasak.** K-39'un "doygun renk alanı" zemini kaldırıldı; renkler yalnız vurgu, bant ve
   panel olarak kalır. Her sahnede hareketli görüntü (parallax > kamera > prosedürel leke).
+
+**İlk v2 videosu (11-20/21, Robert Pattinson / James Bond, tamamen otomatik seçim) [Ö]:** 7:26, 55 sahne, 1080p30,
+-14,1 LUFS, blackdetect 0 siyah kare; anlatım Whisper farkı ort. %1,1, perde yayılımı 5,9 yarım ton, 12 sahnede
+konuşmacı benzerliği 0,88; müzik 6 bölüm parçası (gerilim/enerji/gerilim/merak/dram/umut), anlatımın ~17 dB altında;
+3 kesit 48-55 sn. Koşu sırasında çıkan ve kalıcı düzeltilen kusurlar: kesit seçici kelime sınırını görmüyordu (sayılı
+özet + kırpma); her sahneye görsel zorunlu olunca "en az kullanılan" ataması yanlış kişiyi gösterdi (eleştirmen P0
+"anlamsız görsel" 29 → anlamla eşleştirme + kodla "adı geçmeyen kişinin fotoğrafı yok" kuralı → 4); alt yazı
+görseli değişince yanlış kişinin altında kaldı (alt yazılı sahne yazarın görselini korur); "sel" geçişinin tam siyah
+ilk karesi kesimde flaş gibiydi; alıntı yazısı yüzün üstünde okunmuyordu (koyu panel); "0TH" sayaç başlangıcı;
+eleştirmen kareleri 4,5 GB tutup render'ın geçici alanını (~16 GB) doldurdu (kareler render öncesi silinir).
