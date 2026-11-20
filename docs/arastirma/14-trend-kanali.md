@@ -221,3 +221,11 @@ konuşmacı benzerliği 0,88; müzik 6 bölüm parçası (gerilim/enerji/gerilim
 görseli değişince yanlış kişinin altında kaldı (alt yazılı sahne yazarın görselini korur); "sel" geçişinin tam siyah
 ilk karesi kesimde flaş gibiydi; alıntı yazısı yüzün üstünde okunmuyordu (koyu panel); "0TH" sayaç başlangıcı;
 eleştirmen kareleri 4,5 GB tutup render'ın geçici alanını (~16 GB) doldurdu (kareler render öncesi silinir).
+
+**Stok video (11-21) [Ö]:** Pexels yeni anahtar vermiyor ("New API key issuance is currently paused"); Pixabay video
+API'si bağlandı (`otomat/trend/stok.py`, anahtar `.env`'de `PIXABAY_API_KEY`). Model kişiye özgü olmayan sahneleri
+seçer (alıntı, alt yazılı fotoğraf, adı geçen kişi fotoğrafta kalır), arama sorgusu yazar, etiketlere bakıp klibi
+seçer; "ai generated" etiketli klipler elenir. Bond videosunda 55 sahnenin 14'ü stok video. Aynı koşuda düzeltilenler:
+alıntı paneli yüzün üstündeydi (alt banda), dolgulu dikey fotoğrafta derinlik hareketi kesik gibi duruyordu (dolgulu
+fotoğrafa derinlik yok), tekrar sınırı alt yazılı fotoğrafın görselini değiştirip alt yazıyı yanlış görselin altında
+bırakıyordu; sayı sahnesindeki etiket rakam açıklamasıdır, alt yazı korumasından çıkarıldı.
