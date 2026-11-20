@@ -217,8 +217,10 @@ def sahne_foto(sh: dict, gecis: str, tohum: int) -> str:
     css = """
     .karart.alt { background: linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.78) 100%); }
     .karart.ust { background: linear-gradient(0deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.78) 100%); }
-    .baslik { position:absolute; left:110px; right:110px; font-size:132px; color:#fff;
-              text-shadow: 0 4px 30px rgba(0,0,0,.55); }
+    .baslik { position:absolute; left:110px; right:110px; font-size:124px; color:#fff; line-height:1.02; }
+    .baslik .w { background:rgba(15,15,16,.84); padding:4px 14px 0; margin-right:-6px;
+                 box-decoration-break:clone; -webkit-box-decoration-break:clone; }
+    .baslik .w.vurgu { background:#FFD60A; color:#111; }
     .baslik.alt { bottom:120px; } .baslik.ust { top:110px; }
     .etiket { position:absolute; left:110px; bottom:120px; display:flex; align-items:center; gap:22px; }
     .etiket .cizgi { display:block; width:10px; height:64px; background:#FFD60A; transform-origin: 50% 100%; }
@@ -241,7 +243,7 @@ def sahne_manset(sh: dict, gecis: str, tohum: int) -> str:
     mansetler = sh.get("mansetler") or []
     kartlar = []
     acilar = [-2.2, 1.8, -1.2]
-    konumlar = [(150, 150), (900, 420), (230, 690)]
+    konumlar = [(120, 140), (760, 410), (200, 680)] if not sh.get("gorsel") else [(150, 150), (900, 420), (230, 690)]
     for i, m in enumerate(mansetler[:3]):
         x, y = konumlar[i]
         kartlar.append(
@@ -258,19 +260,19 @@ def sahne_manset(sh: dict, gecis: str, tohum: int) -> str:
     </div>{perde}"""
     css = f"""
     .karart {{ background: rgba(10,10,12,.62); }}
-    .doku {{ background:{RENK["murekkep"]}; }}
-    .kart {{ position:absolute; width:800px; background:{RENK["kagit"]}; color:#141414; padding:26px 34px 30px;
+    .doku {{ background:{RENK["kirmizi"]}; }}
+    .kart {{ position:absolute; width:{1000 if not sh.get("gorsel") else 800}px; background:{RENK["kagit"]}; color:#141414; padding:26px 34px 30px;
              box-shadow: 0 18px 40px rgba(0,0,0,.45); rotate: var(--a); }}
     .kart .kaynak {{ font-size:30px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
                      color:{RENK["kirmizi"]}; margin-bottom:10px; }}
     .kart .kb {{ font-size:48px; font-weight:700; line-height:1.12; }}
     """
-    zamanlar = _yayilim(sure, len(kartlar), 0.06, 0.62)
+    zamanlar = _yayilim(sure, len(kartlar), 0.02, 0.4)
     js = [giris]
     if sh.get("gorsel"):
         js.append(_kamera(sid, sure, tohum))
     for i, m in enumerate(mansetler[:3]):
-        t = ilk_an(sh, m.get("ipucu")) if i == 0 else ipucu_zamani(sh, m.get("ipucu"), zamanlar[i])
+        t = ilk_an(sh, m.get("ipucu")) if i == 0 else min(ipucu_zamani(sh, m.get("ipucu"), zamanlar[i]), sure * 0.45)
         yon = -1 if i % 2 else 1
         js.append(f"tl.fromTo('#{sid}-k{i}', {{y:{yon * -420}, opacity:1, scale:1.06}}, "
                   f"{{y:0, scale:1, duration:.42, ease:'expo.out'}}, {t:.3f});")  # fmt: skip
@@ -485,8 +487,8 @@ def sahne_ikili(sh: dict, gecis: str, tohum: int) -> str:
     .ic {{ padding:0 100px; }}
     .etk {{ font-size:48px; font-weight:700; margin-bottom:18px; }}
     .dg {{ font-size:220px; }}
-    .ust {{ position:absolute; left:0; right:0; top:60px; text-align:center; font-size:84px; color:#fff;
-            mix-blend-mode:difference; }}
+    .ust {{ position:absolute; left:0; right:0; top:0; padding:34px 0 22px; text-align:center; font-size:84px;
+            color:#fff; background:{RENK["murekkep"]}; z-index:5; }}
     """
     t1 = ilk_an(sh, sol.get("ipucu"))
     t2 = ipucu_zamani(sh, sag.get("ipucu"), sure * 0.45)

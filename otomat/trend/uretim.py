@@ -313,6 +313,10 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
             if a.get("wiki") and a["wiki"].replace("_", " ") == secim["secim"]["wiki_baslik"]:
                 kategori = (a.get("ts") or {}).get("kategori", "other")
     plan, varlik = plan_kur(sen, kay, z, secim, kategori)
+    if (d / "elestiri.json").exists():  # önceki eleştirinin düzeltmeleri her koşuda yeniden uygulanır
+        from otomat.trend import elestirmen
+
+        elestirmen.duzelt(plan, _oku(d / "elestiri.json")["bulgular"])
     proje = kurgu.proje_yaz(plan, d / "proje", varlik)
     rapor = kurgu.denetle(proje)
     _yaz(d / "denetim.json", rapor)
