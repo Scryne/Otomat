@@ -65,7 +65,8 @@ def sahneye_bagla(bulgular: list[dict], plan: dict) -> list[dict]:
 
 
 def duzelt(plan: dict, bulgular: list[dict]) -> list[str]:
-    """Kural tabanlı onarım: fotoğraf üstü başlıkta kontrast/okunmama → koyu kat; anlamsız görsel → görselsiz ifade.
+    """Kural tabanlı onarım: fotoğraf üstü başlıkta kontrast/okunmama → koyu kat; anlamsız görsel → ifade
+    (fotoğraf flu zeminde kalır).
     Dönüş: uygulanan değişikliklerin listesi."""
     yapilan = []
     sahne = {sh["id"]: sh for sh in plan["sahneler"]}
@@ -77,9 +78,8 @@ def duzelt(plan: dict, bulgular: list[dict]) -> list[str]:
             sh["koyu"] = True
             yapilan.append(f"{sh['id']}: koyu kat ({b['tur']})")
         elif b["tur"] == "anlamsiz_gorsel" and sh["tur"] == "foto" and sh.get("baslik"):
+            # fotoğraf zemin olarak kalır: ifade onu karartıp flulaştırır (v2'de düz renk zemin yok, K-44)
             sh.update(tur="ifade", metin=sh["baslik"])
-            sh.pop("gorsel", None)  # anlamsız fotoğraf ifadenin arkasında da kalmasın
-            sh.pop("kredi", None)
             yapilan.append(f"{sh['id']}: foto → ifade (anlamsız görsel)")
     return yapilan
 
