@@ -105,6 +105,28 @@ def _ortak_css() -> str:
     """
 
 
+ILK_EN_GEC = 0.12  # sahnenin ilk öğesi en geç bu anda (11-20: ipucu geç gelince sayı sahnesi 5 sn boş kaldı)
+
+
+def ilk_an(sh: dict, ipucu: str | None, yedek: float = 0.3) -> float:
+    """Sahnenin ilk (ana) öğesinin anı: ipucu erken söyleniyorsa o, değilse ILK_EN_GEC."""
+    return min(ipucu_zamani(sh, ipucu, yedek), ILK_EN_GEC)
+
+
+def rakam_ani(sh: dict, yedek: float) -> float:
+    """Anlatımda ilk rakamlı kelimenin söylendiği an (sayı o an iner); sahnenin üçte birinden geç olamaz."""
+    for k in sh.get("kelimeler") or []:
+        if re.search(r"\d", k["w"]):
+            return max(0.0, min(k["s"] - 0.08, sh["sure"] * 0.33))
+    return yedek
+
+
+def _itis(sure: float) -> str:
+    """Durağan grafik sahnesinde tek, yavaş kamera itişi (film.md: sakin bölümde 1.0 → 1.04-1.08); başlık kaymaz,
+    bütün kare yaklaşır. 3 sn'den uzun 'hiçbir şey değişmiyor' (dead_stretch) olmasın."""
+    return f"tl.fromTo(S('.icerik'), {{scale:1}}, {{scale:1.04, duration:{max(0.5, sure - 0.45):.3f}, ease:'none'}}, 0.45);"
+
+
 def _sahne_html(sid: str, sure: float, govde: str, css: str, js: str, kok_stil: str = "") -> str:
     return f"""<template>
   <style>{_ortak_css()}{css}</style>
@@ -174,7 +196,7 @@ def sahne_foto(sh: dict, gecis: str, tohum: int) -> str:
     perde, giris = _giris_js(gecis, sid)
     baslik = sh.get("baslik") or ""
     etiket = sh.get("etiket") or ""
-    yer = "alt" if tohum % 2 == 0 else "ust"
+    yer = "ust" if (tohum % 2 or sh.get("etiket")) else "alt"
     govde = f"""
     <div class="icerik tam">
       <div class="kat"><img src="{_e(sh["gorsel"])}" alt=""></div>
@@ -218,9 +240,9 @@ def sahne_manset(sh: dict, gecis: str, tohum: int) -> str:
     perde, giris = _giris_js(gecis, sid)
     mansetler = sh.get("mansetler") or []
     kartlar = []
-    acilar = [-3.2, 2.4, -1.4, 3.0, -2.2]
-    konumlar = [(180, 170), (760, 300), (300, 520), (880, 640), (420, 760)]
-    for i, m in enumerate(mansetler[:5]):
+    acilar = [-2.2, 1.8, -1.2]
+    konumlar = [(150, 150), (900, 420), (230, 690)]
+    for i, m in enumerate(mansetler[:3]):
         x, y = konumlar[i]
         kartlar.append(
             f'<div class="kart" id="{sid}-k{i}" style="left:{x}px; top:{y - 60}px; --a:{acilar[i]}deg">'
@@ -237,7 +259,7 @@ def sahne_manset(sh: dict, gecis: str, tohum: int) -> str:
     css = f"""
     .karart {{ background: rgba(10,10,12,.62); }}
     .doku {{ background:{RENK["murekkep"]}; }}
-    .kart {{ position:absolute; width:860px; background:{RENK["kagit"]}; color:#141414; padding:26px 34px 30px;
+    .kart {{ position:absolute; width:800px; background:{RENK["kagit"]}; color:#141414; padding:26px 34px 30px;
              box-shadow: 0 18px 40px rgba(0,0,0,.45); rotate: var(--a); }}
     .kart .kaynak {{ font-size:30px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
                      color:{RENK["kirmizi"]}; margin-bottom:10px; }}
@@ -247,13 +269,15 @@ def sahne_manset(sh: dict, gecis: str, tohum: int) -> str:
     js = [giris]
     if sh.get("gorsel"):
         js.append(_kamera(sid, sure, tohum))
-    for i, m in enumerate(mansetler[:5]):
-        t = ipucu_zamani(sh, m.get("ipucu"), zamanlar[i])
+    for i, m in enumerate(mansetler[:3]):
+        t = ilk_an(sh, m.get("ipucu")) if i == 0 else ipucu_zamani(sh, m.get("ipucu"), zamanlar[i])
         yon = -1 if i % 2 else 1
         js.append(f"tl.fromTo('#{sid}-k{i}', {{y:{yon * -420}, opacity:1, scale:1.06}}, "
                   f"{{y:0, scale:1, duration:.42, ease:'expo.out'}}, {t:.3f});")  # fmt: skip
         js.append(f"tl.set('#{sid}-k{i}', {{opacity:0}}, 0);")
         js.append(f"tl.set('#{sid}-k{i}', {{opacity:1}}, {t:.3f});")
+    if not sh.get("gorsel"):
+        js.append(_itis(sure))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -298,15 +322,17 @@ def sahne_sayi(sh: dict, gecis: str, tohum: int) -> str:
     .etk {{ position:absolute; left:126px; right:200px; top:640px; font-size:62px; font-weight:700; line-height:1.15; }}
     .etk .vurgu {{ background:#111; color:#FFD60A; padding:0 10px; }}
     """
-    t0 = ipucu_zamani(sh, sh.get("ipucu"), min(0.3, sure * 0.08))
+    t0 = rakam_ani(sh, ilk_an(sh, sh.get("ipucu")))
     sayac = max(1.2, min(1.6, sure * 0.3))
     js = [giris,
           "const d = S('.deger'); const p = {v:0};",
           f"const yaz = () => {{ d.textContent = p.v.toLocaleString('en-US', {{minimumFractionDigits:{ondalik}, "
           f"maximumFractionDigits:{ondalik}}}); }};",
           f"tl.fromTo(p, {{v:0}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
-          f"tl.fromTo(S('.sayi'), {{y:60, opacity:0}}, {{y:0, opacity:1, duration:.35, ease:'expo.out'}}, {t0:.3f});",
-          _kelime_girisi(f"#{sid}-etk", t0 + sayac * 0.7, 0.06)]  # fmt: skip
+          "tl.fromTo(S('.sayi'), {y:60, opacity:0}, {y:0, opacity:1, duration:.35, ease:'expo.out'}, 0.06);",
+          _kelime_girisi(f"#{sid}-etk", min(t0 + sayac * 0.7, 0.35), 0.06)]  # fmt: skip
+    if True:
+        js.append(_itis(sure))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -333,7 +359,7 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
     .kim {{ position:absolute; left:124px; bottom:110px; font-size:36px; color:{RENK["vurgu"]}; font-weight:700;
             letter-spacing:.04em; }}
     """
-    t0 = ipucu_zamani(sh, sh.get("ipucu"), 0.25)
+    t0 = ilk_an(sh, sh.get("ipucu"), 0.25)
     n = max(1, len(_kelime_ayir(sh["metin"])))
     aralik = max(0.04, min(0.16, (sure * 0.6) / n))
     js = [giris]
@@ -343,6 +369,8 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
            f"tl.fromTo(SA('#{sid}-metin .w'), {{opacity:.18}}, {{opacity:1, duration:.12, stagger:{aralik:.3f}}}, {t0:.3f});",
            f"tl.fromTo(S('.kim'), {{opacity:0, x:-30}}, {{opacity:1, x:0, duration:.4, ease:'expo.out'}}, "
            f"{min(sure - 0.6, t0 + n * aralik):.3f});"]  # fmt: skip
+    if not foto:
+        js.append(_itis(sure))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -390,7 +418,7 @@ def sahne_zaman(sh: dict, gecis: str, tohum: int) -> str:
                  f"ease:'power1.inOut'}}, 0);"]  # fmt: skip
     onceki_x = 0.0
     for i, o in enumerate(olaylar):
-        t = ipucu_zamani(sh, o.get("ipucu"), zamanlar[i])
+        t = ilk_an(sh, o.get("ipucu")) if i == 0 else ipucu_zamani(sh, o.get("ipucu"), zamanlar[i])
         if n > 4:  # kamera etkin düğümü ortalar
             hedef_x = -max(0.0, kenar + i * adim - GENISLIK / 2 + 150)
             if hedef_x != onceki_x:
@@ -460,7 +488,7 @@ def sahne_ikili(sh: dict, gecis: str, tohum: int) -> str:
     .ust {{ position:absolute; left:0; right:0; top:60px; text-align:center; font-size:84px; color:#fff;
             mix-blend-mode:difference; }}
     """
-    t1 = ipucu_zamani(sh, sol.get("ipucu"), sure * 0.12)
+    t1 = ilk_an(sh, sol.get("ipucu"))
     t2 = ipucu_zamani(sh, sag.get("ipucu"), sure * 0.45)
     js = [
         giris,
@@ -471,6 +499,8 @@ def sahne_ikili(sh: dict, gecis: str, tohum: int) -> str:
     ]
     if sh.get("baslik"):
         js.append("tl.fromTo(S('.ust'), {opacity:0}, {opacity:1, duration:.3}, .05);")
+    if True:
+        js.append(_itis(sure))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -492,13 +522,15 @@ def sahne_ifade(sh: dict, gecis: str, tohum: int) -> str:
     .karart { background: rgba(8,8,10,.66); }
     .cumle { position:absolute; left:120px; right:120px; top:50%; transform:translateY(-50%); margin:0; color:#fff; }
     """
-    t0 = ipucu_zamani(sh, sh.get("ipucu"), 0.2)
+    t0 = ilk_an(sh, sh.get("ipucu"), 0.2)
     n = max(1, len(_kelime_ayir(metin)))
     aralik = max(0.06, min(0.22, (sure * 0.55) / n))
     js = [giris]
     if foto:
         js.append(_kamera(sid, sure, tohum))
     js.append(_kelime_girisi(f"#{sid}-c", t0, aralik))
+    if not foto:
+        js.append(_itis(sure))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 

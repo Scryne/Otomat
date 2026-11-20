@@ -22,7 +22,9 @@ from otomat.trend.kurgu import (
     _kelime_spanlari,
     _ortak_css,
     _yayilim,
+    ilk_an,
     ipucu_zamani,
+    rakam_ani,
 )
 
 W, H = 1080, 1920
@@ -76,7 +78,7 @@ def d_foto(sh: dict, gecis: str, tohum: int) -> str:
     """
     js = [giris, _kamera(sure, tohum)]
     if baslik:
-        js.append(_kelime_girisi(f"#{sid}-baslik", ipucu_zamani(sh, sh.get("ipucu"), 0.2)))
+        js.append(_kelime_girisi(f"#{sid}-baslik", ilk_an(sh, sh.get("ipucu"), 0.2)))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -103,7 +105,7 @@ def d_manset(sh: dict, gecis: str, tohum: int) -> str:
     zam = _yayilim(sure, len(ms), 0.04, 0.55)
     js = [giris] + ([_kamera(sure, tohum)] if sh.get("gorsel") else [])
     for i, m in enumerate(ms):
-        t = ipucu_zamani(sh, m.get("ipucu"), zam[i])
+        t = ilk_an(sh, m.get("ipucu")) if i == 0 else ipucu_zamani(sh, m.get("ipucu"), zam[i])
         js += [
             f"tl.set('#{sid}-k{i}', {{opacity:0}}, 0);",
             f"tl.set('#{sid}-k{i}', {{opacity:1}}, {t:.3f});",
@@ -134,13 +136,13 @@ def d_sayi(sh: dict, gecis: str, tohum: int) -> str:
             line-height:1.15; }}
     .etk .vurgu {{ background:#111; color:{RENK["vurgu"]}; padding:0 10px; }}
     """
-    t0 = ipucu_zamani(sh, sh.get("ipucu"), 0.15)
+    t0 = rakam_ani(sh, ilk_an(sh, sh.get("ipucu"), 0.15))
     sayac = max(1.0, min(1.4, sure * 0.3))
     js = [giris, "const d = S('.deger'); const p = {v:0};",
           f"const yaz = () => {{ d.textContent = p.v.toLocaleString('en-US', {{minimumFractionDigits:{ondalik}, "
           f"maximumFractionDigits:{ondalik}}}); }};",
           f"tl.fromTo(p, {{v:0}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
-          _kelime_girisi(f"#{sid}-etk", t0 + sayac * 0.6, 0.06)]  # fmt: skip
+          _kelime_girisi(f"#{sid}-etk", min(t0 + sayac * 0.6, 0.35), 0.06)]  # fmt: skip
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
@@ -163,7 +165,7 @@ def d_alinti(sh: dict, gecis: str, tohum: int) -> str:
     .kim {{ position:absolute; left:72px; right:72px; top:{ICERIK_ALT - 70}px; font-size:38px; color:{RENK["vurgu"]};
             font-weight:700; }}
     """
-    t0 = ipucu_zamani(sh, sh.get("ipucu"), 0.15)
+    t0 = ilk_an(sh, sh.get("ipucu"), 0.15)
     n = max(1, len(_kelime_ayir(sh["metin"])))
     aralik = max(0.04, min(0.15, (sure * 0.6) / n))
     js = [giris] + ([_kamera(sure, tohum)] if foto else [])
@@ -204,7 +206,7 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
         f"tl.fromTo(S('.hat'), {{scaleY:0}}, {{scaleY:1, duration:{max(0.8, sure * 0.75):.2f}, ease:'none'}}, 0);",
     ]
     for i, o in enumerate(ol):
-        t = ipucu_zamani(sh, o.get("ipucu"), zam[i])
+        t = ilk_an(sh, o.get("ipucu")) if i == 0 else ipucu_zamani(sh, o.get("ipucu"), zam[i])
         js += [f"tl.fromTo('#{sid}-d{i} .nokta', {{scale:0}}, {{scale:1, duration:.3, ease:'back.out(2)'}}, {t:.3f});",
                f"tl.fromTo('#{sid}-d{i} .kutu', {{opacity:0, x:-40}}, {{opacity:1, x:0, duration:.35, ease:'expo.out'}}, "
                f"{t + 0.06:.3f});"]  # fmt: skip
@@ -229,7 +231,7 @@ def d_ikili(sh: dict, gecis: str, tohum: int) -> str:
     .etk {{ font-size:52px; font-weight:700; margin-bottom:10px; }}
     .dg {{ font-size:200px; line-height:.95; }}
     """
-    t1 = ipucu_zamani(sh, sol.get("ipucu"), sure * 0.1)
+    t1 = ilk_an(sh, sol.get("ipucu"))
     t2 = ipucu_zamani(sh, sag.get("ipucu"), sure * 0.45)
     js = [giris,
           f"tl.fromTo(S('.yari.ust .ic'), {{opacity:0, y:40}}, {{opacity:1, y:0, duration:.4, ease:'expo.out'}}, {t1:.3f});",
@@ -253,7 +255,7 @@ def d_ifade(sh: dict, gecis: str, tohum: int) -> str:
     css = f".cumle {{ position:absolute; left:70px; right:70px; top:{UST + 220}px; margin:0; color:#fff; }}"
     n = max(1, len(_kelime_ayir(metin)))
     js = [giris] + ([_kamera(sure, tohum)] if foto else [])
-    js.append(_kelime_girisi(f"#{sid}-c", ipucu_zamani(sh, sh.get("ipucu"), 0.1), max(0.06, min(0.2, sure * 0.5 / n))))
+    js.append(_kelime_girisi(f"#{sid}-c", ilk_an(sh, sh.get("ipucu"), 0.1), max(0.06, min(0.2, sure * 0.5 / n))))
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
