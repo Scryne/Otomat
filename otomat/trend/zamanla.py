@@ -80,7 +80,9 @@ def whisper_kelimeleri(wav: Path, model: str = "small.en") -> list[tuple[str, fl
     from faster_whisper import WhisperModel
 
     w = WhisperModel(model, device="cpu", compute_type="int8")
-    parcalar, _ = w.transcribe(str(wav), language="en", word_timestamps=True, vad_filter=False)
+    from otomat.film.anlatim import _16k  # dosya yolu verince av sürüm uyumsuzluğu (metadata_errors)
+
+    parcalar, _ = w.transcribe(_16k(wav_oku(wav)), language="en", word_timestamps=True, vad_filter=False)
     return [(k.word.strip(), k.start, k.end) for p in parcalar for k in (p.words or [])]
 
 

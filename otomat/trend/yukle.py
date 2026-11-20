@@ -142,6 +142,16 @@ def main() -> None:
     a = sys.argv[1:]
     if a == ["yetki"]:
         print("token:", yetki())
+    elif a == ["son"]:  # günlük koşu: video.mp4'ü olan en yeni iş (kesitleri eksikse onları tamamlar)
+        kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
+        isler = sorted(d for d in kok.glob("*/") if (d / "video.mp4").exists())
+        if not isler:
+            print("yüklenecek video yok")
+            return
+        if not TOKEN.exists() and not os.environ.get(TOKEN_DEGISKENI):
+            print("trend kanalının token'ı yok: yükleme atlandı (kanal açılınca `yukle yetki`)")
+            return
+        print(json.dumps(yukle(isler[-1]), indent=1, ensure_ascii=False))
     elif a:
         print(json.dumps(yukle(Path(a[0])), indent=1, ensure_ascii=False))
     else:

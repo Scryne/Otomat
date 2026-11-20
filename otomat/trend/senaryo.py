@@ -18,7 +18,7 @@ from collections import Counter
 
 from otomat.trend.llm import Oturum
 
-TURLER = ("foto", "manset", "sayi", "alinti", "zaman", "bolum", "ikili", "ifade", "kapanis")
+TURLER = ("foto", "manset", "sayi", "alinti", "zaman", "bolum", "ikili", "ifade", "kapanis", "harita")
 STATIK = ("ifade", "ikili", "alinti")  # tek başına poster gibi duran türler
 KELIME_HEDEF = (950, 1350)
 SAHNE_KELIME_EN_COK = 34
@@ -61,6 +61,10 @@ HARD RULES
    - "ikili": comparison of two values. fields: baslik (optional), sol {etiket, deger, ipucu}, sag {etiket, deger, ipucu}
    - "ifade": one big statement or question on screen. fields: metin (≤ 9 words, may echo the narration's key line),
      vurgu (1 word), gorsel (optional id)
+   - "harita": a satellite flight from space down to a real place that matters to the story (at most 2 per video,
+     only when the place itself is part of the story). fields: yer (on-screen place label, 1-3 words), yer_wiki (the
+     exact English Wikipedia article title of that place, e.g. "Miami", "Edinburgh"), yakinlik ("city", "region" or
+     "country"). Narration 12-26 words.
    - "kapanis": final scene only. fields: metin (the one idea to remember, ≤ 8 words), vurgu (1 word)
 7. 3-5 chapters ("bolum" scenes) after the hook. Last scene is "kapanis". No "subscribe" begging; at most one natural
    line inviting viewers to share what they think, inside the last two scenes.
@@ -212,7 +216,7 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             hata.append(f"sahne {i}: üç foto üst üste")
         gerek = {"foto": ["gorsel"], "manset": ["mansetler"], "sayi": ["deger", "etiket"], "alinti": ["metin", "kim"],
                  "zaman": ["olaylar"], "bolum": ["baslik"], "ikili": ["sol", "sag"], "ifade": ["metin"],
-                 "kapanis": ["metin"]}[tur]  # fmt: skip
+                 "kapanis": ["metin"], "harita": ["yer", "yer_wiki"]}[tur]  # fmt: skip
         for alan in gerek:
             if not sh.get(alan):
                 hata.append(f"sahne {i} ({tur}): '{alan}' eksik")
@@ -241,6 +245,8 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     statik = sum(1 for sh in s if sh.get("tur") in STATIK)
     if s and statik > len(s) / 3:
         hata.append(f"statik sahne {statik}/{len(s)} (en çok üçte bir)")
+    if sum(1 for sh in s if sh.get("tur") == "harita") > 2:
+        hata.append("harita sahnesi 2'den fazla")
     bolum = sum(1 for sh in s if sh.get("tur") == "bolum")
     if not 3 <= bolum <= 5:
         hata.append(f"bölüm kartı {bolum} (3-5)")

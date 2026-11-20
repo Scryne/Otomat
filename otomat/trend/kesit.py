@@ -28,6 +28,7 @@ from otomat.trend.kurgu import (
 W, H = 1080, 1920
 UST, ALT = 200, 1300  # okunacak her şey bu bant içinde
 ALTYAZI_Y = 1120  # altyazı bandının üstü
+ICERIK_ALT = ALTYAZI_Y - 40  # sahne içeriği bunun altına inmez (altyazıyla çakışmasın)
 
 
 def _sahne_html(sid: str, sure: float, govde: str, css: str, js: str) -> str:
@@ -159,7 +160,7 @@ def d_alinti(sh: dict, gecis: str, tohum: int) -> str:
     .tirnak {{ position:absolute; left:60px; top:{620 if foto else UST}px; font-size:260px; color:{RENK["vurgu"]}; }}
     .metin {{ position:absolute; left:70px; right:70px; top:{820 if foto else UST + 230}px; font-size:64px;
               font-weight:700; line-height:1.18; margin:0; color:#fff; }}
-    .kim {{ position:absolute; left:72px; right:72px; top:{ALT - 100}px; font-size:38px; color:{RENK["vurgu"]};
+    .kim {{ position:absolute; left:72px; right:72px; top:{ICERIK_ALT - 70}px; font-size:38px; color:{RENK["vurgu"]};
             font-weight:700; }}
     """
     t0 = ipucu_zamani(sh, sh.get("ipucu"), 0.15)
@@ -178,7 +179,7 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
     sid, sure = sh["id"], sh["sure"]
     perde, giris = _giris_js(gecis, sid)
     ol = (sh.get("olaylar") or [])[:4]
-    adim = (ALT - UST - 200) / max(1, len(ol) - 1) if len(ol) > 1 else 0
+    adim = (ICERIK_ALT - UST - 260) / max(1, len(ol) - 1) if len(ol) > 1 else 0
     dug = []
     for i, o in enumerate(ol):
         y = UST + 60 + i * adim
@@ -188,7 +189,7 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
         )
     govde = f'<div class="icerik tam" style="background:{RENK["kagit"]}; color:#111"><div class="hat"></div>{"".join(dug)}</div>{perde}'
     css = f"""
-    .hat {{ position:absolute; left:150px; width:8px; top:{UST + 40}px; height:{ALT - UST - 120}px; background:#111;
+    .hat {{ position:absolute; left:150px; width:8px; top:{UST + 40}px; height:{ICERIK_ALT - UST - 100}px; background:#111;
             transform-origin:50% 0; }}
     .dugum {{ position:absolute; left:154px; }}
     .nokta {{ position:absolute; left:-26px; top:-4px; width:52px; height:52px; border-radius:50%;
@@ -220,18 +221,19 @@ def d_ikili(sh: dict, gecis: str, tohum: int) -> str:
       <div class="yari alt"><div class="ic"><div class="etk">{_e(sag["etiket"])}</div><div class="dg gb">{_e(sag["deger"])}</div></div></div>
     </div>{perde}"""
     css = f"""
-    .yari {{ position:absolute; left:0; right:0; height:50%; display:flex; align-items:center; }}
-    .yari.ust {{ top:0; background:{RENK["murekkep"]}; align-items:flex-end; padding-bottom:80px; }}
-    .yari.alt {{ bottom:0; background:{RENK["vurgu"]}; color:#111; align-items:flex-start; padding-top:80px; }}
+    .yari {{ position:absolute; left:0; right:0; display:flex; }}
+    .yari.ust {{ top:0; height:{UST + 430}px; background:{RENK["murekkep"]}; align-items:flex-end; padding-bottom:40px; }}
+    .yari.alt {{ top:{UST + 430}px; height:{ICERIK_ALT - UST - 400}px; background:{RENK["vurgu"]}; color:#111;
+                 align-items:center; }}
     .ic {{ padding:0 70px; }}
     .etk {{ font-size:52px; font-weight:700; margin-bottom:10px; }}
-    .dg {{ font-size:230px; }}
+    .dg {{ font-size:200px; line-height:.95; }}
     """
     t1 = ipucu_zamani(sh, sol.get("ipucu"), sure * 0.1)
     t2 = ipucu_zamani(sh, sag.get("ipucu"), sure * 0.45)
     js = [giris,
           f"tl.fromTo(S('.yari.ust .ic'), {{opacity:0, y:40}}, {{opacity:1, y:0, duration:.4, ease:'expo.out'}}, {t1:.3f});",
-          f"tl.fromTo(S('.yari.alt'), {{yPercent:100}}, {{yPercent:0, duration:.45, ease:'expo.out'}}, {max(0, t2 - .1):.3f});",
+          f"tl.fromTo(S('.yari.alt'), {{clipPath:'inset(100% 0 0 0)'}}, {{clipPath:'inset(0% 0 0 0)', duration:.45, ease:'expo.out'}}, {max(0, t2 - .1):.3f});",
           f"tl.fromTo(S('.yari.alt .ic'), {{opacity:0}}, {{opacity:1, duration:.3}}, {t2:.3f});"]  # fmt: skip
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
@@ -278,7 +280,35 @@ def d_kapanis(sh: dict, gecis: str, tohum: int) -> str:
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
-DIKEY = {"foto": d_foto, "manset": d_manset, "sayi": d_sayi, "alinti": d_alinti, "zaman": d_zaman, "bolum": d_bolum,
+def d_harita(sh: dict, gecis: str, tohum: int) -> str:
+    """Yatay uydu uçuşu dikeyde ortadan kırpılır: hedef zaten kadraj merkezinde."""
+    sid, sure = sh["id"], sh["sure"]
+    perde, giris = _giris_js(gecis, sid)
+    govde = f"""
+    <div class="icerik tam">
+      <video id="{sid}-v" class="clip" src="{_e(sh["video"])}" data-start="0" data-duration="{sure:.3f}" muted playsinline
+             style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover"></video>
+      <div class="nokta" id="{sid}-n"></div>
+      <div class="yer gb" id="{sid}-yer">{_e(sh.get("yer", ""))}</div>
+      <div class="kredi" data-layout-ignore>{_e(sh.get("kredi", ""))}</div>
+    </div>{perde}"""
+    css = f"""
+    .nokta {{ position:absolute; left:{W // 2 - 16}px; top:{H // 2 - 16}px; width:32px; height:32px; border-radius:50%;
+              background:{RENK["kirmizi"]}; border:6px solid #fff; }}
+    .yer {{ position:absolute; left:70px; right:70px; top:{UST + 60}px; font-size:130px; color:#111; text-align:center; }}
+    .yer {{ background:{RENK["vurgu"]}; }}
+    .kredi {{ bottom:auto; top:{ICERIK_ALT - 40}px; right:30px; font-size:20px; }}
+    """
+    t = max(0.4, sure * 0.6)
+    js = [
+        giris,
+        f"tl.fromTo('#{sid}-n', {{scale:0}}, {{scale:1, duration:.35, ease:'back.out(2.2)'}}, {t:.3f});",
+        f"tl.fromTo('#{sid}-yer', {{clipPath:'inset(0 100% 0 0)'}}, {{clipPath:'inset(0 0% 0 0)', duration:.45, ease:'expo.out'}}, {t + 0.1:.3f});",
+    ]
+    return _sahne_html(sid, sure, govde, css, "\n".join(js))
+
+
+DIKEY = {"harita": d_harita, "foto": d_foto, "manset": d_manset, "sayi": d_sayi, "alinti": d_alinti, "zaman": d_zaman, "bolum": d_bolum,
          "ikili": d_ikili, "ifade": d_ifade, "kapanis": d_kapanis}  # fmt: skip
 
 
@@ -294,9 +324,12 @@ def altyazi_html(kelimeler: list[dict], sure: float) -> str:
             gruplar.append(simdiki)
             simdiki = []
     govde, js = [], []
+    baslar = []
+    for g in gruplar:  # tekdüze artan açılış anları: iki grup aynı anda görünmez
+        baslar.append(max(0.05, g[0]["s"] - 0.05, (baslar[-1] + 0.1) if baslar else 0.05))
     for gi, g in enumerate(gruplar):
-        bas = max(0.05, g[0]["s"] - 0.05)
-        son = min(sure, (gruplar[gi + 1][0]["s"] - 0.02) if gi + 1 < len(gruplar) else g[-1]["e"] + 0.4)
+        bas = baslar[gi]
+        son = min(sure, baslar[gi + 1] if gi + 1 < len(gruplar) else g[-1]["e"] + 0.4)  # sonraki açılırken kapanır
         kel = " ".join(f'<span class="k" id="a{gi}-{wi}">{_e(w["w"].upper())}</span>' for wi, w in enumerate(g))
         govde.append(f'<div class="grup" id="a{gi}">{kel}</div>')
         js.append(f"tl.set('#a{gi}', {{opacity:1, visibility:'visible'}}, {bas:.3f});")
@@ -331,17 +364,20 @@ def kanca_html(metin: str, sure: float) -> str:
     return f"""<template>
   <style>
     #root {{ position:absolute; inset:0; }}
+    .panel {{ position:absolute; left:0; right:0; top:0; height:{UST + 420}px; background:{RENK["murekkep"]}; }}
     .kanca {{ position:absolute; left:50px; right:50px; top:{UST + 10}px; font-family:'League Gothic', sans-serif;
               text-transform:uppercase; font-size:120px; line-height:.95; color:#111; }}
     .kanca span {{ background:{RENK["vurgu"]}; padding:0 16px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }}
   </style>
   <div id="root" data-composition-id="kanca" data-width="{W}" data-height="{H}">
-    <div class="kanca" id="kanca-satir"><span>{_e(metin)}</span></div>
+    <div class="panel" id="kanca-panel" data-layout-allow-occlusion></div>
+    <div class="kanca" id="kanca-satir" data-layout-allow-overlap><span>{_e(metin)}</span></div>
   </div>
   <script>
     const tl = gsap.timeline({{ paused: true }});
     tl.fromTo('#kanca-satir', {{opacity:1}}, {{opacity:1, duration:{sure - 0.25:.2f}}}, 0);
     tl.to('#kanca-satir', {{opacity:0, y:-30, duration:.25, ease:'power2.in'}}, {sure - 0.25:.2f});
+    tl.to('#kanca-panel', {{yPercent:-101, duration:.3, ease:'power3.in'}}, {sure - 0.3:.2f});
     window.__timelines["kanca"] = tl;
   </script>
 </template>
@@ -381,6 +417,10 @@ def proje_yaz(plan: dict, kesit: dict, dizin: Path, varlik: dict[str, Path], dik
         onceki = g
         if sh.get("gorsel"):
             sh["gorsel"] = sh["gorsel"].replace("assets/img/", "assets/dikey/")
+        if i == 0 and sh["tur"] == "foto":
+            sh.pop("baslik", None)  # kanca satırı üst bandı tutuyor
+        elif i == 0 and sh["tur"] in ("ifade", "bolum"):
+            sh = {**sh, "tur": "foto"} if sh.get("gorsel") else sh
         (dizin / "compositions" / f"{sh['id']}.html").write_text(DIKEY[sh["tur"]](sh, g, i * 5 + 1), encoding="utf-8")
         kelimeler += [{"w": k["w"], "s": round(sh["bas"] + k["s"], 3), "e": round(sh["bas"] + k["e"], 3)}
                       for k in sh.get("kelimeler") or []]  # fmt: skip

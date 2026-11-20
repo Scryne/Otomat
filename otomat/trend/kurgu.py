@@ -511,9 +511,38 @@ def sahne_kapanis(sh: dict, gecis: str, tohum: int) -> str:
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
+def sahne_harita(sh: dict, gecis: str, tohum: int) -> str:
+    """Pişirilmiş uydu uçuşu (harita.py) + hedefte işaret ve yer etiketi; uçuş sürenin %60'ında biter."""
+    sid, sure = sh["id"], sh["sure"]
+    perde, giris = _giris_js(gecis, sid)
+    govde = f"""
+    <div class="icerik tam">
+      <video id="{sid}-v" class="clip kapla" src="{_e(sh["video"])}" data-start="0" data-duration="{sure:.3f}"
+             muted playsinline></video>
+      <div class="pin" id="{sid}-pin"><div class="halka"></div><div class="nokta"></div></div>
+      <div class="yer gb" id="{sid}-yer">{_e(sh.get("yer", ""))}</div>
+      <div class="kredi" data-layout-ignore>{_e(sh.get("kredi", ""))}</div>
+    </div>{perde}"""
+    css = f"""
+    video.kapla {{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }}
+    .pin {{ position:absolute; left:{GENISLIK // 2 - 30}px; top:{YUKSEKLIK // 2 - 30}px; width:60px; height:60px; }}
+    .pin .nokta {{ position:absolute; left:18px; top:18px; width:24px; height:24px; border-radius:50%;
+                   background:{RENK["kirmizi"]}; border:5px solid #fff; }}
+    .pin .halka {{ position:absolute; inset:0; border-radius:50%; border:5px solid {RENK["kirmizi"]}; }}
+    .yer {{ position:absolute; left:{GENISLIK // 2 + 50}px; top:{YUKSEKLIK // 2 - 70}px; font-size:110px; color:#111;
+            background:{RENK["vurgu"]}; padding:4px 22px 0; }}
+    """
+    t = max(0.4, sure * 0.6)
+    js = [giris,
+          f"tl.fromTo('#{sid}-pin .nokta', {{scale:0}}, {{scale:1, duration:.35, ease:'back.out(2.2)'}}, {t:.3f});",
+          f"tl.fromTo('#{sid}-pin .halka', {{scale:.3, opacity:1}}, {{scale:1.8, opacity:0, duration:.9, ease:'power2.out'}}, {t:.3f});",
+          f"tl.fromTo('#{sid}-yer', {{clipPath:'inset(0 100% 0 0)'}}, {{clipPath:'inset(0 0% 0 0)', duration:.45, ease:'expo.out'}}, {t + 0.15:.3f});"]  # fmt: skip
+    return _sahne_html(sid, sure, govde, css, "\n".join(js))
+
+
 SAHNELER = {"foto": sahne_foto, "manset": sahne_manset, "sayi": sahne_sayi, "alinti": sahne_alinti,
             "zaman": sahne_zaman, "bolum": sahne_bolum, "ikili": sahne_ikili, "ifade": sahne_ifade,
-            "kapanis": sahne_kapanis}  # fmt: skip
+            "kapanis": sahne_kapanis, "harita": sahne_harita}  # fmt: skip
 
 
 def gecis_sec(i: int, tur: str, onceki: str | None) -> str:

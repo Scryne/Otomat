@@ -3,7 +3,7 @@
 Her aşama çıktısını `calisma/trend/<id>/` altına yazar; yeniden koşunca biten aşama atlanır (uzun işlerde yarıda
 kalınca baştan başlamasın). Kullanım:
 
-    uv run python -m otomat.trend.uretim                       # radar + editör günün konusunu seçer
+    uv run --extra ses python -m otomat.trend.uretim           # radar + editör günün konusunu seçer
     uv run python -m otomat.trend.uretim --konu "Grand Theft Auto VI"   # konu elle
     uv run python -m otomat.trend.uretim --id 2026-11-20-gta-vi        # var olan işi sürdür
 """
@@ -198,6 +198,21 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 p.pop("gorsel")
         if sh["tur"] == "kapanis":
             p["kanal"] = KANAL_ADI
+        if sh["tur"] == "harita":
+            from otomat.trend import harita
+
+            k = harita.koordinat(sh.get("yer_wiki") or sh.get("yer", ""))
+            try:
+                if not k:
+                    raise RuntimeError("koordinat yok")
+                hd = KOK / "calisma" / "trend" / "harita"
+                v = harita.pisir(k[0], k[1], sh.get("yakinlik", "city"), zz["sure"], hd)
+                hedef = f"assets/harita/{v.name}"
+                varlik[hedef] = v
+                p.update(video=hedef, kredi=harita.KREDI)
+            except Exception as e:  # noqa: BLE001 — harita olmazsa yer adı büyük ifade olur
+                print(f"harita düştü ({sh.get('yer')}): {str(e)[:120]}", flush=True)
+                p.update(tur="ifade", metin=sh.get("yer", ""))
         sahneler.append(p)
     secenek = MUZIK_SECIM.get(kategori) or MUZIK_SECIM["other"]
     muzik = MUZIK / secenek[len(gecmis()) % len(secenek)]
@@ -259,6 +274,8 @@ def metadata(sen: dict, plan: dict, kay: dict, bag: dict) -> dict:
     bolumler = "\n".join(f"{_dk(t)} {b}" for t, b in bolum_zamanlari(plan))
     aciklama = (f"{sen.get('aciklama', '').strip()}\n\n{bolumler}\n\nSources:\n" + "\n".join(kaynaklar) +
                 "\n\nPhotos (Wikimedia Commons):\n" + "\n".join(krediler) +
+                ("\nSatellite imagery: Esri, Maxar, Earthstar Geographics."
+                 if any(sh["tur"] == "harita" for sh in plan["sahneler"]) else "") +
                 f"\n\nMusic: \"{plan['muzik_ad']}\" by Kevin MacLeod (incompetech.com), licensed under CC BY 4.0."
                 "\nSound effects: Pixabay Content License."
                 "\nNarration is AI-generated (synthetic voice). Script researched from the sources above and "

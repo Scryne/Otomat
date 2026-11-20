@@ -89,9 +89,10 @@ class Oturum:
             govde["model"] = m
             for d in range(deneme):
                 try:
-                    r = self._istek(govde)
+                    r = self._akis(govde)
                 except LLMHatasi as e:
                     son = e
+                    print(f"llm {m} deneme {d + 1}: {str(e)[:160]}", flush=True)
                     if "429" in str(e) or "5" == str(e)[:1]:
                         time.sleep(8 * (d + 1))
                     else:
@@ -116,6 +117,48 @@ class Oturum:
                             f"Fix this into valid JSON with the same content:\n\n{metin}", model=kw.get("model", VARSAYILAN),
                             en_cok=kw.get("en_cok", 8000), sicaklik=0.0)  # fmt: skip
             return json_cikar(onar)
+
+    def _akis(self, govde: dict) -> dict:
+        """Akışlı (SSE) istek: uzun senaryolar 10 dk'yı aşabiliyor; veri aktıkça okuma zaman aşımı işlemez.
+        Dönüş akışsız yanıtla aynı biçimde: {"content": [{"type": "text", "text"}], "usage", "stop_reason"}."""
+        istek = urllib.request.Request(UC, json.dumps({**govde, "stream": True}).encode("utf-8"), {
+            "content-type": "application/json", "x-api-key": anahtar(), "anthropic-version": "2023-06-01",
+            "user-agent": UA, "x-opencode-session": self.kimlik, "accept": "text/event-stream"})  # fmt: skip
+        parcalar: list[str] = []
+        usage: dict = {}
+        dur = None
+        bas = time.time()
+        try:
+            with urllib.request.urlopen(istek, timeout=180) as y:  # olaylar arası en çok 3 dk sessizlik
+                for ham in y:
+                    satir = ham.decode("utf-8", "replace").strip()
+                    if not satir.startswith("data:"):
+                        continue
+                    veri = satir[5:].strip()
+                    if not veri or veri == "[DONE]":
+                        continue
+                    try:
+                        o = json.loads(veri)
+                    except ValueError:
+                        continue
+                    t = o.get("type")
+                    if t == "content_block_delta" and o.get("delta", {}).get("type") == "text_delta":
+                        parcalar.append(o["delta"].get("text", ""))
+                    elif t == "message_start":
+                        usage.update(o.get("message", {}).get("usage") or {})
+                    elif t == "message_delta":
+                        usage.update(o.get("usage") or {})
+                        dur = (o.get("delta") or {}).get("stop_reason") or dur
+                    elif t == "error":
+                        raise LLMHatasi(f"akış hatası: {str(o.get('error'))[:300]}")
+        except urllib.error.HTTPError as e:
+            raise LLMHatasi(f"{e.code} {e.read()[:400].decode('utf-8', 'replace')}") from None
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as e:
+            raise LLMHatasi(f"5xx bağlantı: {e}") from None
+        print(
+            f"llm {govde['model']}: {usage.get('output_tokens')} token, {time.time() - bas:.0f} sn, {dur}", flush=True
+        )
+        return {"content": [{"type": "text", "text": "".join(parcalar)}], "usage": usage, "stop_reason": dur}
 
     def _istek(self, govde: dict) -> dict:
         istek = urllib.request.Request(UC, json.dumps(govde).encode("utf-8"), {
