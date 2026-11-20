@@ -425,7 +425,7 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
     """Konuşanın fotoğrafı derinlikli ve arka planı flu (odak kişide); alıntı soldaki koyu geçişin üstünde."""
     sid, sure = sh["id"], sh["sure"]
     perde, giris = _giris_js(gecis, sid)
-    z_html, z_js = zemin(sh, tohum, "yan")
+    z_html, z_js = zemin(sh, tohum, "alt")
     govde = f"""
     <div class="icerik tam">
       {z_html}
@@ -435,12 +435,13 @@ def sahne_alinti(sh: dict, gecis: str, tohum: int) -> str:
       {_kredi(sh)}
     </div>{perde}"""
     css = f"""
-    .tirnak {{ position:absolute; left:96px; top:40px; font-size:340px; color:{RENK["vurgu"]}; line-height:1; }}
-    .metin {{ position:absolute; left:90px; width:1080px; top:250px; font-size:66px; font-weight:700; padding:34px 40px;
+    .tirnak {{ position:absolute; left:96px; bottom:330px; font-size:240px; color:{RENK["vurgu"]}; line-height:1;
+               z-index:2; }}
+    .metin {{ position:absolute; left:90px; right:90px; bottom:150px; font-size:58px; font-weight:700; padding:30px 40px;
               background:rgba(8,8,10,.62);
               line-height:1.18; margin:0; text-shadow:0 4px 30px rgba(0,0,0,.6); }}
     .metin .w {{ color:#fff; }}
-    .kim {{ position:absolute; left:124px; bottom:110px; font-size:38px; color:{RENK["vurgu"]}; font-weight:700;
+    .kim {{ position:absolute; left:130px; bottom:84px; font-size:38px; color:{RENK["vurgu"]}; font-weight:700;
             letter-spacing:.04em; }}
     """
     t0 = ilk_an(sh, sh.get("ipucu"), 0.25)

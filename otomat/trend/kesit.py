@@ -438,7 +438,11 @@ def proje_yaz(plan: dict, kesit: dict, dizin: Path, varlik: dict[str, Path], dik
         if sh.get("gorsel"):
             sh["gorsel"] = sh["gorsel"].replace("assets/img/", "assets/dikey/")
         if sh.get("derinlik"):  # dikey kadrajın kendi derinlik haritası (uretim.asama_kesitler)
-            sh["derinlik"] = sh["derinlik"].replace("assets/derinlik/", "assets/dikey_derinlik/")
+            dd = sh["derinlik"].replace("assets/derinlik/", "assets/dikey_derinlik/")
+            if dd in dikey_gorsel:
+                sh["derinlik"] = dd
+            else:  # dikeyde dolgulu fotoğraf: derinlik yok, sade kamera
+                sh.pop("derinlik")
         if i == 0 and sh["tur"] == "foto":
             sh.pop("baslik", None)  # kanca satırı üst bandı tutuyor
         elif i == 0 and sh["tur"] in ("ifade", "bolum"):

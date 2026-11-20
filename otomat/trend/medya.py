@@ -32,6 +32,12 @@ def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), ka
     return hedef
 
 
+def dolgulu(kaynak: Path, boyut: tuple[int, int] = (1920, 1080)) -> bool:
+    """`hazirla` bu görseli bulanık dolgunun üstüne mi koydu (yön tutmuyor)."""
+    hedef = boyut[0] / boyut[1]
+    return abs(oran(kaynak) - hedef) / hedef >= 0.28
+
+
 def oran(kaynak: Path) -> float:
     with Image.open(kaynak) as im:
         return im.width / im.height

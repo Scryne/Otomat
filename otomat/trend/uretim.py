@@ -196,9 +196,11 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 p["gorsel"] = hedef
                 p["kredi"] = gorsel[gi]["kredi_satiri"]
                 # 2.5D parallax için derinlik haritası (kurgu.zemin): düz kare + yavaş zoom "slayt" gibiydi (11-20)
-                dh = derinlik.harita(hazir, hazir.parent.parent / "derinlik" / f"g{gi + 1:02d}.png")
-                varlik[f"assets/derinlik/g{gi + 1:02d}.png"] = dh
-                p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
+                # dolgulu (dikey) fotoğrafta derinlik yok: fotoğrafla bulanık dolgu ayrı kayıp kesik gibi duruyordu
+                if not medya.dolgulu(Path(gorsel[gi]["yerel"])):
+                    dh = derinlik.harita(hazir, hazir.parent.parent / "derinlik" / f"g{gi + 1:02d}.png")
+                    varlik[f"assets/derinlik/g{gi + 1:02d}.png"] = dh
+                    p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
             else:
                 p.pop("gorsel")
         p.pop("klip", None)
@@ -429,7 +431,8 @@ def asama_kesitler(d: Path, sen: dict, plan: dict, varlik: dict, kay: dict) -> l
             continue
         hedef = medya.hazirla(Path(g["yerel"]), d / "gorsel_dikey" / f"{ad}.jpg", (1080, 1920))
         dikey[f"assets/dikey/{ad}.jpg"] = hedef
-        dikey[f"assets/dikey_derinlik/{ad}.png"] = derinlik.harita(hedef, d / "derinlik_dikey" / f"{ad}.png")
+        if not medya.dolgulu(Path(g["yerel"]), (1080, 1920)):
+            dikey[f"assets/dikey_derinlik/{ad}.png"] = derinlik.harita(hedef, d / "derinlik_dikey" / f"{ad}.png")
     for ki, k in enumerate(sen.get("kesitler") or []):
         idx = [int(x) for x in k.get("sahneler", []) if 0 <= int(x) < len(plan["sahneler"])]
         if not idx:
