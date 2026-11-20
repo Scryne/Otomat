@@ -250,8 +250,12 @@ def _uret(isler: list[dict], ref: Path, dizin: Path) -> None:
 
 
 def seslendir(
-    bloklar: list[tuple[int, str]], ses: str, dizin: Path, aralar: tuple[float, float, float] | None = None,
-    motor: str = "chatterbox", tonlar: list[str] | None = None,
+    bloklar: list[tuple[int, str]],
+    ses: str,
+    dizin: Path,
+    aralar: tuple[float, float, float] | None = None,
+    motor: str = "chatterbox",
+    tonlar: list[str] | None = None,
 ) -> tuple[Path, list[Zaman], list[dict]]:
     """bloklar: (bölüm no, anlatım). Tek WAV + blok başına zaman aralığı + parça denetim kaydı döner.
 

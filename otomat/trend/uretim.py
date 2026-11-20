@@ -325,8 +325,9 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         from otomat.trend import senaryo as senaryo_m
 
         gmetin = senaryo_m.gorsel_listesi([_gorsel_nesne(g) for g in kay["gorseller"]])
-        degisen = senaryo_m.gorsel_eslestir(oturum, sen, gmetin, len(kay["gorseller"]),
-                                              konu=secim["secim"].get("wiki_baslik", ""))
+        degisen = senaryo_m.gorsel_eslestir(
+            oturum, sen, gmetin, len(kay["gorseller"]), konu=secim["secim"].get("wiki_baslik", "")
+        )
         _yaz(d / "senaryo.json", sen)
         print(f"görsel eşleştirme: {len(degisen)} değişiklik", flush=True)
     n = sum(len(s["anlatim"].split()) for s in sen["sahneler"])

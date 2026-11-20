@@ -211,7 +211,8 @@ def d_zaman(sh: dict, gecis: str, tohum: int) -> str:
     """
     zam = _yayilim(sure, len(ol), 0.05, 0.45)
     js = [
-        giris, z_js,
+        giris,
+        z_js,
         f"tl.fromTo(S('.hat'), {{scaleY:0}}, {{scaleY:1, duration:{max(0.8, sure * 0.75):.2f}, ease:'none'}}, 0);",
     ]
     for i, o in enumerate(ol):

@@ -686,7 +686,9 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
         if sh.get("tur") == "harita":
             continue
         ekran = " ".join(str(x) for x in (sh.get("baslik"), sh.get("metin"), sh.get("etiket"), sh.get("kim")) if x)
-        satirlar.append(f"{i}. [{sh.get('tur')}] {sh.get('anlatim', '')}" + (f" || on screen: {ekran}" if ekran else ""))
+        satirlar.append(
+            f"{i}. [{sh.get('tur')}] {sh.get('anlatim', '')}" + (f" || on screen: {ekran}" if ekran else "")
+        )
     mesaj = f"=== IMAGE LIST ===\n{gorsel_metni}\n\n=== SCENES ===\n" + "\n".join(satirlar)
     y = oturum.json_sor(SISTEM_ESLE, mesaj, model=model, en_cok=8000, sicaklik=0.2, dusun=False)
     atama = {}

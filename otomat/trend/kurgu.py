@@ -161,7 +161,7 @@ def _giris_js(gecis: str, sid: str) -> tuple[str, str]:
     if gecis == "sel":  # mürekkep seli: karartıp açılır (dip cut)
         return (
             f'<div class="perde" id="{sid}-perde" style="background:{RENK["murekkep"]}"></div>',
-            "tl.fromTo(S('.perde'), {opacity: .7}, {opacity: 0, duration: .3, ease: 'power2.out'}, 0);"  # tam siyah ilk kare kesimde flaş gibiydi (11-20),
+            "tl.fromTo(S('.perde'), {opacity: .7}, {opacity: 0, duration: .3, ease: 'power2.out'}, 0);",  # tam siyah ilk kare kesimde flaş gibiydi (11-20),
         )
     return "", ""
 
@@ -203,8 +203,16 @@ HAREKETLER = [
 ]
 ISLEME = {  # zemin işleme: (blur, dof, karartma katmanı CSS)
     "dogal": (0.0, 0, ""),
-    "karart": (0.0035, 0, "background: radial-gradient(ellipse at 50% 50%, rgba(8,8,10,.48) 0%, rgba(8,8,10,.74) 100%);"),
-    "yan": (0.006, 1, "background: linear-gradient(90deg, rgba(8,8,10,.86) 0%, rgba(8,8,10,.62) 48%, rgba(8,8,10,.12) 100%);"),
+    "karart": (
+        0.0035,
+        0,
+        "background: radial-gradient(ellipse at 50% 50%, rgba(8,8,10,.48) 0%, rgba(8,8,10,.74) 100%);",
+    ),
+    "yan": (
+        0.006,
+        1,
+        "background: linear-gradient(90deg, rgba(8,8,10,.86) 0%, rgba(8,8,10,.62) 48%, rgba(8,8,10,.12) 100%);",
+    ),
     "alt": (0.0, 0, "background: linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,.8) 100%);"),
     "ust": (0.0, 0, "background: linear-gradient(0deg, rgba(0,0,0,0) 38%, rgba(0,0,0,.8) 100%);"),
     "hafif": (0.0, 0, "background: rgba(8,8,10,.42);"),
@@ -240,15 +248,16 @@ def zemin(sh: dict, tohum: int, isle: str = "dogal", w: int = GENISLIK, h: int =
         return html_, js
     if sh.get("gorsel"):
         filtre = ' style="filter:blur(5px)"' if bl else ""
-        return (f'<div class="kat"><img src="{_e(sh["gorsel"])}" alt=""{filtre}></div>{ust}',
-                _kamera(sid, sure, tohum))
+        return (f'<div class="kat"><img src="{_e(sh["gorsel"])}" alt=""{filtre}></div>{ust}', _kamera(sid, sure, tohum))
     # görsel yoksa: yavaş dönen iki ışık lekesi (prosedürel, düz renk değil)
     html_ = ('<div class="tam" style="background:#0d0f14"></div><div class="leke l1"></div><div class="leke l2"></div>'
              f'{ust}<style>.leke {{ position:absolute; width:1400px; height:1400px; border-radius:50%; filter:blur(120px);'
              f' opacity:.55; }} .l1 {{ background:#1F3B73; left:-300px; top:-500px; }} .l2 {{ background:#5a2a12; '
              f'right:-400px; bottom:-600px; }}</style>')  # fmt: skip
-    js = (f"tl.fromTo(S('.l1'), {{x:0, y:0}}, {{x:420, y:260, duration:{sure:.3f}, ease:'sine.inOut'}}, 0);"
-          f"tl.fromTo(S('.l2'), {{x:0, y:0}}, {{x:-380, y:-200, duration:{sure:.3f}, ease:'sine.inOut'}}, 0);")
+    js = (
+        f"tl.fromTo(S('.l1'), {{x:0, y:0}}, {{x:420, y:260, duration:{sure:.3f}, ease:'sine.inOut'}}, 0);"
+        f"tl.fromTo(S('.l2'), {{x:0, y:0}}, {{x:-380, y:-200, duration:{sure:.3f}, ease:'sine.inOut'}}, 0);"
+    )
     return html_, js
 
 

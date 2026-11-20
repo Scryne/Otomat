@@ -147,7 +147,7 @@ def test_sablonlarda_duz_renk_zemin_yok():
         sh = {**ortak, **alan, "id": f"t-{tur}", "tur": tur}
         html = kurgu.SAHNELER[tur](sh, "kesme", 2)
         assert 'class="px"' in html, tur
-        assert "background:#FFD60A; color:#111\">" not in html and "background:#F4F2EC; color:#111" not in html, tur
+        assert 'background:#FFD60A; color:#111">' not in html and "background:#F4F2EC; color:#111" not in html, tur
         dh = kesit.DIKEY[tur]({**sh, "id": f"d-{tur}"}, "kesme", 2)
         assert 'class="px"' in dh, f"dikey {tur}"
 
