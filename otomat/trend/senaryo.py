@@ -491,11 +491,60 @@ def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model:
     return s
 
 
-def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = BOLUM_MODEL) -> list[dict]:
-    y = oturum.json_sor(
-        SISTEM_KESIT, f"SCRIPT:\n{_ozet(sahneler)}", model=model, en_cok=3000, sicaklik=0.4, dusun=False
-    )
-    return list(y.get("kesitler") or []) if isinstance(y, dict) else []
+def kesit_gecerli(k: dict, sahneler: list[dict]) -> bool:
+    """Ardışık sahneler, 60-150 kelime (25-55 sn), bölüm kartıyla başlamıyor."""
+    try:
+        idx = [int(x) for x in k.get("sahneler") or []]
+    except (TypeError, ValueError):
+        return False
+    if not idx or idx != list(range(idx[0], idx[0] + len(idx))) or not 0 <= idx[0] or idx[-1] >= len(sahneler):
+        return False
+    kelime = sum(len(sahneler[i].get("anlatim", "").split()) for i in idx)
+    return 60 <= kelime <= 150 and sahneler[idx[0]].get("tur") != "bolum" and bool(k.get("kanca"))
+
+
+def kesit_kirp(k: dict, sahneler: list[dict], hedef: int = 110, tavan: int = 150) -> dict:
+    """Model kelime sınırını aşan koşu seçerse (11-20 Bond: 212-259 kelime) baştaki bölüm kartı atılır, koşu ~110
+    kelimeye kadar kısaltılır. Geçersiz girdi olduğu gibi döner (kesit_gecerli eler)."""
+    try:
+        idx = [int(x) for x in k.get("sahneler") or []]
+    except (TypeError, ValueError):
+        return k
+    while idx and 0 <= idx[0] < len(sahneler) and sahneler[idx[0]].get("tur") == "bolum":
+        idx = idx[1:]
+    out, n = [], 0
+    for i in idx:
+        if not 0 <= i < len(sahneler):
+            break
+        w = len(sahneler[i].get("anlatim", "").split())
+        if out and (n >= hedef or n + w > tavan):
+            break
+        out.append(i)
+        n += w
+    return {**k, "sahneler": out}
+
+
+def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = BOLUM_MODEL, deneme: int = 3) -> list[dict]:
+    """3 geçerli, çakışmayan kesit toplanana dek en çok `deneme` çağrı (11-20 Bond: tek çağrı 1 kesit döndürdü,
+    11 sahnelik 150+ kelimelik bir koşu)."""
+    secilen: list[dict] = []
+    sayili = "\n".join(f"{i}. [{sh.get('tur')}, {len(sh.get('anlatim', '').split())} words] {sh.get('anlatim', '')}"
+                       for i, sh in enumerate(sahneler))  # fmt: skip
+    for d in range(deneme):
+        dolu = {i for k in secilen for i in k["sahneler"]}
+        not_ = "" if not secilen else (f"\n\nAlready chosen (do not overlap): "
+                                       f"{[k['sahneler'] for k in secilen]}. Pick {3 - len(secilen)} more.")  # fmt: skip
+        y = oturum.json_sor(SISTEM_KESIT, f"SCRIPT (word count per scene in brackets):\n{sayili}{not_}", model=model,
+                            en_cok=3000, sicaklik=0.4 + 0.15 * d, dusun=False)  # fmt: skip
+        for k in (y.get("kesitler") or []) if isinstance(y, dict) else []:
+            k = kesit_kirp(k, sahneler)
+            if len(secilen) < 3 and kesit_gecerli(k, sahneler) and not dolu & {int(x) for x in k["sahneler"]}:
+                k["sahneler"] = [int(x) for x in k["sahneler"]]
+                secilen.append(k)
+                dolu |= set(k["sahneler"])
+        if len(secilen) >= 3:
+            break
+    return secilen
 
 
 def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "gemini-4-argon",

@@ -153,6 +153,11 @@ def asama_senaryo(d: Path, oturum: Oturum, secim: dict, kay: dict) -> dict:
     _yaz(d / "senaryo_kayit.json", {"kayit": kayit, "kaynak_bag": bag, "kullanim": oturum.kullanim})
     (d / "kaynak_paketi.txt").write_text(metin + "\n\n" + gmetin, encoding="utf-8")
     son = kayit[-1] if kayit else {}
+    if any("kesit" in k for k in son.get("kod") or []):  # kesit eksiği Shorts sayısını azaltır, videoyu durdurmaz
+        from otomat.trend.senaryo import kesit_sec
+
+        sen["kesitler"] = kesit_sec(oturum, sen["sahneler"])
+        son["kod"] = [k for k in son["kod"] if "kesit" not in k]
     if son.get("kod"):
         _yaz(d / "senaryo_kusurlu.json", sen)
         raise RuntimeError(f"senaryo kod kapısından geçmedi: {son['kod'][:6]}")

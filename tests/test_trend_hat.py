@@ -178,3 +178,11 @@ def test_muzik_bolumleri_ve_zarf():
 def test_ton_talimati():
     assert zamanla.ton_talimati({"ton": "hushed,  building suspense"}).endswith("hushed, building suspense")
     assert zamanla.ton_talimati({}) == zamanla.TON_TABAN
+
+
+def test_kesit_kirp_uzun_kosuyu_sinira_ceker():
+    sh = [_sahne("bolum", "Chapter two")] + [_sahne("foto", " ".join(["w"] * 25)) for _ in range(10)]
+    k = senaryo.kesit_kirp({"sahneler": list(range(0, 11)), "kanca": "x"}, sh)
+    assert k["sahneler"][0] == 1  # baştaki bölüm kartı atıldı
+    assert senaryo.kesit_gecerli(k, sh) and len(k["sahneler"]) == 5  # 125 kelime
+    assert not senaryo.kesit_gecerli({"sahneler": [1, 3], "kanca": "x"}, sh)  # ardışık değil
