@@ -21,7 +21,7 @@ from otomat.trend.llm import Oturum
 
 TURLER = ("foto", "manset", "sayi", "alinti", "zaman", "bolum", "ikili", "ifade", "kapanis", "harita")
 STATIK = ("ifade", "ikili", "alinti")  # tek başına poster gibi duran türler
-KELIME_HEDEF = (750, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
+KELIME_HEDEF = (650, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
 BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
 SAHNE_KELIME_EN_COK = 34
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
@@ -436,10 +436,15 @@ def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = "kimi-k3") -> l
     return list(y.get("kesitler") or []) if isinstance(y, dict) else []
 
 
-def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "gemini-4-argon") -> list[dict]:
+def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "gemini-4-argon",
+            gorsel_metni: str = "") -> list[dict]:  # fmt: skip
+    """gorsel_metni: fotoğraf alt yazısı (etiket/baslik) gösterilen görselin Commons başlığına dayanabilir; denetçi
+    görmezse "Toronto metrosundaki reklamlar" gibi doğru alt yazıları kaynaksız sayıyordu (11-20)."""
     sade = {"sahneler": [{k: v for k, v in sh.items() if k != "kaynak"} | {"i": i}
                          for i, sh in enumerate(senaryo.get("sahneler", []))]}  # fmt: skip
-    mesaj = f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== SCRIPT ===\n{json.dumps(sade, ensure_ascii=False)}"
+    gorsel = (f"\n\n=== IMAGE LIST (titles of the real photos; an etiket/baslik that only describes what its photo "
+              f"shows is supported by the photo title) ===\n{gorsel_metni}") if gorsel_metni else ""  # fmt: skip
+    mesaj = f"=== SOURCE PACK ===\n{kaynak_metni}{gorsel}\n\n=== SCRIPT ===\n{json.dumps(sade, ensure_ascii=False)}"
     y = oturum.json_sor(SISTEM_DENETCI, mesaj, model=model, en_cok=16000, sicaklik=0.0, dusun=False)
     return list(y.get("sorunlar", [])) if isinstance(y, dict) else []
 
@@ -503,7 +508,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
         if son_hal:
             son_hal.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
         kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
-        olgu = denetle(oturum, s, kaynak_metni)
+        olgu = denetle(oturum, s, kaynak_metni, gorsel_metni=gorsel_metni)
         kayit.append({"tur": tur, "kod": kod, "olgu": olgu, "sahne": len(s.get("sahneler", []))})
         if dizin:  # her tur diske: koşu kesilse de sorunlar okunabilsin
             (dizin / "senaryo_turlar.json").write_text(
@@ -515,7 +520,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
         s = onar(oturum, s, [{"kod_kurali": k} for k in kod] + olgu, kaynak_metni, gorsel_metni)
         if any("kesit" in k for k in kod) or len(s.get("kesitler") or []) < 3:
             s["kesitler"] = kesit_sec(oturum, s["sahneler"])
-    olgu = denetle(oturum, s, kaynak_metni)
+    olgu = denetle(oturum, s, kaynak_metni, gorsel_metni=gorsel_metni)
     korunan = {"bolum", "kapanis"}
     cikar = {int(o["sahne"]) for o in olgu if str(o.get("sahne", "")).isdigit()}
     cikar = {i for i in cikar if 0 < i < len(s.get("sahneler", [])) and s["sahneler"][i].get("tur") not in korunan}
