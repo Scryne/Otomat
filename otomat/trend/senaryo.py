@@ -431,11 +431,11 @@ def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model:
         print(f"senaryo: {ad.split(':')[0].split('(')[0].strip()} -> toplam {len(sahneler)} sahne", flush=True)
     s = {k: plan.get(k) for k in ("tez", "baslik_adaylari", "kapak_metni", "kapak_gorsel", "aciklama")}
     s["sahneler"] = sahneler
-    s["kesitler"] = kesit_sec(oturum, sahneler, model)
+    s["kesitler"] = kesit_sec(oturum, sahneler)
     return s
 
 
-def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = "kimi-k3") -> list[dict]:
+def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = BOLUM_MODEL) -> list[dict]:
     y = oturum.json_sor(
         SISTEM_KESIT, f"SCRIPT:\n{_ozet(sahneler)}", model=model, en_cok=3000, sicaklik=0.4, dusun=False
     )
@@ -461,7 +461,7 @@ def _sahne_no(metin: str) -> int | None:
 
 
 def onar(oturum: Oturum, senaryo: dict, sorunlar: list, kaynak_metni: str, gorsel_metni: str,
-         model: str = "kimi-k3") -> dict:  # fmt: skip
+         model: str = BOLUM_MODEL) -> dict:  # fmt: skip
     """Yalnız sorunlu sahneler yeniden yazılır (tam metni yeniden üretmek uzun ve pahalı)."""
     sahneler = senaryo.get("sahneler", [])
     ilgili: set[int] = set()
