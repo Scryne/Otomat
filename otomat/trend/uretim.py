@@ -157,7 +157,7 @@ def asama_senaryo(d: Path, oturum: Oturum, secim: dict, kay: dict) -> dict:
     s = secim["secim"]
     kayit: list = []
     sen = senaryo.uret(oturum, {"ad": s["hikaye"], "neden": s.get("neden", ""), "aci": s.get("aci", "")}, metin, gmetin,
-                       len(gorsel), kayit=kayit)  # fmt: skip
+                       len(gorsel), kayit=kayit, dizin=d)  # fmt: skip
     _yaz(d / "senaryo_kayit.json", {"kayit": kayit, "kaynak_bag": bag, "kullanim": oturum.kullanim})
     (d / "kaynak_paketi.txt").write_text(metin + "\n\n" + gmetin, encoding="utf-8")
     son = kayit[-1] if kayit else {}

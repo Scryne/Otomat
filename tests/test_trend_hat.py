@@ -95,3 +95,18 @@ def test_sahne_sablonlari_kayit_ve_gecis():
     assert "blur(18px)" in html  # savur girişi
     assert kurgu.gecis_sec(0, "foto", None) == "kesme"
     assert kurgu.gecis_sec(4, "foto", "kesme") != "kesme"
+
+
+def test_yapi_onar_gorsel_kapanis_sayi_duragan():
+    s = _gecerli_senaryo()
+    s["sahneler"][2]["deger"] = "<475"  # sayi
+    for i in (3, 5, 7):  # aynı görsel üç kez
+        s["sahneler"][i]["gorsel"] = "G2"
+    s["sahneler"].insert(10, _sahne("kapanis", "early end", metin="x"))
+    yapilan = senaryo.yapi_onar(s, gorsel_sayisi=40)
+    assert yapilan
+    assert s["sahneler"][2]["deger"] == "475"
+    assert sum(1 for sh in s["sahneler"] if sh.get("gorsel") == "G2") <= 2
+    assert [sh["tur"] for sh in s["sahneler"]].count("kapanis") == 1
+    assert s["sahneler"][-1]["tur"] == "kapanis"
+    assert not [h for h in senaryo.yapi_kapisi(s, 40) if "görsel" in h or "kapanis" in h or "sayi.deger" in h]

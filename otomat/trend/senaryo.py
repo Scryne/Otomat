@@ -15,12 +15,14 @@ from __future__ import annotations
 import json
 import re
 from collections import Counter
+from pathlib import Path
 
 from otomat.trend.llm import Oturum
 
 TURLER = ("foto", "manset", "sayi", "alinti", "zaman", "bolum", "ikili", "ifade", "kapanis", "harita")
 STATIK = ("ifade", "ikili", "alinti")  # tek başına poster gibi duran türler
-KELIME_HEDEF = (950, 1350)
+KELIME_HEDEF = (750, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
+BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
 SAHNE_KELIME_EN_COK = 34
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
                "delve", "tapestry", "in today's fast-paced", "buckle up", "let's dive in", "dive into",
@@ -113,7 +115,9 @@ SISTEM_DENETCI = """You are a meticulous fact-checker for a documentary explaine
 on, son, mansetler, metin, olaylar, sol, sag, kim) against the SOURCE PACK only — not your memory.
 Flag: unsupported claims, wrong numbers/dates/names, quotes that are not verbatim in a source, headlines not present in
 the sources, causal claims the sources do not make, and anything that presents speculation as fact.
-Do NOT flag style. Do NOT flag claims that are clearly supported.
+Do NOT flag style. Do NOT flag claims that are clearly supported. A headline shortened without changing its meaning
+is fine. A sentence from a Wikipedia article is Wikipedia's narration, not a quote of a person: flag it if the script
+presents it as someone's spoken quote.
 Return ONLY JSON: {"sorunlar": [{"sahne": index, "alan": field, "sorun": what is wrong, "duzeltme": a corrected
 version that the sources support (or "REMOVE")}]}. Empty list if everything is supported."""
 
@@ -215,6 +219,94 @@ def sayi_kapisi(senaryo: dict, kaynak_metni: str) -> list[str]:
     return sorunlar
 
 
+def _gorsel_say(sahneler: list[dict]) -> Counter:
+    return Counter(str(sh.get("gorsel")) for sh in sahneler if sh.get("gorsel"))
+
+
+def _en_az_kullanilan(sahneler: list[dict], gorsel_sayisi: int, i: int) -> str | None:
+    """i. sahne için en az kullanılmış görsel (komşu sahnelerinkinden farklı)."""
+    say = _gorsel_say(sahneler)
+    komsu = {str(sahneler[j].get("gorsel")) for j in (i - 1, i + 1) if 0 <= j < len(sahneler)}
+    adaylar = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in komsu and say[f"G{k}"] < 2]
+    return min(adaylar, key=lambda g: (say[g], int(g[1:]))) if adaylar else None
+
+
+def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
+    """LLM onarımının düzeltemediği yapısal kuralları kodla düzeltir (yerinde). Dönüş: yapılanlar.
+
+    11-20 GTA VI koşusu: dört onarım turundan sonra kalan sorunlar hep buydu (görsel 4-6 kez, durağan sahne 21/60,
+    sayi.deger "<475", çift kapanış). Bunlar anlam değil biçim; kod doğru ve ücretsiz düzeltir."""
+    s = senaryo.get("sahneler") or []
+    yapilan: list[str] = []
+    # 1. kapanis yalnız sonda; sonundaki fazlalık (kapanıştan sonra gelen sahneler) atılır
+    son_k = max((i for i, sh in enumerate(s) if sh.get("tur") == "kapanis"), default=None)
+    if son_k is not None:
+        once = [sh for i, sh in enumerate(s) if not (sh.get("tur") == "kapanis" and i != son_k)]
+        if len(once) != len(s) or son_k != len(s) - 1:
+            yapilan.append("kapanış tekilleştirildi")
+        s = [sh for sh in once if sh.get("tur") != "kapanis"] + [s[son_k]]
+    # 2. sayi.deger sayı değilse rakamları ayıkla, yoksa ifade'ye çevir
+    for i, sh in enumerate(s):
+        if sh.get("tur") != "sayi":
+            continue
+        ham = str(sh.get("deger", ""))
+        try:
+            float(ham.replace(",", ""))
+            continue
+        except ValueError:
+            pass
+        rakam = re.search(r"\d[\d,]*(?:\.\d+)?", ham)
+        if rakam:
+            sh["deger"] = rakam.group(0).replace(",", "")
+            yapilan.append(f"sahne {i}: sayi.deger '{ham}' → {sh['deger']}")
+        else:
+            s[i] = {**sh, "tur": "ifade", "metin": sh.get("etiket") or ham}
+            yapilan.append(f"sahne {i}: sayısız sayi → ifade")
+    # 3. görsel en çok 2 kez
+    for i, sh in enumerate(s):
+        g = sh.get("gorsel")
+        if g and _gorsel_say(s[: i + 1])[str(g)] > 2:
+            yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
+            if yeni:
+                sh["gorsel"] = yeni
+            else:
+                sh.pop("gorsel", None)
+            yapilan.append(f"sahne {i}: görsel {g} → {yeni or 'yok'}")
+            if sh.get("tur") == "foto" and not sh.get("gorsel"):
+                s[i] = {**sh, "tur": "ifade", "metin": sh.get("baslik") or " ".join(sh.get("anlatim", "").split()[:8])}
+
+    # 4. durağan sahne ≤ 1/3 ve ardışık aynı durağan tür yok: fazlası görselli foto'ya döner
+    def _foto_yap(i: int) -> bool:
+        sh = s[i]
+        g = sh.get("gorsel") or _en_az_kullanilan(s, gorsel_sayisi, i)
+        if not g:
+            return False
+        if i >= 2 and s[i - 1].get("tur") == "foto" == s[i - 2].get("tur"):
+            return False
+        if i + 2 < len(s) and s[i + 1].get("tur") == "foto" == s[i + 2].get("tur"):
+            return False
+        baslik = sh.get("metin") or sh.get("baslik") or ""
+        if sh.get("tur") == "ikili":
+            baslik = f"{sh.get('sol', {}).get('deger', '')} vs {sh.get('sag', {}).get('deger', '')}".strip(" vs")
+        s[i] = {"tur": "foto", "anlatim": sh.get("anlatim", ""), "kaynak": sh.get("kaynak", []), "gorsel": g,
+                "baslik": " ".join(str(baslik).split()[:7]), "vurgu": sh.get("vurgu", [])[:1] if sh.get("vurgu") else []}  # fmt: skip
+        if sh.get("tur") == "alinti" and sh.get("kim"):
+            s[i]["etiket"] = sh["kim"]
+        return True
+
+    for i in range(1, len(s)):
+        if s[i].get("tur") in STATIK and s[i].get("tur") == s[i - 1].get("tur") and _foto_yap(i):
+            yapilan.append(f"sahne {i}: ardışık {s[i - 1].get('tur')} → foto")
+    for tur in ("ifade", "ikili", "alinti"):
+        for i, sh in enumerate(s):
+            if sum(1 for x in s if x.get("tur") in STATIK) <= len(s) / 3:
+                break
+            if sh.get("tur") == tur and _foto_yap(i):
+                yapilan.append(f"sahne {i}: durağan {tur} → foto")
+    senaryo["sahneler"] = s
+    return yapilan
+
+
 def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     """Biçim kuralları: türler, alanlar, kelime sınırları, çeşitlilik, görsel kimlikleri, yasak ifadeler."""
     s = senaryo.get("sahneler") or []
@@ -266,6 +358,9 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     for g, n in gorsel_kullanim.items():
         if n > 2:
             hata.append(f"görsel {g} {n} kez kullanılmış (en çok 2)")
+    for i, sh in enumerate(s[:-1]):
+        if sh.get("tur") == "kapanis":
+            hata.append(f"sahne {i}: kapanis yalnız son sahne olabilir (fazlasını sil)")
     if s and s[-1].get("tur") != "kapanis":
         hata.append("son sahne kapanis değil")
     statik = sum(1 for sh in s if sh.get("tur") in STATIK)
@@ -300,24 +395,31 @@ def _ozet(sahneler: list[dict]) -> str:
     return "\n".join(f"{i}. [{sh.get('tur')}] {sh.get('anlatim', '')}" for i, sh in enumerate(sahneler))
 
 
-def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3") -> dict:
+def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3",
+        dizin: Path | None = None, bolum_model: str = BOLUM_MODEL) -> dict:  # fmt: skip
     """İskelet (düşünerek, kısa) → kanca → her bölüm (düşünmeden, kısa JSON) → kapanış → kesit seçimi.
     Tek çağrıda ~60 sahnelik JSON 32k token'a sığmadı ve aboneliğin ~1,9 birimini yedi (11-20)."""
-    plan = iskelet(oturum, konu, kaynak_metni, gorsel_metni, model)
+    plan_yol = dizin / "senaryo_iskelet.json" if dizin else None
+    if plan_yol and plan_yol.exists():
+        plan = json.loads(plan_yol.read_text(encoding="utf-8"))
+    else:
+        plan = iskelet(oturum, konu, kaynak_metni, gorsel_metni, model)
+        if plan_yol:
+            plan_yol.write_text(json.dumps(plan, ensure_ascii=False, indent=1), encoding="utf-8")
     sahneler: list[dict] = []
     kaynak = _mesaj_kaynak(kaynak_metni, gorsel_metni)
     plan_metni = json.dumps({k: plan.get(k) for k in ("tez", "kanca", "bolumler", "kapanis")}, ensure_ascii=False)
     parcalar = [("HOOK (scenes before chapter 01; no chapter card)", "~110 words", plan.get("kanca", ""))]
     for b in plan.get("bolumler") or []:
         parcalar.append((f"CHAPTER {b.get('no')}: start with ONE 'bolum' scene (no {b.get('no')}, baslik "
-                         f"\"{b.get('baslik')}\"), then its scenes", f"~{b.get('kelime', 250)} words", b.get("amac", "")))  # fmt: skip
+                         f"\"{b.get('baslik')}\"), then its scenes", f"~{b.get('kelime', 250)} words in about {max(6, round(int(b.get('kelime', 250) or 250) / 21))} scenes", b.get("amac", "")))  # fmt: skip
     parcalar.append(
         ("CLOSING (last 2-3 scenes; the very last scene is 'kapanis')", "~60 words", plan.get("kapanis", ""))
     )
     for ad, hedef, amac in parcalar:
         mesaj = (kaynak + f"=== PLAN ===\n{plan_metni}\n\n=== SCENES SO FAR ===\n{_ozet(sahneler) or '(none)'}\n\n"
                  f"=== WRITE NOW ===\n{ad}. Target: {hedef}. Goal: {amac}")  # fmt: skip
-        y = oturum.json_sor(SISTEM_BOLUM, mesaj, model=model, en_cok=9000, sicaklik=0.75, dusun=False)
+        y = oturum.json_sor(SISTEM_BOLUM, mesaj, model=bolum_model, en_cok=9000, sicaklik=0.75, dusun=False)
         yeni = y.get("sahneler") if isinstance(y, dict) else y
         sahneler += [sh for sh in (yeni or []) if isinstance(sh, dict)]
         print(f"senaryo: {ad.split(':')[0].split('(')[0].strip()} -> toplam {len(sahneler)} sahne", flush=True)
@@ -334,11 +436,11 @@ def kesit_sec(oturum: Oturum, sahneler: list[dict], model: str = "kimi-k3") -> l
     return list(y.get("kesitler") or []) if isinstance(y, dict) else []
 
 
-def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "glm-5.3") -> list[dict]:
+def denetle(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "gemini-4-argon") -> list[dict]:
     sade = {"sahneler": [{k: v for k, v in sh.items() if k != "kaynak"} | {"i": i}
                          for i, sh in enumerate(senaryo.get("sahneler", []))]}  # fmt: skip
     mesaj = f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== SCRIPT ===\n{json.dumps(sade, ensure_ascii=False)}"
-    y = oturum.json_sor(SISTEM_DENETCI, mesaj, model=model, en_cok=12000, sicaklik=0.0)
+    y = oturum.json_sor(SISTEM_DENETCI, mesaj, model=model, en_cok=16000, sicaklik=0.0, dusun=False)
     return list(y.get("sorunlar", [])) if isinstance(y, dict) else []
 
 
@@ -380,16 +482,33 @@ def onar(oturum: Oturum, senaryo: dict, sorunlar: list, kaynak_metni: str, gorse
 
 
 def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorsel_sayisi: int,
-         tur_sayisi: int = 4, kayit: list | None = None) -> dict:  # fmt: skip
+         tur_sayisi: int = 4, kayit: list | None = None, dizin: Path | None = None) -> dict:  # fmt: skip
     """Yaz → (kod kapıları + olgu denetimi) → sahne onarımı döngüsü. Turlar bitince hâlâ desteklenmeyen sahne çıkarılır
     (son çare); kod kapısı yine geçmezse çağıran düşürür."""
     kayit = kayit if kayit is not None else []
     print("senaryo: yazılıyor", flush=True)
-    s = yaz(oturum, konu, kaynak_metni, gorsel_metni)
+    taslak = dizin / "senaryo_taslak.json" if dizin else None
+    son_hal = dizin / "senaryo_son.json" if dizin else None
+    if son_hal and son_hal.exists():
+        s = json.loads(son_hal.read_text(encoding="utf-8"))
+    elif taslak and taslak.exists():
+        s = json.loads(taslak.read_text(encoding="utf-8"))
+    else:
+        s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin)
+        if taslak:
+            taslak.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     for tur in range(tur_sayisi):
+        if duz := yapi_onar(s, gorsel_sayisi):
+            print(f"senaryo yapı onarımı: {len(duz)} değişiklik", flush=True)
+        if son_hal:
+            son_hal.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
         kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
         olgu = denetle(oturum, s, kaynak_metni)
         kayit.append({"tur": tur, "kod": kod, "olgu": olgu, "sahne": len(s.get("sahneler", []))})
+        if dizin:  # her tur diske: koşu kesilse de sorunlar okunabilsin
+            (dizin / "senaryo_turlar.json").write_text(
+                json.dumps(kayit, ensure_ascii=False, indent=1), encoding="utf-8"
+            )
         print(f"senaryo tur {tur}: {len(s.get('sahneler', []))} sahne, kod {len(kod)}, olgu {len(olgu)}", flush=True)
         if not kod and not olgu:
             return s
@@ -403,6 +522,9 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
     if cikar:
         s["sahneler"] = [sh for i, sh in enumerate(s["sahneler"]) if i not in cikar]
         s["kesitler"] = kesit_sec(oturum, s["sahneler"])
+    yapi_onar(s, gorsel_sayisi)
+    if son_hal:
+        son_hal.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
     kayit.append({"tur": tur_sayisi, "kod": kod, "olgu": olgu, "cikarilan": sorted(cikar),
                   "sahne": len(s.get("sahneler", []))})  # fmt: skip
