@@ -15,6 +15,7 @@ from pathlib import Path
 from otomat.trend import kurgu
 from otomat.trend.kurgu import (
     RENK,
+    _deger_boyu,
     _e,
     _giris_js,
     _kelime_ayir,
@@ -235,7 +236,7 @@ def d_ikili(sh: dict, gecis: str, tohum: int) -> str:
               border-left:12px solid rgba(255,255,255,.85); display:flex; flex-direction:column; justify-content:center; }}
     .panel.ust {{ top:{UST + 40}px; }} .panel.alt {{ top:{UST + 470}px; border-left-color:{RENK["vurgu"]}; }}
     .etk {{ font-size:48px; font-weight:700; margin-bottom:10px; color:#fff; }}
-    .dg {{ font-size:190px; line-height:.95; color:#fff; }}
+    .dg {{ font-size:{_deger_boyu(sol, sag, 190)}px; line-height:.95; color:#fff; }}
     .alt .dg {{ color:{RENK["vurgu"]}; }}
     """
     t1 = ilk_an(sh, sol.get("ipucu"))

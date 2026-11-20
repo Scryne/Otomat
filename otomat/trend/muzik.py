@@ -7,8 +7,8 @@ riski taşıyor; yerel üretim (ACE-Step 1.5, MIT) 4060'ta 95 sn parçayı ~9 sn
 Kurallar:
 - Bölüm sınırında parça ve his değişir (Johnny Harris: "thinking" / "feeling" müziği dönüşümlü); 3 sn çapraz geçiş.
 - Parça bölüm süresi kadar üretilir: döngü yok.
-- Kısılma zarfı konuşma zamanından hesaplanır (sidechain pompalamaz): konuşma altında -20 dB, 0,45 sn'den uzun
-  boşlukta -12 dB, bölüm kartında -9 dB. Rakamın söylendiği andan hemen önce kısa nefes (müzik çekilir).
+- Kısılma zarfı konuşma zamanından hesaplanır (sidechain pompalamaz): konuşma altında -17 dB, 0,45 sn'den uzun
+  boşlukta -10 dB, bölüm kartında -7 dB. Rakamın söylendiği andan hemen önce kısa nefes (müzik çekilir).
 """
 
 from __future__ import annotations
@@ -40,7 +40,8 @@ RUHLAR = {  # ruh hali → (istem, bpm)
     "sakin": ("calm reflective ambient underscore, airy pads, sparse warm piano notes, slow evolving textures", 70),
     "karanlik": ("ominous brooding underscore, dark drones, distant metallic hits, sub bass pulses, unsettling", 84),
 }  # fmt: skip
-KONUSMA_DB, BOSLUK_DB, BOLUM_DB, NEFES_DB = -20.0, -12.0, -9.0, -26.0
+# 11-20 Bond ölçümü: -20 dB'de müzik anlatımın 20 dB altında kaldı (araştırma aralığının kısık ucu); 17 dB'ye çekildi
+KONUSMA_DB, BOSLUK_DB, BOLUM_DB, NEFES_DB = -17.0, -10.0, -7.0, -24.0
 GECIS = 3.0  # bölümler arası çapraz geçiş (sn)
 
 

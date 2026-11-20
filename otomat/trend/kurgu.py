@@ -544,6 +544,12 @@ def sahne_bolum(sh: dict, gecis: str, tohum: int) -> str:
     return _sahne_html(sid, sure, govde, css, "\n".join(js))
 
 
+def _deger_boyu(sol: dict, sag: dict, taban: int) -> int:
+    """Karşılaştırma değerinin yazı boyu en uzun değere göre: "2021 (No Time to Die)" 200 px'te üç satıra taştı (11-20)."""
+    n = max(len(str(sol.get("deger", ""))), len(str(sag.get("deger", ""))))
+    return taban if n <= 6 else int(taban * (0.72 if n <= 10 else 0.52 if n <= 16 else 0.4))
+
+
 def sahne_ikili(sh: dict, gecis: str, tohum: int) -> str:
     """Karşılaştırma: hareketli görüntünün üstünde iki cam panel; sağdaki değer sarı."""
     sid, sure = sh["id"], sh["sure"]
@@ -565,7 +571,7 @@ def sahne_ikili(sh: dict, gecis: str, tohum: int) -> str:
               border-top:10px solid rgba(255,255,255,.85); }}
     .panel.sol {{ left:110px; }} .panel.sag {{ right:110px; border-top-color:{RENK["vurgu"]}; }}
     .etk {{ font-size:46px; font-weight:700; margin-bottom:18px; color:#fff; }}
-    .dg {{ font-size:200px; color:#fff; line-height:.95; }}
+    .dg {{ font-size:{_deger_boyu(sol, sag, 200)}px; color:#fff; line-height:.95; }}
     .sag .dg {{ color:{RENK["vurgu"]}; }}
     .vs {{ position:absolute; left:0; right:0; top:500px; text-align:center; font-size:90px; color:rgba(255,255,255,.7); }}
     .ust {{ position:absolute; left:110px; right:110px; top:120px; font-size:96px; color:#fff;
