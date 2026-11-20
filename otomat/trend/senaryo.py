@@ -148,7 +148,7 @@ def kaynak_paketi(wiki, haberler: list, ek_metinler: list[tuple[str, str]] | Non
     for i, h in enumerate(haberler[:25]):
         kimlik = f"N{i + 1}"
         parcalar.append(f"[{kimlik}] News headline — {h.yayinci}, {h.zaman:%Y-%m-%d}: {h.baslik}\n")
-        bag[kimlik] = h.url
+        bag[kimlik] = f'{h.yayinci}: "{h.baslik}" ({h.zaman:%Y-%m-%d})'  # Google News bağlantısı yönlendirme, okunmaz
     for i, (url, metin) in enumerate(ek_metinler or []):
         kimlik = f"A{i + 1}"
         parca = f"[{kimlik}] Article text ({url}):\n{metin.strip()[:6000]}\n"
@@ -309,6 +309,18 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             s[i]["etiket"] = sh["kim"]
         return True
 
+    # kare 0 oynatıcı önizlemesidir, boş olamaz (11-20 Anthropic: açılış sayi sahnesi boş kırmızıyla başladı) → foto
+    if s and s[0].get("tur") != "foto" and _foto_yap(0):
+        yapilan.append(f"sahne 0: açılış {s[0].get('tur')} → foto")
+    # 2'den küçük "sayı" anlamsız ("1 — Stanford physics degree") → fotoğraflı başlık
+    for i, sh in enumerate(s):
+        if sh.get("tur") == "sayi":
+            try:
+                kucuk = abs(float(str(sh.get("deger", "0")).replace(",", ""))) < 2
+            except ValueError:
+                kucuk = False
+            if kucuk and _foto_yap(i):
+                yapilan.append(f"sahne {i}: anlamsız küçük sayı → foto")
     for i in range(1, len(s)):
         tur = s[i].get("tur")
         if tur not in ("foto", "bolum", "kapanis") and tur == s[i - 1].get("tur") and _foto_yap(i):
