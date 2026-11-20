@@ -337,8 +337,13 @@ def altyazi_html(kelimeler: list[dict], sure: float) -> str:
         js.append(f"tl.set('#a{gi}', {{opacity:1, visibility:'visible'}}, {bas:.3f});")
         js.append(f"tl.fromTo('#a{gi}', {{scale:.92}}, {{scale:1, duration:.12, ease:'power2.out'}}, {bas:.3f});")
         for wi, w in enumerate(g):
-            js.append(f"tl.set('#a{gi}-{wi}', {{color:'{RENK['vurgu']}'}}, {max(bas, w['s']):.3f});")
-            js.append(f"tl.set('#a{gi}-{wi}', {{color:'#ffffff'}}, {min(son, max(w['e'], w['s'] + 0.12)):.3f});")
+            # etkin kelime koyu kutuda sarı: sarı/kırmızı zeminli sahnede de okunur (11-20 kesitlerinde sarı-sarı eridi)
+            js.append(
+                f"tl.set('#a{gi}-{wi}', {{color:'{RENK['vurgu']}', backgroundColor:'#111111'}}, {max(bas, w['s']):.3f});"
+            )
+            js.append(
+                f"tl.set('#a{gi}-{wi}', {{color:'#ffffff', backgroundColor:'rgba(0,0,0,0)'}}, {min(son, max(w['e'], w['s'] + 0.12)):.3f});"
+            )
         js.append(f"tl.set('#a{gi}', {{opacity:0, visibility:'hidden'}}, {son:.3f});")
     return f"""<template>
   <style>
@@ -346,7 +351,8 @@ def altyazi_html(kelimeler: list[dict], sure: float) -> str:
     .grup {{ position:absolute; left:40px; right:40px; top:{ALTYAZI_Y}px; text-align:center; opacity:0;
              visibility:hidden; font-family:'Archivo Black', sans-serif; font-size:76px; line-height:1.05; color:#fff;
              -webkit-text-stroke: 10px #000; paint-order: stroke fill; }}
-    .k {{ display:inline-block; margin:0 8px; }}
+    .k {{ display:inline-block; margin:0 8px; padding:0 10px; }}
+    .k.etkin {{ color:{RENK["vurgu"]}; background:#111; -webkit-text-stroke:0; }}
   </style>
   <div id="root" data-composition-id="altyazi" data-width="{W}" data-height="{H}">
     {"".join(govde)}

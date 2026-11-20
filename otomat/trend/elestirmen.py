@@ -78,6 +78,8 @@ def duzelt(plan: dict, bulgular: list[dict]) -> list[str]:
             yapilan.append(f"{sh['id']}: koyu kat ({b['tur']})")
         elif b["tur"] == "anlamsiz_gorsel" and sh["tur"] == "foto" and sh.get("baslik"):
             sh.update(tur="ifade", metin=sh["baslik"])
+            sh.pop("gorsel", None)  # anlamsız fotoğraf ifadenin arkasında da kalmasın
+            sh.pop("kredi", None)
             yapilan.append(f"{sh['id']}: foto → ifade (anlamsız görsel)")
     return yapilan
 

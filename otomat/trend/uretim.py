@@ -293,7 +293,8 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     if is_id:
         d = CALISMA / is_id
     else:
-        d = CALISMA / (f"{dt.date.today():%Y-%m-%d}-{_slug(konu)}" if konu else f"{dt.datetime.now():%Y-%m-%d-%H%M}-gunun-konusu")
+        ad = f"{dt.date.today():%Y-%m-%d}-{_slug(konu)}" if konu else f"{dt.datetime.now():%Y-%m-%d-%H%M}-gunun-konusu"
+        d = CALISMA / ad
     d.mkdir(parents=True, exist_ok=True)
     oturum = Oturum(d.name)
     secim = asama_secim(d, oturum, konu)
