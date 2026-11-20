@@ -51,13 +51,6 @@ def _sahne_html(sid: str, sure: float, govde: str, css: str, js: str) -> str:
 """
 
 
-def _kamera(sure: float, tohum: int) -> str:
-    yonler = [(1.0, 1.1, 0, 0), (1.12, 1.02, -30, 30), (1.04, 1.13, 25, -25)]
-    s0, s1, x0, x1 = yonler[tohum % len(yonler)]
-    return (f"tl.fromTo(S('.kat'), {{scale:{s0}, x:{x0}}}, {{scale:{s1}, x:{x1}, duration:{sure:.3f}, "
-            f"ease:'none'}}, 0);")  # fmt: skip
-
-
 def _z(sh: dict, tohum: int, isle: str) -> tuple[str, str]:
     """Dikey kadrajda hareketli zemin (kurgu.zemin, 1080×1920): düz renk zemin yok (11-20 geri bildirimi)."""
     return kurgu.zemin(sh, tohum, isle, W, H)

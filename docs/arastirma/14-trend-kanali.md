@@ -174,3 +174,40 @@ HyperFrames telemetrisi kapalı çalıştırılır (`HYPERFRAMES_NO_TELEMETRY=1`
 **Kurgu dersleri:** sahnenin ana öğesi anlatımdaki ipucu kelimesine bağlıyken ipucu geç gelince ekran 5 sn'ye kadar
 boş renk zemin gösterdi (eleştirmen + `dead_stretch`). Kural: ana öğe ≤ 0,12 sn'de, sayı rakam söylenince sayar,
 durağan sahnede tek yavaş itiş (1.0 → 1.04). Fotoğraf başlığı koyu kutuda (parlak tabela üstünde beyaz yazı okunmadı).
+
+## 8. Scryne'ın izleme geri bildirimi ve v2 (11-20 akşam) [Ö/B]
+
+Scryne iki videoyu izledi: "bu halle atamayız". Üç somut şikâyet:
+1. **Anlatıcı** "çok sıkıcı, dümdüz metin anlatıyor, sesi AI olduğu belli".
+2. **Müzik** "çok kötü, aynı parça sürekli döngüde, bayıyor".
+3. **Görsel** "fotoğrafların arasında düz renk gelip yazılar geliyor, çok sıkıcı".
+
+Üç araştırma ajanı (ses, müzik, görsel; 11-20) ve yerel ölçümlerle çözüm:
+
+| Sorun | Kök neden | Çözüm (v2) | Ölçüm |
+| --- | --- | --- | --- |
+| Düz anlatım | Chatterbox'ın referansı Kokoro'nun sentetik sesiydi (klon referansın düzlüğünü kopyalar); senaryo cümle başına bir olgu | Qwen3-TTS-12Hz-1.7B **CustomVoice "Ryan"** (Apache-2.0) + sahne başına doğal dil ton talimatı (`ton`); yazar "hikâye anlatıcısı" kurallarıyla yazar | perde yayılımı 3,5 → 5,6 yarım ton (p5-p95 aralığı 12 → 16-20); konuşmacı benzerliği cümleler arası 0,84 (VoiceDesign 0,70, kimlik kayıyor); 4060'ta ~2× gerçek zaman |
+| Döngü müzik | Tek Kevin MacLeod parçası 5 dk | **ACE-Step 1.5** (MIT, yerel) ile bölüm başına ruh haline göre tam uzunlukta parça; 3 sn çapraz geçiş; konuşma zamanından kısılma zarfı (konuşma -20 dB, boşluk -12, bölüm kartı -9, rakamdan önce nefes -26) | 95 sn parça ~9 sn'de; Whisper ile vokal sızıntısı yok; -14,5 LUFS |
+| Düz renk kart | sayı/ifade/alıntı/zaman/ikili sahneleri renk alanında | Her sahnenin altında **2.5D parallax** (Depth Anything V2 Small ONNX, Apache-2.0; tek paylaşılan WebGL bağlamı), kartlar karartılmış/flu görüntünün üstünde; film greni, vinyet, manşette fosforlu kalem, bölümde ışık sızıntısı; her sahneye görsel (en çok 3 kez, komşu tekrar yok) | derinlik ~0,7 sn/görsel (CPU); 12 sn parallax render 21 sn (donanım GPU) |
+
+**Elenenler ve nedenleri:**
+- Gerçek bir kişinin sesini klonlamak: kişinin izni yok; modellerin şartları da taklidi yasaklıyor. Bunun yerine
+  modelin kendi hazır sesi.
+- VoiceDesign: en doğal ses tasarımı ama cümleden cümleye kimlik kayıyor (benzerlik 0,64-0,70).
+- Hazır müzik kütüphaneleri (Incompetech, Pixabay, Jamendo, Openverse, Bensound): hepsinde Content ID talebi riski var
+  (Jamendo ve Incompetech kendi sayfalarında söylüyor); Pixabay Music ve YouTube Audio Library'nin API'si yok.
+  MusicGen/YuE2: ağırlıklar ticari değil.
+- Yerel video üretimi (Wan 2.2 5B, LTX-2): 4060'ta 480p, klip başına dakikalar, film hattında %25-42 bozuk klip.
+- Openverse görsel API'si 11-20'de 504 veriyordu; stok video (Pexels/Pixabay) ücretsiz ama hesap + anahtar ister
+  (hesap açmak Scryne'ın işi) — `klip` alanı zeminde hazır, anahtar gelince bağlanır.
+- Sesli içerik yargıcı: OpenCode Go uçları ses girdisini kabul etmiyor ("input_audio is not portable"); ses kalitesi
+  bu yüzden akustik ölçülerle (pyin perde, resemblyzer konuşmacı benzerliği, Whisper) değerlendirildi, kulakla değil.
+
+**Kararlar:**
+- **K-42 (11-20): anlatıcı Qwen3-TTS CustomVoice "Ryan" + sahne başına ton.** Kurulum `~/tts-qwen3` (uv, torch cu128,
+  faster-qwen3-tts 0.5.4, transformers 5.15.1 sabit: 5.23 tokenizer'ı kırıyor). Film hattı Chatterbox'ta kalır
+  (`seslendir(motor=...)`). Ücretli yükseltme seçeneği: ElevenLabs Creator ($22/ay), Scryne karar verirse.
+- **K-43: müzik her video için yerelde üretilir** (ACE-Step 1.5 turbo, dil modeli kapalı, int8; `~/ace-step`).
+  Metadata'da "original score" yazar; Kevin MacLeod kalktı.
+- **K-44: düz renk zemin yasak.** K-39'un "doygun renk alanı" zemini kaldırıldı; renkler yalnız vurgu, bant ve
+  panel olarak kalır. Her sahnede hareketli görüntü (parallax > kamera > prosedürel leke).
