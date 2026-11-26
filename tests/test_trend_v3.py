@@ -1,8 +1,10 @@
 """Trend v3 (11-26, "gerçek insan gibi" geri bildirimi): Ming anlatıcısının metin hazırlığı, değişken duraklama, görsel
 ağırlıklı senaryo kuralları, yakın kopya ve kesit süzgeçleri, baskı düzeni, bölüm kartı derinliği."""
 
+import shutil
 from pathlib import Path
 
+import pytest
 from PIL import Image, ImageDraw
 
 from otomat.film.anlatim import blok_arasi, fark, soylenis
@@ -156,6 +158,7 @@ def test_yil_sayilmaz_ve_binlik_ayiricisiz():
     assert "{v:0}, {v:76000.0" in h2 and "useGrouping:true" in h2
 
 
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg yok (CI)")
 def test_karanlik_baslayan_klip(tmp_path):
     import subprocess
 
