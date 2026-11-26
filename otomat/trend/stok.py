@@ -197,7 +197,21 @@ def hazirla(hit: dict, sure: float, dizin: Path) -> Path:
     komut = ["ffmpeg", "-v", "error", "-y", "-i", str(ham), "-t", f"{sure + 0.5:.2f}", "-vf", vf, "-an",
              "-c:v", "libx264", "-crf", "20", "-preset", "veryfast", "-g", "15", str(hedef)]  # fmt: skip
     subprocess.run(komut, check=True)
+    if karanlik_bas(hedef):
+        hedef.unlink(missing_ok=True)
+        raise RuntimeError("klip karanlık başlıyor (animasyon girişi)")
     return hedef
+
+
+def karanlik_bas(yol: Path, sure: float = 0.6, esik: float = 22.0) -> bool:
+    """İlk `sure` saniyenin ortalama parlaklığı (Y, 0-255) eşiğin altında mı. 11-26 Riemann: "news broadcast studio"
+    klibi siyahla açılan bir hareketli grafik girişiydi, videoda 0,37 sn siyah kare kaldı. Çağıran (`plan_kur`) bu
+    hatada sahneyi fotoğrafta bırakır."""
+    suzgec = "signalstats,metadata=print:file=-:key=lavfi.signalstats.YAVG"  # -v error'da yalnız file=- yazar
+    r = subprocess.run(["ffmpeg", "-v", "error", "-t", f"{sure}", "-i", str(yol), "-vf", suzgec, "-f", "null", "-"],
+                       capture_output=True, text=True)  # fmt: skip
+    degerler = [float(m) for m in re.findall(r"YAVG=([\d.]+)", r.stderr + r.stdout)]
+    return bool(degerler) and min(degerler) < esik
 
 
 def uygula(oturum: Oturum, sahneler: list[dict], sureler: dict[int, float]) -> list[str]:

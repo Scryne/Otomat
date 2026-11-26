@@ -154,3 +154,15 @@ def test_yil_sayilmaz_ve_binlik_ayiricisiz():
     assert "{v:1859.0}, {v:1859.0" in h and "useGrouping:false" in h
     h2 = kurgu.sahne_sayi({**sh, "deger": "76000"}, "kesme", 1)
     assert "{v:0}, {v:76000.0" in h2 and "useGrouping:true" in h2
+
+
+def test_karanlik_baslayan_klip(tmp_path):
+    import subprocess
+
+    from otomat.trend import stok
+
+    siyah, acik = tmp_path / "siyah.mp4", tmp_path / "acik.mp4"
+    for yol, renk in ((siyah, "black"), (acik, "0x8899aa")):
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={renk}:s=320x180:d=1", "-pix_fmt",
+                        "yuv420p", str(yol)], check=True)  # fmt: skip
+    assert stok.karanlik_bas(siyah) and not stok.karanlik_bas(acik)
