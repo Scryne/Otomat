@@ -13,7 +13,8 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 - Trend v3 (11-26): anlatıcı Ming-3.0-tts UK_George (AA kör tercih 1181 ELO; eski Qwen3 931), konuşma dili yazım
   kuralları, görsel ağırlıklı senaryo, baskı düzeni, görsel süzgeci, kesitli kapak, yakın plan kesmesi. Ayrıntı:
   `docs/arastirma/14-trend-kanali.md` bölüm 9.
-- Disk dar (~7 GB boş): 7 dk'lık render 4 işçiyle ~14 GB istiyor, hat tek işçiye düşüyor (~25 dk).
+- 11-26: Scryne'ın onayıyla ~/ComfyUI (56 GB) silindi, disk 58 GB boş. Film hattı (`otomat/film/comfy.py`:
+  FLUX.2 klein + Wan 2.2) ve Matbaa'nın çizim/giyim adımları ComfyUI yeniden kurulmadan çalışmaz.
 - Faz 18 kararı kaydedildi (Roadmap): filmler gösterim almıyor, yeni film yok; One Ticket Back'in kaderi Faz 8'de (12-19).
 
 ## Dış adımlar (Scryne)
