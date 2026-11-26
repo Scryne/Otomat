@@ -273,3 +273,22 @@ sıcak ışık halkası, metin solda. Kesit tek ve belirgin konu değilse (kapla
 blok değil, tek kompozisyonluk gösterim sayfaları; sahne başına alt kompozisyon yapımıza oturtmak büyük iş. Kullanılan
 yeni şey (`remove-background`) eski sürümde de var. Yükseltme ertelendi; `check` (yüz üstü metin, güvenli alan) ve
 `measure` sonraki adayı.
+
+**Görsel havuzu.** Riemann (soyut konu) havuzunda 32 görselin ~19'u ilgisizdi (savaş anıtı, sınav kâğıdı, Kentucky
+tarihi, alakasız matematikçiler: "yanlış kişiyi gösterme" riski). Senaryodan önce glm-5.3 başlıklara bakıp ilgisizleri
+atar (`uretim.gorsel_suz`, 12'den aza inerse havuz korunur); tavan 36 → 48; makale diyagramları (SVG) 1920 px PNG olarak
+alınır, saydam zemin kâğıda oturur. Süzgeç sonrası havuz küçük kalınca kart → fotoğraf dönüşümü görsel bulamıyordu:
+dönüşüm "aynı tür art arda" için zorlanabilir, kelime sınırı yeni üsluba göre (fotoğraf 40, kart 26, bölüm 16).
+
+**Sayı okuma (Ming, her biçim 3 tohum).** "$3.3 billion" 1/3 doğru ("3 billion dollars"), "three point three billion
+dollars" 3/3; "007" bir koşuda anlaşılmaz, "double-oh-seven" 3/3. `soylenis` ondalığı, parayı, yüzdeyi ve 007'yi
+yazıya çevirir; Whisper karşılaştırması (`kelimeler`) iki biçimi aynı birime indirir.
+
+**Kararlar (v3):**
+- **K-45 (11-26): anlatıcı Ming-3.0-tts UK_George.** Kurulum `~/tts-ming` (github.com/inclusionAI/Ming-3.0-tts, uv
+  venv py3.12, torch 2.11 cu128, transformers 4.46.3; pynini yok, metin normalleştirme hatta). İşçi `film/ming_isci.py`,
+  44,1 → 24 kHz süzgeçli. Film hattı Chatterbox'ta kalır. İki Ming süreci aynı anda yüklenince erişim ihlaliyle
+  düşüyor: işçi üç kez yeniden çağrılır.
+- **K-46: yazım dili konuşma dili.** Kalıp listesi kod kapısında; tekrar eden olgu olgu denetçisinde.
+- **K-47: video görsel ağırlıklı.** Oranlar senaryo kapısında; baskı düzeni, renk ve süzgeçler `medya`/`uretim`'de.
+- **K-48: kapak konu kesitiyle.** HyperFrames `remove-background` (yerel); konu belirgin değilse tam ekran fotoğraf.

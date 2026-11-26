@@ -41,7 +41,7 @@ COMMONS_IMAGEINFO = {
 BOLUM_BASLIGI = re.compile(r"^(={2,})\s*(.+?)\s*\1$")
 ATLANAN_BOLUMLER = frozenset({"see also", "references", "external links", "notes", "further reading"})
 # Dekor/infobox dosyaları: adında bu sözcükler geçen görsel anlatıma yakışmaz
-DEKOR_SOZCUKLERI = ("logo", "icon", "flag", "symbol", "map", "coat of arms", "signature", "seal")
+DEKOR_SOZCUKLERI = ("logo", "icon", "flag", "symbol", "map", "coat of arms", "signature", "seal", "ambox")
 BITMAP_MIME = frozenset({"image/jpeg", "image/png", "image/webp"})
 # 11-26: makale diyagramları (SVG) Commons'tan 1920 px PNG olarak iner; soyut konuda (Riemann ispatı) en ilgili
 # görseller bunlardı, "bitmap değil" ve "diagram" sözcüğüyle eleniyordu. Kurguda baskı düzeninde kâğıt üstünde durur.

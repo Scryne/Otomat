@@ -855,6 +855,12 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   parça + çapraz geçiş + konuşmaya göre kısılma; her sahnenin altında derinlik haritalı 2.5D parallax (düz renk
   zemin yok), film greni, vinyet; yazar "hikâye anlatıcısı" kuralları. Ayrıntı ve ölçümler: araştırma 14, bölüm 8.
   İlk iki video eski hatla üretildiği için yayına çıkmaz; v2 ile yeni video üretilir.
+- **v3 (2026-11-26, K-45…K-48):** Scryne: "sesi ve anlatımı gerçek insan gibi olmalı, videolar en iyi halinde değil".
+  Anlatıcı Ming-3.0-tts "UK_George" (AA kör tercih 1181 ELO; Qwen3 TTS 931), sahne arası duraklama metne göre, sayılar
+  ve birimler seslendirme öncesi yazıya; yazar "arkadaşına anlatan gerçek kişi" diliyle, YouTube kalıpları kod
+  kapısında, tekrar eden olgu denetimde; senaryo görsel ağırlıklı (en az yarı fotoğraf, başlıklı ≤ 1/3, kart ≤ 1/4);
+  dikey fotoğraf baskı düzeninde, tek renk derecelendirmesi, yakın kopya + ilgisiz görsel süzgeci, SVG diyagramlar;
+  kesitli kapak ve kişinin arkasında bölüm numarası. Ayrıntı ve ölçümler: araştırma 14, bölüm 9.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
