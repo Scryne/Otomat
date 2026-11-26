@@ -1,0 +1,11 @@
+# Trend kanalı (Why It's Everywhere, @WhyItsEverywhereNow) kimliği: banner, açıklama ve anahtar kelimeler API ile
+# uygulanır (`otomat.trend.yukle kimlik`). Ad, @tanıtıcı ve profil resmi Studio'dan (Scryne, 11-27).
+banner = "docs/marka/trend/banner.png"
+anahtar = "explained trending \"why is everyone talking about\" explainer \"world news explained\" \"trending news\""
+
+[aciklama]
+en = """Why is everyone suddenly talking about it?
+
+Every few days we take the story the whole world is searching for and explain it properly: what actually happened, who is involved, how we got here and why it matters. Real photos, real sources, no hype.
+
+Every script is researched from the sources listed under each video and fact-checked line by line against them. Narration is AI-generated."""

@@ -138,10 +138,34 @@ def yukle(d: Path, simdi: dt.datetime | None = None, yt=None) -> dict:
     return kayit
 
 
+def kimlik_uygula(yt=None) -> dict:
+    """Kanal kimliği: banner + açıklama + anahtar kelimeler (`kanallar/trend/marka.toml`). Ad, @tanıtıcı ve profil
+    resmi API ile değişmez (Scryne Studio'dan yaptı, 11-27)."""
+    import tomllib
+
+    from googleapiclient.http import MediaFileUpload
+
+    from otomat.ayarlar import KOK
+
+    with open(KOK / "kanallar" / "trend" / "marka.toml", "rb") as f:
+        m = tomllib.load(f)
+    yt = yt or servis()
+    oge = yt.channels().list(part="id,brandingSettings", mine=True).execute()["items"][0]
+    banner = yt.channelBanners().insert(media_body=MediaFileUpload(str(KOK / m["banner"]), mimetype="image/png"))
+    marka = oge["brandingSettings"]
+    marka.setdefault("channel", {}).update({"description": m["aciklama"]["en"], "keywords": m["anahtar"],
+                                           "defaultLanguage": "en", "country": "US"})  # fmt: skip
+    marka.setdefault("image", {})["bannerExternalUrl"] = banner.execute()["url"]
+    yt.channels().update(part="brandingSettings", body={"id": oge["id"], "brandingSettings": marka}).execute()
+    return {"kanal": oge["id"], "banner": marka["image"]["bannerExternalUrl"][:60]}
+
+
 def main() -> None:
     a = sys.argv[1:]
     if a == ["yetki"]:
         print("token:", yetki())
+    elif a == ["kimlik"]:
+        print(kimlik_uygula())
     elif a == ["son"]:  # günlük koşu: video.mp4'ü olan en yeni iş (kesitleri eksikse onları tamamlar)
         kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
         isler = sorted(d for d in kok.glob("*/") if (d / "video.mp4").exists())
