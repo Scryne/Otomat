@@ -135,6 +135,8 @@ def kelimeler(s: str) -> list[str]:
     s = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], s)
     s = re.sub(r"\bdouble oh seven\b|\b00 7\b", "007", s)
     s = s.replace("%", " percent").replace("per cent", "percent")
+    # "every one" sayı değil: Whisper "everyone" yazınca sayı farkı 1,0 verip doğru parçayı düşürüyordu (11-26 Riemann)
+    s = re.sub(r"\b(every|any|no|each|some) one\b", r"\1one", s)
     # İngiliz anlatıcı (Ming UK_George) Whisper'da İngiliz yazımıyla çözülüyor: "formalisation", "travelled" farkı
     # doğru okunmuş parçayı yeniden ürettiriyordu (11-26 Riemann)
     s = re.sub(r"isation", "ization", s)
