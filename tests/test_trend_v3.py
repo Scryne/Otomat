@@ -129,9 +129,9 @@ def test_bolum_karti_kesitli_derinlik():
 def test_uzun_sahnede_yakin_plan_kesmesi_kelime_basinda():
     kel = [{"w": "a", "s": 1.0, "e": 1.2}, {"w": "b", "s": 3.4, "e": 3.7}, {"w": "c", "s": 4.5, "e": 4.8}]
     sh = {"id": "s09", "sure": 8.0, "gorsel": "assets/img/g01.jpg", "kelimeler": kel}
-    assert kurgu.vurus_ani(sh) == 3.4  # ortaya (4,0) en yakın kelime başı, %35-65 aralığında
+    assert kurgu.vurus_ani(sh) == 4.5  # ortaya (4,0) en yakın kelime başı, %35-65 aralığında
     h, js = kurgu.zemin(sh, 2)
-    assert h.startswith('<div class="cek"') and "tl.set(S('.cek'), {scale:1.16" in js and "3.400" in js
+    assert h.startswith('<div class="cek"') and "tl.set(S('.cek'), {scale:1.16" in js and "4.500" in js
     assert kurgu.vurus_ani({**sh, "sure": 5.0}) is None  # kısa sahne
     assert kurgu.vurus_ani({**sh, "klip": "assets/klip/x.mp4"}) is None  # stok video zaten hareketli
 
