@@ -861,6 +861,9 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
   kapısında, tekrar eden olgu denetimde; senaryo görsel ağırlıklı (en az yarı fotoğraf, başlıklı ≤ 1/3, kart ≤ 1/4);
   dikey fotoğraf baskı düzeninde, tek renk derecelendirmesi, yakın kopya + ilgisiz görsel süzgeci, SVG diyagramlar;
   kesitli kapak ve kişinin arkasında bölüm numarası. Ayrıntı ve ölçümler: araştırma 14, bölüm 9.
+- **Yayın (2026-11-27, K-49):** kanal açıldı (@WhyItsEverywhereNow, Marka Hesabı), kimlik API ile uygulandı, ilk video
+  (Miss Universe) + 3 Shorts yüklendi, 11-27 21:50 UTC'ye zamanlı. Plan: haftada 3 uzun video (Pzt/Çar/Cmt), video
+  başına 3 Short, ilk 5 video elle son kontrol, 6. videoda ilk okuma, 30. günde Faz 20 eşiği. Kanıt: araştırma 15.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)
