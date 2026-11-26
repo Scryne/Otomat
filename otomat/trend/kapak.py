@@ -17,11 +17,13 @@ from otomat.trend.kurgu import RENK, _e
 W, H = 1280, 720
 
 
-def html(metin: str, gorsel: str, vurgu: str = "") -> str:
+def html(metin: str, gorsel: str, vurgu: str = "", genislik: int = 760) -> str:
     kelimeler = metin.upper().split()
     v = vurgu.upper()
     satir = " ".join(f'<span class="{"v" if k.strip(".,!?") == v else ""}">{_e(k)}</span>' for k in kelimeler)
     boy = 150 if len(metin) <= 14 else (124 if len(metin) <= 22 else 104)
+    if genislik < 760:
+        boy = int(boy * 0.9)
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width={W}, height={H}" />
 <style>
@@ -31,7 +33,7 @@ def html(metin: str, gorsel: str, vurgu: str = "") -> str:
   .foto {{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }}
   .karart {{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.45) 48%,
              rgba(0,0,0,0) 72%); }}
-  .metin {{ position:absolute; left:56px; top:50%; transform:translateY(-50%); width:760px;
+  .metin {{ position:absolute; left:56px; top:50%; transform:translateY(-50%); width:{genislik}px;
             font-family:'League Gothic', sans-serif; font-size:{boy}px; line-height:.9; color:#fff;
             text-shadow:0 6px 24px rgba(0,0,0,.6); }}
   .metin span {{ display:inline; }}
@@ -48,13 +50,62 @@ data-no-timeline>
 """
 
 
-def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "") -> Path:
+def kesitli_zemin(ham: Path, kesit_png: Path, hedef: Path) -> Path:
+    """Kesitli kapak zemini: koyu, bulanık kendi fotoğrafı + konunun arkasında sıcak ışık halkası; konu sağda, kadrajı
+    dolduracak boyda, ince beyaz kontur ve gölgeyle öne çıkar. Sol yarı yazıya kalır. 11-26: kalabalık fotoğrafında
+    yüz küçük kalıyor, metin yüzü örtüyordu (vidIQ: breakout kapaklarının %89'unda belirgin yüz/yüksek kontrast)."""
+    from PIL import ImageDraw, ImageFilter, ImageOps
+
+    from otomat.trend.kesik import kutu
+
+    zemin = ImageOps.fit(Image.open(ham).convert("RGB"), (W, H), Image.LANCZOS)
+    zemin = zemin.filter(ImageFilter.GaussianBlur(28))
+    zemin = Image.blend(zemin, Image.new("RGB", (W, H), (10, 10, 14)), 0.62).convert("RGBA")
+    k = Image.open(kesit_png).convert("RGBA")
+    sol, ust, sag, alt = kutu(kesit_png)
+    k = k.crop((int(sol * k.width), int(ust * k.height), int(sag * k.width), int(alt * k.height)))
+    oran = k.width / k.height
+    boy = int(H * 1.02) if oran < 1.1 else int(min(H * 0.95, W * 0.58 / oran))  # kişi: tam boy; nesne: genişliğe göre
+    k = k.resize((max(1, int(boy * oran)), boy), Image.LANCZOS)
+    x = W - k.width - (24 if oran < 1.1 else 40)
+    x = max(int(W * 0.38), x)
+    y = H - k.height + (int(H * 0.04) if oran < 1.1 else -int((H - k.height) / 2))
+    # sıcak ışık halkası (konunun arkasında)
+    hale = Image.new("L", (W, H), 0)
+    ImageDraw.Draw(hale).ellipse((x - 80, y + 40, x + k.width + 80, y + k.height + 260), fill=150)
+    hale = hale.filter(ImageFilter.GaussianBlur(120))
+    zemin.alpha_composite(Image.merge("RGBA", (*Image.new("RGB", (W, H), (255, 176, 40)).split(), hale)))
+    alfa = k.getchannel("A")
+    golge = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    golge.paste((0, 0, 0, 170), (x + 14, y + 18), alfa)
+    zemin.alpha_composite(golge.filter(ImageFilter.GaussianBlur(18)))
+    kontur = alfa.filter(ImageFilter.MaxFilter(9))
+    beyaz = Image.new("RGBA", k.size, (255, 255, 255, 0))
+    beyaz.putalpha(kontur)
+    zemin.alpha_composite(beyaz, (x, y))
+    zemin.alpha_composite(k, (x, y))
+    zemin.convert("RGB").save(hedef, "JPEG", quality=94)
+    return hedef
+
+
+def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "", ham: Path | None = None) -> Path:
+    """`ham` (indirilmiş özgün fotoğraf) verilir ve konusu kesilebilirse kesitli düzen, yoksa tam ekran fotoğraf."""
     dizin.mkdir(parents=True, exist_ok=True)
     (dizin / "assets").mkdir(exist_ok=True)
-    shutil.copy2(gorsel, dizin / "assets" / "kapak.jpg")
+    kesit_png = None
+    if ham is not None:
+        from otomat.trend.kesik import kes
+
+        kesit_png = kes(ham, dizin / "kesit.png")
+    if kesit_png:
+        kesitli_zemin(ham, kesit_png, dizin / "assets" / "kapak.jpg")  # type: ignore[arg-type]
+    else:
+        shutil.copy2(gorsel, dizin / "assets" / "kapak.jpg")
     if not vurgu:
         vurgu = max(metin.split(), key=len)  # en uzun kelime vurgulanır (çoğunlukla konunun adı)
-    (dizin / "index.html").write_text(html(metin, "assets/kapak.jpg", vurgu), encoding="utf-8")
+    (dizin / "index.html").write_text(
+        html(metin, "assets/kapak.jpg", vurgu, 600 if kesit_png else 760), encoding="utf-8"
+    )
     kare = kurgu.kareler(dizin, [0.0])
     if not kare:
         raise RuntimeError("kapak karesi alınamadı")

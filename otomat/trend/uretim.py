@@ -111,6 +111,7 @@ def asama_kaynak(d: Path, secim: dict) -> dict:
             indirilen.append({**g.__dict__, "yerel": str(yol_g)})
         except Exception:  # noqa: BLE001
             pass
+    indirilen = medya.yakin_kopyalari_ele(indirilen)
     veri = {"wiki": wiki.__dict__, "ilgili": [w.__dict__ for w in ilgili],
             "haberler": [h.__dict__ for h in haber], "gorseller": indirilen}  # fmt: skip
     _yaz(yol, veri)
@@ -201,6 +202,12 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                     dh = derinlik.harita(hazir, hazir.parent.parent / "derinlik" / f"g{gi + 1:02d}.png")
                     varlik[f"assets/derinlik/g{gi + 1:02d}.png"] = dh
                     p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
+                    if sh["tur"] == "bolum":  # bölüm numarası kişinin arkasında (kurgu.sahne_bolum)
+                        from otomat.trend import kesik
+
+                        if k := kesik.kes(hazir, hazir.parent.parent / "kesit" / f"h{gi + 1:02d}.png"):
+                            varlik[f"assets/kesit/h{gi + 1:02d}.png"] = k
+                            p["kesit"] = f"assets/kesit/h{gi + 1:02d}.png"
             else:
                 p.pop("gorsel")
         p.pop("klip", None)
@@ -410,10 +417,24 @@ def asama_kapak(d: Path, sen: dict, kay: dict) -> Path:
     hedef = d / "kapak" / "kapak.jpg"
     if hedef.exists():
         return hedef
-    g = str(sen.get("kapak_gorsel") or "G1")
-    gi = int(g[1:]) - 1 if g[1:].isdigit() else 0
-    gorsel = Path(kay["gorseller"][min(max(gi, 0), len(kay["gorseller"]) - 1)]["hazir"])
-    yol = kapak.uret(sen.get("kapak_metni") or "", gorsel, d / "kapak")
+    from otomat.trend import kesik
+
+    n = len(kay["gorseller"])
+
+    def _gi(g: object) -> int:
+        g = str(g or "G1")
+        return min(max(int(g[1:]) - 1 if g[1:].isdigit() else 0, 0), n - 1)
+
+    # kesitli kapak için aday: yazarın kapak görseli, sonra açılış sahnelerinin görselleri (konunun kendisi)
+    acilis = [_gi(sh["gorsel"]) for sh in sen["sahneler"][:8] if sh.get("gorsel")]
+    adaylar = list(dict.fromkeys([_gi(sen.get("kapak_gorsel")), *acilis]))[:5]
+    secilen = adaylar[0]
+    for gi in adaylar:
+        if kesik.kes(Path(kay["gorseller"][gi]["yerel"]), d / "kesit" / f"g{gi + 1:02d}.png"):
+            secilen = gi
+            break
+    g = kay["gorseller"][secilen]
+    yol = kapak.uret(sen.get("kapak_metni") or "", Path(g["hazir"]), d / "kapak", ham=Path(g["yerel"]))
     print("kapak:", yol, flush=True)
     return yol
 

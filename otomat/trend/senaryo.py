@@ -24,6 +24,8 @@ from otomat.trend.llm import Oturum
 
 TURLER = ("foto", "manset", "sayi", "alinti", "zaman", "bolum", "ikili", "ifade", "kapanis", "harita")
 STATIK = ("ifade", "ikili", "alinti")  # tek başına poster gibi duran türler
+STATIK_PAY = 0.25  # 11-26: Bond videosunda 55 sahnenin 36'sı yazılı kart, 19 fotoğrafın 14'ü başlıklı ("slayt" hissi)
+BASLIKLI_FOTO_PAY = 0.34  # fotoğraf sahnelerinin en çok üçte biri ekranda başlık taşır; kalanı resim + ses
 KELIME_HEDEF = (650, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
 BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
 SAHNE_KELIME_EN_COK = 34
@@ -31,25 +33,39 @@ GORSEL_EN_COK = 3  # her sahnenin altında görsel var (11-20); havuz ~36 görse
 MUZIK_RUHLARI = ("merak", "gerilim", "dram", "umut", "enerji", "sakin", "karanlik")
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
                "delve", "tapestry", "in today's fast-paced", "buckle up", "let's dive in", "dive into",
-               "without further ado", "smash that", "don't forget to subscribe", "in conclusion")  # fmt: skip
+               "without further ado", "smash that", "don't forget to subscribe", "in conclusion",
+               # 11-26: "anlatım gerçek insan gibi olmalı" — YouTube anlatıcı kalıpları senaryoyu yapay gösteriyor
+               "here's the thing", "here's the part", "here's what", "hold that thought", "nobody's talking about",
+               "nobody is talking about", "let that sink in", "the real story", "changes everything",
+               "nobody saw it coming", "little did", "fast forward", "spoiler", "plot twist", "make no mistake",
+               "the answer might surprise you", "the answer may surprise you", "stay with me", "but wait",
+               "it's not just", "this isn't just", "more than just", "at the end of the day",
+               "in a world where", "and that's when", "it all started")  # fmt: skip
 
 SISTEM_YAZAR = """You are the head writer of a fast, smart YouTube explainer channel about whatever the world is talking
 about right now. Faceless, narrated, motion-graphics heavy. Viewers arrive curious ("why is everyone talking about X?")
 and must leave understanding it better than their friends do.
 
-VOICE: you are a storyteller talking to one smart friend, not a newsreader. The best explainer hosts (Johnny Harris,
-Wendover, ColdFusion) sound like this: they set a scene ("It's 9:30 on a Wednesday morning in Manhattan..."), follow
-people with names, build tension, then flip it. Our last videos failed because the narration read like a list of
-facts: flat, one sentence per fact, no story. Fix that:
-- Story over summary. Every chapter has a person or group who wants something, an obstacle, and a turn.
-- Open loops: tease what's coming ("hold on to that number, it comes back"), then pay it off later.
-- Rhythm: mix short punches (2-5 words: "It worked." "Then it didn't.") with longer flowing sentences. Never three
-  sentences of the same length in a row.
-- Talk to the viewer: "you", contractions, the occasional real question. Show surprise where the facts are
-  surprising. Causality, not lists: "but", "so", "which meant", "and that's the problem".
+VOICE: write exactly what a real, thoughtful person would SAY out loud to one smart friend who asked "wait, what's
+going on with X?". Not a newsreader, not a hype YouTuber, not a trailer. Listen to how good hosts actually talk (Johnny
+Harris, Wendover, ColdFusion): plain words, full thoughts that flow from one sentence into the next, a scene set with
+concrete detail, people with names, and the occasional aside ("which, to be fair, is a lot of money"). Our last videos
+were rejected because the narration sounded written by AI: every line a punchline, slogans, YouTube catchphrases,
+dramatic fragments. Fix that:
+- Story over summary: each chapter follows a person or group who wants something, hits an obstacle, and turns.
+- Connected speech: most sentences are 12-25 words and link to the previous one ("so", "because", "which meant",
+  "and", "but"). A scene may end mid-thought and the next scene finishes it. At most ONE 2-4 word fragment per
+  chapter, and only where a person would really pause to land a point.
+- No slogans and no trailer voice: never "X. Y. Z." triplets, never "It's not X, it's Y", never one-line drama
+  ("Then the screaming started."), never announce that something is surprising or important — just say the fact and
+  let it work. No clichés: "here's the thing", "hold that thought", "the real story", "nobody saw it coming", "changes
+  everything", "but wait", "let that sink in", "fast forward", "enter X", "it's not just".
+- Talk to the viewer: "you", contractions (it's, didn't, they'd), an honest question now and then, mild humour when
+  the facts are funny. Causality, not lists.
+- Open loops the natural way ("we'll come back to that number") and pay them off.
 - Make numbers feel physical with comparisons built only from numbers in the sources.
-- End each chapter on a hook into the next.
-Clear spoken English, trustworthy, never hype. Real numbers only from the sources. No filler, no channel intro.
+- End each chapter with a plain question or turn that leads into the next, not a cliffhanger slogan.
+Clear spoken English, trustworthy, calm confidence. Real numbers only from the sources. No filler, no channel intro.
 
 HARD RULES
 1. Every factual claim must come from the SOURCE PACK. Cite source ids per scene in "kaynak". If the sources don't say
@@ -58,16 +74,19 @@ HARD RULES
    it reveals about something bigger). The video argues and pays off this thesis; it is not a news readout.
 3. The first scene (hook) states the promise within ~8 seconds: what happened + why it is bigger than it looks.
    Never start with "In this video", a greeting, or the channel name.
-4. Re-hook every ~90 seconds with a new question or turn ("But here's the part nobody's talking about...").
-5. Each scene's narration ("anlatim") is 8-30 words: one beat of the story, often two sentences (a long one and a
-   short punch). Scenes of type sayi, ikili, ifade and alinti hold one graphic, so their narration is at most 20 words.
+4. Re-hook every ~90 seconds with a new question or turn, said plainly (e.g. "So why would Amazon take that risk?").
+5. Each scene's narration ("anlatim") is 8-30 words: one beat of the story, usually one or two connected
+   sentences. Scenes of type sayi, ikili, ifade and alinti hold one graphic, so their narration is at most 20 words.
    Total narration 950-1350 words. Every scene also has "ton": a 3-10 word delivery note for the narrator (how to
    SAY it: e.g. "hushed, building suspense", "wry, amused", "fast and urgent", "slow, let it land", "warm, curious").
    Vary it with the story; most scenes are natural and conversational, the big turns get the strong notes.
 6. Scene types (field "tur") and their fields — use the type that SHOWS the line, vary them, never the same type twice
-   in a row, and keep ifade+ikili+alinti under one third of scenes:
+   in a row. Think like a documentary editor, not a slide designer: at least HALF of all scenes are "foto" (picture +
+   voice), and most foto scenes have NO headline: the picture and the narration carry them. Graphic cards (sayi,
+   ifade, ikili, alinti, zaman) are spice for the moments that need them: ifade+ikili+alinti together at most one
+   quarter of scenes, at most 2 "sayi" per chapter.
    - "foto": a real photo from the IMAGE LIST. fields: gorsel (image id like "G3"), baslik (optional on-screen headline,
-     3-7 words, NOT a copy of the narration), vurgu (list of 1 word from baslik to highlight), etiket (optional
+     3-7 words, NOT a copy of the narration; only on about one foto scene in three), vurgu (list of 1 word from baslik to highlight), etiket (optional
      lower-third naming who/what is shown, 2-5 words), ipucu (word from the narration when the headline appears)
    - "manset": 2-4 real news headlines from the SOURCE PACK shown as clippings. fields: mansetler [{kaynak (publisher),
      baslik (headline text, may be shortened but not changed in meaning), ipucu (narration word that triggers it)}],
@@ -316,10 +335,13 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         g = sh.get("gorsel") or _en_az_kullanilan(s, gorsel_sayisi, i)
         if not g:
             return False
-        if i >= 2 and s[i - 1].get("tur") == "foto" == s[i - 2].get("tur"):
-            return False
-        if i + 2 < len(s) and s[i + 1].get("tur") == "foto" == s[i + 2].get("tur"):
-            return False
+        # en çok üç fotoğraf art arda (11-26: sahnelerin yarısı fotoğraf hedefi; belgeselde ardışık fotoğraf doğal,
+        # dördüncüsü tekdüzeleşiyor)
+        tur = [sh_.get("tur") for sh_ in s]
+        tur[i] = "foto"
+        for bas in range(max(0, i - 3), i + 1):
+            if bas + 4 <= len(tur) and all(t == "foto" for t in tur[bas : bas + 4]):
+                return False
         baslik = sh.get("metin") or sh.get("baslik") or sh.get("etiket") or ""
         if sh.get("tur") == "sayi" and sh.get("deger"):
             from otomat.trend.kurgu import kisalt
@@ -332,6 +354,8 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             baslik = f"{sh.get('on') or ''}{d}{ek} {sh.get('etiket', '')}"
         if sh.get("tur") == "ikili":
             baslik = f"{sh.get('sol', {}).get('deger', '')} vs {sh.get('sag', {}).get('deger', '')}".strip(" vs")
+        if sh.get("tur") not in ("sayi", "ikili"):  # 11-26: dönüşen her kart başlıklı fotoğraf olunca yine yazı yağdı
+            baslik = ""
         s[i] = {"tur": "foto", "anlatim": sh.get("anlatim", ""), "kaynak": sh.get("kaynak", []), "gorsel": g,
                 "baslik": " ".join(str(baslik).split()[:7]), "vurgu": sh.get("vurgu", [])[:1] if sh.get("vurgu") else []}  # fmt: skip
         if sh.get("tur") == "alinti" and sh.get("kim"):
@@ -356,10 +380,33 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             yapilan.append(f"sahne {i}: ardışık {s[i - 1].get('tur')} → foto")
     for tur in ("ifade", "ikili", "alinti"):
         for i, sh in enumerate(s):
-            if sum(1 for x in s if x.get("tur") in STATIK) <= len(s) / 3:
+            if sum(1 for x in s if x.get("tur") in STATIK) <= len(s) * STATIK_PAY:
                 break
             if sh.get("tur") == tur and _foto_yap(i):
                 yapilan.append(f"sahne {i}: durağan {tur} → foto")
+    # 4b. başlıklı fotoğraf en çok BASLIKLI_FOTO_PAY: fazlasının başlığı düşer (bölüm başındaki ilk foto ve sayı
+    # taşıyan başlık korunur). Alt yazı (etiket) kişi ilk göründüğünde bilgi verir; aynı etiket ikinci kez yazılmaz.
+    fotolar = [i for i, sh in enumerate(s) if sh.get("tur") == "foto"]
+    baslikli = [i for i in fotolar if (s[i].get("baslik") or "").strip()]
+    hak = int(len(fotolar) * BASLIKLI_FOTO_PAY)
+    if len(baslikli) > hak:
+
+        def _oncelik(i: int) -> tuple:
+            sayi_var = bool(re.search(r"\d", s[i].get("baslik", "")))
+            bolum_basi = i > 0 and s[i - 1].get("tur") == "bolum"
+            return (not sayi_var, not bolum_basi, i)
+
+        tut = set(sorted(baslikli, key=_oncelik)[:hak])
+        for i in baslikli:
+            if i not in tut:
+                s[i]["baslik"], s[i]["vurgu"] = "", []
+        yapilan.append(f"başlıklı fotoğraf {len(baslikli)} → {hak}")
+    goruldu: set[str] = set()
+    for i in fotolar:
+        et = (s[i].get("etiket") or "").strip().lower()
+        if et and et in goruldu:
+            s[i]["etiket"] = ""
+        goruldu.add(et)
     # 5. görselsiz sahne kalmasın (harita kendi uydu görüntüsünü taşır): düz renk zemin yok (11-20 geri bildirimi)
     for i, sh in enumerate(s):
         if sh.get("tur") != "harita" and not sh.get("gorsel"):
@@ -428,8 +475,8 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     if s and s[-1].get("tur") != "kapanis":
         hata.append("son sahne kapanis değil")
     statik = sum(1 for sh in s if sh.get("tur") in STATIK)
-    if s and statik > len(s) / 3:
-        hata.append(f"statik sahne {statik}/{len(s)} (en çok üçte bir)")
+    if s and statik > len(s) * STATIK_PAY:
+        hata.append(f"statik sahne {statik}/{len(s)} (en çok dörtte bir)")
     if sum(1 for sh in s if sh.get("tur") == "harita") > 2:
         hata.append("harita sahnesi 2'den fazla")
     bolum = sum(1 for sh in s if sh.get("tur") == "bolum")

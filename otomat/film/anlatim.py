@@ -30,6 +30,10 @@ CHATTERBOX_PY = Path(os.environ.get("OTOMAT_CHATTERBOX_PY", Path.home() / "tts-c
 QWEN_PY = Path(os.environ.get("OTOMAT_QWEN_PY", Path.home() / "tts-qwen3/.venv/Scripts/python.exe"))
 QWEN_MODEL = "Qwen/Qwen3-TTS-12Hz-1.7B-CustomVoice"
 QWEN_PARCA_KELIME = 60  # Qwen sahne boyu metni (≤ 40 kelime) tek parçada okur; bölmek tonlamayı kırar
+MING_PY = Path(os.environ.get("OTOMAT_MING_PY", Path.home() / "tts-ming/.venv/Scripts/python.exe"))
+MING_PARCA_KELIME = 90  # Ming metni noktalama sınırında kendisi böler; sahne tek iş olarak gider
+BIRIMLER = {"lbs": "pounds", "lb": "pounds", "kg": "kilograms", "km": "kilometres", "mph": "miles per hour",
+            "km/h": "kilometres per hour", "ft": "feet"}  # fmt: skip
 REFERANS_METNI = (
     "This is a story about a girl who should not have survived. She was born far from the sea, on the open grasslands, "
     "and yet the ocean would shape her whole life. Three great ships. One extraordinary woman."
@@ -87,6 +91,8 @@ def soylenis(metin: str) -> str:
     """TTS'e giden metin: aksanlar sadeleşir (Bahía → Bahia), uzun tire virgüle döner, yıllar yazıya çevrilir."""
     metin = metin.replace(" — ", ", ").replace("—", ", ")  # ascii'ye inmeden önce: tire yoksa düşer
     metin = re.sub(r"(?<![\d.])(?<!\d,)1[1-9]\d\d(?!\d|,\d)", yil_yaziya, metin)  # 1,066 gibi sayıya dokunmaz
+    # birim kısaltması harf harf okunuyordu ("35 lbs" → "L-B-S", Ming 11-26)
+    metin = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], metin)
     return unicodedata.normalize("NFKD", metin).encode("ascii", "ignore").decode()
 
 
@@ -110,6 +116,8 @@ def kelimeler(s: str) -> list[str]:
     birim = {"£": "pounds", "$": "dollars", "€": "euros"}
     s = re.sub(r"([£$€])(\d+(?:\.\d+)?)m\b", lambda m: f"{m[2]} million {birim[m[1]]}", s)
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
+    # senaryo "35 lbs", ses "35 pounds" der (soylenis açar): iki taraf aynı birime iner
+    s = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], s)
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
     # Whisper "three dollars and fifty-five cents" → "$3.55" yazıyor: ondalık sayıya dönmeden söze açılır (Zeppelin)
     s = re.sub(r"\$(\d+)\.(\d\d)\b", r"\1 dollars and \2 cents", s)
@@ -238,6 +246,30 @@ def _uret_qwen(isler: list[dict], konusmaci: str, dizin: Path) -> None:
     subprocess.run([str(QWEN_PY), "-I", str(Path(__file__).with_name("qwen_isci.py")), str(gorev)], check=True)
 
 
+def _uret_ming(isler: list[dict], ses: str, dizin: Path) -> None:
+    bekleyen = [i for i in isler if not Path(i["hedef"]).exists()]
+    if not bekleyen:
+        return
+    gorev = dizin / "ming_is.json"
+    gorev.write_text(json.dumps({"ses": ses, "isler": bekleyen}), encoding="utf-8")
+    subprocess.run([str(MING_PY), "-I", str(Path(__file__).with_name("ming_isci.py")), str(gorev)], check=True)
+
+
+def blok_arasi(onceki: str, sonraki: str, temel: float) -> float:
+    """Sahneler arası sessizlik metne göre değişir: anlatıcı sorudan sonra bekler, iki noktadan ya da "and/but" ile
+    süren cümlede bekletmez. Sabit 0,38 sn her sahnede aynı ritmi kuruyordu (11-26: "AI olduğu belli")."""
+    son = onceki.rstrip()[-1:] if onceki.strip() else ""
+    ara = temel
+    if son == "?":
+        ara += 0.22
+    elif son in (":", ",") or re.match(r"(?i)(and|but|so|or)\b", sonraki.strip()):
+        ara -= 0.12
+    elif son == "!" or len(onceki.split()) <= 4:  # kısa vurgulu cümle yerine otursun
+        ara += 0.12
+    iz = int(hashlib.sha1((onceki + sonraki).encode()).hexdigest()[:4], 16) / 0xFFFF  # tekrarlanabilir küçük oynama
+    return round(max(0.12, ara + (iz - 0.5) * 0.12), 3)
+
+
 def _uret(isler: list[dict], ref: Path, dizin: Path) -> None:
     bekleyen = [i for i in isler if not Path(i["hedef"]).exists()]
     if not bekleyen:
@@ -260,14 +292,14 @@ def seslendir(
     """bloklar: (bölüm no, anlatım). Tek WAV + blok başına zaman aralığı + parça denetim kaydı döner.
 
     aralar: (parça, blok, bölüm) arası sessizlik; verilmezse filmin sabitleri (trend hattı daha sıkı tempo ister).
-    motor: "chatterbox" (film; `ses` Kokoro referans sesi) ya da "qwen" (trend; `ses` Qwen konuşmacısı, `tonlar` blok
-    başına doğal dil ton talimatı)."""
+    motor: "chatterbox" (film; `ses` Kokoro referans sesi), "qwen" (`ses` Qwen konuşmacısı, `tonlar` blok başına
+    doğal dil ton talimatı) ya da "ming" (trend; `ses` Ming hazır sesi, ör. UK_George; ton talimatı almaz)."""
     from faster_whisper import WhisperModel
 
     ara_parca, ara_blok, ara_bolum = aralar or (ARA_PARCA, ARA_BLOK, ARA_BOLUM)
     dizin.mkdir(parents=True, exist_ok=True)
     ref = referans(ses, dizin) if motor == "chatterbox" else None
-    sinir = QWEN_PARCA_KELIME if motor == "qwen" else PARCA_KELIME
+    sinir = {"qwen": QWEN_PARCA_KELIME, "ming": MING_PARCA_KELIME}.get(motor, PARCA_KELIME)
     parcalar = [(bi, pi, p) for bi, (_, metin) in enumerate(bloklar) for pi, p in enumerate(parcala(metin, sinir))]
     secim: dict[tuple[int, int], tuple[float, Path]] = {}
     kayit: list[dict] = []
@@ -279,12 +311,14 @@ def seslendir(
             metin = soylenis(p)
             ton = (tonlar[bi] if tonlar and bi < len(tonlar) else "") if motor == "qwen" else ""
             # metin ya da ton değişince eski ses kullanılmasın
-            anahtar = f"{motor}|{ses}|{metin}|{ton}" if motor == "qwen" else metin
+            anahtar = f"{motor}|{ses}|{metin}|{ton}" if motor in ("qwen", "ming") else metin
             iz = hashlib.sha1(anahtar.encode()).hexdigest()[:8]
             isler.append({"metin": metin, "hedef": str(dizin / f"p{bi:03d}_{pi}_{deneme}_{iz}.wav"), "tohum": deneme,
                           "ton": ton})  # fmt: skip
         if motor == "qwen":
             _uret_qwen(isler, ses, dizin)
+        elif motor == "ming":
+            _uret_ming(isler, ses, dizin)
         else:
             _uret(isler, ref, dizin)  # type: ignore[arg-type]
         kalan = []
@@ -306,6 +340,8 @@ def seslendir(
     for bi, (bolum, _) in enumerate(bloklar):
         if bi:
             ara = ara_bolum if bolum != bloklar[bi - 1][0] else ara_blok
+            if motor == "ming" and bolum == bloklar[bi - 1][0]:
+                ara = blok_arasi(bloklar[bi - 1][1], bloklar[bi][1], ara_blok)
             toplam.append(np.zeros(int(ara * SR), np.float32))
             an += ara
         bas = an

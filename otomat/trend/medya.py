@@ -7,29 +7,83 @@ verilir (skills/hyperframes SKILL.md, kural 11); burada PIL ile bir kez yapılı
 
 from __future__ import annotations
 
+import math
 from pathlib import Path
 
-from PIL import Image, ImageFilter, ImageOps
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
 
 def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), kalite: int = 88) -> Path:
     if hedef.exists() and hedef.stat().st_mtime >= kaynak.stat().st_mtime:
         return hedef
     hedef.parent.mkdir(parents=True, exist_ok=True)
-    im = ImageOps.exif_transpose(Image.open(kaynak)).convert("RGB")
+    im = renk(ImageOps.exif_transpose(Image.open(kaynak)).convert("RGB"))
     gw, gh = boyut
     oran_hedef, oran = gw / gh, im.width / im.height
     if abs(oran - oran_hedef) / oran_hedef < 0.28:  # yakın oran: doldurarak kırp (hafif üst ağırlıklı; yüzler üstte)
         cikti = ImageOps.fit(im, boyut, Image.LANCZOS, centering=(0.5, 0.4))
     else:
-        zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(38))
-        zemin = Image.blend(zemin, Image.new("RGB", boyut, (12, 12, 14)), 0.3)
-        kopya = im.copy()
-        kopya.thumbnail((int(gw * 0.94), int(gh * 0.94)), Image.LANCZOS)
-        zemin.paste(kopya, ((gw - kopya.width) // 2, (gh - kopya.height) // 2))
-        cikti = zemin
+        cikti = baski(im, boyut, kaynak.name)
     cikti.save(hedef, "JPEG", quality=kalite, optimize=True)
     return hedef
+
+
+def _egri(x: float, kanal: str) -> int:
+    """Film tonu: siyah hafif kalkar (0 → 12), beyaz yumuşar (255 → 246), ortada hafif S; gölge mavi-yeşile,
+    ışık sıcağa kayar (bölünmüş ton, 3-4 birim; göze batmaz, fotoğrafları aynı aileye sokar)."""
+    t = x / 255
+    s_ = t + 0.08 * math.sin(2 * math.pi * t) * -0.5  # yumuşak S: gölge biraz iner, ışık biraz çıkar
+    y = 12 + s_ * (246 - 12)
+    golge, isik = (1 - t) ** 2, t**2
+    kay = {"r": -2 * golge + 4 * isik, "g": 0.5 * golge + 1 * isik, "b": 3.5 * golge - 4 * isik}[kanal]
+    return max(0, min(255, round(y + kay)))
+
+
+_LUT = [_egri(i, k) for k in "rgb" for i in range(256)]
+
+
+def renk(im: Image.Image) -> Image.Image:
+    """Bütün fotoğraflara aynı derecelendirme: pozlama hafifçe dengelenir, doygunluk %12 iner, film tonu uygulanır.
+    11-26: Commons fotoğrafları (stüdyo flaşı, sarı salon ışığı, gri gün) art arda gelince renkleri birbirini tutmuyor,
+    video derlenmiş klasör gibi görünüyordu; belgesel kurgusu tek bir "look" taşır. Önceden işlenir (HyperFrames kural
+    11: görüntüye renk CSS filtresiyle değil önceden verilir)."""
+    im = ImageOps.autocontrast(im, cutoff=0.4, preserve_tone=True)
+    im = ImageEnhance.Color(im).enhance(0.88)
+    return im.point(_LUT)
+
+
+def baski(im: Image.Image, boyut: tuple[int, int], ad: str) -> Image.Image:
+    """Yön tutmayan fotoğraf masaya konmuş bir baskı gibi durur: beyaz kenar, yumuşak gölge, ±1,6° eğim, kenara yakın
+    yerleşim (karşı taraf yazıya kalır); altında kendi koyu, sıcak tonlu, bulanık büyütmesi. 11-26: ortalanmış
+    fotoğraf + bulanık yan dolgu (pillarbox) videoyu "ucuz slayt" gösteriyordu; belgesel kurgusu fotoğrafı nesne
+    olarak sahneler. Yerleşim ve eğim dosya adından türer (tekrarlanabilir, komşu sahneler farklı)."""
+    gw, gh = boyut
+    iz = sum(ad.encode()) % 997
+    zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(46))
+    zemin = Image.blend(zemin, Image.new("RGB", boyut, (16, 13, 11)), 0.55)
+    yatay_boyut = gw > gh
+    oran_ = 0.84 if yatay_boyut else 0.62  # yatay videoda boy, dikeyde en sınırı
+    kopya = im.copy()
+    kopya.thumbnail((int(gw * (0.9 if not yatay_boyut else 0.6)), int(gh * oran_ if yatay_boyut else gh * 0.5)),
+                    Image.LANCZOS)  # fmt: skip
+    kenar = max(10, kopya.width // 42)
+    kart = ImageOps.expand(kopya, border=kenar, fill=(242, 238, 230)).convert("RGBA")
+    aci = ((iz % 7) - 3) * 0.55  # -1,65° … +1,65°
+    kart = kart.rotate(aci, resample=Image.BICUBIC, expand=True)
+    golge = Image.new("RGBA", (kart.width + 120, kart.height + 120), (0, 0, 0, 0))
+    golge.paste((0, 0, 0, 150), (60, 60, 60 + kart.width, 60 + kart.height), kart.split()[3])
+    golge = golge.filter(ImageFilter.GaussianBlur(28))
+    if yatay_boyut:
+        sag = iz % 2 == 0
+        x = int(gw * (0.62 if sag else 0.38) - kart.width / 2)
+        y = (gh - kart.height) // 2 + (iz % 3 - 1) * 12
+    else:
+        x = (gw - kart.width) // 2
+        y = int(gh * 0.36 - kart.height / 2)
+    zemin = zemin.convert("RGBA")
+    zemin.alpha_composite(golge, (max(0, x - 60 + 18), max(0, y - 60 + 26)))
+    zemin.alpha_composite(kart, (max(0, x), max(0, y)))
+    return zemin.convert("RGB")
 
 
 def dolgulu(kaynak: Path, boyut: tuple[int, int] = (1920, 1080)) -> bool:
@@ -41,3 +95,41 @@ def dolgulu(kaynak: Path, boyut: tuple[int, int] = (1920, 1080)) -> bool:
 def oran(kaynak: Path) -> float:
     with Image.open(kaynak) as im:
         return im.width / im.height
+
+
+def fark_izi(yol: Path) -> int:
+    """64 bitlik fark özeti (dHash): yeniden boyut/kırpma/sıkıştırmada aynı kalır, farklı fotoğrafta ayrışır."""
+    with Image.open(yol) as im:
+        g = ImageOps.exif_transpose(im).convert("L").resize((9, 8), Image.LANCZOS)
+    p = list(g.getdata())
+    return sum(1 << i for i in range(64) if p[(i // 8) * 9 + i % 8] > p[(i // 8) * 9 + i % 8 + 1])
+
+
+def yakin_kopyalari_ele(gorseller: list[dict], esik: int = 10) -> list[dict]:
+    """Aynı fotoğrafın kırpılmış/küçültülmüş kopyalarını havuzdan atar; büyük olan kalır. 11-26 Bond havuzunda
+    "pierce-brosnan-…" ve "…-cropped" ikilileri ile üç neredeyse aynı Vauxhall Köprüsü karesi ayrı görsel sayılıp
+    videoda tekrar gibi görünüyordu."""
+    import re
+
+    def ad(g: dict) -> str:
+        return re.sub(r"[-_ (]*cropped\)?|\.\w+$", "", Path(g["yerel"]).name.lower())
+
+    def alan(g: dict) -> int:
+        try:
+            with Image.open(g["yerel"]) as im:
+                return im.width * im.height
+        except OSError:
+            return 0
+
+    sirali = sorted(gorseller, key=alan, reverse=True)
+    kalan: list[tuple[dict, int, str]] = []
+    for g in sirali:
+        try:
+            iz = fark_izi(Path(g["yerel"]))
+        except OSError:
+            continue
+        if any(a == ad(g) or bin(iz ^ k).count("1") <= esik for _, k, a in kalan):
+            continue
+        kalan.append((g, iz, ad(g)))
+    tut = {id(g) for g, _, _ in kalan}
+    return [g for g in gorseller if id(g) in tut]  # özgün sıra (makale görselleri önce) korunur

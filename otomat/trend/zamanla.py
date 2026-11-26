@@ -1,8 +1,9 @@
 """Senaryo → anlatım sesi + sahne başına kelime zamanları (kurgunun saati).
 
-Ses film hattının `seslendir`iyle üretilir: Qwen3-TTS CustomVoice "Ryan" + sahne başına ton talimatı, parça başına
-Whisper kapısı. 11-20 geri bildirimi "dümdüz, AI olduğu belli" (Chatterbox + Kokoro referansı); ölçüm: perde yayılımı
-3,5 → 5,6 yarım ton, cümleler arası konuşmacı benzerliği 0,84 (VoiceDesign 0,70 ile kimlik kayıyordu).
+Ses film hattının `seslendir`iyle üretilir: Ming-3.0-tts hazır sesi "UK_George", parça başına Whisper kapısı.
+Geçmiş: 11-20 "dümdüz, AI olduğu belli" (Chatterbox + Kokoro referansı) → Qwen3-TTS "Ryan" + sahne tonu; 11-26 Scryne
+"hâlâ gerçek insan gibi değil" → Ming (Artificial Analysis kör tercih sıralaması: Ming 1181 ELO, Qwen3 TTS 931;
+ticari açık, 8 GB'a sığan açık modellerin en iyisi). Sahne arası sessizlik metne göre değişir (`blok_arasi`).
 Ardından bitmiş WAV faster-whisper ile kelime zamanlı çözülür ve senaryonun kendi kelimelerine hizalanır:
 ipuçları ("bu parça anlatıcı X dediğinde gelsin") senaryo kelimesiyle yazıldığı için zaman da senaryo kelimesine
 bağlanır. Rakamlar sözlü okunur ("750,000"), Whisper rakam yazar: iki taraf `kelimeler()` ile aynı birime iner.
@@ -16,8 +17,8 @@ from pathlib import Path
 
 from otomat.film.anlatim import SR, kelimeler, seslendir, wav_oku
 
-MOTOR = "qwen"
-KONUSMACI = "Ryan"
+MOTOR = "ming"
+KONUSMACI = "UK_George"  # Ming İngilizce hazır sesleri: UK_George, US_Emma, UK_Charlotte
 TON_TABAN = "Natural, engaging documentary storyteller, conversational and confident."
 ARALAR = (0.22, 0.38, 0.85)  # parça, sahne, bölüm arası sessizlik (film: 0.30 / 0.65 / 1.40)
 ONCE = 0.12  # görüntü sesten biraz önce keser (J-kesme hissi)

@@ -532,6 +532,16 @@ def sahne_bolum(sh: dict, gecis: str, tohum: int) -> str:
     zemin_renk = ["vurgu", "kirmizi", "mavi"][tohum % 3]
     yazi = "#111" if zemin_renk == "vurgu" else "#fff"
     z_html, z_js = zemin(sh, tohum, "hafif")
+    if sh.get("kesit") and sh.get("gorsel"):
+        # 11-26: dev bölüm numarası fotoğraftaki kişinin ARKASINDA (kesit üstte): düz kart yerine derinlikli kapak.
+        # Kesit hazır 1920×1080 kareden çıkarıldığı için fotoğrafla birebir örtüşür; ikisi aynı kamerayla hareket eder.
+        z_html = (f'<div class="kat"><img src="{_e(sh["gorsel"])}" alt=""></div>'
+                  f'<div class="tam" style="{ISLEME["hafif"][2]}"></div>'
+                  f'<div class="dev gb" id="{sid}-dev">{_e(sh.get("no", ""))}</div>'
+                  f'<div class="kat"><img src="{_e(sh["kesit"])}" alt=""></div>')  # fmt: skip
+        s0, s1 = (1.0, 1.07) if tohum % 2 else (1.07, 1.0)
+        z_js = (f"tl.fromTo(SA('.kat'), {{scale:{s0}}}, {{scale:{s1}, duration:{sure:.3f}, ease:'none'}}, 0);"
+                f"tl.fromTo(S('.dev'), {{y:160, opacity:0}}, {{y:0, opacity:.92, duration:.8, ease:'expo.out'}}, .05);")  # fmt: skip
     govde = f"""
     <div class="icerik tam">
       {z_html}
@@ -547,6 +557,8 @@ def sahne_bolum(sh: dict, gecis: str, tohum: int) -> str:
             padding:0 110px 0 120px; }
     .no { font-size:250px; line-height:.8; }
     .bb { font-size:136px; margin:0; white-space:nowrap; }
+    .dev { position:absolute; left:0; right:0; top:-60px; text-align:center; font-size:760px; line-height:1;
+           color:#FFD60A; letter-spacing:-.02em; opacity:0; }
     .sizinti { position:absolute; inset:-20%; background: radial-gradient(ellipse at 30% 40%, rgba(255,170,60,.75) 0%,
                rgba(255,90,40,.35) 30%, rgba(0,0,0,0) 62%); mix-blend-mode:screen; opacity:0; }
     """
