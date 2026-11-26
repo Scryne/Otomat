@@ -237,6 +237,7 @@ def test_kara_aralik_koyu_zemini_saymaz(tmp_path):
     # 1 sn koyu lacivert zemin (görselsiz sahne) + 1 sn tam siyah (render hatası) + 1 sn açık
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x0d0f14:s=320x180:d=1", "-f", "lavfi",
                     "-i", "color=c=black:s=320x180:d=1", "-f", "lavfi", "-i", "color=c=0x8899aa:s=320x180:d=1",
-                    "-filter_complex", "[0][1][2]concat=n=3:v=1", "-pix_fmt", "yuv420p", str(yol)], check=True)  # fmt: skip
+                    "-filter_complex", "[0][1][2]concat=n=3:v=1", "-pix_fmt", "yuv420p", str(yol)],
+                   check=True)  # fmt: skip
     kara = kurgu.kara_araliklar(yol)
     assert len(kara) == 1 and 0.9 <= kara[0][0] <= 1.1 and 1.9 <= kara[0][1] <= 2.1
