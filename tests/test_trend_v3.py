@@ -144,3 +144,13 @@ def test_stok_soyut_grafik_etiketleri_elenir():
     assert stok.uygun({**hit, "tags": "iconic, bridge"}, 6)  # sözcük sınırı
     assert not stok.uygun({**hit, "tags": "social media, icon, network"}, 6)
     assert not stok.uygun({**hit, "tags": "3d render, abstract"}, 6)
+
+
+def test_yil_sayilmaz_ve_binlik_ayiricisiz():
+    assert kurgu.yil_mi(1859) and not kurgu.yil_mi(1859, son="M") and not kurgu.yil_mi(76000)
+    sh = {"id": "s08", "sure": 5.0, "tur": "sayi", "deger": "1859", "etiket": "year Riemann posed it", "anlatim": "x",
+          "kelimeler": []}  # fmt: skip
+    h = kurgu.sahne_sayi(sh, "kesme", 1)
+    assert "{v:1859.0}, {v:1859.0" in h and "useGrouping:false" in h
+    h2 = kurgu.sahne_sayi({**sh, "deger": "76000"}, "kesme", 1)
+    assert "{v:0}, {v:76000.0" in h2 and "useGrouping:true" in h2

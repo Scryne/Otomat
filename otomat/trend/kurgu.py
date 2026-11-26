@@ -389,9 +389,17 @@ def _sayi_bicim(deger: float) -> tuple[int, str]:
     return min(2, len(str(deger).split(".")[1])), ","
 
 
-def _sayac_bas(deger: float, son: str) -> float:
-    """Sayacın başlangıcı: sıra sayısı (25th) ve 10'dan küçük sayı sayılmaz, doğrudan iner ("0TH" anlamsız, 11-20)."""
-    return deger if son.strip().lower() in ("st", "nd", "rd", "th") or abs(deger) < 10 else 0
+def yil_mi(deger: float, on: str = "", son: str = "") -> bool:
+    """1000-2100 arası, ön/son eksiz tam sayı bir yıldır: sayılmaz ve binlik ayırıcı almaz ("1,859" değil "1859")."""
+    return not on.strip() and not son.strip() and float(deger).is_integer() and 1000 <= deger <= 2100
+
+
+def _sayac_bas(deger: float, son: str, on: str = "") -> float:
+    """Sayacın başlangıcı: sıra sayısı (25th), 10'dan küçük sayı ve yıl sayılmaz, doğrudan iner ("0TH" anlamsız, 11-20;
+    yıl sıfırdan sayınca karede "0 year Riemann posed…" kaldı, 11-26)."""
+    if son.strip().lower() in ("st", "nd", "rd", "th") or abs(deger) < 10 or yil_mi(deger, on, son):
+        return deger
+    return 0
 
 
 def kisalt(deger: float, son: str) -> tuple[float, str]:
@@ -437,11 +445,12 @@ def sahne_sayi(sh: dict, gecis: str, tohum: int) -> str:
     """
     t0 = rakam_ani(sh, ilk_an(sh, sh.get("ipucu")))
     sayac = max(1.2, min(1.6, sure * 0.3))
+    grup = "false" if yil_mi(deger, on, son) else "true"
     js = [giris, z_js,
           "const d = S('.deger'); const p = {v:0};",
           f"const yaz = () => {{ d.textContent = p.v.toLocaleString('en-US', {{minimumFractionDigits:{ondalik}, "
-          f"maximumFractionDigits:{ondalik}}}); }};",
-          f"tl.fromTo(p, {{v:{_sayac_bas(deger, son)}}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
+          f"maximumFractionDigits:{ondalik}, useGrouping:{grup}}}); }};",
+          f"tl.fromTo(p, {{v:{_sayac_bas(deger, son, on)}}}, {{v:{deger}, duration:{sayac:.2f}, ease:'power3.out', onUpdate: yaz}}, {t0:.3f});",
           "tl.fromTo(S('.sayi'), {y:60, opacity:0}, {y:0, opacity:1, duration:.35, ease:'expo.out'}, 0.06);",
           f"tl.fromTo(S('.cizgi'), {{scaleX:0}}, {{scaleX:1, duration:.5, ease:'expo.out'}}, {t0 + 0.2:.3f});",
           _kelime_girisi(f"#{sid}-etk", min(t0 + sayac * 0.7, 0.35), 0.06)]  # fmt: skip

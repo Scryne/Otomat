@@ -52,6 +52,13 @@ YASAK_ETIKET = (
     "hologram",
     "intro",
     "logo",
+    # tanınabilir tek yüz: izleyici hikâyedeki kişi sanıyor (11-26 Riemann: "yaşlı adam yakın plan")
+    "portrait",
+    "face",
+    "close-up",
+    "closeup",
+    "headshot",
+    "selfie",
 )
 MODEL = "glm-5.3"
 
@@ -107,7 +114,8 @@ Return ONLY JSON: {{"secimler": [{{"i": scene index, "sorgu": "..."}}]}}"""
 SISTEM_ADAY = """For each scene you get its narration and up to 6 stock clips (id: tags). Pick the clip whose tags
 best show what the line is about, or null if none fits (wrong country, wrong era, unrelated subject, cartoon/animation,
 icons or graphics on a plain background, an empty frame with one small object). Only real filmed footage with a clear
-subject in a real place.
+subject in a real place. Never a close-up or portrait of one identifiable person (a viewer would take a random
+face for a person in the story); people only as crowds, hands, backs or far away.
 Return ONLY JSON: {"secim": [{"i": scene index, "id": clip id or null}]}"""
 
 
