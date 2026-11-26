@@ -312,3 +312,19 @@ artık sayılmaz, binlik ayırıcı almaz); stokta tanınabilir tek yüz (izleyi
 yasağı); Göttingen kütüphanesinin savaş yıkıntısı fotoğrafı başlığından anlaşılmadığı için süzgeçten geçti. Son
 kusur başlık değil görüntü denetimi ister (sıradaki iş: görsel süzgece küçük resim vermek).
 "Every one" Whisper'da "everyone" olunca sayı farkı 1,0 verip doğru parçayı düşürüyordu: karşılaştırmada birleşir.
+
+**Sonraki tur (11-26 akşam, "her şeyi en iyi hale getir") [Ö].**
+- *Görüntülü görsel süzgeci* (`gorsel_secici.py`): görseller G1… etiketli kontak sayfalarına dizilir (4×4, 1536×1024),
+  gemini-4-argon başlıkla birlikte görüntüyü görüp seçer; düşerse başlıkla (glm-5.3). Riemann ham havuzu 36 → 9: savaş
+  yıkıntısı (başlığı "University of Göttingen (Library)") ve adı geçmeyen kişinin gravürü yalnız görüntüyle elendi.
+  Miss Universe havuzu 45 → 22 (taç fotoğrafları, yarışmanın yapıldığı kolezyum, adı geçen yarışmacılar).
+- *Diyagram* (saydam ya da çoğu beyaz PNG): kâğıt zeminde kadrajın %92'si, baskı/renk/derinlik yok, beyaz kâğıtla
+  çarpılıp erir. Eleştirmenin "okunmuyor" (31) ve "balık gözü ızgara" bulgularına karşı.
+- *Kapak*: kesit çıkmazsa görsel sağda eğik baskı, yazı solda (diyagramın üstüne yazı binmiyor).
+- *Bayat render*: `video_ham.mp4` yerinde durunca yeni plan render edilmeden eski video kullanılıyordu (sahneye yeni
+  görsel atandığı halde videoda eski kaldı). Ham video projenin özetiyle damgalanır (`video_ham.proje`).
+- *Kara kare*: 4 işçili render'da, GPU'yu aynı anda TTS kullanırken derinlikli (WebGL) sahneler üç yerde 2-8 sn siyah
+  çizildi; aynı projenin anlık görüntüsü doğru. Render sonrası `kara_araliklar` (%90 siyah, ≥ 0,5 sn) bulursa tek
+  işçiyle yeniden render.
+- *Karanlık başlayan stok klip* (animasyon girişi) indirildikten sonra ölçülür ve reddedilir (YAVG < 22).
+- Disk: Scryne'ın onayıyla ~/ComfyUI silindi (56 GB); render artık 4 işçiyle ~10 dk.
