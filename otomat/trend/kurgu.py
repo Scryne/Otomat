@@ -971,9 +971,10 @@ def render(dizin: Path, cikti: Path, kalite: str = "standard", isci: int = 4) ->
 
 
 def kara_araliklar(video: Path, en_az: float = 0.5) -> list[tuple[float, float]]:
-    """Karenin %90'ından fazlasının siyah olduğu, `en_az` saniyeden uzun aralıklar (bir manşet kupürü siyah zeminin
-    üstünde kalsa da yakalanır). Kasıtlı siyah yok: geçişler (sel %70 opaklıkla başlar) 0,3 sn'nin altında."""
-    r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(video), "-vf", f"blackdetect=d={en_az}:pic_th=0.90",
+    """Karenin %90'ından fazlasının gerçekten siyah (parlaklık < %3) olduğu, `en_az` saniyeden uzun aralıklar (bir
+    manşet kupürü siyah zeminin üstünde kalsa da yakalanır). Koyu ama boş olmayan zemin (prosedürel leke, ~%5) render
+    hatası değildir ve sayılmaz (11-26 Miss Universe: görselsiz sahne yanlışlıkla tek işçiye düşürdü)."""
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(video), "-vf", f"blackdetect=d={en_az}:pic_th=0.90:pix_th=0.03",
                         "-an", "-f", "null", "-"], capture_output=True, text=True)  # fmt: skip
     return [(float(a), float(b)) for a, b in re.findall(r"black_start:([\d.]+) black_end:([\d.]+)", r.stderr)]
 

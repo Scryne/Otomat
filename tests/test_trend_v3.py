@@ -227,3 +227,16 @@ def test_ayni_konu_grubundan_en_cok_iki():
     y = {"tut": ["G1", "G2", "G3", "G4", "G5", "G6"], "gruplar": [["G3", "G1", "G5", "G6"], ["G9"], "bozuk"]}
     tut = gorsel_secici._kimlikler(y, 8)
     assert gorsel_secici.gruplari_kirp(y, tut, 8) == {0, 1, 2, 3}  # G3, G1 kalır; G5, G6 düşer; G9 tutulmamıştı
+
+
+@pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg yok (CI)")
+def test_kara_aralik_koyu_zemini_saymaz(tmp_path):
+    import subprocess
+
+    yol = tmp_path / "v.mp4"
+    # 1 sn koyu lacivert zemin (görselsiz sahne) + 1 sn tam siyah (render hatası) + 1 sn açık
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", "color=c=0x0d0f14:s=320x180:d=1", "-f", "lavfi",
+                    "-i", "color=c=black:s=320x180:d=1", "-f", "lavfi", "-i", "color=c=0x8899aa:s=320x180:d=1",
+                    "-filter_complex", "[0][1][2]concat=n=3:v=1", "-pix_fmt", "yuv420p", str(yol)], check=True)  # fmt: skip
+    kara = kurgu.kara_araliklar(yol)
+    assert len(kara) == 1 and 0.9 <= kara[0][0] <= 1.1 and 1.9 <= kara[0][1] <= 2.1

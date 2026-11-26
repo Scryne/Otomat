@@ -253,6 +253,14 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 p["kredi"] = "Video: Pixabay"
             except Exception as e:  # noqa: BLE001 — klip inmezse sahne fotoğrafta kalır
                 print(f"stok klip düştü ({k.get('id')}): {str(e)[:120]}", flush=True)
+        if not p.get("gorsel") and not p.get("klip") and sh["tur"] != "harita":
+            # havuz tükenince görselsiz kalan sahne (11-26 Miss Universe: sayı kartı ve kapanış koyu lekeler üstündeydi)
+            # kapak görselinin hareketli, koyulaştırılmış hali üstünde durur
+            kg = str(sen.get("kapak_gorsel") or "G1")
+            gi = min(max(int(kg[1:]) - 1 if kg[1:].isdigit() else 0, 0), len(gorsel) - 1) if gorsel else -1
+            if gi >= 0:
+                varlik[f"assets/img/g{gi + 1:02d}.jpg"] = Path(gorsel[gi]["hazir"])
+                p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"], koyu=True)
         if sh["tur"] == "kapanis":
             p["kanal"] = KANAL_ADI
         if sh["tur"] == "harita":
