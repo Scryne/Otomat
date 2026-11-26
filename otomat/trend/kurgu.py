@@ -957,7 +957,23 @@ def render(dizin: Path, cikti: Path, kalite: str = "standard", isci: int = 4) ->
         r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", "1", "-f", str(FPS)], dizin, 8 * 3600)
     if r.returncode or not cikti.exists():
         raise RuntimeError((r.stderr or r.stdout)[-3000:])
+    if isci > 1 and (kara := kara_araliklar(cikti)):
+        # 11-26 Riemann: 4 işçili render'da (GPU'yu başka iş de kullanırken) derinlikli WebGL sahnesi iki kez siyah
+        # çizildi; aynı proje tek işçiyle (tek WebGL bağlamı) doğru. Kara aralık varsa tek işçiyle baştan.
+        print(f"render: kara aralık {[(round(a, 1), round(b, 1)) for a, b in kara]}, tek işçiyle yeniden", flush=True)
+        cikti.unlink(missing_ok=True)
+        r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", "1", "-f", str(FPS)], dizin, 8 * 3600)
+        if r.returncode or not cikti.exists():
+            raise RuntimeError((r.stderr or r.stdout)[-3000:])
     return cikti
+
+
+def kara_araliklar(video: Path, en_az: float = 0.5) -> list[tuple[float, float]]:
+    """Karenin %90'ından fazlasının siyah olduğu, `en_az` saniyeden uzun aralıklar (bir manşet kupürü siyah zeminin
+    üstünde kalsa da yakalanır). Kasıtlı siyah yok: geçişler (sel %70 opaklıkla başlar) 0,3 sn'nin altında."""
+    r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(video), "-vf", f"blackdetect=d={en_az}:pic_th=0.90",
+                        "-an", "-f", "null", "-"], capture_output=True, text=True)  # fmt: skip
+    return [(float(a), float(b)) for a, b in re.findall(r"black_start:([\d.]+) black_end:([\d.]+)", r.stderr)]
 
 
 def sure_toplam(plan: dict) -> float:
