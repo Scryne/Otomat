@@ -945,6 +945,8 @@ def inceleme_sayfalari(dizin: Path) -> list[Path]:
 def render(dizin: Path, cikti: Path, kalite: str = "standard", isci: int = 4) -> Path:
     import shutil as _sh
 
+    cikti = cikti.resolve()  # CLI proje klasöründe koşar: göreli çıktı yolu proje altına yazılıyordu
+
     # 11-26: 7 dk'lık video 4 işçiyle ~14 GB geçici kare istiyor. Ön tahmin kimi zaman sığar deyip yarıda ENOSPC
     # veriyor; boş yer 20 GB'ın altındaysa doğrudan tek işçi (kareleri diske yazmadan kodlayıcıya akıtır, yavaş ama sığar)
     if isci > 1 and _sh.disk_usage(Path.home()).free < 20 * 1024**3:
