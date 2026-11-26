@@ -187,3 +187,19 @@ def test_kontak_sayfalari_etiketli(tmp_path):
     assert im.size == (gorsel_secici.HUCRE[0] * gorsel_secici.SUTUN, gorsel_secici.HUCRE[1] * gorsel_secici.SATIR)
     assert im.getpixel((8, 8))[0] > 200  # sol üstte sarı kimlik etiketi
     assert gorsel_secici._kimlikler({"tut": ["G1", "G18", "G99", "x"]}, 18) == {0, 17}
+
+
+def test_diyagram_kagitta_buyuk_ve_derinliksiz(tmp_path):
+    saydam = Image.new("RGBA", (900, 500), (0, 0, 0, 0))
+    ImageDraw.Draw(saydam).line((0, 250, 900, 250), fill=(200, 0, 0, 255), width=6)
+    saydam.save(tmp_path / "plot.png")
+    beyaz = Image.new("RGB", (900, 500), (255, 255, 255))
+    ImageDraw.Draw(beyaz).line((0, 100, 900, 400), fill=(0, 0, 200), width=6)
+    beyaz.save(tmp_path / "grafik.png")
+    foto = _foto(tmp_path / "foto.png", (900, 600), (90, 60, 40))
+    assert medya.diyagram(tmp_path / "plot.png") and medya.diyagram(tmp_path / "grafik.png")
+    assert not medya.diyagram(foto)
+    im = Image.open(medya.hazirla(tmp_path / "grafik.png", tmp_path / "h.jpg"))
+    assert im.size == (1920, 1080)
+    kose, orta_zemin = im.getpixel((8, 8)), im.getpixel((960, 900))
+    assert all(abs(a - b) <= 3 for a, b in zip(kose, orta_zemin, strict=True))  # beyaz kâğıda erimiş, yama yok

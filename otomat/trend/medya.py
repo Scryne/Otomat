@@ -18,11 +18,10 @@ def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), ka
         return hedef
     hedef.parent.mkdir(parents=True, exist_ok=True)
     ham = ImageOps.exif_transpose(Image.open(kaynak))
-    if ham.mode in ("RGBA", "LA", "P"):  # saydam diyagram (SVG'den PNG): siyaha değil kâğıda oturur
-        ham = ham.convert("RGBA")
-        kagit = Image.new("RGBA", ham.size, (244, 242, 236, 255))
-        kagit.alpha_composite(ham)
-        ham = kagit
+    if diyagram(kaynak):
+        cikti = kagitta(ham, boyut)
+        cikti.save(hedef, "JPEG", quality=kalite, optimize=True)
+        return hedef
     im = renk(ham.convert("RGB"))
     gw, gh = boyut
     oran_hedef, oran = gw / gh, im.width / im.height
@@ -32,6 +31,40 @@ def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), ka
         cikti = baski(im, boyut, kaynak.name)
     cikti.save(hedef, "JPEG", quality=kalite, optimize=True)
     return hedef
+
+
+KAGIT = (244, 242, 236)
+
+
+def diyagram(kaynak: Path) -> bool:
+    """Makale diyagramı/grafiği: saydam zeminli ya da çoğu beyaz PNG (Commons SVG'yi PNG olarak verir; bazıları
+    saydam, bazıları opak beyaz zeminli). Fotoğrafta karenin yarısından fazlası neredeyse beyaz olmaz."""
+    try:
+        with Image.open(kaynak) as im:
+            if im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info):
+                if im.convert("RGBA").getchannel("A").getextrema()[0] < 250:
+                    return True
+            if kaynak.suffix.lower() != ".png":
+                return False
+            gri = im.convert("L").resize((96, 96))
+            return sum(1 for v in gri.getdata() if v > 235) / (96 * 96) > 0.55
+    except OSError:
+        return False
+
+
+def kagitta(ham: Image.Image, boyut: tuple[int, int]) -> Image.Image:
+    """Diyagram kâğıt zeminde kadrajın %92'sini kaplar (renk derecelendirmesi ve baskı düzeni yok). 11-26 eleştirmen:
+    baskı olarak küçük kalan diyagramın yazıları okunmuyordu (31 bulgu) ve derinlik haritası düz ızgarayı büküyordu."""
+    gw, gh = boyut
+    ham = ham.convert("RGBA")
+    kopya = ham.copy()
+    kopya.thumbnail((int(gw * 0.92), int(gh * 0.92)), Image.LANCZOS)
+    zemin = Image.new("RGBA", boyut, (255, 255, 255, 255))  # beyaz: kâğıtla çarpılınca düz kâğıt rengi
+    zemin.alpha_composite(kopya, ((gw - kopya.width) // 2, (gh - kopya.height) // 2))
+    # opak beyaz zeminli diyagram kâğıdın üstünde yama gibi duruyordu: kâğıtla çarpılınca beyaz kâğıda erir, çizgi kalır
+    from PIL import ImageChops
+
+    return ImageChops.multiply(zemin.convert("RGB"), Image.new("RGB", boyut, KAGIT))
 
 
 def _egri(x: float, kanal: str) -> int:

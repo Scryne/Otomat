@@ -229,7 +229,8 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 p["kredi"] = gorsel[gi]["kredi_satiri"]
                 # 2.5D parallax için derinlik haritası (kurgu.zemin): düz kare + yavaş zoom "slayt" gibiydi (11-20)
                 # dolgulu (dikey) fotoğrafta derinlik yok: fotoğrafla bulanık dolgu ayrı kayıp kesik gibi duruyordu
-                if not medya.dolgulu(Path(gorsel[gi]["yerel"])):
+                yerel = Path(gorsel[gi]["yerel"])
+                if not medya.dolgulu(yerel) and not medya.diyagram(yerel):  # diyagramda derinlik ızgarayı büker
                     dh = derinlik.harita(hazir, hazir.parent.parent / "derinlik" / f"g{gi + 1:02d}.png")
                     varlik[f"assets/derinlik/g{gi + 1:02d}.png"] = dh
                     p["derinlik"] = f"assets/derinlik/g{gi + 1:02d}.png"
