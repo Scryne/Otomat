@@ -64,6 +64,10 @@ def kesitli_zemin(ham: Path, kesit_png: Path, hedef: Path) -> Path:
     k = Image.open(kesit_png).convert("RGBA")
     sol, ust, sag, alt = kutu(kesit_png)
     k = k.crop((int(sol * k.width), int(ust * k.height), int(sag * k.width), int(alt * k.height)))
+    if k.width / k.height < 0.62:
+        # boy portresi (taç giyen yarışmacı, sahnedeki konuşmacı): baş ve omuzlar kadraja girsin; tam boyda yüz kapakta
+        # küçük kalıyordu (11-26 Miss Universe). Kesit alt kenardan taşar, kadraj dışı sayılır.
+        k = k.crop((0, 0, k.width, min(k.height, int(k.width * 1.35))))
     oran = k.width / k.height
     boy = int(H * 1.02) if oran < 1.1 else int(min(H * 0.95, W * 0.58 / oran))  # kişi: tam boy; nesne: genişliğe göre
     k = k.resize((max(1, int(boy * oran)), boy), Image.LANCZOS)
