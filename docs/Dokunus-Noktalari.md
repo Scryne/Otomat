@@ -15,7 +15,7 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 | D2 ✅ 2026-10-03 (kendi hesabında) | Google Cloud projesinde YouTube Data API'yi açıp OAuth onayını vermek | Kimlik doğrulama sahibin elinde | 10 dk (adım adım rehberle) |
 | D3 ✅ 2026-10-03 | API denetim (audit) formunu göndermek | Başvuru sahibi beyanı | 5 dk (metni ben hazırlarım) |
 | D5 ✅ 2026-10-05 | Buffer ücretsiz hesap + kanalı bağlama + API anahtarı (`.env`) | Hesap ve OAuth onayı sahibin elinde | 5 dk |
-| T1 | Trend kanalı (K-38): ayrı Google hesabında YouTube kanalı "Why It's Everywhere", profil resmi + banner `docs/marka/trend/` | Hesap kişiye ait; kapatma kişiye gider, film/spor kanallarından ayrık | 10 dk |
+| T1 | ✅ 11-27: "Why It's Everywhere" (@WhyItsEverywhereNow) açıldı, profil resmi yüklendi. K-38'deki ayrı Google hesabı yerine Scryne'ın ana hesabına bağlı Marka Hesabı (ortak kapatma riski anlatıldı, Scryne kabul etti). Banner ve açıklama yetkiden sonra API ile | Hesap kişiye ait | — |
 | T2 | Trend kanalına yetki: `uv run --extra ses python -m otomat.trend.yukle yetki` (tarayıcıda izin ekranı, trend kanalını seç) | OAuth onayı sahibin elinde | 2 dk |
 | D4 | Para kazanma eşiği aşılınca: AdSense, kimlik/PIN, 20/B istisna belgesi | Yasal kimlik, posta, vergi dairesi | eşik anında, ~1 gün |
 

@@ -23,7 +23,8 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 
 1. Yeni anlatıcıyı dinleyip onaylamak (`calisma/trend/ses_ornekleri/7-…` eski, `8-…` yeni). Yetmezse tek ücretli
    seçenek ElevenLabs (Starter $6/ay).
-2. Trend açıklayıcı kanalının ("Why It's Everywhere") açılması ve YouTube yetkisi (Faz 20).
+2. Trend kanalı 11-27'de açıldı (@WhyItsEverywhereNow, ana Google hesabına bağlı Marka Hesabı). Sırada YouTube yetkisi
+   (T2, kanalın açıldığı günden ayrı bir günde), sonra banner/açıklama ve ilk video (Miss Universe).
 3. 12-19 Faz 8 öldürme ölçümünün sonucuna göre One Ticket Back için karar.
 
 ## v2 fikirleri
