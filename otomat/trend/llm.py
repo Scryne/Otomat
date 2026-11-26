@@ -174,18 +174,35 @@ class Oturum:
         )
         return {"content": [{"type": "text", "text": "".join(parcalar)}], "usage": usage, "stop_reason": dur}
 
-    def _istek(self, govde: dict) -> dict:
+    def _istek(self, govde: dict, toplam_sure: float = 900) -> dict:
+        """Tek istek; `toplam_sure` sonunda yanıt gelmemişse vazgeçilir. 11-26: eleştirmen çağrısı 25 dk yanıtsız
+        kaldı; urlopen zaman aşımı okuma başına işlediği için bağlantı açık kaldıkça koşu bekliyordu. İstek bir
+        artalan iş parçacığında koşar; süre dolunca iş parçacığı bırakılır (süreç çıkışını tutmaz)."""
+        import threading
+
         istek = urllib.request.Request(UC, json.dumps(govde).encode("utf-8"), {
             "content-type": "application/json", "x-api-key": anahtar(), "anthropic-version": "2023-06-01",
             "user-agent": UA, "x-opencode-session": self.kimlik})  # fmt: skip
-        try:
-            with urllib.request.urlopen(istek, timeout=600) as y:
-                return json.loads(y.read())
-        except urllib.error.HTTPError as e:
-            govde_hata = e.read()[:400].decode("utf-8", "replace")
-            raise LLMHatasi(f"{e.code} {govde_hata}") from None
-        except (urllib.error.URLError, TimeoutError) as e:
-            raise LLMHatasi(f"5xx bağlantı: {e}") from None
+        sonuc: dict = {}
+
+        def _cagir() -> None:
+            try:
+                with urllib.request.urlopen(istek, timeout=600) as y:
+                    sonuc["yanit"] = json.loads(y.read())
+            except urllib.error.HTTPError as e:
+                govde_hata = e.read()[:400].decode("utf-8", "replace")
+                sonuc["hata"] = LLMHatasi(f"{e.code} {govde_hata}")
+            except (urllib.error.URLError, TimeoutError, OSError, ValueError) as e:
+                sonuc["hata"] = LLMHatasi(f"5xx bağlantı: {e}")
+
+        t = threading.Thread(target=_cagir, daemon=True)
+        t.start()
+        t.join(toplam_sure)
+        if t.is_alive():
+            raise LLMHatasi(f"5xx bağlantı: {toplam_sure:.0f} sn'de yanıt yok")
+        if "hata" in sonuc:
+            raise sonuc["hata"]
+        return sonuc["yanit"]
 
 
 def json_cikar(metin: str) -> dict | list:
