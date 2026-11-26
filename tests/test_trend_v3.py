@@ -219,3 +219,11 @@ def test_bayat_ham_video_yeniden_render_edilir(tmp_path):
     assert uretim.guncel_render(proje, ham)
     (proje / "compositions" / "s01.html").write_text("g04.jpg", encoding="utf-8")  # sahnenin görseli değişti
     assert not uretim.guncel_render(proje, ham)
+
+
+def test_ayni_konu_grubundan_en_cok_iki():
+    from otomat.trend import gorsel_secici
+
+    y = {"tut": ["G1", "G2", "G3", "G4", "G5", "G6"], "gruplar": [["G3", "G1", "G5", "G6"], ["G9"], "bozuk"]}
+    tut = gorsel_secici._kimlikler(y, 8)
+    assert gorsel_secici.gruplari_kirp(y, tut, 8) == {0, 1, 2, 3}  # G3, G1 kalır; G5, G6 düşer; G9 tutulmamıştı

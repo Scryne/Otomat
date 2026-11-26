@@ -29,7 +29,11 @@ where it happens, its objects, documents, events, or its subject shown directly 
 Drop: portraits of anyone who is not named in the story (the wrong person on screen), places that only share a city or
 institution with the story, anything from an unrelated era or event (war ruins, an old book scan, a medal), images
 where the subject is unrecognisable or tiny, and text-heavy scans that cannot be read on screen. When unsure, drop.
-Return ONLY JSON: {"tut": ["G1", ...]}"""
+Then, among the images you keep, list GROUPS of images that show the same subject in a similar way (the same building
+from outside, the same person at the same event, the same chart): a viewer would see them as the same shot repeated.
+Order each group best first (sharpest, most telling). Images with no near-twin are not listed.
+Return ONLY JSON: {"tut": ["G1", ...], "gruplar": [["G3", "G7", "G9"], ...]}"""
+GRUP_EN_COK = 2  # aynı konudan en çok iki görsel kalır (11-26 Miss Universe: kolezyumun 7 fotoğrafı ~15 sahnede)
 
 
 def _yazi_tipi(boy: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -73,6 +77,21 @@ def _kimlikler(y: object, n: int) -> set[int]:
     return {int(str(k)[1:]) - 1 for k in tut if str(k)[1:].isdigit() and 0 < int(str(k)[1:]) <= n}
 
 
+def gruplari_kirp(y: object, tut: set[int], n: int, en_cok: int = GRUP_EN_COK) -> set[int]:
+    """Aynı konuyu gösteren grupta ilk `en_cok` görsel kalır (model en iyisini başa koyar). Farklı dosya ama aynı
+    görüntü (aynı binanın yedi dış çekimi) dosya başına tekrar sınırına takılmıyor, izleyici aynı kareyi görüyordu."""
+    gruplar = (y.get("gruplar") or []) if isinstance(y, dict) else []
+    kalan = set(tut)
+    for g in gruplar if isinstance(gruplar, list) else []:
+        if not isinstance(g, list):
+            continue
+        ids = [int(str(k)[1:]) - 1 for k in g if str(k)[1:].isdigit() and 0 < int(str(k)[1:]) <= n]
+        ids = [i for i in ids if i in kalan]
+        for i in ids[en_cok:]:
+            kalan.discard(i)
+    return kalan
+
+
 def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) -> set[int]:
     """Görüntü modeline kontak sayfaları + başlık listesi; tutulacak görsellerin sıra numaraları (0 tabanlı)."""
     icerik: list[dict] = [{"type": "image", "source": {"type": "base64", "media_type": "image/jpeg",
@@ -83,10 +102,11 @@ def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) 
              "messages": [{"role": "user", "content": icerik}]}  # fmt: skip
     y = oturum._istek(govde, toplam_sure=300)
     metin = "".join(c.get("text", "") for c in y.get("content", []) if c.get("type") == "text")
-    return _kimlikler(json_cikar(metin), len(yollar))
+    cevap = json_cikar(metin)
+    return gruplari_kirp(cevap, _kimlikler(cevap, len(yollar)), len(yollar))
 
 
 def basliktan_sec(oturum: Oturum, hikaye: str, liste: str, n: int) -> set[int]:
     y = oturum.json_sor(SISTEM, f"STORY: {hikaye}\n\nIMAGES (id: file title; no contact sheets this time):\n{liste}",
                         model=MODEL_METIN, en_cok=1500, sicaklik=0.0, dusun=False)  # fmt: skip
-    return _kimlikler(y, n)
+    return gruplari_kirp(y, _kimlikler(y, n), n)
