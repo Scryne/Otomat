@@ -9,6 +9,12 @@
       "is_akisi": "Günlük üretim",
       "olay": "schedule",
       "siklik_saat": 8
+    },
+    {
+      "ad": "Trend kanalı üretim + yükleme (Pzt/Çar/Cmt)",
+      "tur": "gorev",
+      "gorev": "\\Otomat-Trend-gunluk",
+      "siklik_saat": 72
     }
   ]
 }

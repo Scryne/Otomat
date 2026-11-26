@@ -16,7 +16,8 @@ kusurudur; önce otomatikleştirmeyi dene, olmazsa buraya gerekçesiyle yaz.
 | D3 ✅ 2026-10-03 | API denetim (audit) formunu göndermek | Başvuru sahibi beyanı | 5 dk (metni ben hazırlarım) |
 | D5 ✅ 2026-10-05 | Buffer ücretsiz hesap + kanalı bağlama + API anahtarı (`.env`) | Hesap ve OAuth onayı sahibin elinde | 5 dk |
 | T1 | ✅ 11-27: "Why It's Everywhere" (@WhyItsEverywhereNow) açıldı, profil resmi yüklendi. K-38'deki ayrı Google hesabı yerine Scryne'ın ana hesabına bağlı Marka Hesabı (ortak kapatma riski anlatıldı, Scryne kabul etti). Banner ve açıklama yetkiden sonra API ile | Hesap kişiye ait | — |
-| T2 | Trend kanalına yetki: `uv run --extra ses python -m otomat.trend.yukle yetki` (tarayıcıda izin ekranı, trend kanalını seç) | OAuth onayı sahibin elinde | 2 dk |
+| T2 | ✅ 11-27: trend kanalına yetki (`sirlar/token_trend.json`, kanal doğrulandı) | OAuth onayı sahibin elinde | — |
+| T3 | Trend kanalında telefon doğrulaması (youtube.com/verify, kanal olarak): özel kapak, Shorts→video bağlantısı, Test & Compare. Kapak yüklenmeden hat hiçbir videoyu zamanlamaz | Kanal sahibinin telefonu | 2 dk |
 | D4 | Para kazanma eşiği aşılınca: AdSense, kimlik/PIN, 20/B istisna belgesi | Yasal kimlik, posta, vergi dairesi | eşik anında, ~1 gün |
 
 ## Süren

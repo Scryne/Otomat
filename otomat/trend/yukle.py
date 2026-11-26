@@ -25,6 +25,8 @@ TOKEN_DEGISKENI = "YT_TOKEN_JSON_TREND"
 KATEGORI = "27"  # Education
 ISLENME_PAYI = dt.timedelta(minutes=45)
 KESIT_GECIKME = (dt.timedelta(hours=3), dt.timedelta(days=1), dt.timedelta(days=2))
+SLOT_GUNLERI = (0, 2, 5)  # K-49 (araştırma 15): Pazartesi, Çarşamba, Cumartesi
+SLOT_SAAT = dt.time(21, 50)  # UTC; resmi kaynak saati önemsiz sayıyor, sabit olsun yeter
 
 
 class YuklemeHatasi(RuntimeError):
@@ -101,41 +103,108 @@ def etiketler(meta: dict, konu: str) -> list[str]:
     return list(dict.fromkeys(t for t in temel if t))
 
 
+def siradaki_slot(simdi: dt.datetime, dolu: set[str]) -> dt.datetime:
+    """K-49: uzun video haftada 3 (Pzt/Çar/Cmt) 21:50 UTC, günde en çok bir. `simdi + ISLENME_PAYI`'ndan sonraki,
+    `dolu` (YYYY-MM-DD) olmayan ilk yayın günü."""
+    gun = simdi.astimezone(dt.UTC).date()
+    for i in range(0, 60):
+        aday_gun = gun + dt.timedelta(days=i)
+        aday = dt.datetime.combine(aday_gun, SLOT_SAAT, tzinfo=dt.UTC)
+        if aday_gun.weekday() in SLOT_GUNLERI and aday >= simdi + ISLENME_PAYI and aday_gun.isoformat() not in dolu:
+            return aday
+    raise YuklemeHatasi("60 gün içinde boş yayın günü yok")
+
+
+def dolu_gunler(haric: Path | None = None) -> set[str]:
+    """Zamanlanmış ya da yayınlanmış uzun videoların günleri (her iş klasörünün yukleme.json'undan)."""
+    kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
+    gunler = set()
+    for y in kok.glob("*/yukleme.json"):
+        if haric is not None and y.parent.resolve() == haric.resolve():
+            continue
+        k = json.loads(y.read_text(encoding="utf-8"))
+        if k.get("yayin"):
+            gunler.add(k["yayin"][:10])
+    return gunler
+
+
+def _zamanla(yt, video_id: str, t: dt.datetime) -> None:
+    yt.videos().update(part="status", body={"id": video_id, "status": {
+        "privacyStatus": "private", "publishAt": _zaman(t), "selfDeclaredMadeForKids": False,
+        "containsSyntheticMedia": False}}).execute()  # fmt: skip
+
+
 def yukle(d: Path, simdi: dt.datetime | None = None, yt=None) -> dict:
+    """Uzun video + kesitleri private yükler; kapak yüklenmeden hiçbir şey zamanlanmaz (11-27: Marka Hesabı kanalında
+    telefon doğrulaması yokken kapak 403 verdi, video kapaksız yayına çıkacaktı). Kapak tamamsa uzun video sıradaki boş
+    yayın gününe, kesitler ondan +3 sa, +1 gün, +2 gün sonraya zamanlanır. Yarım kalan iş sonraki koşuda tamamlanır."""
+    from googleapiclient.http import MediaFileUpload
+
     meta = json.loads((d / "meta.json").read_text(encoding="utf-8"))
     secim = json.loads((d / "secim.json").read_text(encoding="utf-8"))["secim"]
     kayit_yol = d / "yukleme.json"
     kayit = json.loads(kayit_yol.read_text(encoding="utf-8")) if kayit_yol.exists() else {"kesitler": {}}
+
+    def yaz() -> None:
+        kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+
     simdi = simdi or dt.datetime.now(dt.UTC)
     yt = yt or servis()
     etk = etiketler(meta, secim["hikaye"])
     if "video_id" not in kayit:
-        yayin = simdi + ISLENME_PAYI
-        y = _gonder(yt, govde(meta["baslik"], meta["aciklama"], etk, yayin), d / "video.mp4")
-        kayit.update(video_id=y["id"], yayin=_zaman(yayin), donen=y.get("status", {}).get("privacyStatus"))
-        kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+        g = govde(meta["baslik"], meta["aciklama"], etk, simdi)
+        g["status"].pop("publishAt")  # kapak yüklenene kadar zamansız private
+        y = _gonder(yt, g, d / "video.mp4")
+        kayit.update(video_id=y["id"], donen=y.get("status", {}).get("privacyStatus"))
+        yaz()
+    if kayit.get("kapak") != "tamam":
         try:
-            from googleapiclient.http import MediaFileUpload
-
             kapak = MediaFileUpload(str(d / "kapak" / "kapak.jpg"), mimetype="image/jpeg")
-            yt.thumbnails().set(videoId=y["id"], media_body=kapak).execute()
+            yt.thumbnails().set(videoId=kayit["video_id"], media_body=kapak).execute()
             kayit["kapak"] = "tamam"
-        except Exception as e:  # noqa: BLE001 — doğrulanmamış kanal 403; video yine yüklendi
+        except Exception as e:  # noqa: BLE001 — kapak izni yok (telefon doğrulaması): video private bekler
             kayit["kapak"] = youtube.kisa_hata(e)
-        kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+        yaz()
+    if kayit.get("kapak") != "tamam":
+        kayit["durum"] = "kapak bekliyor: kanal telefon doğrulaması (youtube.com/verify), sonra `yukle son`"
+        yaz()
+        return kayit
+    if not kayit.get("yayin"):
+        t = siradaki_slot(simdi, dolu_gunler(haric=d))
+        _zamanla(yt, kayit["video_id"], t)
+        kayit["yayin"] = _zaman(t)
+        yaz()
+    kayit.pop("durum", None)
     ana = dt.datetime.fromisoformat(kayit["yayin"].replace("Z", "+00:00"))
     sen = json.loads((d / "senaryo.json").read_text(encoding="utf-8"))
     for i, k in enumerate(sen.get("kesitler") or []):
         video = d / f"kesit{i + 1}" / "kesit.mp4"
-        if str(i) in kayit["kesitler"] or not video.exists() or i >= len(KESIT_GECIKME):
+        if i >= len(KESIT_GECIKME) or not video.exists():
             continue
+        ks = kayit["kesitler"].get(str(i)) or {}
         yayin = max(ana + KESIT_GECIKME[i], simdi + ISLENME_PAYI)
-        aciklama = (f"{k.get('baslik', '')}\n\nFull story: https://www.youtube.com/watch?v={kayit['video_id']}\n\n"
-                    + meta["aciklama"][meta["aciklama"].find("Sources:"):])  # fmt: skip
-        y = _gonder(yt, govde(k.get("baslik") or meta["baslik"], aciklama, etk + ["shorts"], yayin), video)
-        kayit["kesitler"][str(i)] = {"video_id": y["id"], "yayin": _zaman(yayin)}
-        kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+        if "video_id" not in ks:
+            aciklama = (f"{k.get('baslik', '')}\n\nFull story: https://www.youtube.com/watch?v={kayit['video_id']}\n\n"
+                        + meta["aciklama"][meta["aciklama"].find("Sources:"):])  # fmt: skip
+            y = _gonder(yt, govde(k.get("baslik") or meta["baslik"], aciklama, etk + ["shorts"], yayin), video)
+            ks = {"video_id": y["id"], "yayin": _zaman(yayin)}
+        elif not ks.get("yayin") or dt.datetime.fromisoformat(ks["yayin"].replace("Z", "+00:00")) < ana:
+            _zamanla(yt, ks["video_id"], yayin)  # ana video ertelendiyse kesit ondan önce çıkmasın
+            ks["yayin"] = _zaman(yayin)
+        kayit["kesitler"][str(i)] = ks
+        yaz()
     return kayit
+
+
+def bekleyenler() -> list[Path]:
+    """Yüklenmiş ama zamanlanmamış (kapak bekleyen) işler, eskiden yeniye."""
+    kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
+    out = []
+    for y in sorted(kok.glob("*/yukleme.json")):
+        k = json.loads(y.read_text(encoding="utf-8"))
+        if k.get("video_id") and not k.get("yayin"):
+            out.append(y.parent)
+    return out
 
 
 def kimlik_uygula(yt=None) -> dict:
@@ -175,7 +244,11 @@ def main() -> None:
         if not TOKEN.exists() and not os.environ.get(TOKEN_DEGISKENI):
             print("trend kanalının token'ı yok: yükleme atlandı (kanal açılınca `yukle yetki`)")
             return
-        print(json.dumps(yukle(isler[-1]), indent=1, ensure_ascii=False))
+        # trend tazelik ister: en yeni iş ilk boş yayın gününü alır, kapak bekleyen eskiler sonrakileri
+        print(json.dumps({"is": isler[-1].name, **yukle(isler[-1])}, indent=1, ensure_ascii=False))
+        for b in reversed(bekleyenler()):
+            if b != isler[-1]:
+                print(json.dumps({"is": b.name, **yukle(b)}, indent=1, ensure_ascii=False))
     elif a:
         print(json.dumps(yukle(Path(a[0])), indent=1, ensure_ascii=False))
     else:

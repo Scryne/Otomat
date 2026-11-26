@@ -23,8 +23,9 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 
 1. Yeni anlatıcıyı dinleyip onaylamak (`calisma/trend/ses_ornekleri/7-…` eski, `8-…` yeni). Yetmezse tek ücretli
    seçenek ElevenLabs (Starter $6/ay).
-2. Trend kanalı 11-27'de açıldı (@WhyItsEverywhereNow, ana Google hesabına bağlı Marka Hesabı). Sırada YouTube yetkisi
-   (T2, kanalın açıldığı günden ayrı bir günde), sonra banner/açıklama ve ilk video (Miss Universe).
+2. Trend kanalı açıldı ve yetkilendirildi (11-27). Miss Universe ve Riemann yüklü, private: kapak için kanalın telefon
+   doğrulaması (T3) bekleniyor; sonra `yukle son` ilk boş yayın günlerine zamanlar. Görev `Otomat-Trend-gunluk`
+   Pzt/Çar/Cmt 09:00 (K-49).
 3. 12-19 Faz 8 öldürme ölçümünün sonucuna göre One Ticket Back için karar.
 
 ## v2 fikirleri
