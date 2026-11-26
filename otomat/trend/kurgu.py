@@ -880,6 +880,27 @@ def _hf(args: list[str], dizin: Path, zaman_asimi: int = 3600) -> subprocess.Com
                           encoding="utf-8", errors="replace", timeout=zaman_asimi)  # fmt: skip
 
 
+ARTIK_PS = (
+    "Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'chrome-headless-shell.exe' -and "
+    "$_.CommandLine -like '*\\.cache\\hyperframes\\*' -or ($_.Name -eq 'node.exe' -and "
+    "($_.CommandLine -like '*node_modules\\hyperframes\\bin*' -or $_.CommandLine -like '*held = new Map*' -or "
+    "$_.CommandLine -like '*let clean = false*')) } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force "
+    "-ErrorAction SilentlyContinue; $_.ProcessId }"
+)
+
+
+def artiklari_kapat() -> int:
+    """Koşu sonunda HyperFrames'in asılı kalan node/headless Chrome süreçlerini kapatır. 11-26: `check` ve render
+    bittikten sonra süreçler yaşamaya devam edip proje klasörünü kilitledi (sonraki koşu `proje`yi silemedi). Yalnız
+    HyperFrames'in kendi Chrome'u (~/.cache/hyperframes) ve CLI'si hedeflenir; Windows dışında bir şey yapmaz."""
+    import os
+
+    if os.name != "nt":
+        return 0
+    r = subprocess.run(["powershell", "-NoProfile", "-Command", ARTIK_PS], capture_output=True, text=True, timeout=60)
+    return len([s for s in r.stdout.split() if s.isdigit()])
+
+
 def denetle(dizin: Path) -> dict:
     r = _hf(["check", "--json"], dizin, 900)
     try:

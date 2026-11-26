@@ -522,7 +522,11 @@ def main() -> None:
     a.add_argument("--render-yok", action="store_true")
     g = a.parse_args()
     sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
-    calistir(g.konu, g.id, not g.render_yok)
+    try:
+        calistir(g.konu, g.id, not g.render_yok)
+    finally:
+        if n := kurgu.artiklari_kapat():
+            print(f"asılı HyperFrames süreci kapatıldı: {n}", flush=True)
 
 
 if __name__ == "__main__":
