@@ -135,6 +135,12 @@ def kelimeler(s: str) -> list[str]:
     s = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], s)
     s = re.sub(r"\bdouble oh seven\b|\b00 7\b", "007", s)
     s = s.replace("%", " percent").replace("per cent", "percent")
+    # İngiliz anlatıcı (Ming UK_George) Whisper'da İngiliz yazımıyla çözülüyor: "formalisation", "travelled" farkı
+    # doğru okunmuş parçayı yeniden ürettiriyordu (11-26 Riemann)
+    s = re.sub(r"isation", "ization", s)
+    s = re.sub(r"(?<=[aeiou])ll(?=ed\b|ing\b)", "l", s)
+    s = re.sub(r"our\b", "or", s) if re.search(r"\b(colour|favour|honour|behaviour|labour|neighbour)\b", s) else s
+    s = re.sub(r"\b(cent|theat|met|lit|fib)re\b", r"\1er", s)
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
     # Whisper "three dollars and fifty-five cents" → "$3.55" yazıyor: ondalık sayıya dönmeden söze açılır (Zeppelin)
     s = re.sub(r"\$(\d+)\.(\d\d)\b", r"\1 dollars and \2 cents", s)
