@@ -9,7 +9,9 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 
 ## Ölçüm
 
-- pytest 455 (+1 atlanan), ruff temiz, CI yeşil.
+- pytest 461 (+1 atlanan), ruff temiz, CI yeşil.
+- Trend v3 hattı 11-26 akşamı yeni bir konuda (Miss Universe) gözetimsiz uçtan uca koştu: 9:14 video, kesitli kapak,
+  3 Shorts, kara kare yok, -14 LUFS. Hazır iki video `calisma/trend/2026-11-26-1400-*` (Riemann) ve `-1959-*` (Miss Universe).
 - Trend v3 (11-26): anlatıcı Ming-3.0-tts UK_George (AA kör tercih 1181 ELO; eski Qwen3 931), konuşma dili yazım
   kuralları, görsel ağırlıklı senaryo, baskı düzeni, görsel süzgeci, kesitli kapak, yakın plan kesmesi. Ayrıntı:
   `docs/arastirma/14-trend-kanali.md` bölüm 9.
@@ -26,5 +28,6 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 
 ## v2 fikirleri
 
-- Görsel süzgece küçük resim vermek (başlığı masum, içeriği alakasız fotoğraf: Göttingen kütüphanesi yıkıntısı).
+- Stok klipte tanımadık tek kişi orta planda (izleyici hikâyedeki kişi sanabilir): etiket/istem yetmiyor, görüntüye bakan seçim.
+- Soyut konularda aynı diyagram 4-5 kez: konuya göre üretilen hareketli grafik sahnesi.
 - HyperFrames 0.9.19 → güncel: `check` (yüz üstü metin, güvenli alan) ve `measure` kalite kapısı olarak.
