@@ -102,7 +102,8 @@ def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "", ham: Path | Non
     else:
         shutil.copy2(gorsel, dizin / "assets" / "kapak.jpg")
     if not vurgu:
-        vurgu = max(metin.split(), key=len)  # en uzun kelime vurgulanır (çoğunlukla konunun adı)
+        # en uzun kelime vurgulanır (çoğunlukla konunun adı); noktalama düşer, yoksa "UNDERSTOOD." eşleşmiyordu (11-26)
+        vurgu = max(metin.split(), key=len).strip(".,!?:;")
     (dizin / "index.html").write_text(
         html(metin, "assets/kapak.jpg", vurgu, 600 if kesit_png else 760), encoding="utf-8"
     )
