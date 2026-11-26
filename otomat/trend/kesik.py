@@ -23,8 +23,10 @@ def kes(kaynak: Path, hedef: Path) -> Path | None:
     if not hedef.exists():
         hedef.parent.mkdir(parents=True, exist_ok=True)
         bin_ = MOTOR_DIZIN / "node_modules" / "hyperframes" / "bin" / "hyperframes.mjs"
-        r = subprocess.run(["node", str(bin_), "remove-background", str(kaynak), "-o", str(hedef)], cwd=MOTOR_DIZIN,
-                           env={**os.environ, **HF_ORTAM}, capture_output=True, text=True, timeout=600)  # fmt: skip
+        # CLI proje klasöründe (cwd=MOTOR_DIZIN) çalışır: göreli yol orada bulunmuyordu
+        komut = ["node", str(bin_), "remove-background", str(kaynak.resolve()), "-o", str(hedef.resolve())]
+        r = subprocess.run(komut, cwd=MOTOR_DIZIN, env={**os.environ, **HF_ORTAM}, capture_output=True, text=True,
+                           timeout=600)  # fmt: skip
         if r.returncode != 0 or not hedef.exists():
             print(f"kesit düştü ({kaynak.name}): {(r.stderr or r.stdout)[-200:]}", flush=True)
             return None

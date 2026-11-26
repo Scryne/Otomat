@@ -88,8 +88,41 @@ def kesitli_zemin(ham: Path, kesit_png: Path, hedef: Path) -> Path:
     return hedef
 
 
+def baskili_zemin(ham: Path, hedef: Path) -> Path:
+    """Kesit çıkmayan görsel (diyagram, mekân, nesne) için kapak zemini: görsel sağda eğik bir baskı (beyaz kenar,
+    gölge), altında kendi koyu, bulanık büyütmesi; sol yarı yazıya kalır. 11-26 Riemann: tam ekran diyagramın üstüne
+    binen yazı ikisini de zayıflatıyordu."""
+    from PIL import ImageFilter, ImageOps
+
+    im = ImageOps.exif_transpose(Image.open(ham))
+    if im.mode in ("RGBA", "LA", "P"):
+        im = im.convert("RGBA")
+        kagit = Image.new("RGBA", im.size, (244, 242, 236, 255))
+        kagit.alpha_composite(im)
+        im = kagit
+    im = im.convert("RGB")
+    zemin = ImageOps.fit(im, (W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(24))
+    zemin = Image.blend(zemin, Image.new("RGB", (W, H), (10, 10, 14)), 0.6).convert("RGBA")
+    kopya = im.copy()
+    kopya.thumbnail((int(W * 0.5), int(H * 0.82)), Image.LANCZOS)
+    kenar = max(8, kopya.width // 40)
+    kart = (
+        ImageOps.expand(kopya, border=kenar, fill=(242, 238, 230))
+        .convert("RGBA")
+        .rotate(2.2, resample=Image.BICUBIC, expand=True)
+    )
+    golge = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    x, y = W - kart.width - 40, (H - kart.height) // 2
+    golge.paste((0, 0, 0, 170), (x + 16, y + 22), kart.getchannel("A"))
+    zemin.alpha_composite(golge.filter(ImageFilter.GaussianBlur(20)))
+    zemin.alpha_composite(kart, (x, y))
+    zemin.convert("RGB").save(hedef, "JPEG", quality=94)
+    return hedef
+
+
 def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "", ham: Path | None = None) -> Path:
-    """`ham` (indirilmiş özgün fotoğraf) verilir ve konusu kesilebilirse kesitli düzen, yoksa tam ekran fotoğraf."""
+    """`ham` (indirilmiş özgün fotoğraf) verilir ve konusu kesilebilirse kesitli düzen, kesilemezse baskı düzeni;
+    `ham` yoksa tam ekran fotoğraf."""
     dizin.mkdir(parents=True, exist_ok=True)
     (dizin / "assets").mkdir(exist_ok=True)
     kesit_png = None
@@ -99,13 +132,15 @@ def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "", ham: Path | Non
         kesit_png = kes(ham, dizin / "kesit.png")
     if kesit_png:
         kesitli_zemin(ham, kesit_png, dizin / "assets" / "kapak.jpg")  # type: ignore[arg-type]
+    elif ham is not None:
+        baskili_zemin(ham, dizin / "assets" / "kapak.jpg")
     else:
         shutil.copy2(gorsel, dizin / "assets" / "kapak.jpg")
     if not vurgu:
         # en uzun kelime vurgulanır (çoğunlukla konunun adı); noktalama düşer, yoksa "UNDERSTOOD." eşleşmiyordu (11-26)
         vurgu = max(metin.split(), key=len).strip(".,!?:;")
     (dizin / "index.html").write_text(
-        html(metin, "assets/kapak.jpg", vurgu, 600 if kesit_png else 760), encoding="utf-8"
+        html(metin, "assets/kapak.jpg", vurgu, 600 if ham is not None else 760), encoding="utf-8"
     )
     kare = kurgu.kareler(dizin, [0.0])
     if not kare:
