@@ -304,3 +304,11 @@ sayısı koşudan koşuya ±%10 oynuyor (LLM); kategori yönü ve gözle kare ko
 **Render diski.** 7 dk video 4 işçiyle ~14 GB geçici kare istiyor; diskte 10 GB boştu, render düştü. `kurgu.render`
 bu hatada tek işçiyle (kareler diske yazılmadan kodlayıcıya) yeniden dener: ~25-30 dk. HyperFrames `check` süreci ve
 headless Chrome koşu bittikten sonra asılı kalabiliyor (proje klasörünü kilitledi); elle kapatıldı.
+
+**Sıkı süzgeçle Riemann (v5, 11-26) [Ö].** Havuz 36 → 14 (3 SVG diyagram, 2 Riemann portresi, mezar/anıt, Göttingen
+binaları, matematik modelleri); 50 sahne, 957 kelime, 6:07; -14,0 LUFS, siyah kare yok. Eleştirmen 143 bulgu: tekrar
+35 → 14, anlamsız görsel 35 → 28, P0 21. Gözle kalanlar ve düzeltmeler: yıl sayacı sıfırdan sayıyordu ("0 year…"; yıl
+artık sayılmaz, binlik ayırıcı almaz); stokta tanınabilir tek yüz (izleyici hikâyedeki kişi sanıyor; etiket ve istem
+yasağı); Göttingen kütüphanesinin savaş yıkıntısı fotoğrafı başlığından anlaşılmadığı için süzgeçten geçti. Son
+kusur başlık değil görüntü denetimi ister (sıradaki iş: görsel süzgece küçük resim vermek).
+"Every one" Whisper'da "everyone" olunca sayı farkı 1,0 verip doğru parçayı düşürüyordu: karşılaştırmada birleşir.
