@@ -96,7 +96,7 @@ def asama_kaynak(d: Path, secim: dict) -> dict:
             kota = (10 if gi == 0 else 4) if tur == 0 else 3
             alinan = 0
             for g in grup:
-                if alinan >= kota or len(gorseller) >= 36:
+                if alinan >= kota or len(gorseller) >= 48:  # süzgeç (gorsel_suz) ilgisizleri sonra atar
                     break
                 if g.dosya in gorulen or not kaynak.gorsel_uygun(g):
                     continue
@@ -116,6 +116,36 @@ def asama_kaynak(d: Path, secim: dict) -> dict:
             "haberler": [h.__dict__ for h in haber], "gorseller": indirilen}  # fmt: skip
     _yaz(yol, veri)
     return veri
+
+
+SISTEM_GORSEL_SUZ = """You are the picture researcher of a documentary explainer. You get the STORY and a list of
+freely licensed images found by keyword search (id: file title). Keyword search drags in unrelated files that only share
+a word (a war memorial at the same university, a 1914 book scan, an exam sheet). Keep every image that could honestly
+illustrate a moment of THIS story: its people, places, objects, documents, events, or its general subject shown
+directly. Drop images that are about something else. Return ONLY JSON: {"tut": ["G1", ...]}"""
+
+
+def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 12) -> dict:
+    """Konuyla ilgisiz görselleri senaryodan önce havuzdan atar (11-26 Riemann havuzu: 32 görselin ~10'u Kentucky
+    tarihi, 1914 havacıları, aynı savaş anıtının dört karesi). Eşleştirici anlamca en yakını seçse de ilgili görsel
+    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da çok az bırakırsa havuz olduğu gibi kalır."""
+    from otomat.trend import senaryo as senaryo_m
+
+    g = kay["gorseller"]
+    liste = senaryo_m.gorsel_listesi([_gorsel_nesne(x) for x in g])
+    try:
+        y = oturum.json_sor(SISTEM_GORSEL_SUZ, f"STORY: {hikaye}\n\nIMAGES:\n{liste}", model="glm-5.3",
+                            en_cok=1500, sicaklik=0.0, dusun=False)  # fmt: skip
+        tut = {int(str(k)[1:]) - 1 for k in (y.get("tut") or []) if str(k)[1:].isdigit()}  # type: ignore[union-attr]
+    except Exception as e:  # noqa: BLE001
+        print(f"görsel süzme atlandı: {str(e)[:120]}", flush=True)
+        return {**kay, "suzuldu": True}
+    kalan = [x for i, x in enumerate(g) if i in tut]
+    if len(kalan) < en_az:
+        print(f"görsel süzme {len(kalan)} bırakıyordu (< {en_az}), havuz korunur", flush=True)
+        return {**kay, "suzuldu": True}
+    print(f"görsel süzme: {len(g)} → {len(kalan)}", flush=True)
+    return {**kay, "gorseller": kalan, "suzuldu": True}
 
 
 def _wiki_nesne(dct: dict):
@@ -342,6 +372,9 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     kay = asama_kaynak(d, secim)
     print(f"kaynak: wiki {len(kay['wiki']['metin'])} karakter, {len(kay['haberler'])} haber, "
           f"{len(kay['gorseller'])} görsel", flush=True)  # fmt: skip
+    if not kay.get("suzuldu") and not (d / "senaryo.json").exists():  # kimlikler (G1…) senaryodan önce sabitlenir
+        kay = gorsel_suz(oturum, secim["secim"]["hikaye"], kay)
+        _yaz(d / "kaynak.json", kay)
     gorselleri_hazirla(d, kay)
     sen = asama_senaryo(d, oturum, secim, kay)
     if not sen.get("gorsel_eslendi"):  # anlamla görsel ataması (yanlış kişiyi göstermesin); bir kez, kayıtlı

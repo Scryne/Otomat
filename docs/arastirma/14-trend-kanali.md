@@ -229,3 +229,47 @@ seçer; "ai generated" etiketli klipler elenir. Bond videosunda 55 sahnenin 14'�
 alıntı paneli yüzün üstündeydi (alt banda), dolgulu dikey fotoğrafta derinlik hareketi kesik gibi duruyordu (dolgulu
 fotoğrafa derinlik yok), tekrar sınırı alt yazılı fotoğrafın görselini değiştirip alt yazıyı yanlış görselin altında
 bırakıyordu; sayı sahnesindeki etiket rakam açıklamasıdır, alt yazı korumasından çıkarıldı.
+
+## 9. v3: "gerçek insan gibi" (11-26) [Ö/B]
+
+Scryne (11-26): "sesi gerçek insan sesi gibi yapmalıyız, anlatımı gerçek insan gibi olmalı, videolar da en iyi halinde
+değil." Tam yetkiyle, tek oturumda araştırma + ölçüm + uygulama.
+
+**Ses: neden hâlâ AI gibiydi, ne değişti.**
+- Kök nedenler: (1) model: Artificial Analysis TTS Arena (kör ikili tercih, 11-26) "Qwen3 TTS" 931 ELO (Alibaba bulut
+  sürümü; açık 1.7B ayrıca listelenmiyor), açık ağırlıklılarda Kokoro bile 1060. (2) Kurgu: her sahne (1-2 cümle) ayrı
+  üretilip sabit 0,38 sn sessizlikle yapıştırılıyordu; 55 kez aynı ritim. (3) Metin: "Here's the thing", "Hold that
+  thought", tek satırlık dram cümleleri; konuşmacı ne kadar iyi olursa olsun yazı AI kokuyordu.
+- Açık ağırlıklı sıralama (AA, 11-26): Fish Drama 3 1278 (35B, ~48 GB), Breeze TTS 2 1229 (ağırlık ticari değil),
+  **Ming-3.0-tts 1181** (MIT, 0,5B), Phonon 1108, Fish S2 Pro 1104 (araştırma lisansı), Voxtral 1094 (NC), Kokoro 1060,
+  Higgs V3 1035 (ticari değil), Chatterbox 1021, VibeVoice 1.5B 955. Ticari + 8 GB + bağımsız kıyas üçünü birlikte
+  sağlayan tek model Ming.
+- Yerel ölçüm (aynı 95 kelimelik paragraf, 4060): Ming UK_George 37 sn ses / ~60 sn üretim, ~3 GB VRAM, Whisper farkı
+  0,00, 154 kelime/dk (belgesel anlatım aralığı), perde p5-p95 12,1 yarım ton. `raw_text` (tek parça) kelime düşürüyor
+  (fark 0,25): kullanılmaz. Sayılar ($3.3 billion, 12.5%, 750,000, yıllar) normalleştirmesiz doğru okunuyor; "lbs" harf
+  harf okunuyordu (`soylenis` birimleri açar).
+- Akustik ölçüler doğallığı ayırmadı: Audiobox Aesthetics (CE/PQ) Qwen'i Ming'den yüksek puanladı, perde/duraklama
+  istatistikleri benzer. TTSDS2 (arXiv 2506.19441) da MOS tahmincilerinin alan dışında zayıf olduğunu söylüyor. Karar
+  insan tercih sıralamasına dayandı; kulakla doğrulama Scryne'da (örnekler `calisma/trend/ses_ornekleri/`).
+- Elenenler: VibeVoice (Microsoft kodu kaldırdı, "ticari önerilmez"), Higgs V3 (ticari değil), IndexTTS 2.5 (AA'da
+  yok, Windows'ta DeepSpeed), VoxCPM2 (8 GB sınırda, AA'da yok). Ücretli seçenek ElevenLabs Starter $6/ay hâlâ
+  Scryne'ın kararı.
+
+**Anlatım metni.** Yazar istemi "bir arkadaşına anlatan gerçek kişi" diline çevrildi: cümlelerin çoğu 12-25 kelime ve
+bir öncekine bağlı, bölüm başına en çok bir kısa parça, slogan/üçleme/"X değil Y" yok, şaşırtıcı olduğunu söylemek
+yok. YouTube kalıpları (`YASAK_IFADE`'ye 25 kalıp) kod kapısında; olgu denetçisi tekrar eden olguyu da işaretler.
+
+**Görsel.** Bond videosu ölçümü: 55 sahnenin 36'sı yazılı kart, 19 fotoğrafın 14'ü başlıklı ("slayt"); aynı etkinliğin
+fotoğrafları art arda; dikey fotoğraflar bulanık yan dolguda. Değişenler: en az yarı fotoğraf, başlıklı fotoğraf ≤ 1/3,
+durağan kart ≤ 1/4, durağan karttan dönen fotoğraf başlıksız, art arda en çok üç fotoğraf; dikey fotoğraf "baskı"
+düzeninde (beyaz kenar, gölge, ±1,6° eğim, kenara yakın); bütün fotoğraflara tek film derecelendirmesi; yakın kopya
+(dHash + "-cropped") havuzdan elenir; bölüm kartında dev numara kişinin arkasında (kesit üstte).
+
+**Kapak.** Eski kapak bulanık kalabalık fotoğrafıydı, yüz küçük ve yazının altında. Yeni kapak: HyperFrames
+`remove-background` (0.9.19'da var, CPU'da ~1 sn) ile konu kesiti, sağda kadrajı dolduran boy, beyaz kontur + gölge +
+sıcak ışık halkası, metin solda. Kesit tek ve belirgin konu değilse (kaplama %8-72, en büyük parça ≥ %80) eski düzen.
+
+**HyperFrames 0.9.19 → 0.9.98?** Üç haftada 79 sürüm. Katalogdaki shader geçişleri (light-leak, whip-pan…) tak-çalıştır
+blok değil, tek kompozisyonluk gösterim sayfaları; sahne başına alt kompozisyon yapımıza oturtmak büyük iş. Kullanılan
+yeni şey (`remove-background`) eski sürümde de var. Yükseltme ertelendi; `check` (yüz üstü metin, güvenli alan) ve
+`measure` sonraki adayı.

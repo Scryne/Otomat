@@ -41,8 +41,11 @@ COMMONS_IMAGEINFO = {
 BOLUM_BASLIGI = re.compile(r"^(={2,})\s*(.+?)\s*\1$")
 ATLANAN_BOLUMLER = frozenset({"see also", "references", "external links", "notes", "further reading"})
 # Dekor/infobox dosyaları: adında bu sözcükler geçen görsel anlatıma yakışmaz
-DEKOR_SOZCUKLERI = ("logo", "icon", "flag", "symbol", "map", "coat of arms", "signature", "seal", "diagram")
+DEKOR_SOZCUKLERI = ("logo", "icon", "flag", "symbol", "map", "coat of arms", "signature", "seal")
 BITMAP_MIME = frozenset({"image/jpeg", "image/png", "image/webp"})
+# 11-26: makale diyagramları (SVG) Commons'tan 1920 px PNG olarak iner; soyut konuda (Riemann ispatı) en ilgili
+# görseller bunlardı, "bitmap değil" ve "diagram" sözcüğüyle eleniyordu. Kurguda baskı düzeninde kâğıt üstünde durur.
+VEKTOR_MIME = frozenset({"image/svg+xml"})
 
 
 class KaynakHatasi(RuntimeError):
@@ -223,7 +226,7 @@ def gorsel_uygun(g: Gorsel, en_az_genislik: int = 1000) -> bool:
     """Görsel videoya yakışır mı: bitmap (jpeg/png/webp), genişlik eşik üstü, en-boy oranı
     0.5..2.6 (yatay çok geniş / dikey çok uzun değil), adında dekor sözcüğü (logo, flag, simge…)
     yok. Ölçüler asıl dosyanındır; thumb genişliği değil."""
-    if g.mime not in BITMAP_MIME or g.genislik < en_az_genislik or g.yukseklik <= 0:
+    if g.yukseklik <= 0 or not (g.mime in VEKTOR_MIME or (g.mime in BITMAP_MIME and g.genislik >= en_az_genislik)):
         return False
     if not 0.5 <= g.genislik / g.yukseklik <= 2.6:
         return False

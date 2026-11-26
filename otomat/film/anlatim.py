@@ -87,9 +87,24 @@ def yil_yaziya(m: re.Match) -> str:
     return f"{_iki_hane(bas)} {'oh ' + BIRLER[son] if son < 10 else _iki_hane(son)}"
 
 
+def _ondalik_yaziya(m: re.Match) -> str:
+    """3.3 → "three point three", 12.5 → "twelve point five" (tam kısım < 100 ise sözle; küsurat rakam rakam)."""
+    tam, kusur = m[1], m[2]
+    bas = _iki_hane(int(tam)) if len(tam) <= 2 else tam
+    return f"{bas} point {' '.join(BIRLER[int(c)] for c in kusur)}"
+
+
 def soylenis(metin: str) -> str:
     """TTS'e giden metin: aksanlar sadeleşir (Bahía → Bahia), uzun tire virgüle döner, yıllar yazıya çevrilir."""
     metin = metin.replace(" — ", ", ").replace("—", ", ")  # ascii'ye inmeden önce: tire yoksa düşer
+    # Ming 11-26 (her biçim 3 tohum): "$3.3 billion" 1/3 doğru ("3 billion dollars"), "three point three billion
+    # dollars" 3/3; "007" bir koşuda anlaşılmaz, "double-oh-seven" 3/3. Para önce birimin arkasına alınır.
+    buyukluk = r"(\s?(?:million|billion|trillion|thousand))"
+    metin = re.sub(rf"\$(\d+\.\d+){buyukluk}?\b|\$(\d+){buyukluk}\b",
+                   lambda m: f"{m[1] or m[3]}{m[2] or m[4] or ''} dollars", metin)  # fmt: skip
+    metin = re.sub(r"(?<![\d.,])(\d{1,2})\.(\d{1,2})(?![\d.])", _ondalik_yaziya, metin)
+    metin = re.sub(r"\b007\b", "double-oh-seven", metin)
+    metin = re.sub(r"(?<=[a-z\d])%", " percent", metin)
     metin = re.sub(r"(?<![\d.])(?<!\d,)1[1-9]\d\d(?!\d|,\d)", yil_yaziya, metin)  # 1,066 gibi sayıya dokunmaz
     # birim kısaltması harf harf okunuyordu ("35 lbs" → "L-B-S", Ming 11-26)
     metin = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], metin)
@@ -118,6 +133,8 @@ def kelimeler(s: str) -> list[str]:
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
     # senaryo "35 lbs", ses "35 pounds" der (soylenis açar): iki taraf aynı birime iner
     s = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], s)
+    s = re.sub(r"\bdouble oh seven\b|\b00 7\b", "007", s)
+    s = s.replace("%", " percent").replace("per cent", "percent")
     s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
     # Whisper "three dollars and fifty-five cents" → "$3.55" yazıyor: ondalık sayıya dönmeden söze açılır (Zeppelin)
     s = re.sub(r"\$(\d+)\.(\d\d)\b", r"\1 dollars and \2 cents", s)
@@ -168,6 +185,10 @@ def kelimeler(s: str) -> list[str]:
                 cikti[-1] += k  # "twelve" + "p5"
                 continue
             cikti.append(k)
+    for i in range(len(cikti) - 2):  # "three point three" → 3p3 (Whisper bazen sözle yazar)
+        if cikti[i].isdigit() and cikti[i + 1] == "point" and cikti[i + 2].isdigit():
+            cikti[i : i + 3] = [f"{cikti[i]}p{cikti[i + 2]}", "", ""]
+    cikti = [k for k in cikti if k]
     for i in range(len(cikti) - 2):  # "thirty to forty thousand" = 30000 to 40000 (Whisper aralığı açık yazıyor)
         a, ara, b = cikti[i : i + 3]
         if a.isdigit() and ara in ("to", "or") and b.isdigit():
@@ -252,7 +273,14 @@ def _uret_ming(isler: list[dict], ses: str, dizin: Path) -> None:
         return
     gorev = dizin / "ming_is.json"
     gorev.write_text(json.dumps({"ses": ses, "isler": bekleyen}), encoding="utf-8")
-    subprocess.run([str(MING_PY), "-I", str(Path(__file__).with_name("ming_isci.py")), str(gorev)], check=True)
+    komut = [str(MING_PY), "-I", str(Path(__file__).with_name("ming_isci.py")), str(gorev)]
+    # 11-26: iki Ming süreci aynı anda GPU'dayken yükleme erişim ihlaliyle düştü (0xC0000005). İşçi bitmiş parçaları
+    # atladığı için yeniden çağırmak kaldığı yerden sürer.
+    for deneme in range(3):
+        if subprocess.run(komut).returncode == 0:
+            return
+        print(f"Ming işçisi düştü (deneme {deneme + 1}/3), yeniden", flush=True)
+    raise RuntimeError("Ming işçisi üç kez düştü")
 
 
 def blok_arasi(onceki: str, sonraki: str, temel: float) -> float:

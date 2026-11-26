@@ -28,7 +28,7 @@ STATIK_PAY = 0.25  # 11-26: Bond videosunda 55 sahnenin 36'sı yazılı kart, 19
 BASLIKLI_FOTO_PAY = 0.34  # fotoğraf sahnelerinin en çok üçte biri ekranda başlık taşır; kalanı resim + ses
 KELIME_HEDEF = (650, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
 BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
-SAHNE_KELIME_EN_COK = 34
+SAHNE_KELIME_EN_COK = 40  # 11-26: bağlı konuşma dili (12-25 kelimelik cümleler) 34'ü aşıyordu
 GORSEL_EN_COK = 3  # her sahnenin altında görsel var (11-20); havuz ~36 görsel, komşu sahnede tekrar yok
 MUZIK_RUHLARI = ("merak", "gerilim", "dram", "umut", "enerji", "sakin", "karanlik")
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
@@ -81,13 +81,14 @@ HARD RULES
    SAY it: e.g. "hushed, building suspense", "wry, amused", "fast and urgent", "slow, let it land", "warm, curious").
    Vary it with the story; most scenes are natural and conversational, the big turns get the strong notes.
 6. Scene types (field "tur") and their fields — use the type that SHOWS the line, vary them, never the same type twice
-   in a row. Think like a documentary editor, not a slide designer: at least HALF of all scenes are "foto" (picture +
-   voice), and most foto scenes have NO headline: the picture and the narration carry them. Graphic cards (sayi,
-   ifade, ikili, alinti, zaman) are spice for the moments that need them: ifade+ikili+alinti together at most one
-   quarter of scenes, at most 2 "sayi" per chapter.
+   in a row (except foto: at most 3 foto in a row). Think like a documentary editor, not a slide designer: at least
+   HALF of all scenes are "foto" (picture + voice), and most foto scenes have NO headline: the picture and the narration
+   carry them. Graphic cards (sayi, ifade, ikili, alinti, zaman) are spice for the moments that need them:
+   ifade+ikili+alinti together at most one quarter of scenes, at most 2 "sayi" per chapter.
    - "foto": a real photo from the IMAGE LIST. fields: gorsel (image id like "G3"), baslik (optional on-screen headline,
-     3-7 words, NOT a copy of the narration; only on about one foto scene in three), vurgu (list of 1 word from baslik to highlight), etiket (optional
-     lower-third naming who/what is shown, 2-5 words), ipucu (word from the narration when the headline appears)
+     3-7 words, NOT a copy of the narration; only on about one foto scene in three), vurgu (list of 1 word from
+     baslik to highlight), etiket (optional lower-third naming who/what is shown, 2-5 words, only words that are in
+     the image's title), ipucu (word from the narration when the headline appears)
    - "manset": 2-4 real news headlines from the SOURCE PACK shown as clippings. fields: mansetler [{kaynak (publisher),
      baslik (headline text, may be shortened but not changed in meaning), ipucu (narration word that triggers it)}],
      gorsel (optional background image id)
@@ -142,8 +143,11 @@ SISTEM_BOLUM = (
     + """
 
 YOUR TASK NOW: write the scenes for ONE part of the video (the plan and the scenes written so far are given). Continue
-naturally from the previous scene (no repeated facts, no repeated scene type at the boundary). Hit the target word
-count for this part. Return ONLY JSON: {"sahneler": [{"tur": str, "anlatim": str, "ton": str, "kaynak": [ids], "gorsel": "G..",
+naturally from the previous scene (no repeated scene type at the boundary). Hit the target word count for this part.
+NEVER restate a fact, number or date the viewer already heard in the scenes written so far: a person who just told
+you "17 million lines" doesn't say it again two minutes later. If you need it, call back in at most 5 words ("all
+those lines of code") and add something new. A "sayi" or "ifade" card shows the line it is spoken on: its narration
+says that number or line for the FIRST time, never a scene before or after it. Return ONLY JSON: {"sahneler": [{"tur": str, "anlatim": str, "ton": str, "kaynak": [ids], "gorsel": "G..",
 ...type fields}]}"""
 )
 
@@ -165,6 +169,9 @@ Photo captions ("etiket" of "foto" scenes; in "sayi" scenes etiket labels the nu
 that scene ("gorsel" id): every name, year, role, film or event in a caption must appear in that image's title in the
 IMAGE LIST (e.g. "Pattinson as Batman, 2022" over an image titled
 "Robert Pattinson-65808" is unsupported: fix it to what the title says, e.g. "Robert Pattinson").
+Also flag REPEATS (the one non-factual check, 11-26: "17 million lines" was said three times): a scene whose narration
+restates a fact, number or date already said in an EARLIER scene, beyond a short callback of at most 5 words. Use
+alan "anlatim", sorun "repeat of scene N", and a duzeltme that keeps the scene's new information without the repeat.
 Return ONLY JSON: {"sorunlar": [{"sahne": index, "alan": field, "sorun": what is wrong, "duzeltme": a corrected
 version that the sources support (or "REMOVE")}]}. Empty list if everything is supported."""
 
@@ -330,7 +337,7 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
                 s[i] = {**sh, "tur": "ifade", "metin": sh.get("baslik") or " ".join(sh.get("anlatim", "").split()[:8])}
 
     # 4. durağan sahne ≤ 1/3 ve ardışık aynı durağan tür yok: fazlası görselli foto'ya döner
-    def _foto_yap(i: int) -> bool:
+    def _foto_yap(i: int, zorla: bool = False) -> bool:
         sh = s[i]
         g = sh.get("gorsel") or _en_az_kullanilan(s, gorsel_sayisi, i)
         if not g:
@@ -340,7 +347,7 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         tur = [sh_.get("tur") for sh_ in s]
         tur[i] = "foto"
         for bas in range(max(0, i - 3), i + 1):
-            if bas + 4 <= len(tur) and all(t == "foto" for t in tur[bas : bas + 4]):
+            if not zorla and bas + 4 <= len(tur) and all(t == "foto" for t in tur[bas : bas + 4]):
                 return False
         baslik = sh.get("metin") or sh.get("baslik") or sh.get("etiket") or ""
         if sh.get("tur") == "sayi" and sh.get("deger"):
@@ -376,7 +383,7 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
                 yapilan.append(f"sahne {i}: anlamsız küçük sayı → foto")
     for i in range(1, len(s)):
         tur = s[i].get("tur")
-        if tur not in ("foto", "bolum", "kapanis") and tur == s[i - 1].get("tur") and _foto_yap(i):
+        if tur not in ("foto", "bolum", "kapanis") and tur == s[i - 1].get("tur") and _foto_yap(i, zorla=True):
             yapilan.append(f"sahne {i}: ardışık {s[i - 1].get('tur')} → foto")
     for tur in ("ifade", "ikili", "alinti"):
         for i, sh in enumerate(s):
@@ -436,13 +443,11 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             hata.append(f"sahne {i}: bilinmeyen tür {tur}")
             continue
         n = len(sh.get("anlatim", "").split())
-        sinir = 22 if tur in ("sayi", "ikili", "ifade", "alinti") else (14 if tur == "bolum" else SAHNE_KELIME_EN_COK)
+        sinir = 26 if tur in ("sayi", "ikili", "ifade", "alinti") else (16 if tur == "bolum" else SAHNE_KELIME_EN_COK)
         if not 1 <= n <= sinir:
             hata.append(f"sahne {i} ({tur}): anlatım {n} kelime (en çok {sinir})")
         if i and tur == s[i - 1].get("tur") and tur not in ("foto",):
             hata.append(f"sahne {i}: bir öncekiyle aynı tür ({tur})")
-        if i >= 2 and tur == "foto" == s[i - 1].get("tur") == s[i - 2].get("tur"):
-            hata.append(f"sahne {i}: üç foto üst üste")
         gerek = {"foto": ["gorsel"], "manset": ["mansetler"], "sayi": ["deger", "etiket"], "alinti": ["metin", "kim"],
                  "zaman": ["olaylar"], "bolum": ["baslik"], "ikili": ["sol", "sag"], "ifade": ["metin"],
                  "kapanis": ["metin"], "harita": ["yer", "yer_wiki"]}[tur]  # fmt: skip

@@ -112,15 +112,23 @@ class Oturum:
         raise LLMHatasi(f"model yanıt vermedi: {son}")
 
     def json_sor(self, sistem: str, mesaj: str, **kw) -> dict | list:
-        """Yanıttan JSON çıkarır (```json bloğu ya da ilk { … son }); bozuksa bir kez onarım ister."""
-        metin = self.sor(sistem, mesaj, **kw)
-        try:
-            return json_cikar(metin)
-        except ValueError:
+        """Yanıttan JSON çıkarır (```json bloğu ya da ilk { … son }); bozuksa onarım ister, o da bozuksa soruyu bir kez
+        baştan sorar (11-26: glm-5.3 bölüm yazımında tırnak kaçışı bozuk geldi, tek onarım da düzeltemedi, koşu düştü)."""
+        son_hata: ValueError | None = None
+        for _ in range(2):
+            metin = self.sor(sistem, mesaj, **kw)
+            try:
+                return json_cikar(metin)
+            except ValueError:
+                pass
             onar = self.sor("You fix malformed JSON. Return only valid JSON, nothing else.",
                             f"Fix this into valid JSON with the same content:\n\n{metin}", model=kw.get("model", VARSAYILAN),
                             en_cok=kw.get("en_cok", 8000), sicaklik=0.0, dusun=False)  # fmt: skip
-            return json_cikar(onar)
+            try:
+                return json_cikar(onar)
+            except ValueError as e:
+                son_hata = e
+        raise LLMHatasi(f"geçerli JSON alınamadı: {son_hata}")
 
     def _akis(self, govde: dict) -> dict:
         """Akışlı (SSE) istek: uzun senaryolar 10 dk'yı aşabiliyor; veri aktıkça okuma zaman aşımı işlemez.

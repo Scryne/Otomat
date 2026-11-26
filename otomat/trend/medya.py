@@ -17,7 +17,13 @@ def hazirla(kaynak: Path, hedef: Path, boyut: tuple[int, int] = (1920, 1080), ka
     if hedef.exists() and hedef.stat().st_mtime >= kaynak.stat().st_mtime:
         return hedef
     hedef.parent.mkdir(parents=True, exist_ok=True)
-    im = renk(ImageOps.exif_transpose(Image.open(kaynak)).convert("RGB"))
+    ham = ImageOps.exif_transpose(Image.open(kaynak))
+    if ham.mode in ("RGBA", "LA", "P"):  # saydam diyagram (SVG'den PNG): siyaha değil kâğıda oturur
+        ham = ham.convert("RGBA")
+        kagit = Image.new("RGBA", ham.size, (244, 242, 236, 255))
+        kagit.alpha_composite(ham)
+        ham = kagit
+    im = renk(ham.convert("RGB"))
     gw, gh = boyut
     oran_hedef, oran = gw / gh, im.width / im.height
     if abs(oran - oran_hedef) / oran_hedef < 0.28:  # yakın oran: doldurarak kırp (hafif üst ağırlıklı; yüzler üstte)
