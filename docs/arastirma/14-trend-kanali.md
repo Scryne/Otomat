@@ -276,7 +276,7 @@ yeni şey (`remove-background`) eski sürümde de var. Yükseltme ertelendi; `ch
 
 **Görsel havuzu.** Riemann (soyut konu) havuzunda 32 görselin ~19'u ilgisizdi (savaş anıtı, sınav kâğıdı, Kentucky
 tarihi, alakasız matematikçiler: "yanlış kişiyi gösterme" riski). Senaryodan önce glm-5.3 başlıklara bakıp ilgisizleri
-atar (`uretim.gorsel_suz`, 12'den aza inerse havuz korunur); tavan 36 → 48; makale diyagramları (SVG) 1920 px PNG olarak
+atar (`uretim.gorsel_suz`; portre yalnız adı geçen kişininse, mekân yalnız hikâyenin geçtiği yerse; 6'dan aza inerse havuz korunur, boşluğu stok video doldurur); tavan 36 → 48; makale diyagramları (SVG) 1920 px PNG olarak
 alınır, saydam zemin kâğıda oturur. Süzgeç sonrası havuz küçük kalınca kart → fotoğraf dönüşümü görsel bulamıyordu:
 dönüşüm "aynı tür art arda" için zorlanabilir, kelime sınırı yeni üsluba göre (fotoğraf 40, kart 26, bölüm 16).
 
@@ -292,3 +292,15 @@ yazıya çevirir; Whisper karşılaştırması (`kelimeler`) iki biçimi aynı b
 - **K-46: yazım dili konuşma dili.** Kalıp listesi kod kapısında; tekrar eden olgu olgu denetçisinde.
 - **K-47: video görsel ağırlıklı.** Oranlar senaryo kapısında; baskı düzeni, renk ve süzgeçler `medya`/`uretim`'de.
 - **K-48: kapak konu kesitiyle.** HyperFrames `remove-background` (yerel); konu belirgin değilse tam ekran fotoğraf.
+
+**Kurgu eleştirmeni (Riemann, 11-26) ve buna göre değişenler.** İlk geçiş 156 bulgu: anlamsız görsel 35, tekrar
+("kare 11 ile 12 aynı") 35, boş kadraj 24, okunmuyor 23. Değişenler: 6 sn'den uzun durağan görüntülü sahnede ortaya en
+yakın kelime başında %16 yakın plan kesmesi (aynı görsel ikinci çekim olur); stokta soyut hareketli grafik etiketleri
+(animation, icon, 3d render, abstract, loop…) sözcük sınırıyla elenir; baskı boyu 0,84 → 0,74 (kamera ve yakın plan
+altında kenar kesilmesin); baskı zemini 46 px bulanık + %55 koyu düz gri yerine 16 px alan derinliği + vinyet. İkinci
+geçiş 166 bulgu (tekrar 35 → 27; küçülen baskıyla boş kadraj 24 → 36, zemin bu yüzden yenilendi). Eleştirmenin toplam
+sayısı koşudan koşuya ±%10 oynuyor (LLM); kategori yönü ve gözle kare kontrolü esas alınır.
+
+**Render diski.** 7 dk video 4 işçiyle ~14 GB geçici kare istiyor; diskte 10 GB boştu, render düştü. `kurgu.render`
+bu hatada tek işçiyle (kareler diske yazılmadan kodlayıcıya) yeniden dener: ~25-30 dk. HyperFrames `check` süreci ve
+headless Chrome koşu bittikten sonra asılı kalabiliyor (proje klasörünü kilitledi); elle kapatıldı.

@@ -328,14 +328,16 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         g = sh.get("gorsel")
         komsu = i > 0 and g and str(s[i - 1].get("gorsel")) == str(g)
         if g and (_gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK or komsu):
-            yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
+            yeni = _en_az_kullanilan(s, gorsel_sayisi, i) or _en_az_kullanilan(s, gorsel_sayisi, i, GORSEL_EN_COK + 1)
             if yeni:
                 sh["gorsel"] = yeni
             else:
                 sh.pop("gorsel", None)
             yapilan.append(f"sahne {i}: görsel {g} → {yeni or 'yok'}")
-            if sh.get("tur") == "foto" and not sh.get("gorsel"):
-                s[i] = {**sh, "tur": "ifade", "metin": sh.get("baslik") or " ".join(sh.get("anlatim", "").split()[:8])}
+            # görselsiz fotoğraf yalnız kendi başlığı varsa ifade kartına döner; anlatımın ilk kelimeleri ekrana yarım
+            # cümle olarak çıkıyordu. Başlıksızsa görselsiz kalır, stok video aşaması doldurur.
+            if sh.get("tur") == "foto" and not sh.get("gorsel") and sh.get("baslik"):
+                s[i] = {**sh, "tur": "ifade", "metin": sh["baslik"]}
 
     # 4. durağan sahne ≤ 1/3 ve ardışık aynı durağan tür yok: fazlası görselli foto'ya döner
     def _foto_yap(i: int, zorla: bool = False) -> bool:

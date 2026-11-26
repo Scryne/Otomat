@@ -121,14 +121,17 @@ def asama_kaynak(d: Path, secim: dict) -> dict:
 SISTEM_GORSEL_SUZ = """You are the picture researcher of a documentary explainer. You get the STORY and a list of
 freely licensed images found by keyword search (id: file title). Keyword search drags in unrelated files that only share
 a word (a war memorial at the same university, a 1914 book scan, an exam sheet). Keep every image that could honestly
-illustrate a moment of THIS story: its people, places, objects, documents, events, or its general subject shown
-directly. Drop images that are about something else. Return ONLY JSON: {"tut": ["G1", ...]}"""
+illustrate a moment of THIS story: its named people, the places where it happens, its objects, documents, events,
+or its subject shown directly (a diagram of the actual thing). Drop: portraits of anyone who is not named in the story
+(an unnamed or different person is the wrong person on screen), places that only share a city or institution with the
+story, and anything from an unrelated era or event (war ruins, an old book scan). When unsure, drop. Return ONLY JSON:
+{"tut": ["G1", ...]}"""
 
 
-def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 12) -> dict:
+def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 6) -> dict:
     """Konuyla ilgisiz görselleri senaryodan önce havuzdan atar (11-26 Riemann havuzu: 32 görselin ~10'u Kentucky
     tarihi, 1914 havacıları, aynı savaş anıtının dört karesi). Eşleştirici anlamca en yakını seçse de ilgili görsel
-    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da çok az bırakırsa havuz olduğu gibi kalır."""
+    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da 6'dan az bırakırsa havuz olduğu gibi kalır; az ama doğru görselin boşluğunu stok video doldurur."""
     from otomat.trend import senaryo as senaryo_m
 
     g = kay["gorseller"]
