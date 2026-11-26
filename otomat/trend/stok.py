@@ -106,7 +106,8 @@ Rules:
 - Never for a scene that names or is about a specific person, quotes someone, or has a photo caption: those keep the
   photo. Never for a scene that needs a specific real place or object the stock library cannot have.
 - Prefer scenes whose line is about a general idea, mood, industry, reaction, place type or action.
-- Choose about {n} scenes, spread through the video, never two neighbouring scenes.
+- Choose about {n} scenes, spread through the video, never two neighbouring scenes. Scenes marked [NO PHOTO: needs
+  footage] have no picture at all: choose every one of them you can.
 - For each, write a 2-4 word English stock-footage search query describing what should be SEEN (concrete, visual:
   "paparazzi camera flashes", "london street night", "film crew on set"), not the abstract topic.
 Return ONLY JSON: {{"secimler": [{{"i": scene index, "sorgu": "..."}}]}}"""
@@ -125,8 +126,11 @@ def broll_sec(oturum: Oturum, sahneler: list[dict]) -> list[dict]:
         if sh.get("tur") in ("harita", "kapanis"):
             continue
         kilit = " [KEEP PHOTO]" if sh.get("tur") == "alinti" or sh.get("etiket") or sh.get("gorsel_uyum") == 2 else ""
+        if sh.get("tur") == "foto" and not sh.get("gorsel"):
+            kilit = " [NO PHOTO: needs footage]"  # görsel havuzu tükenmiş sahne: önce bunlar seçilir
         satirlar.append(f"{i}. [{sh.get('tur')}]{kilit} {sh.get('anlatim', '')}")
-    n = max(3, int(len(sahneler) * ORAN))
+    gorselsiz = sum(1 for sh in sahneler if sh.get("tur") == "foto" and not sh.get("gorsel"))
+    n = max(3, int(len(sahneler) * ORAN), gorselsiz)
     y = oturum.json_sor(SISTEM_SEC.format(n=n), "\n".join(satirlar), model=MODEL, en_cok=4000, sicaklik=0.3,
                         dusun=False)  # fmt: skip
     out, alinan = [], set()
@@ -138,7 +142,8 @@ def broll_sec(oturum: Oturum, sahneler: list[dict]) -> list[dict]:
         sh = sahneler[i] if 0 <= i < len(sahneler) else None
         if not sh or sh.get("tur") in ("harita", "kapanis", "alinti") or sh.get("etiket") or not s.get("sorgu"):
             continue
-        if {i - 1, i + 1} & alinan or len(out) >= n:
+        gorselsiz = sh.get("tur") == "foto" and not sh.get("gorsel")
+        if (not gorselsiz and {i - 1, i + 1} & alinan) or len(out) >= n:  # görselsiz sahnede komşu kuralı yok
             continue
         alinan.add(i)
         out.append({"i": i, "sorgu": str(s["sorgu"])[:60]})

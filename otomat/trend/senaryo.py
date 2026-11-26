@@ -457,7 +457,9 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             hata.append(f"sahne {i} ({tur}): anlatım {n} kelime (en çok {sinir})")
         if i and tur == s[i - 1].get("tur") and tur not in ("foto",):
             hata.append(f"sahne {i}: bir öncekiyle aynı tür ({tur})")
-        gerek = {"foto": ["gorsel"], "manset": ["mansetler"], "sayi": ["deger", "etiket"], "alinti": ["metin", "kim"],
+        # görselsiz fotoğraf hata değil (11-26 Miss Universe: süzgeç 8 görsel bıraktı): stok video öncelikle onları
+        # doldurur, kalanı kapak görselinin koyu halini alır (uretim.plan_kur)
+        gerek = {"foto": [], "manset": ["mansetler"], "sayi": ["deger", "etiket"], "alinti": ["metin", "kim"],
                  "zaman": ["olaylar"], "bolum": ["baslik"], "ikili": ["sol", "sag"], "ifade": ["metin"],
                  "kapanis": ["metin"], "harita": ["yer", "yer_wiki"]}[tur]  # fmt: skip
         for alan in gerek:

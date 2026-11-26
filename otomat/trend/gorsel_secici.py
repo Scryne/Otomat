@@ -33,7 +33,8 @@ Then, among the images you keep, list GROUPS of images that show the same subjec
 from outside, the same person at the same event, the same chart): a viewer would see them as the same shot repeated.
 Order each group best first (sharpest, most telling). Images with no near-twin are not listed.
 Return ONLY JSON: {"tut": ["G1", ...], "gruplar": [["G3", "G7", "G9"], ...]}"""
-GRUP_EN_COK = 2  # aynı konudan en çok iki görsel kalır (11-26 Miss Universe: kolezyumun 7 fotoğrafı ~15 sahnede)
+GRUP_EN_COK = 3  # aynı konudan en çok üç görsel (11-26 Miss Universe: kolezyumun 7 fotoğrafı ~15 sahnede; 2'de havuz
+#                 8 görsele inip sahneler görselsiz kaldı)
 
 
 def _yazi_tipi(boy: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
