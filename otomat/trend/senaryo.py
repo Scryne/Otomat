@@ -40,7 +40,8 @@ YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game change
                "nobody saw it coming", "little did", "fast forward", "spoiler", "plot twist", "make no mistake",
                "the answer might surprise you", "the answer may surprise you", "stay with me", "but wait",
                "it's not just", "this isn't just", "more than just", "at the end of the day",
-               "in a world where", "and that's when", "it all started")  # fmt: skip
+               "in a world where", "and that's when", "it all started",
+               "here's where", "took a turn", "nobody expected", "gets interesting")  # fmt: skip
 
 SISTEM_YAZAR = """You are the head writer of a fast, smart YouTube explainer channel about whatever the world is talking
 about right now. Faceless, narrated, motion-graphics heavy. Viewers arrive curious ("why is everyone talking about X?")
@@ -277,11 +278,11 @@ def _gorsel_say(sahneler: list[dict]) -> Counter:
     return Counter(str(sh.get("gorsel")) for sh in sahneler if sh.get("gorsel"))
 
 
-def _en_az_kullanilan(sahneler: list[dict], gorsel_sayisi: int, i: int) -> str | None:
+def _en_az_kullanilan(sahneler: list[dict], gorsel_sayisi: int, i: int, sinir: int = GORSEL_EN_COK) -> str | None:
     """i. sahne için en az kullanılmış görsel (komşu sahnelerinkinden farklı)."""
     say = _gorsel_say(sahneler)
     komsu = {str(sahneler[j].get("gorsel")) for j in (i - 1, i + 1) if 0 <= j < len(sahneler)}
-    adaylar = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in komsu and say[f"G{k}"] < GORSEL_EN_COK]
+    adaylar = [f"G{k}" for k in range(1, gorsel_sayisi + 1) if f"G{k}" not in komsu and say[f"G{k}"] < sinir]
     return min(adaylar, key=lambda g: (say[g], int(g[1:]))) if adaylar else None
 
 
@@ -339,7 +340,13 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     # 4. durağan sahne ≤ 1/3 ve ardışık aynı durağan tür yok: fazlası görselli foto'ya döner
     def _foto_yap(i: int, zorla: bool = False) -> bool:
         sh = s[i]
-        g = sh.get("gorsel") or _en_az_kullanilan(s, gorsel_sayisi, i)
+        # 11-26 Riemann: süzgeç sonrası 16 görselin hepsi 3 kez kullanılmıştı, durağan kart düşürülemiyordu. Kart
+        # fotoğrafa dönerken son çare 4. kullanım (komşu tekrar yine yok); stok video kişisiz sahnelerin bir kısmını alır.
+        g = (
+            sh.get("gorsel")
+            or _en_az_kullanilan(s, gorsel_sayisi, i)
+            or _en_az_kullanilan(s, gorsel_sayisi, i, GORSEL_EN_COK + 1)
+        )
         if not g:
             return False
         # en çok üç fotoğraf art arda (11-26: sahnelerin yarısı fotoğraf hedefi; belgeselde ardışık fotoğraf doğal,
@@ -472,7 +479,7 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             if y in metin:
                 hata.append(f"sahne {i}: yasak ifade '{y}'")
     for g, n in gorsel_kullanim.items():
-        if n > GORSEL_EN_COK:
+        if n > GORSEL_EN_COK + 1:  # +1: yapi_onar'ın kart → fotoğraf son çaresi (küçük havuz)
             hata.append(f"görsel {g} {n} kez kullanılmış (en çok {GORSEL_EN_COK})")
     for i, sh in enumerate(s[:-1]):
         if sh.get("tur") == "kapanis":
