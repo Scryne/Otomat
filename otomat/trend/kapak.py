@@ -18,6 +18,8 @@ W, H = 1280, 720
 
 
 def html(metin: str, gorsel: str, vurgu: str = "", genislik: int = 760) -> str:
+    # kesitli/baskılı düzende görsel zaten sağda ve koyu zeminde: degrade yalnız yazı alanını karartır, konuyu değil
+    karart_orta, karart_son = (34, 52) if genislik < 760 else (48, 72)
     kelimeler = metin.upper().split()
     v = vurgu.upper()
     satir = " ".join(f'<span class="{"v" if k.strip(".,!?") == v else ""}">{_e(k)}</span>' for k in kelimeler)
@@ -31,8 +33,8 @@ def html(metin: str, gorsel: str, vurgu: str = "", genislik: int = 760) -> str:
   html, body {{ width:{W}px; height:{H}px; overflow:hidden; background:{RENK["murekkep"]}; }}
   #root {{ position:relative; width:100%; height:100%; overflow:hidden; }}
   .foto {{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }}
-  .karart {{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.82) 0%, rgba(0,0,0,.45) 48%,
-             rgba(0,0,0,0) 72%); }}
+  .karart {{ position:absolute; inset:0; background:linear-gradient(90deg, rgba(0,0,0,.82) 0%,
+             rgba(0,0,0,.45) {karart_orta}%, rgba(0,0,0,0) {karart_son}%); }}
   .metin {{ position:absolute; left:56px; top:50%; transform:translateY(-50%); width:{genislik}px;
             font-family:'League Gothic', sans-serif; font-size:{boy}px; line-height:.9; color:#fff;
             text-shadow:0 6px 24px rgba(0,0,0,.6); }}
@@ -108,7 +110,7 @@ def baskili_zemin(ham: Path, hedef: Path) -> Path:
     zemin = ImageOps.fit(im, (W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(24))
     zemin = Image.blend(zemin, Image.new("RGB", (W, H), (10, 10, 14)), 0.6).convert("RGBA")
     kopya = im.copy()
-    kopya.thumbnail((int(W * 0.5), int(H * 0.82)), Image.LANCZOS)
+    kopya.thumbnail((int(W * 0.43), int(H * 0.8)), Image.LANCZOS)  # yazı ~660 px'e uzanır, baskı ondan sonra başlar
     kenar = max(8, kopya.width // 40)
     kart = (
         ImageOps.expand(kopya, border=kenar, fill=(242, 238, 230))
