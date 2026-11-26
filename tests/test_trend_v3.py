@@ -203,3 +203,19 @@ def test_diyagram_kagitta_buyuk_ve_derinliksiz(tmp_path):
     assert im.size == (1920, 1080)
     kose, orta_zemin = im.getpixel((8, 8)), im.getpixel((960, 900))
     assert all(abs(a - b) <= 3 for a, b in zip(kose, orta_zemin, strict=True))  # beyaz kâğıda erimiş, yama yok
+
+
+def test_bayat_ham_video_yeniden_render_edilir(tmp_path):
+    from otomat.trend import uretim
+
+    proje = tmp_path / "proje"
+    (proje / "compositions").mkdir(parents=True)
+    (proje / "index.html").write_text("<a>", encoding="utf-8")
+    (proje / "compositions" / "s01.html").write_text("g10.jpg", encoding="utf-8")
+    ham = tmp_path / "video_ham.mp4"
+    ham.write_bytes(b"x")
+    assert not uretim.guncel_render(proje, ham)  # damgasız ham video güvenilmez
+    uretim.render_damgala(proje, ham)
+    assert uretim.guncel_render(proje, ham)
+    (proje / "compositions" / "s01.html").write_text("g04.jpg", encoding="utf-8")  # sahnenin görseli değişti
+    assert not uretim.guncel_render(proje, ham)

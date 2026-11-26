@@ -432,9 +432,11 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     if not render_yap:
         return proje
     ham = d / "video_ham.mp4"
-    if not ham.exists():
-        kurgu.render(proje, ham)
     son = d / "video.mp4"
+    if not guncel_render(proje, ham):
+        kurgu.render(proje, ham)
+        render_damgala(proje, ham)
+        son.unlink(missing_ok=True)
     if not son.exists():
         ses_seviyesi(ham, son)
     print("video:", son, flush=True)
@@ -444,6 +446,28 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     asama_kapak(d, sen, kay)
     asama_kesitler(d, sen, plan, varlik, kay)
     return son
+
+
+def _proje_ozeti(proje: Path) -> str:
+    import hashlib
+
+    h = hashlib.sha1()
+    for p in sorted([proje / "index.html", proje / "plan.json", *(proje / "compositions").glob("*.html")]):
+        if p.exists():
+            h.update(p.name.encode() + p.read_bytes())
+    return h.hexdigest()
+
+
+def guncel_render(proje: Path, ham: Path) -> bool:
+    """Ham video bu projenin şimdiki halinden mi render edildi. 11-26: sahneye yeni görsel atanıp yeniden koşulunca
+    önceki render'ın `video_ham.mp4`'ü yerinde durduğu için yeniden kullanıldı, eski görseller videoda kaldı. Ham
+    videonun yanında render edildiği projenin özeti tutulur; özet tutmuyorsa (ya da yoksa) yeniden render edilir."""
+    damga = ham.with_suffix(".proje")
+    return ham.exists() and damga.exists() and damga.read_text(encoding="utf-8").strip() == _proje_ozeti(proje)
+
+
+def render_damgala(proje: Path, ham: Path) -> None:
+    ham.with_suffix(".proje").write_text(_proje_ozeti(proje), encoding="utf-8")
 
 
 def asama_kapak(d: Path, sen: dict, kay: dict) -> Path:
@@ -505,8 +529,9 @@ def asama_kesitler(d: Path, sen: dict, plan: dict, varlik: dict, kay: dict) -> l
         kesit.proje_yaz(plan, {**k, "sahneler": idx}, kd / "proje", varlik, dikey)
         _yaz(kd / "denetim.json", kurgu.denetle(kd / "proje"))
         ham = kd / "kesit_ham.mp4"
-        if not ham.exists():
+        if not guncel_render(kd / "proje", ham):
             kurgu.render(kd / "proje", ham)
+            render_damgala(kd / "proje", ham)
         ses_seviyesi(ham, son)
         print(f"kesit {ki + 1}:", son, flush=True)
         out.append(son)
