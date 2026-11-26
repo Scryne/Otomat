@@ -943,10 +943,16 @@ def inceleme_sayfalari(dizin: Path) -> list[Path]:
 
 
 def render(dizin: Path, cikti: Path, kalite: str = "standard", isci: int = 4) -> Path:
-    r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", str(isci), "-f", str(FPS)], dizin, 4 * 3600)
-    if (r.returncode or not cikti.exists()) and "temporary frame storage" in (r.stderr or "") + (r.stdout or ""):
-        # 11-26: 7 dk'lık video 4 işçiyle ~14 GB geçici kare istiyor; disk yetmezse tek işçi kareleri diske yazmadan
-        # kodlayıcıya akıtır (yavaş ama sığar)
+    import shutil as _sh
+
+    # 11-26: 7 dk'lık video 4 işçiyle ~14 GB geçici kare istiyor. Ön tahmin kimi zaman sığar deyip yarıda ENOSPC
+    # veriyor; boş yer 20 GB'ın altındaysa doğrudan tek işçi (kareleri diske yazmadan kodlayıcıya akıtır, yavaş ama sığar)
+    if isci > 1 and _sh.disk_usage(Path.home()).free < 20 * 1024**3:
+        print("render: disk dar, tek işçiyle akış", flush=True)
+        isci = 1
+    r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", str(isci), "-f", str(FPS)], dizin, 8 * 3600)
+    hata = (r.stderr or "") + (r.stdout or "")
+    if (r.returncode or not cikti.exists()) and isci > 1 and ("temporary frame storage" in hata or "ENOSPC" in hata):
         print("render: disk yetmedi, tek işçiyle akış", flush=True)
         r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", "1", "-f", str(FPS)], dizin, 8 * 3600)
     if r.returncode or not cikti.exists():
