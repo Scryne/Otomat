@@ -219,7 +219,34 @@ ISLEME = {  # zemin işleme: (blur, dof, karartma katmanı CSS)
 }
 
 
+VURUS_SURE = 6.0  # bu süreden uzun durağan görüntülü sahnede ortada yakın plan kesmesi
+VURUS_ODAK = ("50% 38%", "40% 42%", "60% 42%", "50% 50%")
+
+
+def vurus_ani(sh: dict) -> float | None:
+    """Yakın plan kesmesinin anı: sahne ortasına en yakın kelime başı (kesme konuşmanın ritmine oturur). Kısa sahne,
+    stok klip ve harita için None."""
+    sure = float(sh.get("sure") or 0)
+    if sure < VURUS_SURE or sh.get("klip") or sh.get("video"):
+        return None
+    adaylar = [float(k["s"]) for k in sh.get("kelimeler") or [] if 0.35 * sure <= float(k["s"]) <= 0.65 * sure]
+    return min(adaylar, key=lambda t: abs(t - sure / 2)) if adaylar else round(sure / 2, 3)
+
+
 def zemin(sh: dict, tohum: int, isle: str = "dogal", w: int = GENISLIK, h: int = YUKSEKLIK) -> tuple[str, str]:
+    """Zemin katmanı + uzun sahnede yakın plan kesmesi (punch-in). 11-26 eleştirmen: 7-9 sn'lik fotoğraf sahnelerinde
+    "kare 11 ile 12 aynı" (35 bulgu); açıklayıcı kurgusunda çekim 4-6 sn'de bir değişir. Aynı görsel %16 yakın ve başka
+    bir odakla ikinci çekim olur; hareket (parallax/kamera) sürer."""
+    html_, js = _zemin_ic(sh, tohum, isle, w, h)
+    t = vurus_ani(sh)
+    if t is None:
+        return html_, js
+    odak = VURUS_ODAK[tohum % len(VURUS_ODAK)]
+    js += f"\ntl.set(S('.cek'), {{scale:1.16, transformOrigin:'{odak}'}}, {t:.3f});"
+    return f'<div class="cek" style="position:absolute;inset:0;overflow:hidden">{html_}</div>', js
+
+
+def _zemin_ic(sh: dict, tohum: int, isle: str = "dogal", w: int = GENISLIK, h: int = YUKSEKLIK) -> tuple[str, str]:
     """Her sahnenin altındaki hareketli görüntü katmanı: (HTML, JS). Düz renk zemin yok (11-20 geri bildirimi).
 
     Öncelik: `klip` (stok video) → `gorsel` + `derinlik` (2.5D parallax) → `gorsel` (kamera) → hareketli koyu doku.

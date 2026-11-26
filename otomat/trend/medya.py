@@ -68,7 +68,9 @@ def baski(im: Image.Image, boyut: tuple[int, int], ad: str) -> Image.Image:
     zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(46))
     zemin = Image.blend(zemin, Image.new("RGB", boyut, (16, 13, 11)), 0.55)
     yatay_boyut = gw > gh
-    oran_ = 0.84 if yatay_boyut else 0.62  # yatay videoda boy, dikeyde en sınırı
+    # yatay videoda boy sınırı 0,74: kamera (×1,12) ve yakın plan kesmesi (×1,16) altında kadraja sığsın (11-26
+    # eleştirmen: 0,84'te eğik baskının alt/üst kenarı kesiliyordu)
+    oran_ = 0.74 if yatay_boyut else 0.62
     kopya = im.copy()
     kopya.thumbnail((int(gw * (0.9 if not yatay_boyut else 0.6)), int(gh * oran_ if yatay_boyut else gh * 0.5)),
                     Image.LANCZOS)  # fmt: skip

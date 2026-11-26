@@ -30,7 +30,29 @@ UC = "https://pixabay.com/api/videos/"
 UA = {"User-Agent": "otomat-trend/1.0"}
 ONBELLEK = KOK / "calisma" / "trend" / "_stok_onbellek"
 ORAN = 0.4  # sahnelerin en çok bu kadarı stok video (geri kalanı konunun gerçek fotoğrafları)
-YASAK_ETIKET = ("ai generated", "ai-generated", "generated", "artificial intelligence render")
+YASAK_ETIKET = (
+    "ai generated",
+    "ai-generated",
+    "generated",
+    "artificial intelligence render",
+    # 11-26 Riemann: soyut hareketli grafik (beyaz zeminde ikon, siyahta tek harita iğnesi) eleştirmende
+    # "boş kadraj" oldu; belgesel b-roll'u gerçek çekim ister
+    "animation",
+    "animated",
+    "motion graphic",
+    "3d render",
+    "render",
+    "particles",
+    "abstract",
+    "background loop",
+    "loop",
+    "cartoon",
+    "icon",
+    "infographic",
+    "hologram",
+    "intro",
+    "logo",
+)
 MODEL = "glm-5.3"
 
 
@@ -64,7 +86,7 @@ def ara(sorgu: str, n: int = 8) -> list[dict]:
 
 def uygun(hit: dict, sure: float) -> bool:
     etiket = str(hit.get("tags", "")).lower()
-    if any(y in etiket for y in YASAK_ETIKET):
+    if any(re.search(rf"\b{re.escape(y)}\b", etiket) for y in YASAK_ETIKET):  # sözcük sınırı: "iconic" ≠ "icon"
         return False
     m = (hit.get("videos") or {}).get("medium") or {}
     return bool(m.get("url")) and int(m.get("width", 0)) >= 1280 and float(hit.get("duration", 0)) >= min(sure, 5.0)
@@ -83,7 +105,9 @@ Rules:
 Return ONLY JSON: {{"secimler": [{{"i": scene index, "sorgu": "..."}}]}}"""
 
 SISTEM_ADAY = """For each scene you get its narration and up to 6 stock clips (id: tags). Pick the clip whose tags
-best show what the line is about, or null if none fits (wrong country, wrong era, unrelated subject, cartoon/animation).
+best show what the line is about, or null if none fits (wrong country, wrong era, unrelated subject, cartoon/animation,
+icons or graphics on a plain background, an empty frame with one small object). Only real filmed footage with a clear
+subject in a real place.
 Return ONLY JSON: {"secim": [{"i": scene index, "id": clip id or null}]}"""
 
 

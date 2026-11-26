@@ -124,3 +124,23 @@ def test_bolum_karti_kesitli_derinlik():
     assert "SA('.kat')" in h  # fotoğraf ve kesit aynı kamerayla
     duz = kurgu.sahne_bolum({**sh, "kesit": None}, "kesme", 1)
     assert 'class="dev gb"' not in duz
+
+
+def test_uzun_sahnede_yakin_plan_kesmesi_kelime_basinda():
+    kel = [{"w": "a", "s": 1.0, "e": 1.2}, {"w": "b", "s": 3.4, "e": 3.7}, {"w": "c", "s": 4.5, "e": 4.8}]
+    sh = {"id": "s09", "sure": 8.0, "gorsel": "assets/img/g01.jpg", "kelimeler": kel}
+    assert kurgu.vurus_ani(sh) == 3.4  # ortaya (4,0) en yakın kelime başı, %35-65 aralığında
+    h, js = kurgu.zemin(sh, 2)
+    assert h.startswith('<div class="cek"') and "tl.set(S('.cek'), {scale:1.16" in js and "3.400" in js
+    assert kurgu.vurus_ani({**sh, "sure": 5.0}) is None  # kısa sahne
+    assert kurgu.vurus_ani({**sh, "klip": "assets/klip/x.mp4"}) is None  # stok video zaten hareketli
+
+
+def test_stok_soyut_grafik_etiketleri_elenir():
+    from otomat.trend import stok
+
+    hit = {"duration": 20, "videos": {"medium": {"url": "u", "width": 1920}}}
+    assert stok.uygun({**hit, "tags": "city, night, traffic"}, 6)
+    assert stok.uygun({**hit, "tags": "iconic, bridge"}, 6)  # sözcük sınırı
+    assert not stok.uygun({**hit, "tags": "social media, icon, network"}, 6)
+    assert not stok.uygun({**hit, "tags": "3d render, abstract"}, 6)
