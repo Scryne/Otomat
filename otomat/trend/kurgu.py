@@ -914,6 +914,11 @@ def inceleme_sayfalari(dizin: Path) -> list[Path]:
 
 def render(dizin: Path, cikti: Path, kalite: str = "standard", isci: int = 4) -> Path:
     r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", str(isci), "-f", str(FPS)], dizin, 4 * 3600)
+    if (r.returncode or not cikti.exists()) and "temporary frame storage" in (r.stderr or "") + (r.stdout or ""):
+        # 11-26: 7 dk'lık video 4 işçiyle ~14 GB geçici kare istiyor; disk yetmezse tek işçi kareleri diske yazmadan
+        # kodlayıcıya akıtır (yavaş ama sığar)
+        print("render: disk yetmedi, tek işçiyle akış", flush=True)
+        r = _hf(["render", "-o", str(cikti), "-q", kalite, "-w", "1", "-f", str(FPS)], dizin, 8 * 3600)
     if r.returncode or not cikti.exists():
         raise RuntimeError((r.stderr or r.stdout)[-3000:])
     return cikti

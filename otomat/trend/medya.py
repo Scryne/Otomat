@@ -65,8 +65,16 @@ def baski(im: Image.Image, boyut: tuple[int, int], ad: str) -> Image.Image:
     olarak sahneler. Yerleşim ve eğim dosya adından türer (tekrarlanabilir, komşu sahneler farklı)."""
     gw, gh = boyut
     iz = sum(ad.encode()) % 997
-    zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(46))
-    zemin = Image.blend(zemin, Image.new("RGB", boyut, (16, 13, 11)), 0.55)
+    # zemin: aynı fotoğraf alan derinliği gibi (orta bulanık, şekil ve renk seçilir) + kenarlara koyulaşan vinyet.
+    # 11-26 eleştirmen: 46 px bulanık + %55 koyu düz griye dönüyor, küçük baskı "boş kadrajda yüzüyor" (36 bulgu)
+    zemin = ImageOps.fit(im, boyut, Image.LANCZOS).filter(ImageFilter.GaussianBlur(16))
+    zemin = Image.blend(zemin, Image.new("RGB", boyut, (16, 13, 11)), 0.42)
+    maske = Image.new("L", (64, 36), 0)
+    for y in range(36):
+        for x in range(64):
+            d = (((x - 31.5) / 32) ** 2 + ((y - 17.5) / 18) ** 2) ** 0.5
+            maske.putpixel((x, y), int(min(1.0, max(0.0, (d - 0.45) / 0.75)) * 200))
+    zemin = Image.composite(Image.new("RGB", boyut, (8, 7, 6)), zemin, maske.resize(boyut, Image.BILINEAR))
     yatay_boyut = gw > gh
     # yatay videoda boy sınırı 0,74: kamera (×1,12) ve yakın plan kesmesi (×1,16) altında kadraja sığsın (11-26
     # eleştirmen: 0,84'te eğik baskının alt/üst kenarı kesiliyordu)
