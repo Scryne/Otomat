@@ -118,37 +118,34 @@ def asama_kaynak(d: Path, secim: dict) -> dict:
     return veri
 
 
-SISTEM_GORSEL_SUZ = """You are the picture researcher of a documentary explainer. You get the STORY and a list of
-freely licensed images found by keyword search (id: file title). Keyword search drags in unrelated files that only share
-a word (a war memorial at the same university, a 1914 book scan, an exam sheet). Keep every image that could honestly
-illustrate a moment of THIS story: its named people, the places where it happens, its objects, documents, events,
-or its subject shown directly (a diagram of the actual thing). Drop: portraits of anyone who is not named in the story
-(an unnamed or different person is the wrong person on screen), places that only share a city or institution with the
-story, and anything from an unrelated era or event (war ruins, an old book scan). When unsure, drop. Return ONLY JSON:
-{"tut": ["G1", ...]}"""
-
-
 def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 6) -> dict:
-    """Konuyla ilgisiz görselleri senaryodan önce havuzdan atar (11-26 Riemann havuzu: 32 görselin ~10'u Kentucky
-    tarihi, 1914 havacıları, aynı savaş anıtının dört karesi). Eşleştirici anlamca en yakını seçse de ilgili görsel
-    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da 6'dan az bırakırsa havuz olduğu gibi kalır; az ama doğru
-    görselin boşluğunu stok video doldurur."""
+    """Konuyla ilgisiz görselleri senaryodan önce havuzdan atar (`gorsel_secici`: görüntü modeli kontak sayfalarına
+    bakar, düşerse başlıkla seçilir). 11-26 Riemann havuzu: 32 görselin ~10'u Kentucky tarihi, 1914 havacıları, aynı
+    savaş anıtının dört karesi; başlığı masum ama içeriği savaş yıkıntısı olan fotoğraf yalnız görüntüyle yakalandı.
+    Model yanıt vermezse ya da 6'dan az bırakırsa havuz olduğu gibi kalır; az ama doğru görselin boşluğunu stok video
+    doldurur."""
+    from otomat.trend import gorsel_secici
     from otomat.trend import senaryo as senaryo_m
 
     g = kay["gorseller"]
     liste = senaryo_m.gorsel_listesi([_gorsel_nesne(x) for x in g])
+    tut: set[int] | None = None
     try:
-        y = oturum.json_sor(SISTEM_GORSEL_SUZ, f"STORY: {hikaye}\n\nIMAGES:\n{liste}", model="glm-5.3",
-                            en_cok=1500, sicaklik=0.0, dusun=False)  # fmt: skip
-        tut = {int(str(k)[1:]) - 1 for k in (y.get("tut") or []) if str(k)[1:].isdigit()}  # type: ignore[union-attr]
-    except Exception as e:  # noqa: BLE001
-        print(f"görsel süzme atlandı: {str(e)[:120]}", flush=True)
-        return {**kay, "suzuldu": True}
+        tut = gorsel_secici.goruntuyle_sec(oturum, hikaye, liste, [Path(x["yerel"]) for x in g])
+        yol = "görüntü"
+    except Exception as e:  # noqa: BLE001 — görüntü modeli düşerse başlıkla
+        print(f"görsel süzme (görüntü) düştü: {str(e)[:120]}", flush=True)
+        try:
+            tut = gorsel_secici.basliktan_sec(oturum, hikaye, liste, len(g))
+            yol = "başlık"
+        except Exception as e2:  # noqa: BLE001
+            print(f"görsel süzme atlandı: {str(e2)[:120]}", flush=True)
+            return {**kay, "suzuldu": True}
     kalan = [x for i, x in enumerate(g) if i in tut]
     if len(kalan) < en_az:
         print(f"görsel süzme {len(kalan)} bırakıyordu (< {en_az}), havuz korunur", flush=True)
         return {**kay, "suzuldu": True}
-    print(f"görsel süzme: {len(g)} → {len(kalan)}", flush=True)
+    print(f"görsel süzme ({yol}): {len(g)} → {len(kalan)}", flush=True)
     return {**kay, "gorseller": kalan, "suzuldu": True}
 
 

@@ -169,3 +169,21 @@ def test_karanlik_baslayan_klip(tmp_path):
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i", f"color=c={renk}:s=320x180:d=1", "-pix_fmt",
                         "yuv420p", str(yol)], check=True)  # fmt: skip
     assert stok.karanlik_bas(siyah) and not stok.karanlik_bas(acik)
+
+
+def test_kontak_sayfalari_etiketli(tmp_path):
+    import io
+
+    from otomat.trend import gorsel_secici
+
+    yollar = []
+    for i in range(18):
+        p = tmp_path / f"g{i}.jpg"
+        Image.new("RGB", (800, 600 if i % 2 else 1000), (i * 12, 80, 120)).save(p)
+        yollar.append(p)
+    sayfalar = gorsel_secici.kontak_sayfalari(yollar)
+    assert len(sayfalar) == 2  # sayfa başına 16
+    im = Image.open(io.BytesIO(sayfalar[0]))
+    assert im.size == (gorsel_secici.HUCRE[0] * gorsel_secici.SUTUN, gorsel_secici.HUCRE[1] * gorsel_secici.SATIR)
+    assert im.getpixel((8, 8))[0] > 200  # sol üstte sarı kimlik etiketi
+    assert gorsel_secici._kimlikler({"tut": ["G1", "G18", "G99", "x"]}, 18) == {0, 17}
