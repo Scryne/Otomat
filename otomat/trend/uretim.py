@@ -131,7 +131,8 @@ story, and anything from an unrelated era or event (war ruins, an old book scan)
 def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 6) -> dict:
     """Konuyla ilgisiz görselleri senaryodan önce havuzdan atar (11-26 Riemann havuzu: 32 görselin ~10'u Kentucky
     tarihi, 1914 havacıları, aynı savaş anıtının dört karesi). Eşleştirici anlamca en yakını seçse de ilgili görsel
-    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da 6'dan az bırakırsa havuz olduğu gibi kalır; az ama doğru görselin boşluğunu stok video doldurur."""
+    yoksa ilgisizi gösteriyordu. Model yanıt vermezse ya da 6'dan az bırakırsa havuz olduğu gibi kalır; az ama doğru
+    görselin boşluğunu stok video doldurur."""
     from otomat.trend import senaryo as senaryo_m
 
     g = kay["gorseller"]
