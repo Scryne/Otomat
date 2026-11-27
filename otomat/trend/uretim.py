@@ -724,7 +724,10 @@ def asama_kapak(d: Path, sen: dict, kay: dict) -> Path:
 
     # kesitli kapak için aday: yazarın kapak görseli, sonra açılış sahnelerinin görselleri (konunun kendisi)
     acilis = [_gi(sh["gorsel"]) for sh in sen["sahneler"][:8] if sh.get("gorsel")]
-    adaylar = list(dict.fromkeys([_gi(sen.get("kapak_gorsel")), *acilis]))[:5]
+    kisili = {_gi(g) for g in (sen.get("gorsel_kisiler") or {})}
+    # kişili fotoğraf öne (11-28 Wu-Tang: yazarın kapak görseli stadyumdu, kesit seyirci şeridi çıktı)
+    adaylar = sorted(dict.fromkeys([_gi(sen.get("kapak_gorsel")), *acilis, *sorted(kisili)]),
+                     key=lambda g: g not in kisili)[:6]  # fmt: skip
     secilen = adaylar[0]
     for gi in adaylar:
         if kesik.kes(Path(kay["gorseller"][gi]["yerel"]), d / "kesit" / f"g{gi + 1:02d}.png"):
@@ -744,7 +747,9 @@ def kapak_varyantlari(d: Path, sen: dict, kay: dict, ana: int, gi_bul) -> list[P
 
     alt = [a for a in sen.get("kapak_alternatif") or [] if isinstance(a, dict)]
     kullanilan = {ana}
+    kisili = {gi_bul(g) for g in (sen.get("gorsel_kisiler") or {})}
     sira = [gi_bul(sh["gorsel"]) for sh in sen["sahneler"] if sh.get("gorsel") and sh.get("tur") == "foto"]
+    sira = sorted(dict.fromkeys(sira), key=lambda g: g not in kisili)  # kişili fotoğraf öne
     out = []
     for n in range(2):
         a = alt[n] if n < len(alt) else {}

@@ -30,7 +30,17 @@ def kes(kaynak: Path, hedef: Path) -> Path | None:
         if r.returncode != 0 or not hedef.exists():
             print(f"kesit düştü ({kaynak.name}): {(r.stderr or r.stdout)[-200:]}", flush=True)
             return None
-    return hedef if belirgin(hedef) else None
+    return hedef if belirgin(hedef) and boylu(hedef) else None
+
+
+def boylu(png: Path, en_az_boy: float = 0.45, en_cok_en_boy: float = 2.0) -> bool:
+    """Konu kareyi dikine taşıyor mu: sınır kutusu karenin en az %45'i yüksekliğinde ve yatay şerit değil (gerçek en/boy
+    ≤ 2). 11-28 Wu-Tang kapağı: Ford Field'ın ön sıradaki seyircileri birbirine değdiği için tek parça sayıldı,
+    kapakta alt kenarda dağınık bir kalabalık şeridi kaldı."""
+    sol, ust, sag, alt = kutu(png)
+    with Image.open(png) as im:
+        en_boy = ((sag - sol) * im.width) / max(1e-6, (alt - ust) * im.height)
+    return alt - ust >= en_az_boy and en_boy <= en_cok_en_boy
 
 
 def belirgin(png: Path) -> bool:
