@@ -471,3 +471,12 @@ def test_ek_parcalar_hatada_yuklemeyi_dusurmez(tmp_path, monkeypatch):
     monkeypatch.setattr(youtube, "altyazi_ekle", lambda v, dil, m, yt=None: cagri.append(("srt", v, dil)))
     yukle.ek_parcalar(None, tmp_path, kayit)
     assert kayit["altyazi"] == "tamam" and cagri[-1] == ("srt", "V1", "en") and len(cagri) == 2
+
+
+def test_sayi_kapisi_tirnaga_yapisik_rakami_sayar():
+    from otomat.film import anlatim
+
+    metin = "The phrase 'more demonic than GTA 6' shows how extreme it got."
+    assert anlatim.sayilar(metin) == ["6"]
+    assert anlatim.fark(metin, "The phrase more demonic than GTA 6 shows how extreme it got.") < 0.1
+    assert anlatim.kelimeler("They didn't stop.")[1] == "didn't"  # iç kesme işareti kalır

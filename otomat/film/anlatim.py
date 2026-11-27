@@ -156,7 +156,10 @@ def kelimeler(s: str) -> list[str]:
     cikti: list[str] = []
     toplam = simdiki = None
     onceki = ""
-    for k in re.findall(r"[a-z0-9']+|[.,;:!?]", s) + [""]:
+    # uçtaki tırnak düşer: "'more demonic than GTA 6'" içindeki "6'" sayı sayılmıyordu, Whisper "GTA 6" duyunca doğru
+    # okunmuş parça üç denemede de reddedildi ve üretim durdu (11-28 Wu-Tang)
+    birimler = [t for t in (x.strip("'") for x in re.findall(r"[a-z0-9']+|[.,;:!?]", s)) if t]
+    for k in birimler + [""]:
         if k and k in ".,;:!?":
             # noktalama sayıyı keser ("a proven one, fifty thousand" 51000 oluyordu);
             # "seven thousand, one hundred" sürer
