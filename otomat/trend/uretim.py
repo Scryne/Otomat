@@ -237,6 +237,10 @@ def asama_senaryo(d: Path, oturum: Oturum, secim: dict, kay: dict) -> dict:
 
         sen["kesitler"] = kesit_sec(oturum, sen["sahneler"])
         son["kod"] = [k for k in son["kod"] if "kesit" not in k]
+    # ritim ve kalıp bulguları onarım turlarında düzeltilir; kalanı videoyu durdurmaz, kayda geçer (11-27)
+    if yumusak := [k for k in son.get("kod") or [] if k.startswith(("ritim:", "kalıp:"))]:
+        print(f"senaryo uyarı ({len(yumusak)}): {yumusak[:4]}", flush=True)
+        son["kod"] = [k for k in son["kod"] if k not in yumusak]
     if son.get("kod"):
         _yaz(d / "senaryo_kusurlu.json", sen)
         raise RuntimeError(f"senaryo kod kapısından geçmedi: {son['kod'][:6]}")

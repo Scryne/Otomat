@@ -201,3 +201,56 @@ def test_konu_esik_yoksa_en_zengin_ya_da_hata(monkeypatch, tmp_path):
     monkeypatch.setattr(uretim, "asama_kaynak", _kaynak_sahte({"A": 5, "B": 7}))
     with pytest.raises(RuntimeError, match="görsel havuzu yetmedi"):
         uretim.konu_kaynak(d2, None, _secim("A", "B"))
+
+
+def test_karsitlik_kalibi_ve_kivrik_kesme():
+    def hata(anlatim: str) -> list[str]:
+        s = {"tez": "t", "sahneler": [{"tur": "foto", "anlatim": anlatim, "gorsel": "G1"}]}
+        return [h for h in senaryo.yapi_kapisi(s, 30) if "kalıbı" in h or "yasak ifade" in h]
+
+    assert hata("So the real question isn't whether a mom can win, it's whether the pageant deserves her.")
+    assert hata("It wasn't about the money, it was about control.")
+    assert hata("They quit not because of the fee but because of the president.")
+    assert hata("Here’s the thing about the crown.")  # kıvrık kesme işareti
+    assert not hata("The tourism company wasn't paid until April, and the show nearly moved.")
+    assert not hata("She didn't come up through the pageant world at all.")
+
+
+def test_ritim_kapisi_baglac_zinciri():
+    def sh(a: str) -> dict:
+        return {"tur": "foto", "anlatim": a}
+
+    zincir = [sh("So the money moved."), sh("And then it stopped."), sh("The governor signed it.")] * 4
+    h = senaryo.ritim_kapisi(zincir)
+    assert any("art arda" in x for x in h)
+    temiz = [sh("The governor signed it."), sh("So the money moved."), sh("Payments resumed in April.")] * 3
+    assert not [x for x in senaryo.ritim_kapisi(temiz) if "art arda" in x]
+    because = [sh(f"It moved because of reason {i}, with more words here to pad the line out.") for i in range(8)]
+    assert sum("'because'" in x for x in senaryo.ritim_kapisi(because)) == 5  # 8 kullanım, hak 3
+
+
+def test_slogan_kapanis_yakalanir():
+    def hata(a: str) -> bool:
+        s = {"tez": "t", "sahneler": [{"tur": "foto", "anlatim": a, "gorsel": "G1"}]}
+        return any("kalıbı" in h for h in senaryo.yapi_kapisi(s, 30))
+
+    assert hata("A mom took the crown while fights shadowed the stage, and that gap is the story.")
+    assert hata("The timing wasn't random, because the last edition had problems.")
+    assert hata("And the winner's story isn't the only one worth telling.")
+    assert not hata("The story spread across Manila within a day.")
+
+
+def test_bastaki_so_and_atilir():
+    assert senaryo._baglac_at("So the money moved.") == "The money moved."
+    assert senaryo._baglac_at("And, by April, it flowed.") == "By April, it flowed."
+    assert senaryo._baglac_at("Sony said no.") == "Sony said no."
+    assert senaryo._baglac_at("Andorra hosted it.") == "Andorra hosted it."
+    assert senaryo._baglac_at("But it stopped.") == "But it stopped."
+    s = {
+        "sahneler": [
+            {"tur": "foto", "anlatim": a, "gorsel": f"G{i + 1}"}
+            for i, a in enumerate(["So it began.", "And it grew.", "Then it fell.", "It ended."])
+        ]
+    }
+    senaryo.yapi_onar(s, 4)
+    assert s["sahneler"][1]["anlatim"] == "It grew."

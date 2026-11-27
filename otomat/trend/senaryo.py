@@ -53,6 +53,53 @@ YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game change
                "it's not just", "this isn't just", "more than just", "at the end of the day",
                "in a world where", "and that's when", "it all started",
                "here's where", "took a turn", "nobody expected", "gets interesting")  # fmt: skip
+# 11-27: sabit ifade listesi karşıtlık kalıbını yakalamıyordu ("the real question isn't whether a mom can win a beauty
+# pageant, it's whether the pageant deserves her"); K-46 "X değil Y" yasağı biçim olarak da denetlenir
+YASAK_KALIP = (
+    re.compile(r"\bthe real (?:question|story|point|reason)\b"),
+    re.compile(
+        r"\b(?:isn't|wasn't|is not|was not|aren't|weren't)\s+(?:really\s+)?(?:whether|about|that)\b"
+        r"[^.?!]{0,90}?[,;—–-]\s*(?:it's|it is|it was|they're|but)\b"
+    ),  # fmt: skip
+    re.compile(r"\bnot because\b[^.?!]{0,90}\bbut because\b"),
+    re.compile(r"\bless about\b[^.?!]{0,70}\bmore about\b"),
+    # 11-27 A/B: "This wasn't a side project, because…", "The timing wasn't random, because…"
+    re.compile(r"\b(?:wasn't|isn't|was not|is not)\b[^.?!,]{0,40},\s*because\b"),
+    # slogan kapanış: "and that gap is the story", "that's the story worth telling"
+    re.compile(r"\b(?:that|this|which)(?:'s| is)?(?: \w+)? (?:is )?the story\b"),
+    re.compile(r"\b(?:worth|deserves) (?:telling|a closer look)\b"),
+)
+BAGLAC_BAS = re.compile(r"^\s*(?:so|and|but|because|which)\b", re.I)
+BAGLAC_PAY = 0.22  # sahnelerin en çok ~beşte biri bağlaçla başlar (11-27 A/B: 43 sahnenin 17'si)
+
+
+def ritim_kapisi(sahneler: list[dict]) -> list[str]:
+    """Bağlaç ritmi: bağlaçla başlayan sahne payı, art arda aynı başlangıç ve "because" sıklığı. Yazara "cümleler
+    bir öncekine bağlı" denince (K-46) model bunu "So…/And…/because…" zinciriyle yaptı; insan kulağı bu ritmi
+    hemen AI diye duyuyor."""
+    hata: list[str] = []
+    bas = [(m.group(0).strip().lower() if (m := BAGLAC_BAS.match(sh.get("anlatim", ""))) else "") for sh in sahneler]
+    hak = int(len(sahneler) * BAGLAC_PAY)
+    sayac = 0
+    for i, b in enumerate(bas):
+        if not b:
+            continue
+        sayac += 1
+        if i > 0 and bas[i - 1]:
+            hata.append(f"ritim: sahne {i}: art arda iki sahne bağlaçla başlıyor ('{b}'); bu cümleyi bağlaçsız başlat")
+        elif sayac > hak:
+            hata.append(
+                f"ritim: sahne {i}: bağlaçla başlayan sahne fazla ({sayac}/{len(sahneler)}); '{b}' olmadan başlat"
+            )
+    toplam = sum(len(sh.get("anlatim", "").split()) for sh in sahneler)
+    because = [i for i, sh in enumerate(sahneler) if re.search(r"\bbecause\b", sh.get("anlatim", ""), re.I)]
+    hak_b = max(3, toplam // 220)
+    for i in because[hak_b:]:
+        hata.append(
+            f"ritim: sahne {i}: 'because' videoda {len(because)} kez (en çok {hak_b}); nedeni başka biçimde söyle"
+        )
+    return hata
+
 
 SISTEM_YAZAR = """You are the head writer of a fast, smart YouTube explainer channel about whatever the world is talking
 about right now. Faceless, narrated, motion-graphics heavy. Viewers arrive curious ("why is everyone talking about X?")
@@ -65,9 +112,13 @@ concrete detail, people with names, and the occasional aside ("which, to be fair
 were rejected because the narration sounded written by AI: every line a punchline, slogans, YouTube catchphrases,
 dramatic fragments. Fix that:
 - Story over summary: each chapter follows a person or group who wants something, hits an obstacle, and turns.
-- Connected speech: most sentences are 12-25 words and link to the previous one ("so", "because", "which meant",
-  "and", "but"). A scene may end mid-thought and the next scene finishes it. At most ONE 2-4 word fragment per
-  chapter, and only where a person would really pause to land a point.
+- Connected speech: most sentences are 12-25 words and grow out of the previous one through CONTENT (the next line
+  picks up a name, an object, a number or a consequence from the last), not through connective words. A scene may
+  end mid-thought and the next scene finishes it. Starting a scene with "So", "And", "But", "Because" or "Which" is
+  fine now and then (about one scene in five), never twice in a row. "because" at most once per chapter; never the
+  "X wasn't random, because..." / "this wasn't a side project, because..." construction. Say a name once and move on
+  (never "...won Miss Universe. Her name is Jennifer Barreto"). At most ONE 2-4 word fragment per chapter, and only
+  where a person would really pause to land a point.
 - No slogans and no trailer voice: never "X. Y. Z." triplets, never "It's not X, it's Y", never one-line drama
   ("Then the screaming started."), never announce that something is surprising or important — just say the fact and
   let it work. No clichés: "here's the thing", "hold that thought", "the real story", "nobody saw it coming", "changes
@@ -89,7 +140,8 @@ HARD RULES
 4. Re-hook every ~90 seconds with a new question or turn, said plainly (e.g. "So why would Amazon take that risk?").
 5. Each scene's narration ("anlatim") is 8-30 words: one beat of the story, usually one or two connected
    sentences. Scenes of type sayi, ikili, ifade and alinti hold one graphic, so their narration is at most 20 words.
-   Total narration 950-1350 words. Every scene also has "ton": a 3-10 word delivery note for the narrator (how to
+   Total narration follows the plan's word targets (the video is as long as its real pictures allow, no longer).
+   Every scene also has "ton": a 3-10 word delivery note for the narrator (how to
    SAY it: e.g. "hushed, building suspense", "wry, amused", "fast and urgent", "slow, let it land", "warm, curious").
    Vary it with the story; most scenes are natural and conversational, the big turns get the strong notes.
 6. Scene types (field "tur") and their fields — use the type that SHOWS the line, vary them, never the same type twice
@@ -438,8 +490,24 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             if g:
                 sh["gorsel"] = g
                 yapilan.append(f"sahne {i}: görsel atandı {g}")
+    # 6. "So"/"And" ile başlayan fazla sahne: bağlaç kod tarafından atılır (anlam değişmez); "but/because/which"
+    # anlam taşır, onarım turuna kalır
+    for h in ritim_kapisi(s):
+        m = re.match(r"ritim: sahne (\d+): (?:art arda|bağlaçla)", h)
+        if m and (i := int(m.group(1))) < len(s):
+            once = s[i].get("anlatim", "")
+            sonra = _baglac_at(once)
+            if sonra != once:
+                s[i]["anlatim"] = sonra
+                yapilan.append(f"sahne {i}: baştaki bağlaç atıldı")
     senaryo["sahneler"] = s
     return yapilan
+
+
+def _baglac_at(metin: str) -> str:
+    """Baştaki "So"/"And" (ve ardından gelen virgül) atılır, ilk harf büyür; başka bağlaca dokunmaz."""
+    yeni = re.sub(r"^\s*(?:so|and)\b,?\s*", "", metin, count=1, flags=re.I)
+    return yeni[:1].upper() + yeni[1:] if yeni != metin and yeni else metin
 
 
 def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
@@ -487,10 +555,16 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
                 float(str(sh.get("deger")).replace(",", ""))
             except ValueError:
                 hata.append(f"sahne {i}: sayi.deger sayı değil ({sh.get('deger')})")
-        metin = (sh.get("anlatim", "") + " " + _ekran_metni(sh)).lower()
+        # kıvrık kesme işareti (’) düz olana çevrilir: "here’s the thing" listeden kaçıyordu (11-27)
+        metin = (sh.get("anlatim", "") + " " + _ekran_metni(sh)).lower().replace("’", "'").replace("‘", "'")
         for y in YASAK_IFADE:
             if y in metin:
                 hata.append(f"sahne {i}: yasak ifade '{y}'")
+        for k in YASAK_KALIP:
+            if m := k.search(metin):
+                hata.append(
+                    f"kalıp: sahne {i}: karşıtlık kalıbı '{m.group(0)[:60]}' (düz söyle: asıl iddiayı doğrudan yaz)"
+                )
     for g, n in gorsel_kullanim.items():
         if n > GORSEL_EN_COK:  # süre havuza göre ayarlandığı için son çare 4. kullanım kalktı (11-27)
             hata.append(f"görsel {g} {n} kez kullanılmış (en çok {GORSEL_EN_COK})")
@@ -499,6 +573,7 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             hata.append(f"sahne {i}: kapanis yalnız son sahne olabilir (fazlasını sil)")
     if s and s[-1].get("tur") != "kapanis":
         hata.append("son sahne kapanis değil")
+    hata += ritim_kapisi(s)
     statik = sum(1 for sh in s if sh.get("tur") in STATIK)
     if s and statik > len(s) * STATIK_PAY:
         hata.append(f"statik sahne {statik}/{len(s)} (en çok dörtte bir)")
@@ -848,7 +923,7 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
             if yeni:
                 yapilan.append(f"sahne {i}: sınır {g} → {yeni}")
                 sh["gorsel"], sh["gorsel_uyum"] = yeni, 0
-            elif sh.get("tur") == "foto":  # 11-27: aday yoksa aşım kalıyordu (bir fotoğraf 9 kez); stok doldurur
+            else:  # 11-27: aday yoksa aşım kalıyordu (bir fotoğraf 9 kez); fotoğrafı stok, kartı en az kullanılan doldurur
                 yapilan.append(f"sahne {i}: sınır {g} → görselsiz (stok)")
                 sh.pop("gorsel")
                 sh.pop("gorsel_uyum", None)

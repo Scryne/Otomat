@@ -15,6 +15,7 @@ from otomat.trend import kurgu
 from otomat.trend.kurgu import RENK, _e
 
 W, H = 1280, 720
+SIGDIR_EN_BUYUK = 210  # metin bu boydan aşağı doğru alana sığdırılır
 
 
 def html(metin: str, gorsel: str, vurgu: str = "", genislik: int = 760) -> str:
@@ -48,7 +49,22 @@ data-no-timeline>
   <div class="karart"></div>
   <div class="serit"></div>
   <div class="metin">{satir}</div>
-</div></body></html>
+</div>
+<script>
+  // 11-27: sabit boy (uzun metinde 94 px) alanın yarısını boş bırakıyordu; küçük resimde okunmuyordu. Metin, en çok
+  // üç satır ve kapak yüksekliğinin %62'si içinde kalan en büyük boya büyütülür (yazı tipi yüklendikten sonra).
+  function sigdir() {{
+    const m = document.querySelector('.metin');
+    for (let b = {SIGDIR_EN_BUYUK}; b >= 60; b -= 3) {{
+      m.style.fontSize = b + 'px';
+      const satirYuk = b * 0.9;
+      if (m.scrollWidth <= m.clientWidth + 1 && m.scrollHeight <= Math.min({H} * 0.62, satirYuk * 3.2)) break;
+    }}
+  }}
+  sigdir();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(sigdir);
+</script>
+</body></html>
 """
 
 
@@ -146,7 +162,7 @@ def uret(metin: str, gorsel: Path, dizin: Path, vurgu: str = "", ham: Path | Non
         # en uzun kelime vurgulanır (çoğunlukla konunun adı); noktalama düşer, yoksa "UNDERSTOOD." eşleşmiyordu (11-26)
         vurgu = max(metin.split(), key=len).strip(".,!?:;")
     (dizin / "index.html").write_text(
-        html(metin, "assets/kapak.jpg", vurgu, 600 if ham is not None else 760), encoding="utf-8"
+        html(metin, "assets/kapak.jpg", vurgu, 570 if ham is not None else 760), encoding="utf-8"
     )
     kare = kurgu.kareler(dizin, [0.0])
     if not kare:
