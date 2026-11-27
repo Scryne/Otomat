@@ -196,6 +196,25 @@ def yukle(d: Path, simdi: dt.datetime | None = None, yt=None) -> dict:
     return kayit
 
 
+TAZE = dt.timedelta(hours=48)  # trend videosu bundan eskiyse günlük koşu onu yüklemez
+
+
+def yuklenebilir(kok: Path, simdi: dt.datetime | None = None) -> list[Path]:
+    """`yukle son`un adayları: video.mp4'ü olan, `yuklenmez` işareti taşımayan, videosu TAZE içinde üretilmiş işler
+    (ada göre sıralı). 11-27: üretim düşerse en yeni klasör bir A/B denemesi ya da kanaldan silinmiş eski bir video
+    olabiliyordu; günlük koşu onu yükleyecekti. Zaten yüklenmiş iş (yukleme.json'da video_id) tazelikten bağımsızdır."""
+    simdi = simdi or dt.datetime.now(dt.UTC)
+    out = []
+    for d in sorted(kok.glob("*/")):
+        v = d / "video.mp4"
+        if not v.exists() or (d / "yuklenmez").exists():
+            continue
+        yuklu = (d / "yukleme.json").exists()
+        if yuklu or simdi - dt.datetime.fromtimestamp(v.stat().st_mtime, dt.UTC) <= TAZE:
+            out.append(d)
+    return out
+
+
 def bekleyenler() -> list[Path]:
     """Yüklenmiş ama zamanlanmamış (kapak bekleyen) işler, eskiden yeniye."""
     kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
@@ -237,7 +256,7 @@ def main() -> None:
         print(kimlik_uygula())
     elif a == ["son"]:  # günlük koşu: video.mp4'ü olan en yeni iş (kesitleri eksikse onları tamamlar)
         kok = Path(__file__).resolve().parents[2] / "calisma" / "trend"
-        isler = sorted(d for d in kok.glob("*/") if (d / "video.mp4").exists())
+        isler = yuklenebilir(kok)
         if not isler:
             print("yüklenecek video yok")
             return

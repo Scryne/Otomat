@@ -270,3 +270,24 @@ def test_kesit_ilk_sahne_kanca_panelinin_altindan_baslar(tmp_path):
     html = (d / "index.html").read_text(encoding="utf-8")
     assert f"fromTo('#k01', {{y:{kesit.KANCA_KAYMA}}}" in html
     assert 0 < kesit.KANCA_KAYMA < kesit.KANCA_PANEL
+
+
+def test_yukle_son_bayat_ve_isaretli_isi_almaz(tmp_path):
+    import datetime as dt
+    import os
+
+    from otomat.trend import yukle
+
+    simdi = dt.datetime(2026, 11, 28, 9, tzinfo=dt.UTC)
+    for ad, saat, isaret, yuklu in [("a-taze", 5, False, False), ("b-bayat", 80, False, False),
+                                    ("c-deneme", 2, True, False), ("d-bayat-yuklu", 90, False, True)]:  # fmt: skip
+        d = tmp_path / ad
+        d.mkdir()
+        (d / "video.mp4").write_bytes(b"x")
+        t = (simdi - dt.timedelta(hours=saat)).timestamp()
+        os.utime(d / "video.mp4", (t, t))
+        if isaret:
+            (d / "yuklenmez").write_text("x")
+        if yuklu:
+            (d / "yukleme.json").write_text("{}")
+    assert [d.name for d in yukle.yuklenebilir(tmp_path, simdi)] == ["a-taze", "d-bayat-yuklu"]
