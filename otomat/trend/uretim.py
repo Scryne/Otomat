@@ -284,7 +284,7 @@ def asama_ses(d: Path, sen: dict) -> dict:
     return z
 
 
-def _en_az_gorsel(onceki: list[dict], sonraki: list[dict], n: int) -> int:
+def _en_az_gorsel(onceki: list[dict], sonraki: list[dict], n: int, izin: set[int] | None = None) -> int:
     """Plan sahneleri (`assets/img/gNN.jpg`) ve kalan senaryo sahneleri (`GNN`) içinde en az görünen görselin sırası;
     bir önceki ve bir sonraki sahnedekiler hariç. Havuz boşsa -1."""
     import collections
@@ -301,8 +301,19 @@ def _en_az_gorsel(onceki: list[dict], sonraki: list[dict], n: int) -> int:
         yasak.add(int(str(g).rsplit("/g", 1)[-1][:2]) - 1)
     if sonraki and (g := str(sonraki[0].get("gorsel") or ""))[1:].isdigit():
         yasak.add(int(g[1:]) - 1)
-    adaylar = [k for k in range(n) if k not in yasak] or list(range(n))
+    serbest = [k for k in range(n) if izin is None or k in izin]
+    adaylar = [k for k in serbest if k not in yasak] or serbest
     return min(adaylar, key=lambda k: (say[k], k)) if adaylar else -1
+
+
+def kisi_izni(sen: dict, metin: str, konu: str, n: int) -> set[int]:
+    """Yedek olarak gösterilebilecek fotoğraflar: kişisiz ya da kişisi sahnede/konuda adıyla geçen (görsel
+    eşleştirmenin kişi haritası). 11-28 Wu-Tang v5: en az kullanılan yedek, Ol' Dirty Bastard'ın hapis satırına
+    Chad Smith'i, Chad Smith'in zaman çizelgesine RZA'yı koydu."""
+    from otomat.trend import senaryo as senaryo_m
+
+    kisiler = sen.get("gorsel_kisiler") or {}
+    return {k for k in range(n) if senaryo_m._kisi_uygun(kisiler.get(f"G{k + 1}"), metin, konu)}
 
 
 _AD_DISI = frozenset({"file", "the", "and", "new", "with", "from", "for", "jpg", "png", "jpeg", "copie", "dsc"})
@@ -341,7 +352,7 @@ def etiket_uygun(etiket: str, dosya: str) -> bool:
     return not adlar or adlar <= ad_sozcukleri(dosya) | {w.lower() for w in re.findall(r"\w+", dosya)}
 
 
-def gorsel_onar(plan: dict, bulgular: list[dict], gorsel: list[dict], varlik: dict) -> list[str]:
+def gorsel_onar(plan: dict, bulgular: list[dict], gorsel: list[dict], varlik: dict, izin_bul=None) -> list[str]:
     """Eleştirmenin P0 "anlamsız görsel" dediği fotoğraf sahnesi (stok klipsiz) anlatımda adı geçeni gösteren
     fotoğrafa geçer; bulunamazsa sahne olduğu gibi kalır (rapora girer)."""
     s = plan["sahneler"]
@@ -360,6 +371,9 @@ def gorsel_onar(plan: dict, bulgular: list[dict], gorsel: list[dict], varlik: di
                 kullanim[k] = kullanim.get(k, 0) + 1
         yasak = {_plan_gorsel_no(s[j]) for j in (i - 1, i, i + 1) if 0 <= j < len(s)}
         gi = ilgili_gorsel(sh.get("anlatim", ""), gorsel, kullanim, yasak)
+        if gi < 0 and izin_bul is not None:  # ad eşleşmesi yoksa: kişisi uygun, en az kullanılan fotoğraf
+            izin = [k for k in izin_bul(sh.get("anlatim", "")) if k not in yasak]
+            gi = min(izin, key=lambda k: (kullanim.get(k, 0), k)) if izin else -1
         if gi < 0:
             continue
         eski = sh["gorsel"]
@@ -436,7 +450,9 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
             gi = ilgili_gorsel(metin, gorsel, kullanim, yasak)  # önce anlatımda adı geçeni gösteren fotoğraf
             ilgili = gi >= 0
             if not ilgili:
-                gi = _en_az_gorsel(sahneler, sen["sahneler"][i + 1 :], len(gorsel))
+                konu = str(secim["secim"].get("wiki_baslik") or "").replace("_", " ")
+                izin = kisi_izni(sen, metin, konu, len(gorsel))
+                gi = _en_az_gorsel(sahneler, sen["sahneler"][i + 1 :], len(gorsel), izin)
             if gi >= 0:
                 varlik[f"assets/img/g{gi + 1:02d}.jpg"] = Path(gorsel[gi]["hazir"])
                 p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"])
@@ -599,13 +615,18 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
             if a.get("wiki") and a["wiki"].replace("_", " ") == secim["secim"]["wiki_baslik"]:
                 kategori = (a.get("ts") or {}).get("kategori", "other")
     plan, varlik = plan_kur(sen, kay, z, secim, kategori)
+    konu_adi = str(secim["secim"].get("wiki_baslik") or "").replace("_", " ")
+
+    def izin_bul(metin: str) -> set[int]:
+        return kisi_izni(sen, metin, konu_adi, len(kay["gorseller"]))
+
     varlik["assets/ses/anlatim.wav"] = asama_muzik(d, sen, plan, z)
     if (d / "elestiri.json").exists():  # önceki eleştirinin düzeltmeleri her koşuda yeniden uygulanır
         from otomat.trend import elestirmen
 
         onceki = _oku(d / "elestiri.json")["bulgular"]
         elestirmen.duzelt(plan, onceki)
-        gorsel_onar(plan, onceki, kay["gorseller"], varlik)
+        gorsel_onar(plan, onceki, kay["gorseller"], varlik, izin_bul)
     proje = kurgu.proje_yaz(plan, d / "proje", varlik)
     rapor = kurgu.denetle(proje)
     _yaz(d / "denetim.json", rapor)
@@ -616,7 +637,7 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         ham_bulgu = elestirmen.incele(sayfalar, sen.get("tez", ""), oturum, elestirmen.sahne_listesi(plan))
         bulgular = elestirmen.sahneye_bagla(ham_bulgu, plan)
         yapilan = elestirmen.duzelt(plan, bulgular)
-        yapilan += gorsel_onar(plan, bulgular, kay["gorseller"], varlik)
+        yapilan += gorsel_onar(plan, bulgular, kay["gorseller"], varlik, izin_bul)
         _yaz(d / "elestiri.json", {"bulgular": bulgular, "duzeltmeler": yapilan})
         if yapilan:  # düzeltilen sahneler yeniden yazılır
             proje = kurgu.proje_yaz(plan, d / "proje", varlik)

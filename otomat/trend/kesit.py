@@ -91,7 +91,9 @@ def d_manset(sh: dict, gecis: str, tohum: int) -> str:
     ms = (sh.get("mansetler") or [])[:3]
     kartlar = []
     for i, m in enumerate(ms):
-        y = UST + 120 + i * 300
+        y = (
+            UST + 60 + i * 265
+        )  # üçüncü kupür altyazı bandına (ALTYAZI_Y) inmesin (11-28 Wu-Tang kesiti: üst üste bindi)
         a = [-2.5, 2.0, -1.5][i]
         kartlar.append(f'<div class="kart" id="{sid}-k{i}" style="top:{y}px; --a:{a}deg"><div class="kaynak">'
                        f'{_e(m["kaynak"])}</div><div class="kb"><span class="fos">{_e(m["baslik"])}</span></div></div>')  # fmt: skip
@@ -102,7 +104,7 @@ def d_manset(sh: dict, gecis: str, tohum: int) -> str:
              box-shadow:0 18px 40px rgba(0,0,0,.45); rotate:var(--a); }}
     .kart .kaynak {{ font-size:30px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
                      color:{RENK["kirmizi"]}; margin-bottom:8px; }}
-    .kart .kb {{ font-size:50px; font-weight:700; line-height:1.12; }}
+    .kart .kb {{ font-size:46px; font-weight:700; line-height:1.12; }}
     .fos {{ background-image: linear-gradient(transparent 58%, rgba(255,214,10,.85) 58%, rgba(255,214,10,.85) 92%,
             transparent 92%); background-repeat:no-repeat; background-size:0% 100%;
             box-decoration-break:clone; -webkit-box-decoration-break:clone; }}

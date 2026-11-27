@@ -362,6 +362,20 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     sayi.deger "<475", çift kapanış). Bunlar anlam değil biçim; kod doğru ve ücretsiz düzeltir."""
     s = senaryo.get("sahneler") or []
     yapilan: list[str] = []
+    # 0. alıntı kartı bir insanın sözüdür: kaynağı Wikipedia/açıklama olan ya da 22 kelimeyi aşan "alıntı" fotoğraf
+    #    sahnesine döner (11-28 Wu-Tang: "Wikipedia description of 'Triumph'", 32 kelimelik ansiklopedi cümlesi)
+    for i, sh in enumerate(s):
+        if sh.get("tur") != "alinti":
+            continue
+        kim = str(sh.get("kim") or "").lower()
+        if (
+            re.search(r"wikipedia|encyclop|description|\bper\b|according to", kim)
+            or len(str(sh.get("metin") or "").split()) > 22
+        ):
+            for k in ("metin", "kim"):
+                sh.pop(k, None)
+            sh["tur"] = "foto"
+            yapilan.append(f"sahne {i}: alıntı değil → foto")
     # 1. kapanis yalnız sonda; sonundaki fazlalık (kapanıştan sonra gelen sahneler) atılır
     son_k = max((i for i, sh in enumerate(s) if sh.get("tur") == "kapanis"), default=None)
     if son_k is not None:
@@ -923,7 +937,7 @@ def _kisi_uygun(kisi: str | None, metin: str, konu: str) -> bool:
     if not kisi:
         return True
     hedef = f"{metin} {konu}".lower()
-    return any(len(p) >= 4 and p in hedef for p in re.findall(r"[a-zà-ÿ]+", kisi.lower()))
+    return any(len(p) >= 3 and p in hedef for p in re.findall(r"[a-zà-ÿ]+", kisi.lower()))  # "RZA" üç harf
 
 
 def _altyazili(sh: dict) -> bool:
@@ -1008,6 +1022,7 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
                 sh.pop("gorsel")
                 sh.pop("gorsel_uyum", None)
     senaryo["gorsel_eslendi"] = True
+    senaryo["gorsel_kisiler"] = {k: v for k, v in kisiler.items() if v}  # yedek seçimi de bu kurala uyar
     return yapilan
 
 

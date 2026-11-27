@@ -486,3 +486,27 @@ def test_yasak_kalip_ters_cevirme_ve_butun_hikaye():
     for m in ("It's the other way round.", "He's the whole story in one seat.", "it was actually the other way around"):
         assert any(r.search(m.lower()) for r in senaryo.YASAK_KALIP), m
     assert not any(r.search("they drove the other way round the block.") for r in senaryo.YASAK_KALIP)
+
+
+def test_alinti_insan_sozu_degilse_fotoya_doner():
+    s = {"sahneler": [
+        {"tur": "alinti", "metin": "over five minutes long", "kim": "Wikipedia on 'Triumph'", "gorsel": "G1"},
+        {"tur": "alinti", "metin": " ".join(["word"] * 25), "kim": "RZA", "gorsel": "G2"},
+        {"tur": "alinti", "metin": "I think up until then, I was a drummer.", "kim": "Chad Smith"}]}  # fmt: skip
+    yapilan = senaryo.yapi_onar(s, 5)
+    donen = [y for y in yapilan if "alıntı değil" in y]
+    assert donen == ["sahne 0: alıntı değil → foto", "sahne 1: alıntı değil → foto"]  # insan sözü (sahne 2) kalır
+    assert s["sahneler"][0]["tur"] == "foto" and "kim" not in s["sahneler"][0]
+
+
+def test_yedek_gorsel_adi_gecmeyen_kisiyi_gostermez():
+    sen = {"gorsel_kisiler": {"G1": "Chad Smith", "G2": "RZA", "G3": "Wu-Tang Clan"}}
+    izin = uretim.kisi_izni(sen, "In April 2001 he was sentenced to two to four years.", "Wu-Tang Clan", 4)
+    assert izin == {2, 3}  # grup (konu) ve kişisiz fotoğraf; Chad Smith ve RZA değil
+    assert 1 in uretim.kisi_izni(sen, "RZA took the producer's chair.", "Wu-Tang Clan", 4)  # üç harfli ad
+    plan = {"sahneler": [{"id": "s01", "tur": "foto", "gorsel": "assets/img/g01.jpg",
+                          "anlatim": "In April 2001 he was sentenced."}]}  # fmt: skip
+    havuz = [{"dosya": f"File:x{i}.jpg", "hazir": str(i), "kredi_satiri": "k"} for i in range(4)]
+    y = uretim.gorsel_onar(plan, [{"tur": "anlamsiz_gorsel", "siddet": "P0", "sahne": "s01"}], havuz, {},
+                           lambda m: uretim.kisi_izni(sen, m, "Wu-Tang Clan", 4))  # fmt: skip
+    assert y and plan["sahneler"][0]["gorsel"] == "assets/img/g03.jpg"
