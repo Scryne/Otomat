@@ -68,6 +68,10 @@ YASAK_KALIP = (
     # slogan kapanış: "and that gap is the story", "that's the story worth telling"
     re.compile(r"\b(?:that|this|which)(?:'s| is)?(?: \w+)? (?:is )?the story\b"),
     re.compile(r"\b(?:worth|deserves) (?:telling|a closer look)\b"),
+    # 11-28 Wu-Tang kapanışı: "the halftime show didn't make Wu-Tang mainstream. It's the other way round.",
+    # "He's the whole story in one seat."
+    re.compile(r"\b(?:it's|it is|it was|actually)\s+(?:\w+\s+)?the other way (?:round|around)\b"),
+    re.compile(r"\bthe (?:whole|entire) story\b"),
 )
 BAGLAC_BAS = re.compile(r"^\s*(?:so|and|but|because|which)\b", re.I)
 BAGLAC_PAY = 0.22  # sahnelerin en çok ~beşte biri bağlaçla başlar (11-27 A/B: 43 sahnenin 17'si)

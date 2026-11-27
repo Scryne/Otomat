@@ -480,3 +480,9 @@ def test_sayi_kapisi_tirnaga_yapisik_rakami_sayar():
     assert anlatim.sayilar(metin) == ["6"]
     assert anlatim.fark(metin, "The phrase more demonic than GTA 6 shows how extreme it got.") < 0.1
     assert anlatim.kelimeler("They didn't stop.")[1] == "didn't"  # iç kesme işareti kalır
+
+
+def test_yasak_kalip_ters_cevirme_ve_butun_hikaye():
+    for m in ("It's the other way round.", "He's the whole story in one seat.", "it was actually the other way around"):
+        assert any(r.search(m.lower()) for r in senaryo.YASAK_KALIP), m
+    assert not any(r.search("they drove the other way round the block.") for r in senaryo.YASAK_KALIP)
