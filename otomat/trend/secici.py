@@ -147,7 +147,8 @@ Then propose the angle: one sentence thesis that makes the video more than a new
 Return ONLY JSON: {"secim": {"hikaye": short story name, "wiki_baslik": exact main Wikipedia article title from the
 candidates, "ilgili": [other candidate Wikipedia titles in the same story], "neden": why it is trending now (1-2
 sentences, from the headlines), "aci": the thesis, "gorsel_aramalari": [4-8 short Wikimedia Commons search queries for
-real photos related to the story (people, places, events, objects)]}, "yedekler": [up to 2 more stories, same fields]}"""
+real photos related to the story (people, places, events, objects)]}, "yedekler": [up to 3 more stories, same fields; the pipeline falls back to them when a story
+has too few free photos]}"""
 
 
 def sec(oturum: Oturum, zengin: list[dict], gecmis: list[str], model: str = "kimi-k3") -> dict:

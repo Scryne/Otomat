@@ -6,8 +6,15 @@ konuya uzak dolgu görseller kaldı (eleştirmen). Pexels yeni anahtar vermiyor 
 ücretsiz, 1920×1080 mp4 (`medium`), 100 istek/dk, yanıtlar 24 saat önbelleklenmeli, sistematik toplu indirme yok
 (pixabay.com/api/docs). "ai generated" etiketli klipler elenir: üretilmiş görüntüyü gerçek gibi göstermek yanıltır.
 
-Akış: `broll_sec` (LLM: hangi sahne stok video olur, arama sorgusu) → `ara` (önbellekli) → `aday_sec` (LLM: etiketlere
-göre en uygun klip ya da hiçbiri) → `hazirla` (ffmpeg: sahne süresine kırp, 1920×1080, 30 fps, kısa GOP, sessiz).
+Akış: `broll_sec` (LLM: hangi sahne stok video olur, iki arama sorgusu) → `ara` (önbellekli) → `aday_sec` (görüntü
+modeli: adayların küçük resimlerine bakıp en uygun klip ya da hiçbiri; düşerse etiketlerle) → `hazirla` (ffmpeg: sahne
+süresine kırp, 1920×1080, 30 fps, kısa GOP, sessiz).
+
+11-27: etiketle seçim Miss Universe videosunda 17 klibin ~10'unu ilgisiz yaptı ("judges table" → dosya dolabı,
+"children playing" → gökyüzünde sabun köpüğü, "moving boxes" → havalimanı yürüyen merdiveni) ve "she decided to
+prepare" sahnesine spor yapan yabancı bir kadın koydu (izleyici onu yarışmacı sanar). Etiket klibin ne gösterdiğini
+söylemiyor; seçim artık küçük resme bakılarak yapılıyor ve belirli bir kişiyi anlatan sahne (zamirle de olsa) stok
+almıyor.
 Anahtar: `PIXABAY_API_KEY` (ortam ya da yerel .env); yoksa adım atlanır, video fotoğraflarla üretilir.
 """
 
@@ -92,6 +99,8 @@ def ara(sorgu: str, n: int = 8) -> list[dict]:
 
 
 def uygun(hit: dict, sure: float) -> bool:
+    if hit.get("isAiGenerated") or hit.get("isLowQuality"):  # Pixabay'in kendi işaretleri (etiketsiz AI klipler de var)
+        return False
     etiket = str(hit.get("tags", "")).lower()
     if any(re.search(rf"\b{re.escape(y)}\b", etiket) for y in YASAK_ETIKET):  # sözcük sınırı: "iconic" ≠ "icon"
         return False
@@ -99,18 +108,45 @@ def uygun(hit: dict, sure: float) -> bool:
     return bool(m.get("url")) and int(m.get("width", 0)) >= 1280 and float(hit.get("duration", 0)) >= min(sure, 5.0)
 
 
+def kaynak_url(hit: dict) -> str:
+    """1080p varsa o ("large"), yoksa "medium" (1280×720; 1920'ye büyütülünce yumuşak duruyordu)."""
+    v = hit.get("videos") or {}
+    b = v.get("large") or {}
+    if b.get("url") and int(b.get("width", 0)) >= 1920 and int(b.get("size", 0) or 0) < 120_000_000:
+        return b["url"]
+    return v["medium"]["url"]
+
+
 SISTEM_SEC = """You are the picture editor of a documentary explainer. Most scenes show a real photo of the story's
 people and places. Some scenes would look better as moving STOCK FOOTAGE (generic real-world video: a city at night,
 a film set, cameras flashing, newspapers printing, a stock-market screen, people on phones, a crowd). Choose those.
 Rules:
 - Never for a scene that names or is about a specific person, quotes someone, or has a photo caption: those keep the
-  photo. Never for a scene that needs a specific real place or object the stock library cannot have.
+  photo. This includes lines that refer to the story's person only by a pronoun ("she trained for months", "he moved
+  to Paris"): any person in stock footage would be taken for them. Never for a scene that needs a specific real place
+  or object the stock library cannot have.
 - Prefer scenes whose line is about a general idea, mood, industry, reaction, place type or action.
 - Choose about {n} scenes, spread through the video, never two neighbouring scenes. Scenes marked [NO PHOTO: needs
   footage] have no picture at all: choose every one of them you can.
-- For each, write a 2-4 word English stock-footage search query describing what should be SEEN (concrete, visual:
-  "paparazzi camera flashes", "london street night", "film crew on set"), not the abstract topic.
-Return ONLY JSON: {{"secimler": [{{"i": scene index, "sorgu": "..."}}]}}"""
+- For each, write TWO different 2-4 word English stock-footage search queries describing what should be SEEN
+  (concrete, visual, things a stock library really has: "paparazzi camera flashes", "london street night", "film crew
+  on set"), not the abstract topic. The second is a broader fallback ("stage spotlights" for "pageant stage").
+Return ONLY JSON: {{"secimler": [{{"i": scene index, "sorgular": ["...", "..."]}}]}}"""
+
+SISTEM_GORUNTU = """You are the picture editor of a documentary explainer. For each SCENE you get its narration and
+a row of stock-footage candidates on the contact sheet (labels like 12a, 12b: scene 12, candidate a), each with its
+tags. Look at the PICTURES. Pick the candidate that a viewer would accept as showing what the line is about, or null
+if none does. Reject:
+- anything unrelated to the line or the story (a rock concert for a beauty pageant, soap bubbles for a childhood
+  memory, an airport for "moving house"),
+- one person as the clear subject (a face, a woman exercising, a man at a desk): the viewer takes them for a person in
+  the story. People only as crowds, hands, silhouettes, backs or far away,
+- animation, graphics, icons, renders, text on screen, logos, a plain background, a near-empty frame,
+- the wrong country, era or season when the line makes it obvious,
+- for a scene marked ABOUT A SPECIFIC PERSON: any candidate where a person is visible (even partly: hair, body,
+  a figure at a desk); only places, objects, landscapes or a crowd too far to see faces.
+Prefer a clear real subject, good light, a frame that fills the screen. When unsure, null: the scene keeps a photo.
+Return ONLY JSON: {"secim": [{"i": scene index, "id": "12a" or null}]}"""
 
 SISTEM_ADAY = """For each scene you get its narration and up to 6 stock clips (id: tags). Pick the clip whose tags
 best show what the line is about, or null if none fits (wrong country, wrong era, unrelated subject, cartoon/animation,
@@ -140,26 +176,150 @@ def broll_sec(oturum: Oturum, sahneler: list[dict]) -> list[dict]:
         except (KeyError, TypeError, ValueError):
             continue
         sh = sahneler[i] if 0 <= i < len(sahneler) else None
-        if not sh or sh.get("tur") in ("harita", "kapanis", "alinti") or sh.get("etiket") or not s.get("sorgu"):
+        sorgular = [str(q)[:60] for q in (s.get("sorgular") or [s.get("sorgu")]) if q][:2]
+        if not sh or sh.get("tur") in ("harita", "kapanis", "alinti") or sh.get("etiket") or not sorgular:
             continue
         gorselsiz = sh.get("tur") == "foto" and not sh.get("gorsel")
         if (not gorselsiz and {i - 1, i + 1} & alinan) or len(out) >= n:  # görselsiz sahnede komşu kuralı yok
             continue
         alinan.add(i)
-        out.append({"i": i, "sorgu": str(s["sorgu"])[:60]})
+        out.append({"i": i, "sorgu": sorgular[0], "sorgular": sorgular})
     return out
 
 
-def aday_sec(oturum: Oturum, sahneler: list[dict], secimler: list[dict], sureler: dict[int, float]) -> dict[int, dict]:
-    """Her seçili sahne için arama; LLM etiketlere bakıp klibi seçer. Aynı klip iki sahnede kullanılmaz."""
+ZAMIR = re.compile(r"\b(she|he|her|his|him|herself|himself)\b", re.I)
+
+
+def kisili(anlatim: str) -> bool:
+    """Satır belirli bir kişiyi tekil zamirle anlatıyor mu. 11-27: "she decided to prepare" sahnesinde görüntü modeli
+    saçı yapılan bir kişiyi seçti; izleyici onu hikâyedeki kadın sanar. Bu satırlarda görünür kişi kabul edilmez
+    (yer, nesne, kalabalık olur)."""
+    return bool(ZAMIR.search(anlatim))
+
+
+ADAY_EN_COK = 6  # sahne başına küçük resim (kontak sayfasında bir satır)
+HUCRE = (256, 144)
+SAYFA_SAHNE = 4  # sayfa başına sahne satırı: 1536×576; görüntü modelinin rahat okuduğu boy
+
+
+def adaylari_topla(secimler: list[dict], sureler: dict[int, float]) -> dict[int, list[dict]]:
+    """Her sahne için iki sorgunun uygun sonuçları (önce birinci sorgu), tekrarsız, en çok ADAY_EN_COK."""
     adaylar: dict[int, list[dict]] = {}
     for s in secimler:
+        gorulen, liste = set(), []
+        for q in s.get("sorgular") or [s["sorgu"]]:
+            try:
+                hits = ara(q, n=10)
+            except Exception as e:  # noqa: BLE001 — arama düşerse sahne fotoğrafta kalır
+                print(f"stok arama düştü ({q}): {str(e)[:100]}", flush=True)
+                continue
+            for h in hits:
+                if h["id"] not in gorulen and uygun(h, sureler.get(s["i"], 6.0)):
+                    gorulen.add(h["id"])
+                    liste.append(h)
+        adaylar[s["i"]] = liste[:ADAY_EN_COK]
+    return adaylar
+
+
+def _kucuk_resim(hit: dict) -> Path | None:
+    yol = ONBELLEK / "kucuk" / f"{hit['id']}.jpg"
+    if yol.exists():
+        return yol
+    url = ((hit.get("videos") or {}).get("medium") or {}).get("thumbnail")
+    if not url:
+        return None
+    yol.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30) as y:
+            yol.write_bytes(y.read())
+    except Exception:  # noqa: BLE001 — küçük resmi inmeyen aday sayfada boş kalır, seçilmez
+        return None
+    return yol
+
+
+def aday_sayfalari(adaylar: dict[int, list[dict]]) -> list[tuple[bytes, list[int]]]:
+    """Sahne başına bir satır: `12a`, `12b`… etiketli küçük resimler. Dönüş: (JPEG, sayfadaki sahneler)."""
+    import io
+
+    from PIL import Image, ImageDraw
+
+    from otomat.trend.gorsel_secici import _yazi_tipi
+
+    w, h = HUCRE
+    yazi = _yazi_tipi(24)
+    sahneler = [i for i, hs in adaylar.items() if hs]
+    out = []
+    for bas in range(0, len(sahneler), SAYFA_SAHNE):
+        grup = sahneler[bas : bas + SAYFA_SAHNE]
+        sayfa = Image.new("RGB", (w * ADAY_EN_COK, h * len(grup)), (24, 24, 26))
+        cizim = ImageDraw.Draw(sayfa)
+        for r, i in enumerate(grup):
+            for c, hit in enumerate(adaylar[i]):
+                x, y = c * w, r * h
+                if (k := _kucuk_resim(hit)) is not None:
+                    try:
+                        with Image.open(k) as im:
+                            kucuk = im.convert("RGB")
+                            kucuk.thumbnail((w - 4, h - 4))
+                        sayfa.paste(kucuk, (x + (w - kucuk.width) // 2, y + (h - kucuk.height) // 2))
+                    except OSError:
+                        pass
+                etiket = f"{i}{chr(97 + c)}"
+                cizim.rectangle((x + 3, y + 3, x + 12 + 15 * len(etiket), y + 33), fill=(255, 214, 10))
+                cizim.text((x + 7, y + 4), etiket, fill=(17, 17, 17), font=yazi)
+        tampon = io.BytesIO()
+        sayfa.save(tampon, "JPEG", quality=85)
+        out.append((tampon.getvalue(), grup))
+    return out
+
+
+def goruntuyle_sec(oturum: Oturum, sahneler: list[dict], adaylar: dict[int, list[dict]],
+                   hikaye: str = "") -> dict[int, dict]:  # fmt: skip
+    """Görüntü modeli her sahne satırına bakar; dönüş sahne → seçilen hit. Sayfa düşerse o sahneler seçilmez."""
+    from otomat.trend.gorsel_secici import goruntu_sor
+
+    out: dict[int, dict] = {}
+    for sayfa, grup in aday_sayfalari(adaylar):
+        sahne_metni = []
+        for i in grup:
+            kisi = " [ABOUT A SPECIFIC PERSON: reject every candidate with a visible person]" if kisili(
+                sahneler[i].get("anlatim", "")) else ""  # fmt: skip
+            satir = [f"SCENE {i}{kisi}: {sahneler[i].get('anlatim', '')}"]
+            satir += [f"  {i}{chr(97 + c)}: {h.get('tags', '')}" for c, h in enumerate(adaylar[i])]
+            sahne_metni.append("\n".join(satir))
+        metin = f"STORY: {hikaye[:400]}\n\n" + "\n\n".join(sahne_metni)
         try:
-            hits = ara(s["sorgu"])
-        except Exception as e:  # noqa: BLE001 — arama düşerse sahne fotoğrafta kalır
-            print(f"stok arama düştü ({s['sorgu']}): {str(e)[:100]}", flush=True)
+            y = goruntu_sor(oturum, SISTEM_GORUNTU, [sayfa], metin, en_cok=800)
+        except Exception as e:  # noqa: BLE001
+            print(f"stok görüntü seçimi düştü (sahne {grup}): {str(e)[:100]}", flush=True)
             continue
-        adaylar[s["i"]] = [h for h in hits if uygun(h, sureler.get(s["i"], 6.0))][:6]
+        for s in (y.get("secim") or []) if isinstance(y, dict) else []:
+            m = re.fullmatch(r"(\d+)([a-z])", str(s.get("id") or "").strip().lower())
+            if not m or int(m.group(1)) not in grup:
+                continue
+            i, c = int(m.group(1)), ord(m.group(2)) - 97
+            if 0 <= c < len(adaylar[i]):
+                out[i] = adaylar[i][c]
+    return out
+
+
+def aday_sec(oturum: Oturum, sahneler: list[dict], secimler: list[dict], sureler: dict[int, float],
+             hikaye: str = "") -> dict[int, dict]:  # fmt: skip
+    """Her seçili sahne için arama; görüntü modeli küçük resimlere bakıp klibi seçer (bütünüyle düşerse LLM
+    etiketlerle). Aynı klip iki sahnede kullanılmaz."""
+    adaylar = adaylari_topla(secimler, sureler)
+    secilen: dict[int, dict] | None
+    try:
+        secilen = goruntuyle_sec(oturum, sahneler, adaylar, hikaye)
+    except Exception as e:  # noqa: BLE001
+        print(f"stok görüntü seçimi atlandı, etiketle seçilir: {str(e)[:120]}", flush=True)
+        secilen = None
+    if secilen is not None:
+        out: dict[int, dict] = {}
+        for i, hit in sorted(secilen.items()):
+            if hit["id"] not in {h["id"] for h in out.values()}:
+                out[i] = hit
+        return out
     mesaj = "\n\n".join(
         f"SCENE {i}: {sahneler[i].get('anlatim', '')}\n" + "\n".join(f"  {h['id']}: {h.get('tags', '')}" for h in hs)
         for i, hs in adaylar.items() if hs
@@ -219,18 +379,18 @@ def karanlik_bas(yol: Path, sure: float = 0.6, esik: float = 22.0) -> bool:
     return bool(degerler) and min(degerler) < esik
 
 
-def uygula(oturum: Oturum, sahneler: list[dict], sureler: dict[int, float]) -> list[str]:
+def uygula(oturum: Oturum, sahneler: list[dict], sureler: dict[int, float], hikaye: str = "") -> list[str]:
     """Senaryo sahnelerine `klip` (Pixabay kimliği + etiket) yazar (yerinde). Dönüş: yapılanlar."""
     if not anahtar():
         return ["PIXABAY_API_KEY yok: stok video atlandı"]
     secimler = broll_sec(oturum, sahneler)
-    sec = aday_sec(oturum, sahneler, secimler, sureler)
+    sec = aday_sec(oturum, sahneler, secimler, sureler, hikaye)
     yapilan = []
     for i, hit in sorted(sec.items()):
         sorgu = next((s["sorgu"] for s in secimler if s["i"] == i), "")
         sahneler[i]["klip"] = {"id": hit["id"], "sorgu": sorgu, "etiket": hit.get("tags", ""),
                                "sayfa": hit.get("pageURL", ""), "yazar": hit.get("user", ""),
-                               "url": hit["videos"]["medium"]["url"], "sure": hit.get("duration")}  # fmt: skip
+                               "url": kaynak_url(hit), "sure": hit.get("duration")}  # fmt: skip
         yapilan.append(f"sahne {i}: {sorgu} → {hit['id']} ({str(hit.get('tags', ''))[:60]})")
     return yapilan
 

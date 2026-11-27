@@ -72,6 +72,12 @@ def duzelt(plan: dict, bulgular: list[dict]) -> list[str]:
     sahne = {sh["id"]: sh for sh in plan["sahneler"]}
     for b in bulgular:
         sh = sahne.get(b.get("sahne", ""))
+        if sh and b.get("tur") == "anlamsiz_gorsel" and sh.get("klip") and sh.get("gorsel"):
+            # stok klip ilgisiz bulunduysa (P0 ya da P1) sahne kendi fotoğrafına döner (11-27 Miss Universe: konser
+            # klibi güzellik yarışmasında, spor yapan yabancı kadın yarışmacının hazırlığında)
+            sh.pop("klip")
+            yapilan.append(f"{sh['id']}: stok klip çıkarıldı (anlamsız görsel)")
+            continue
         if not sh or b.get("siddet") != "P0":
             continue
         if b["tur"] in ("kontrast", "okunmuyor") and sh["tur"] in ("foto", "ifade", "manset") and not sh.get("koyu"):

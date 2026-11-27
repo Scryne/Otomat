@@ -30,6 +30,17 @@ KELIME_HEDEF = (650, 1350)  # ~6-9 dk (Chatterbox ~2,4 kelime/sn + aralar)
 BOLUM_MODEL = "glm-5.3"  # bölüm sahneleri: kimi-k3 çağrı başı ~0,07 pay, glm-5.3 ~0,007 (11-20 ölçümü)
 SAHNE_KELIME_EN_COK = 40  # 11-26: bağlı konuşma dili (12-25 kelimelik cümleler) 34'ü aşıyordu
 GORSEL_EN_COK = 3  # her sahnenin altında görsel var (11-20); havuz ~36 görsel, komşu sahnede tekrar yok
+KELIME_GORSEL_BASI = 75  # süre görsel havuzuna göre: 11-27 Miss Universe 11 görselle 1452 kelime (72 sahne) yazıldı,
+#                          bir fotoğraf 9 kez döndü. Fotoğraf başına ~3 kullanım + stok ~%20 → görsel başına ~75 kelime.
+
+
+def kelime_hedefi(gorsel_sayisi: int) -> tuple[int, int]:
+    """Toplam anlatım kelimesi (alt, üst). Üst sınır havuzla büyür (en çok KELIME_HEDEF[1]); alt sınır üstün ~%65'i.
+    Kısa ama tekrarsız video, aynı fotoğrafa dönen uzun videodan iyidir (izleyici tekrarı ilk dakikalarda görür)."""
+    ust = max(700, min(KELIME_HEDEF[1], KELIME_GORSEL_BASI * gorsel_sayisi))
+    return max(550, round(ust * 0.65)), ust
+
+
 MUZIK_RUHLARI = ("merak", "gerilim", "dram", "umut", "enerji", "sakin", "karanlik")
 YASAK_IFADE = ("unlock", "seamless", "supercharge", "game-changer", "game changer", "revolutionize", "effortless",
                "delve", "tapestry", "in today's fast-paced", "buckle up", "let's dive in", "dive into",
@@ -328,7 +339,7 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
         g = sh.get("gorsel")
         komsu = i > 0 and g and str(s[i - 1].get("gorsel")) == str(g)
         if g and (_gorsel_say(s[: i + 1])[str(g)] > GORSEL_EN_COK or komsu):
-            yeni = _en_az_kullanilan(s, gorsel_sayisi, i) or _en_az_kullanilan(s, gorsel_sayisi, i, GORSEL_EN_COK + 1)
+            yeni = _en_az_kullanilan(s, gorsel_sayisi, i)
             if yeni:
                 sh["gorsel"] = yeni
             else:
@@ -342,15 +353,10 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     # 4. durağan sahne ≤ 1/3 ve ardışık aynı durağan tür yok: fazlası görselli foto'ya döner
     def _foto_yap(i: int, zorla: bool = False) -> bool:
         sh = s[i]
-        # 11-26 Riemann: süzgeç sonrası 16 görselin hepsi 3 kez kullanılmıştı, durağan kart düşürülemiyordu. Kart
-        # fotoğrafa dönerken son çare 4. kullanım (komşu tekrar yine yok); stok video kişisiz sahnelerin bir kısmını alır.
-        g = (
-            sh.get("gorsel")
-            or _en_az_kullanilan(s, gorsel_sayisi, i)
-            or _en_az_kullanilan(s, gorsel_sayisi, i, GORSEL_EN_COK + 1)
-        )
-        if not g:
-            return False
+        # 11-26 Riemann: süzgeç sonrası 16 görselin hepsi 3 kez kullanılmıştı, durağan kart düşürülemiyordu. 11-27:
+        # 4. kullanım son çaresi kalktı (Miss Universe'te bir fotoğraf 9 kez döndü); havuz biterse sahne görselsiz
+        # fotoğraf olur, stok video aşaması önce onları doldurur.
+        g = sh.get("gorsel") or _en_az_kullanilan(s, gorsel_sayisi, i)
         # en çok üç fotoğraf art arda (11-26: sahnelerin yarısı fotoğraf hedefi; belgeselde ardışık fotoğraf doğal,
         # dördüncüsü tekdüzeleşiyor)
         tur = [sh_.get("tur") for sh_ in s]
@@ -376,6 +382,8 @@ def yapi_onar(senaryo: dict, gorsel_sayisi: int) -> list[str]:
                 "baslik": " ".join(str(baslik).split()[:7]), "vurgu": sh.get("vurgu", [])[:1] if sh.get("vurgu") else []}  # fmt: skip
         if sh.get("tur") == "alinti" and sh.get("kim"):
             s[i]["etiket"] = sh["kim"]
+        if not g:
+            s[i].pop("gorsel")
         return True
 
     # kare 0 oynatıcı önizlemesidir, boş olamaz (11-20 Anthropic: açılış sayi sahnesi boş kırmızıyla başladı) → foto
@@ -441,8 +449,9 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
     if len(s) < 25:
         hata.append(f"sahne sayısı {len(s)} (< 25)")
     toplam = sum(len(sh.get("anlatim", "").split()) for sh in s)
-    if not KELIME_HEDEF[0] <= toplam <= KELIME_HEDEF[1] + 150:
-        hata.append(f"toplam anlatım {toplam} kelime (hedef {KELIME_HEDEF[0]}-{KELIME_HEDEF[1]})")
+    alt, ust = kelime_hedefi(gorsel_sayisi)
+    if not alt <= toplam <= ust + 150:
+        hata.append(f"toplam anlatım {toplam} kelime (hedef {alt}-{ust}; görsel havuzu {gorsel_sayisi})")
     if not senaryo.get("tez"):
         hata.append("tez yok")
     gorsel_kullanim: Counter = Counter()
@@ -483,7 +492,7 @@ def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
             if y in metin:
                 hata.append(f"sahne {i}: yasak ifade '{y}'")
     for g, n in gorsel_kullanim.items():
-        if n > GORSEL_EN_COK + 1:  # +1: yapi_onar'ın kart → fotoğraf son çaresi (küçük havuz)
+        if n > GORSEL_EN_COK:  # süre havuza göre ayarlandığı için son çare 4. kullanım kalktı (11-27)
             hata.append(f"görsel {g} {n} kez kullanılmış (en çok {GORSEL_EN_COK})")
     for i, sh in enumerate(s[:-1]):
         if sh.get("tur") == "kapanis":
@@ -511,11 +520,35 @@ def _mesaj_kaynak(kaynak_metni: str, gorsel_metni: str) -> str:
     return f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== IMAGE LIST (real, licensed; use by id) ===\n{gorsel_metni}\n\n"
 
 
-def iskelet(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3") -> dict:
+KANCA_KAPANIS = 170  # kanca ~110 + kapanış ~60 kelime
+
+
+def iskelet_sistemi(ust: int = KELIME_HEDEF[1]) -> str:
+    """Bölümlerin toplam kelimesi süre bütçesinden (`kelime_hedefi`); kısa videoda 3-4 bölüm."""
+    b = ust - KANCA_KAPANIS - 30
+    s = SISTEM_ISKELET.replace("chapters together ~950-1150 words", f"chapters together ~{b - 200}-{b} words")
+    return s.replace("(3-5 chapters;", "(3-4 chapters;") if ust < 1000 else s
+
+
+def bolum_kelimeleri(plan: dict, ust: int) -> None:
+    """Model bütçeyi aşan bölüm kelimeleri verirse orantılı küçültür (yerinde; en az 120 kelime/bölüm)."""
+    bolumler = [b for b in plan.get("bolumler") or [] if isinstance(b, dict)]
+    toplam = sum(int(b.get("kelime") or 250) for b in bolumler)
+    butce = ust - KANCA_KAPANIS - 30
+    if bolumler and toplam > butce:
+        for b in bolumler:
+            b["kelime"] = max(120, round(int(b.get("kelime") or 250) * butce / toplam))
+
+
+def iskelet(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3",
+            ust: int = KELIME_HEDEF[1]) -> dict:  # fmt: skip
     mesaj = (f"TOPIC: {konu['ad']}\nWHY IT IS TRENDING: {konu.get('neden', '')}\n"
              f"EDITOR'S SUGGESTED ANGLE (sharpen it): {konu.get('aci', '')}\n\n" + _mesaj_kaynak(kaynak_metni, gorsel_metni)
              + "Plan the video now.")  # fmt: skip
-    return oturum.json_sor(SISTEM_ISKELET, mesaj, model=model, en_cok=12000, sicaklik=0.7)
+    plan = oturum.json_sor(iskelet_sistemi(ust), mesaj, model=model, en_cok=12000, sicaklik=0.7)
+    if isinstance(plan, dict):
+        bolum_kelimeleri(plan, ust)
+    return plan
 
 
 def _ozet(sahneler: list[dict]) -> str:
@@ -523,14 +556,14 @@ def _ozet(sahneler: list[dict]) -> str:
 
 
 def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model: str = "kimi-k3",
-        dizin: Path | None = None, bolum_model: str = BOLUM_MODEL) -> dict:  # fmt: skip
+        dizin: Path | None = None, bolum_model: str = BOLUM_MODEL, ust: int = KELIME_HEDEF[1]) -> dict:  # fmt: skip
     """İskelet (düşünerek, kısa) → kanca → her bölüm (düşünmeden, kısa JSON) → kapanış → kesit seçimi.
     Tek çağrıda ~60 sahnelik JSON 32k token'a sığmadı ve aboneliğin ~1,9 birimini yedi (11-20)."""
     plan_yol = dizin / "senaryo_iskelet.json" if dizin else None
     if plan_yol and plan_yol.exists():
         plan = json.loads(plan_yol.read_text(encoding="utf-8"))
     else:
-        plan = iskelet(oturum, konu, kaynak_metni, gorsel_metni, model)
+        plan = iskelet(oturum, konu, kaynak_metni, gorsel_metni, model, ust=ust)
         if plan_yol:
             plan_yol.write_text(json.dumps(plan, ensure_ascii=False, indent=1), encoding="utf-8")
     sahneler: list[dict] = []
@@ -677,7 +710,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
     elif taslak and taslak.exists():
         s = json.loads(taslak.read_text(encoding="utf-8"))
     else:
-        s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin)
+        s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin, ust=kelime_hedefi(gorsel_sayisi)[1])
         if taslak:
             taslak.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     for tur in range(tur_sayisi):
@@ -815,5 +848,9 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
             if yeni:
                 yapilan.append(f"sahne {i}: sınır {g} → {yeni}")
                 sh["gorsel"], sh["gorsel_uyum"] = yeni, 0
+            elif sh.get("tur") == "foto":  # 11-27: aday yoksa aşım kalıyordu (bir fotoğraf 9 kez); stok doldurur
+                yapilan.append(f"sahne {i}: sınır {g} → görselsiz (stok)")
+                sh.pop("gorsel")
+                sh.pop("gorsel_uyum", None)
     senaryo["gorsel_eslendi"] = True
     return yapilan

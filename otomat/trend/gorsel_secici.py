@@ -93,17 +93,22 @@ def gruplari_kirp(y: object, tut: set[int], n: int, en_cok: int = GRUP_EN_COK) -
     return kalan
 
 
-def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) -> set[int]:
-    """Görüntü modeline kontak sayfaları + başlık listesi; tutulacak görsellerin sıra numaraları (0 tabanlı)."""
+def goruntu_sor(oturum: Oturum, sistem: str, sayfalar: list[bytes], metin: str, en_cok: int = 1500) -> object:
+    """Görüntü modeline JPEG sayfaları + metin; JSON cevap (stok klip seçimi de bunu kullanır)."""
     icerik: list[dict] = [{"type": "image", "source": {"type": "base64", "media_type": "image/jpeg",
                                                        "data": base64.b64encode(s).decode()}}
-                          for s in kontak_sayfalari(yollar)]  # fmt: skip
-    icerik.append({"type": "text", "text": f"STORY: {hikaye}\n\nIMAGES (id: file title):\n{liste}"})
-    govde = {"model": MODEL_GORUNTU, "max_tokens": 1500, "temperature": 0, "system": SISTEM,
+                          for s in sayfalar]  # fmt: skip
+    icerik.append({"type": "text", "text": metin})
+    govde = {"model": MODEL_GORUNTU, "max_tokens": en_cok, "temperature": 0, "system": sistem,
              "messages": [{"role": "user", "content": icerik}]}  # fmt: skip
     y = oturum._istek(govde, toplam_sure=300)
-    metin = "".join(c.get("text", "") for c in y.get("content", []) if c.get("type") == "text")
-    cevap = json_cikar(metin)
+    return json_cikar("".join(c.get("text", "") for c in y.get("content", []) if c.get("type") == "text"))
+
+
+def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) -> set[int]:
+    """Görüntü modeline kontak sayfaları + başlık listesi; tutulacak görsellerin sıra numaraları (0 tabanlı)."""
+    cevap = goruntu_sor(oturum, SISTEM, kontak_sayfalari(yollar),
+                        f"STORY: {hikaye}\n\nIMAGES (id: file title):\n{liste}")  # fmt: skip
     return gruplari_kirp(cevap, _kimlikler(cevap, len(yollar)), len(yollar))
 
 

@@ -140,13 +140,59 @@ def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 6) -> dict:
             yol = "başlık"
         except Exception as e2:  # noqa: BLE001
             print(f"görsel süzme atlandı: {str(e2)[:120]}", flush=True)
-            return {**kay, "suzuldu": True}
+            return {**kay, "suzuldu": True, "suzgec_kalan": len(g) // 2}  # süzgeç ölçülen havuzların ~yarısını tutar
     kalan = [x for i, x in enumerate(g) if i in tut]
     if len(kalan) < en_az:
         print(f"görsel süzme {len(kalan)} bırakıyordu (< {en_az}), havuz korunur", flush=True)
-        return {**kay, "suzuldu": True}
+        return {**kay, "suzuldu": True, "suzgec_kalan": len(kalan)}
     print(f"görsel süzme ({yol}): {len(g)} → {len(kalan)}", flush=True)
-    return {**kay, "gorseller": kalan, "suzuldu": True}
+    return {**kay, "gorseller": kalan, "suzuldu": True, "suzgec_kalan": len(kalan)}
+
+
+GORSEL_EN_AZ = 10  # konunun kabulü için süzgeçten geçen görsel (altında video ~5 dk'nın altına iner ya da tekrar eder)
+GORSEL_SON_CARE = 8  # hiçbir aday eşiği geçmezse en zengin havuz bu sayıdaysa yine kullanılır; altı: o gün video yok
+
+
+def konu_kaynak(d: Path, oturum: Oturum, secim: dict) -> tuple[dict, dict]:
+    """Editörün seçimi + yedekleri arasından görsel havuzu yeten ilk konu. 11-27: Miss Universe 11, Riemann 9 görselle
+    6-9 dakikaya yayıldı; fotoğraflar 5-9 kez döndü. Havuz yazımdan önce ölçülür, yetmeyen konu yedeğe bırakılır.
+    Dönüş: (seçim, kaynak). Reddedilenlerin kaynağı `kaynak_red_<n>.json` olarak kalır."""
+    if secim.get("gorsel_onay") or (d / "senaryo.json").exists():
+        kay = asama_kaynak(d, secim)
+        if not kay.get("suzuldu"):
+            kay = gorsel_suz(oturum, secim["secim"]["hikaye"], kay)
+            _yaz(d / "kaynak.json", kay)
+        return secim, kay
+    yedek = [y for y in secim.get("yedekler") or [] if isinstance(y, dict) and y.get("wiki_baslik")]
+    adaylar = [secim["secim"], *yedek]
+    olculen: list[tuple[int, int]] = []  # (süzgeçten geçen, aday sırası)
+    for n, aday in enumerate(adaylar):
+        s = {**secim, "secim": aday}
+        (d / "kaynak.json").unlink(missing_ok=True)
+        try:
+            kay = asama_kaynak(d, s)
+        except Exception as e:  # noqa: BLE001 — makalesi açılmayan aday atlanır
+            print(f"konu adayı atlandı ({aday.get('hikaye')}): {str(e)[:120]}", flush=True)
+            continue
+        if not kay.get("suzuldu"):
+            kay = gorsel_suz(oturum, aday["hikaye"], kay)
+            _yaz(d / "kaynak.json", kay)
+        kalan = kay.get("suzgec_kalan") or 0
+        print(f"konu adayı {n}: {aday['hikaye']} → {kalan} görsel", flush=True)
+        if kalan >= GORSEL_EN_AZ:
+            secim = {**s, "gorsel_onay": True}
+            _yaz(d / "secim.json", secim)
+            return secim, kay
+        olculen.append((kalan, n))
+        (d / "kaynak.json").replace(d / f"kaynak_red_{n}.json")
+    if not olculen or max(olculen)[0] < GORSEL_SON_CARE:
+        raise RuntimeError(f"hiçbir konu adayının görsel havuzu yetmedi: {olculen}")
+    _, n = max(olculen)
+    (d / f"kaynak_red_{n}.json").replace(d / "kaynak.json")
+    secim = {**secim, "secim": adaylar[n], "gorsel_onay": True}
+    _yaz(d / "secim.json", secim)
+    print(f"konu: eşiği geçen yok, en zengin havuz seçildi ({adaylar[n]['hikaye']})", flush=True)
+    return secim, _oku(d / "kaynak.json")
 
 
 def _wiki_nesne(dct: dict):
@@ -209,6 +255,27 @@ def asama_ses(d: Path, sen: dict) -> dict:
     return z
 
 
+def _en_az_gorsel(onceki: list[dict], sonraki: list[dict], n: int) -> int:
+    """Plan sahneleri (`assets/img/gNN.jpg`) ve kalan senaryo sahneleri (`GNN`) içinde en az görünen görselin sırası;
+    bir önceki ve bir sonraki sahnedekiler hariç. Havuz boşsa -1."""
+    import collections
+
+    say: collections.Counter = collections.Counter()
+    for p in onceki:
+        if (g := p.get("gorsel")) and not p.get("klip"):
+            say[int(str(g).rsplit("/g", 1)[-1][:2]) - 1] += 1
+    for sh in sonraki:
+        if (g := str(sh.get("gorsel") or ""))[1:].isdigit() and not sh.get("klip"):
+            say[int(g[1:]) - 1] += 1
+    yasak = set()
+    if onceki and (g := onceki[-1].get("gorsel")):
+        yasak.add(int(str(g).rsplit("/g", 1)[-1][:2]) - 1)
+    if sonraki and (g := str(sonraki[0].get("gorsel") or ""))[1:].isdigit():
+        yasak.add(int(g[1:]) - 1)
+    adaylar = [k for k in range(n) if k not in yasak] or list(range(n))
+    return min(adaylar, key=lambda k: (say[k], k)) if adaylar else -1
+
+
 def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple[dict, dict[str, Path]]:
     from otomat.trend import derinlik, stok
 
@@ -255,9 +322,9 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
                 print(f"stok klip düştü ({k.get('id')}): {str(e)[:120]}", flush=True)
         if not p.get("gorsel") and not p.get("klip") and sh["tur"] != "harita":
             # havuz tükenince görselsiz kalan sahne (11-26 Miss Universe: sayı kartı ve kapanış koyu lekeler üstündeydi)
-            # kapak görselinin hareketli, koyulaştırılmış hali üstünde durur
-            kg = str(sen.get("kapak_gorsel") or "G1")
-            gi = min(max(int(kg[1:]) - 1 if kg[1:].isdigit() else 0, 0), len(gorsel) - 1) if gorsel else -1
+            # koyulaştırılmış bir fotoğraf üstünde durur. 11-27: hep kapak görseli seçiliyordu, o fotoğraf videoda
+            # tekrarın başı oldu; artık en az kullanılan, önceki sahnede görünmeyen fotoğraf
+            gi = _en_az_gorsel(sahneler, sen["sahneler"][i + 1 :], len(gorsel))
             if gi >= 0:
                 varlik[f"assets/img/g{gi + 1:02d}.jpg"] = Path(gorsel[gi]["hazir"])
                 p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"], koyu=True)
@@ -378,13 +445,10 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     d.mkdir(parents=True, exist_ok=True)
     oturum = Oturum(d.name)
     secim = asama_secim(d, oturum, konu)
+    secim, kay = konu_kaynak(d, oturum, secim)  # görsel havuzu yetmeyen konu yedeğe bırakılır; G1… burada sabitlenir
     print("seçim:", secim["secim"]["hikaye"], "|", secim["secim"].get("aci", ""), flush=True)
-    kay = asama_kaynak(d, secim)
     print(f"kaynak: wiki {len(kay['wiki']['metin'])} karakter, {len(kay['haberler'])} haber, "
           f"{len(kay['gorseller'])} görsel", flush=True)  # fmt: skip
-    if not kay.get("suzuldu") and not (d / "senaryo.json").exists():  # kimlikler (G1…) senaryodan önce sabitlenir
-        kay = gorsel_suz(oturum, secim["secim"]["hikaye"], kay)
-        _yaz(d / "kaynak.json", kay)
     gorselleri_hazirla(d, kay)
     sen = asama_senaryo(d, oturum, secim, kay)
     if not sen.get("gorsel_eslendi"):  # anlamla görsel ataması (yanlış kişiyi göstermesin); bir kez, kayıtlı
@@ -404,7 +468,7 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         from otomat.trend import stok
 
         sureler = {i: zz["sure"] for i, zz in enumerate(z["sahneler"])}
-        yapilan = stok.uygula(oturum, sen["sahneler"], sureler)
+        yapilan = stok.uygula(oturum, sen["sahneler"], sureler, sen.get("tez") or secim["secim"]["hikaye"])
         sen["stok_secildi"] = True
         _yaz(d / "senaryo.json", sen)
         print(f"stok video: {len([y for y in yapilan if y.startswith('sahne')])} sahne", flush=True)
