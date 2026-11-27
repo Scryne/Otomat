@@ -134,7 +134,7 @@ def test_uzun_sahnede_yakin_plan_kesmesi_kelime_basinda():
     assert kurgu.vurus_ani(sh) == 4.5  # ortaya (4,0) en yakın kelime başı, %35-65 aralığında
     h, js = kurgu.zemin(sh, 2)
     assert h.startswith('<div class="cek"') and "tl.set(S('.cek'), {scale:1.16" in js and "4.500" in js
-    assert kurgu.vurus_ani({**sh, "sure": 5.0}) is None  # kısa sahne
+    assert kurgu.vurus_ani({**sh, "sure": 4.0}) is None  # kısa sahne
     assert kurgu.vurus_ani({**sh, "klip": "assets/klip/x.mp4"}) is None  # stok video zaten hareketli
 
 

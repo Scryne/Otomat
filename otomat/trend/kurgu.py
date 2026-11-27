@@ -219,30 +219,45 @@ ISLEME = {  # zemin işleme: (blur, dof, karartma katmanı CSS)
 }
 
 
-VURUS_SURE = 6.0  # bu süreden uzun durağan görüntülü sahnede ortada yakın plan kesmesi
+VURUS_SURE = 4.5  # bu süreden uzun durağan görüntülü sahnede yakın plan kesmesi; 2×'ten uzunsa iki kesme
 VURUS_ODAK = ("50% 38%", "40% 42%", "60% 42%", "50% 50%")
+VURUS_OLCEK = (1.16, 1.07)  # birinci kesme yakın, ikincisi yarı geniş (aynı ölçekte iki kesme sıçrama gibi durur)
+
+
+def vurus_anlari(sh: dict) -> list[float]:
+    """Yakın plan kesmelerinin anları: sahnenin 1/k, 2/k… noktalarına en yakın kelime başları (kesme konuşmanın
+    ritmine oturur). 11-27 ders (tutan AI dizilerinde plan 1,5-2,5 sn; Wu-Tang'de sahne ortalaması 6,6 sn): çekim
+    3-4,5 sn'de bir değişir. Kısa sahne, stok klip ve harita için boş."""
+    sure = float(sh.get("sure") or 0)
+    if sure < VURUS_SURE or sh.get("klip") or sh.get("video"):
+        return []
+    k = 2 if sure < 2 * VURUS_SURE else 3
+    basl = [float(x["s"]) for x in sh.get("kelimeler") or []]
+    out: list[float] = []
+    for j in range(1, k):
+        hedef = sure * j / k
+        pay = 0.15 * sure
+        aday = [t for t in basl if abs(t - hedef) <= pay and all(abs(t - o) > 1.2 for o in out)]
+        out.append(min(aday, key=lambda t: abs(t - hedef)) if aday else round(hedef, 3))
+    return out
 
 
 def vurus_ani(sh: dict) -> float | None:
-    """Yakın plan kesmesinin anı: sahne ortasına en yakın kelime başı (kesme konuşmanın ritmine oturur). Kısa sahne,
-    stok klip ve harita için None."""
-    sure = float(sh.get("sure") or 0)
-    if sure < VURUS_SURE or sh.get("klip") or sh.get("video"):
-        return None
-    adaylar = [float(k["s"]) for k in sh.get("kelimeler") or [] if 0.35 * sure <= float(k["s"]) <= 0.65 * sure]
-    return min(adaylar, key=lambda t: abs(t - sure / 2)) if adaylar else round(sure / 2, 3)
+    """İlk yakın plan kesmesi (geri uyum)."""
+    return (vurus_anlari(sh) or [None])[0]
 
 
 def zemin(sh: dict, tohum: int, isle: str = "dogal", w: int = GENISLIK, h: int = YUKSEKLIK) -> tuple[str, str]:
-    """Zemin katmanı + uzun sahnede yakın plan kesmesi (punch-in). 11-26 eleştirmen: 7-9 sn'lik fotoğraf sahnelerinde
-    "kare 11 ile 12 aynı" (35 bulgu); açıklayıcı kurgusunda çekim 4-6 sn'de bir değişir. Aynı görsel %16 yakın ve başka
-    bir odakla ikinci çekim olur; hareket (parallax/kamera) sürer."""
+    """Zemin katmanı + uzun sahnede yakın plan kesmeleri (punch-in). 11-26 eleştirmen: 7-9 sn'lik fotoğraf sahnelerinde
+    "kare 11 ile 12 aynı" (35 bulgu). Aynı görsel başka bir ölçek ve odakla yeni çekim olur; hareket (parallax/kamera)
+    sürer."""
     html_, js = _zemin_ic(sh, tohum, isle, w, h)
-    t = vurus_ani(sh)
-    if t is None:
+    anlar = vurus_anlari(sh)
+    if not anlar:
         return html_, js
-    odak = VURUS_ODAK[tohum % len(VURUS_ODAK)]
-    js += f"\ntl.set(S('.cek'), {{scale:1.16, transformOrigin:'{odak}'}}, {t:.3f});"
+    for j, t in enumerate(anlar):
+        odak = VURUS_ODAK[(tohum + j * 2) % len(VURUS_ODAK)]
+        js += f"\ntl.set(S('.cek'), {{scale:{VURUS_OLCEK[j % 2]}, transformOrigin:'{odak}'}}, {t:.3f});"
     return f'<div class="cek" style="position:absolute;inset:0;overflow:hidden">{html_}</div>', js
 
 

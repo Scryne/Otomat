@@ -772,6 +772,76 @@ def onar(oturum: Oturum, senaryo: dict, sorunlar: list, kaynak_metni: str, gorse
     return {**senaryo, "sahneler": [sh for i, sh in enumerate(yeni) if i not in silinen]}
 
 
+SISTEM_KANCA = """You write the FIRST spoken line of a narrated YouTube explainer: the first ~8 seconds, the moment a
+viewer decides to stay or swipe. What we measured on real channels: generic openers die ("Once a star footballer, what
+happened to X?" got ~1,500 views); the same video with a rewritten first line got 10,000-35,000. The winning lines
+carried (1) ONE strange, specific, TRUE detail that makes a viewer think "wait, what?" ("the striker who married that
+year's Miss Nigeria every single year"), and (2) an ANCHOR the viewer already knows: a famous name, a familiar event,
+a number they can feel ("before Icardi and Osimhen, Galatasaray's goals came from…").
+Rules: every fact comes from the SOURCE PACK (cite source ids). Name the trending thing. 15-30 words, one or two
+sentences, plain spoken English, contractions welcome. No "In this video", no greeting, no hype words, no "you won't
+believe", no "here's the thing", no question that a viewer can answer with "no". It must lead naturally into the NEXT
+LINES of the script (given). Write 6 openers, each built on a DIFFERENT detail from the sources.
+Return ONLY JSON: {"adaylar": [{"metin": "...", "ayrinti": "the detail it uses", "kaynak": ["N3", ...]}]}"""
+
+SISTEM_KANCA_YARGI = """You judge opening lines of a YouTube explainer (the first ~8 seconds). Score each candidate
+1-10 on: SPECIFIC (one concrete, surprising, checkable detail rather than a general claim), ANCHOR (ties to something
+the viewer already knows), PROMISE (makes clear why this story is bigger than it looks), FLOW (the next lines follow
+naturally), SPOKEN (sounds like a person talking, not a trailer or a headline). A candidate that states anything the
+SOURCE PACK does not support gets 0. Return ONLY JSON: {"puanlar": [{"i": 0, "toplam": 0-50, "neden": "short"}]}"""
+
+KANCA_ADAY = 6
+
+
+def kanca_sec(oturum: Oturum, senaryo: dict, kaynak_metni: str, model: str = "kimi-k3",
+              yargic: str = "gemini-4-argon") -> str | None:  # fmt: skip
+    """İlk sahnenin anlatımı için 6 aday + yazarınki; ayrı bir model puanlar, en yükseği yerine geçer (yerinde).
+    Ders (2026-11-27, Onur Naci Öztürk futbol kanalı): yalnız kanca ve birkaç cümle elle değişince aynı videolar
+    1-2 binden 10-35 bin izlenmeye çıktı; yapay zekânın kancası jenerikti. Dönüş: seçilen metin (değişmediyse None)."""
+    s = senaryo.get("sahneler") or []
+    if not s:
+        return None
+    ilk = s[0]
+    sinir = 20 if ilk.get("tur") in ("sayi", "ikili", "ifade", "alinti") else 30
+    sonraki = "\n".join(sh.get("anlatim", "") for sh in s[1:5])
+    mesaj = (f"=== SOURCE PACK ===\n{kaynak_metni}\n\n=== THESIS ===\n{senaryo.get('tez', '')}\n\n"
+             f"=== CURRENT FIRST LINE ===\n{ilk.get('anlatim', '')}\n\n=== NEXT LINES ===\n{sonraki}")  # fmt: skip
+    try:
+        y = oturum.json_sor(SISTEM_KANCA, mesaj, model=model, en_cok=3000, sicaklik=0.9, dusun=False)
+    except Exception as e:  # noqa: BLE001 — kanca seçimi düşerse yazarın kancası kalır
+        print(f"kanca adayları düştü: {str(e)[:120]}", flush=True)
+        return None
+    adaylar = [{"metin": ilk.get("anlatim", ""), "kaynak": ilk.get("kaynak") or []}]
+    for a in (y.get("adaylar") or []) if isinstance(y, dict) else []:
+        metin = str(a.get("metin") or "").strip() if isinstance(a, dict) else ""
+        if 8 <= len(metin.split()) <= sinir and not any(r.search(metin.lower()) for r in YASAK_KALIP):
+            adaylar.append({"metin": metin, "kaynak": [str(k) for k in a.get("kaynak") or []]})
+    if len(adaylar) < 2:
+        return None
+    liste = "\n".join(f"{i}. {a['metin']}" for i, a in enumerate(adaylar[: KANCA_ADAY + 1]))
+    try:
+        p = oturum.json_sor(SISTEM_KANCA_YARGI, f"{mesaj}\n\n=== CANDIDATES ===\n{liste}", model=yargic, en_cok=2000,
+                            sicaklik=0.0, dusun=False)  # fmt: skip
+    except Exception as e:  # noqa: BLE001
+        print(f"kanca yargısı düştü: {str(e)[:120]}", flush=True)
+        return None
+    puan: dict[int, float] = {}
+    for x in (p.get("puanlar") or []) if isinstance(p, dict) else []:
+        try:
+            puan[int(x["i"])] = float(x["toplam"])
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not puan:
+        return None
+    en = max(puan, key=lambda i: (puan[i], i == 0))  # eşitlikte yazarınki
+    senaryo["kanca_adaylari"] = [{**a, "puan": puan.get(i)} for i, a in enumerate(adaylar)]
+    if en == 0 or not 0 < en < len(adaylar):
+        return None
+    ilk["anlatim"] = adaylar[en]["metin"]
+    ilk["kaynak"] = list(dict.fromkeys([*adaylar[en]["kaynak"], *(ilk.get("kaynak") or [])]))
+    return ilk["anlatim"]
+
+
 def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorsel_sayisi: int,
          tur_sayisi: int = 4, kayit: list | None = None, dizin: Path | None = None,
          butce: int | None = None) -> dict:  # fmt: skip
@@ -787,6 +857,8 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
         s = json.loads(taslak.read_text(encoding="utf-8"))
     else:
         s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin, ust=kelime_hedefi(butce or gorsel_sayisi)[1])
+        if yeni := kanca_sec(oturum, s, kaynak_metni):  # olgu denetimi aşağıdaki turlarda bunu da görür
+            print(f"kanca: {yeni}", flush=True)
         if taslak:
             taslak.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     for tur in range(tur_sayisi):

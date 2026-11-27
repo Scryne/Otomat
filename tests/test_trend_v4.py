@@ -381,3 +381,43 @@ def test_gorsel_onar_p0_anlamsiz_fotografi_degistirir():
     assert s[2]["gorsel"] == "assets/img/g02.jpg"  # stok klipli sahne eleştirmen.duzelt'in işi
     assert s[0]["gorsel"] == "assets/img/g02.jpg"  # P1 dokunulmaz
     assert len(yapilan) == 1 and "assets/img/g03.jpg" in varlik
+
+
+def test_uzun_sahnede_iki_kesme_farkli_olcek():
+    from otomat.trend import kurgu
+
+    kel = [{"w": "x", "s": t, "e": t + 0.2} for t in (0.2, 3.1, 4.4, 6.2, 8.6, 10.5)]
+    sh = {"id": "s05", "sure": 12.0, "gorsel": "assets/img/g01.jpg", "kelimeler": kel}
+    assert kurgu.vurus_anlari(sh) == [4.4, 8.6]  # 4,0 ve 8,0'a en yakın kelime başları
+    _, js = kurgu.zemin(sh, 1)
+    assert "scale:1.16" in js and "scale:1.07" in js
+    assert len(kurgu.vurus_anlari({**sh, "sure": 6.0})) == 1
+    assert kurgu.vurus_anlari({**sh, "sure": 4.0}) == []
+
+
+class _KancaOturum:
+    def __init__(self, adaylar, puanlar):
+        self.cevap = [{"adaylar": adaylar}, {"puanlar": puanlar}]
+
+    def json_sor(self, *a, **k):
+        return self.cevap.pop(0)
+
+
+def test_kanca_sec_en_yuksek_puanli_aday_gecer():
+    ilk = {"tur": "foto", "anlatim": "On Thanksgiving the Lions hosted the Bears at Ford.", "kaynak": ["N8"]}
+    s = {"tez": "t", "sahneler": [ilk, {"tur": "foto", "anlatim": "They opened with Triumph."}]}
+    ad = [{"metin": "Wu-Tang opened an NFL halftime show with a five-minute song that has nine verses and no hook.",
+           "kaynak": ["N18"]},
+          {"metin": "This isn't about football, it's about money and who gets the stage tonight.", "kaynak": []},
+          {"metin": "kısa", "kaynak": []}]  # fmt: skip
+    o = _KancaOturum(ad, [{"i": 0, "toplam": 30}, {"i": 1, "toplam": 46}])
+    yeni = senaryo.kanca_sec(o, s, "kaynak")
+    assert yeni and yeni.startswith("Wu-Tang") and s["sahneler"][0]["kaynak"] == ["N18", "N8"]
+    assert len(s["kanca_adaylari"]) == 2  # yasak kalıp ("isn't about…, it's") ve kısa aday elendi
+
+
+def test_kanca_sec_esitlikte_yazarinki_kalir():
+    s = {"sahneler": [{"tur": "foto", "anlatim": "On Thanksgiving the Lions hosted the Bears at Ford Field."}]}
+    ad = [{"metin": "Wu-Tang opened an NFL halftime show with a five-minute song with nine verses.", "kaynak": []}]
+    o = _KancaOturum(ad, [{"i": 0, "toplam": 40}, {"i": 1, "toplam": 40}])
+    assert senaryo.kanca_sec(o, s, "k") is None and s["sahneler"][0]["anlatim"].startswith("On Thanksgiving")
