@@ -368,3 +368,33 @@ satırında spor yapan yabancı bir kadın. Eleştirmen 174 bulgu (ilgisiz 40, t
 **A/B (aynı MU havuzu, grup ve anlatımlı eleştirmenden önce).** 5:28, 43 sahne, 840 kelime; eleştirmen 93 bulgu
 (ilgisiz 15, tekrar 33); konser/yabancı kadın yok. Tekrar yoğunluğu dakikada 4,6 → 6,0 (kısa video, aynı 11 görsel):
 grup düzeltmesinin gerekçesi.
+
+## 11. Dış dersler ve Wu-Tang ölçümü (11-27 gece) [B/Ö]
+
+Scryne üç video ve transkriptini verdi (Onur Naci Öztürk): Claude + Premiere ile futbol Shorts kanalı, "Fable Pop"
+yapay zekâ dizi kanalının maliyet analizi, aynı yöntemle kurulan dizi kanalının ilk günü. **Kanıt ağırlığı düşük:**
+sonuçlar tek denemeli; futbol kanalındaki günlük 83 bin artış, üreticinin bu kanal hakkındaki videosundan sonra
+geliyor (kendi kitlesi); para kazanma için 2013 kanalı; Higgsfield/Tab sponsorlu. Hipotez olarak alındı.
+
+| Ders | Kanıt | Otomat'ta |
+|---|---|---|
+| Kanca en büyük kaldıraç | aynı videolar, yalnız kanca + birkaç cümle elle: 1-2 bin → 10-35 bin | `senaryo.kanca_sec`: 6 aday + yazarınki, ayrı model (somut ayrıntı, tanıdık çapa, söz, akış, konuşma dili) puanlar; kaynaksız aday 0. Wu-Tang: yazarınki 33, seçilen 46 |
+| Görüntü sık değişir | tutan dizide plan 1,5-2,5 sn; Wu-Tang'de sahne ortalaması 6,6 sn | `kurgu.vurus_anlari`: 4,5 sn'den uzun fotoğrafta iki, 9 sn'den uzunda üç çekim (1,16 / 1,07 ölçek, başka odak) |
+| Çok dilli meta + altyazı | dizi kanalı 6 dilde SRT + başlık; yorumda yeni dil istendi | `yerel.py`: senaryodan kelime zamanlı İngilizce SRT (400 birim), 8 dilde başlık/açıklama (50 birim; kaynak kısmı İngilizce, rakam kapısı). Çeviri SRT'si yok: izleyicinin otomatik çevirisi doğru İngilizce izden yapılır |
+| Kapak/başlık varyantı | 3 kapak, 5 başlık üretip seçti | `kapak_varyantlari`: iki kapak daha (`kapak/v2`, `v3`); Test & compare yalnız Studio'da |
+| Süreklilik, erken hüküm yok | 30 izlenmede kalan eski video, yeni video çıkınca 1.000; günde 30 yükleme engellendi | ~30 video / 8 hafta dolmadan format değişmez; Shorts için "izlemeye devam" ≥ %70 hedef (onunki %62) |
+| Planlı yayın | hemen yayınlanan video 9 sa'te 5 izlenme; zamanlanınca açıldı | zaten `publishAt` |
+| Aynı adlı kişi | yapay zekâ "Vederson", "Tete"yi bilemedi | Commons + süzgeç; bkz. aşağıdaki Wu-Tang hatası |
+
+Alınmayan: üretken video (Seedance, 40 dk ≈ 278-723 $), 40 dakikalık süre (bizde süre gerçek malzemeye bağlı), drama
+formülü, 4K büyütme (kodlama kazancı doğrulanmadı).
+
+**Wu-Tang Clan (11-27), v4 tam koşu.** 60 sahne, 997 kelime, 6:36; eleştirmen 77 bulgu, **36 ilgisiz görsel (22 P0)**
+(A/B'de 15). Kök neden zinciri: (1) süzgece yalnız hikâye başlığı gidiyordu, tezin ikinci kahramanı Chad Smith'in 5
+fotoğrafı "hikâyede adı geçmeyen kişi" diye atıldı; (2) grup sınırının boşalttığı sahneler en az kullanılan fotoğrafla
+doluyordu: "RZA ve Ghostface" satırı Washington-Lions maçının üstünde, **alt yazısı "RZA"**; (3) eleştirmen görüyor ama
+onarım yalnız stok klibi ve başlıklı fotoğrafı kapsıyordu. Düzeltmeler (`76c6339`): süzgeç başlık + açı + adı geçenler
++ editörün görsel aramalarını görür (`suzgec_hikayesi`; v5 havuzu 23 → 28, Chad Smith'in 5 fotoğrafı kaldı);
+görselsiz sahne önce anlatımda adı geçeni gösteren fotoğrafı alır (`ilgili_gorsel`, dosya adındaki özel adlar); alt
+yazı yalnız adları dosya adında geçen fotoğrafta kalır (`etiket_uygun`); P0 anlamsız görselli fotoğraf sahnesi ad
+eşleşmesiyle değişir (`gorsel_onar`). Video yüklenmedi.
