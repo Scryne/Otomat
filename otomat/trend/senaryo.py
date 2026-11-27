@@ -171,8 +171,9 @@ HARD RULES
      exact English Wikipedia article title of that place, e.g. "Miami", "Edinburgh"), yakinlik ("city", "region" or
      "country"). Narration 12-26 words.
    - "kapanis": final scene only. fields: metin (the one idea to remember, ≤ 8 words), vurgu (1 word)
-7. 3-5 chapters ("bolum" scenes) after the hook. Last scene is "kapanis". No "subscribe" begging; at most one natural
-   line inviting viewers to share what they think, inside the last two scenes.
+7. 3-5 chapters ("bolum" scenes) after the hook. Last scene is "kapanis". No "subscribe" begging; inside the last two
+   scenes, at most one natural line that asks viewers ONE concrete question they can answer in a comment (which side
+   they take, what they would have done, which related story they want explained next), never a vague "let us know".
 8. Use images from the IMAGE LIST only by id. EVERY scene except harita gets a "gorsel" (it moves behind the
    graphics; there are no plain colour backgrounds). Use each image at most 3 times, never in two neighbouring scenes.
    Prefer images that show what the line says.
