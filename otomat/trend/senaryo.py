@@ -199,6 +199,7 @@ YOUR TASK NOW: plan the video, do not write scenes yet. Return ONLY JSON:
  "baslik_adaylari": 5 YouTube titles, 45-70 characters, concrete story frame, not ending with "?", the trending thing
    named in the first 40 characters,
  "kapak_metni": 2-5 punchy thumbnail words (not the title), "kapak_gorsel": image id for the thumbnail,
+ "kapak_alternatif": [2 more {"metin": 2-5 thumbnail words from a DIFFERENT angle, "gorsel": a different image id}],
  "aciklama": 2-3 sentence YouTube description opening (no hashtags)}"""
 )
 
@@ -658,7 +659,8 @@ def yaz(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, model:
         yeni = y.get("sahneler") if isinstance(y, dict) else y
         sahneler += [sh for sh in (yeni or []) if isinstance(sh, dict)]
         print(f"senaryo: {ad.split(':')[0].split('(')[0].strip()} -> toplam {len(sahneler)} sahne", flush=True)
-    s = {k: plan.get(k) for k in ("tez", "baslik_adaylari", "kapak_metni", "kapak_gorsel", "aciklama")}
+    s = {k: plan.get(k) for k in ("tez", "baslik_adaylari", "kapak_metni", "kapak_gorsel", "kapak_alternatif",
+                                  "aciklama")}  # fmt: skip
     s["sahneler"] = sahneler
     s["muzik_plani"] = {"kanca": plan.get("kanca_muzik"), "bolumler": [b.get("muzik") for b in plan.get("bolumler") or []],
                         "kapanis": plan.get("kapanis_muzik")}  # fmt: skip

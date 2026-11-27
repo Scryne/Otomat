@@ -712,7 +712,33 @@ def asama_kapak(d: Path, sen: dict, kay: dict) -> Path:
     g = kay["gorseller"][secilen]
     yol = kapak.uret(sen.get("kapak_metni") or "", Path(g["hazir"]), d / "kapak", ham=Path(g["yerel"]))
     print("kapak:", yol, flush=True)
+    kapak_varyantlari(d, sen, kay, secilen, _gi)
     return yol
+
+
+def kapak_varyantlari(d: Path, sen: dict, kay: dict, ana: int, gi_bul) -> list[Path]:
+    """A/B için iki kapak daha (`kapak/v2`, `kapak/v3`): farklı görsel, yazarın alternatif metni (yoksa aynı metin).
+    YouTube "Test & compare" yalnız Studio'da; kanal hak kazanınca elle yüklenir (11-27 ders: üç kapak üretildi)."""
+    from otomat.trend import kapak
+
+    alt = [a for a in sen.get("kapak_alternatif") or [] if isinstance(a, dict)]
+    kullanilan = {ana}
+    sira = [gi_bul(sh["gorsel"]) for sh in sen["sahneler"] if sh.get("gorsel") and sh.get("tur") == "foto"]
+    out = []
+    for n in range(2):
+        a = alt[n] if n < len(alt) else {}
+        aday = [gi_bul(a["gorsel"])] if a.get("gorsel") else []
+        gi = next((x for x in [*aday, *sira] if x not in kullanilan), None)
+        if gi is None:
+            break
+        kullanilan.add(gi)
+        g = kay["gorseller"][gi]
+        try:
+            out.append(kapak.uret(str(a.get("metin") or sen.get("kapak_metni") or ""), Path(g["hazir"]),
+                                  d / "kapak" / f"v{n + 2}", ham=Path(g["yerel"])))  # fmt: skip
+        except Exception as e:  # noqa: BLE001 — varyant düşerse ana kapak yeter
+            print(f"kapak varyantı düştü: {str(e)[:120]}", flush=True)
+    return out
 
 
 def asama_kesitler(d: Path, sen: dict, plan: dict, varlik: dict, kay: dict) -> list[Path]:
