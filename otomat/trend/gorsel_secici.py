@@ -33,8 +33,10 @@ Then, among the images you keep, list GROUPS of images that show the same subjec
 from outside, the same person at the same event, the same chart): a viewer would see them as the same shot repeated.
 Order each group best first (sharpest, most telling). Images with no near-twin are not listed.
 Return ONLY JSON: {"tut": ["G1", ...], "gruplar": [["G3", "G7", "G9"], ...]}"""
-GRUP_EN_COK = 3  # aynı konudan en çok üç görsel (11-26 Miss Universe: kolezyumun 7 fotoğrafı ~15 sahnede; 2'de havuz
-#                 8 görsele inip sahneler görselsiz kaldı)
+GRUP_EN_COK = 4  # aynı konudan en çok dört görsel. 11-26: 7 kolezyum fotoğrafı ~15 sahnedeydi, sınır 3'e indi; 11-27:
+#                 3'lük sınır havuzu 22'den 11'e indirdi ve aynı FOTOĞRAF 5-9 kez döndü (aynı binanın dört farklı karesi
+#                 aynı karenin dört kez dönmesinden iyidir). Grubun toplam kullanımı senaryoda sınırlanır
+#                 (senaryo.grup_siniri).
 
 
 def _yazi_tipi(boy: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFont:
@@ -105,14 +107,29 @@ def goruntu_sor(oturum: Oturum, sistem: str, sayfalar: list[bytes], metin: str, 
     return json_cikar("".join(c.get("text", "") for c in y.get("content", []) if c.get("type") == "text"))
 
 
-def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) -> set[int]:
-    """Görüntü modeline kontak sayfaları + başlık listesi; tutulacak görsellerin sıra numaraları (0 tabanlı)."""
+def gruplari(y: object, tut: set[int], n: int) -> list[list[int]]:
+    """Kırpmadan sonra tutulan görsellerin benzer grupları (0 tabanlı sıra; tek üyeli grup yok)."""
+    out = []
+    for g in (y.get("gruplar") or []) if isinstance(y, dict) else []:
+        if not isinstance(g, list):
+            continue
+        ids = [int(str(k)[1:]) - 1 for k in g if str(k)[1:].isdigit() and 0 < int(str(k)[1:]) <= n]
+        ids = list(dict.fromkeys(i for i in ids if i in tut))
+        if len(ids) > 1:
+            out.append(ids)
+    return out
+
+
+def goruntuyle_sec(oturum: Oturum, hikaye: str, liste: str, yollar: list[Path]) -> tuple[set[int], list[list[int]]]:
+    """Görüntü modeline kontak sayfaları + başlık listesi. Dönüş: (tutulan sıra numaraları, benzer gruplar)."""
     cevap = goruntu_sor(oturum, SISTEM, kontak_sayfalari(yollar),
                         f"STORY: {hikaye}\n\nIMAGES (id: file title):\n{liste}")  # fmt: skip
-    return gruplari_kirp(cevap, _kimlikler(cevap, len(yollar)), len(yollar))
+    tut = gruplari_kirp(cevap, _kimlikler(cevap, len(yollar)), len(yollar))
+    return tut, gruplari(cevap, tut, len(yollar))
 
 
-def basliktan_sec(oturum: Oturum, hikaye: str, liste: str, n: int) -> set[int]:
+def basliktan_sec(oturum: Oturum, hikaye: str, liste: str, n: int) -> tuple[set[int], list[list[int]]]:
     y = oturum.json_sor(SISTEM, f"STORY: {hikaye}\n\nIMAGES (id: file title; no contact sheets this time):\n{liste}",
                         model=MODEL_METIN, en_cok=1500, sicaklik=0.0, dusun=False)  # fmt: skip
-    return gruplari_kirp(y, _kimlikler(y, n), n)
+    tut = gruplari_kirp(y, _kimlikler(y, n), n)
+    return tut, gruplari(y, tut, n)

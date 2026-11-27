@@ -510,14 +510,14 @@ def _baglac_at(metin: str) -> str:
     return yeni[:1].upper() + yeni[1:] if yeni != metin and yeni else metin
 
 
-def yapi_kapisi(senaryo: dict, gorsel_sayisi: int) -> list[str]:
+def yapi_kapisi(senaryo: dict, gorsel_sayisi: int, butce: int | None = None) -> list[str]:
     """Biçim kuralları: türler, alanlar, kelime sınırları, çeşitlilik, görsel kimlikleri, yasak ifadeler."""
     s = senaryo.get("sahneler") or []
     hata = []
     if len(s) < 25:
         hata.append(f"sahne sayısı {len(s)} (< 25)")
     toplam = sum(len(sh.get("anlatim", "").split()) for sh in s)
-    alt, ust = kelime_hedefi(gorsel_sayisi)
+    alt, ust = kelime_hedefi(butce or gorsel_sayisi)  # bütçe: etkin görsel (benzer grup ~1,5)
     if not alt <= toplam <= ust + 150:
         hata.append(f"toplam anlatım {toplam} kelime (hedef {alt}-{ust}; görsel havuzu {gorsel_sayisi})")
     if not senaryo.get("tez"):
@@ -773,7 +773,8 @@ def onar(oturum: Oturum, senaryo: dict, sorunlar: list, kaynak_metni: str, gorse
 
 
 def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorsel_sayisi: int,
-         tur_sayisi: int = 4, kayit: list | None = None, dizin: Path | None = None) -> dict:  # fmt: skip
+         tur_sayisi: int = 4, kayit: list | None = None, dizin: Path | None = None,
+         butce: int | None = None) -> dict:  # fmt: skip
     """Yaz → (kod kapıları + olgu denetimi) → sahne onarımı döngüsü. Turlar bitince hâlâ desteklenmeyen sahne çıkarılır
     (son çare); kod kapısı yine geçmezse çağıran düşürür."""
     kayit = kayit if kayit is not None else []
@@ -785,7 +786,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
     elif taslak and taslak.exists():
         s = json.loads(taslak.read_text(encoding="utf-8"))
     else:
-        s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin, ust=kelime_hedefi(gorsel_sayisi)[1])
+        s = yaz(oturum, konu, kaynak_metni, gorsel_metni, dizin=dizin, ust=kelime_hedefi(butce or gorsel_sayisi)[1])
         if taslak:
             taslak.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
     for tur in range(tur_sayisi):
@@ -793,7 +794,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
             print(f"senaryo yapı onarımı: {len(duz)} değişiklik", flush=True)
         if son_hal:
             son_hal.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
-        kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
+        kod = yapi_kapisi(s, gorsel_sayisi, butce) + sayi_kapisi(s, kaynak_metni)
         olgu = denetle(oturum, s, kaynak_metni, gorsel_metni=gorsel_metni)
         kayit.append({"tur": tur, "kod": kod, "olgu": olgu, "sahne": len(s.get("sahneler", []))})
         if dizin:  # her tur diske: koşu kesilse de sorunlar okunabilsin
@@ -816,7 +817,7 @@ def uret(oturum: Oturum, konu: dict, kaynak_metni: str, gorsel_metni: str, gorse
     yapi_onar(s, gorsel_sayisi)
     if son_hal:
         son_hal.write_text(json.dumps(s, ensure_ascii=False, indent=1), encoding="utf-8")
-    kod = yapi_kapisi(s, gorsel_sayisi) + sayi_kapisi(s, kaynak_metni)
+    kod = yapi_kapisi(s, gorsel_sayisi, butce) + sayi_kapisi(s, kaynak_metni)
     kayit.append({"tur": tur_sayisi, "kod": kod, "olgu": olgu, "cikarilan": sorted(cikar),
                   "sahne": len(s.get("sahneler", []))})  # fmt: skip
     print(f"senaryo son: {len(cikar)} sahne çıkarıldı, kod {len(kod)}", flush=True)
@@ -928,4 +929,33 @@ def gorsel_eslestir(oturum: Oturum, senaryo: dict, gorsel_metni: str, gorsel_say
                 sh.pop("gorsel")
                 sh.pop("gorsel_uyum", None)
     senaryo["gorsel_eslendi"] = True
+    return yapilan
+
+
+GRUP_KULLANIM = 4  # benzer grubun (aynı binanın farklı kareleri) videodaki toplam kullanımı
+GRUP_UYE_EN_COK = 2  # grup üyesi tek fotoğrafın kullanımı
+
+
+def grup_siniri(senaryo: dict, gruplar: dict[str, str]) -> list[str]:
+    """Benzer görsel grupları için kullanım sınırı (yerinde). `gruplar`: "G5" → grup adı. Sınırı aşan sahne (önce uyumu
+    düşük olan) görselsiz kalır: fotoğraf sahnesini stok video, kartı en az kullanılan fotoğrafın koyusu doldurur.
+    11-27: grup kırpması gevşedi (GRUP_EN_COK 4); bu sınır olmasa aynı binanın dört karesi on iki sahneye yayılırdı."""
+    s = senaryo.get("sahneler") or []
+    sira = sorted(range(len(s)), key=lambda i: (-(s[i].get("gorsel_uyum") if s[i].get("gorsel_uyum") is not None
+                                                  else 1), i))  # fmt: skip
+    uye: Counter = Counter()
+    grup: Counter = Counter()
+    yapilan = []
+    for i in sira:  # uyumu yüksek sahneler hakkı önce alır
+        g = str(s[i].get("gorsel") or "")
+        k = gruplar.get(g)
+        if not k or s[i].get("tur") == "harita":
+            continue
+        if _altyazili(s[i]) or (uye[g] < GRUP_UYE_EN_COK and grup[k] < GRUP_KULLANIM):
+            uye[g] += 1
+            grup[k] += 1
+            continue
+        s[i].pop("gorsel")
+        s[i].pop("gorsel_uyum", None)
+        yapilan.append(f"sahne {i}: {g} grup sınırı ({k}) → görselsiz")
     return yapilan

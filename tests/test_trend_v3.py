@@ -227,7 +227,10 @@ def test_ayni_konu_grubundan_en_cok_iki():
     y = {"tut": ["G1", "G2", "G3", "G4", "G5", "G6"], "gruplar": [["G3", "G1", "G5", "G6"], ["G9"], "bozuk"]}
     tut = gorsel_secici._kimlikler(y, 8)
     assert gorsel_secici.gruplari_kirp(y, tut, 8, en_cok=2) == {0, 1, 2, 3}  # G3, G1 kalır; G5, G6 düşer
-    assert gorsel_secici.gruplari_kirp(y, tut, 8) == {0, 1, 2, 3, 4}  # varsayılan 3: G5 de kalır; G9 tutulmamıştı
+    assert gorsel_secici.gruplari_kirp(y, tut, 8, en_cok=3) == {0, 1, 2, 3, 4}  # G5 de kalır; G9 tutulmamıştı
+    assert gorsel_secici.gruplari_kirp(y, tut, 8) == {0, 1, 2, 3, 4, 5}  # 11-27 varsayılan 4: grup bütünüyle kalır
+    tut2 = gorsel_secici.gruplari_kirp(y, tut, 8, en_cok=3)
+    assert gorsel_secici.gruplari(y, tut2, 8) == [[2, 0, 4]]  # kırpılan G6 ve tek üyeli G9 grupta yok
 
 
 @pytest.mark.skipif(shutil.which("ffmpeg") is None, reason="ffmpeg yok (CI)")

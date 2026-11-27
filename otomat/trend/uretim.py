@@ -129,24 +129,35 @@ def gorsel_suz(oturum: Oturum, hikaye: str, kay: dict, en_az: int = 6) -> dict:
 
     g = kay["gorseller"]
     liste = senaryo_m.gorsel_listesi([_gorsel_nesne(x) for x in g])
-    tut: set[int] | None = None
     try:
-        tut = gorsel_secici.goruntuyle_sec(oturum, hikaye, liste, [Path(x["yerel"]) for x in g])
+        tut, gruplar = gorsel_secici.goruntuyle_sec(oturum, hikaye, liste, [Path(x["yerel"]) for x in g])
         yol = "görüntü"
     except Exception as e:  # noqa: BLE001 — görüntü modeli düşerse başlıkla
         print(f"görsel süzme (görüntü) düştü: {str(e)[:120]}", flush=True)
         try:
-            tut = gorsel_secici.basliktan_sec(oturum, hikaye, liste, len(g))
+            tut, gruplar = gorsel_secici.basliktan_sec(oturum, hikaye, liste, len(g))
             yol = "başlık"
         except Exception as e2:  # noqa: BLE001
             print(f"görsel süzme atlandı: {str(e2)[:120]}", flush=True)
             return {**kay, "suzuldu": True, "suzgec_kalan": len(g) // 2}  # süzgeç ölçülen havuzların ~yarısını tutar
-    kalan = [x for i, x in enumerate(g) if i in tut]
+    grup_ad = {i: f"k{n + 1}" for n, grup in enumerate(gruplar) for i in grup}
+    kalan = [{**x, "grup": grup_ad[i]} if i in grup_ad else x for i, x in enumerate(g) if i in tut]
+    etkin = etkin_gorsel(kalan)
     if len(kalan) < en_az:
         print(f"görsel süzme {len(kalan)} bırakıyordu (< {en_az}), havuz korunur", flush=True)
-        return {**kay, "suzuldu": True, "suzgec_kalan": len(kalan)}
-    print(f"görsel süzme ({yol}): {len(g)} → {len(kalan)}", flush=True)
-    return {**kay, "gorseller": kalan, "suzuldu": True, "suzgec_kalan": len(kalan)}
+        return {**kay, "suzuldu": True, "suzgec_kalan": etkin}
+    print(f"görsel süzme ({yol}): {len(g)} → {len(kalan)} ({len(gruplar)} benzer grup, etkin {etkin})", flush=True)
+    return {**kay, "gorseller": kalan, "suzuldu": True, "suzgec_kalan": etkin}
+
+
+GRUP_DEGERI = 1.5  # benzer grup (aynı binanın dört karesi) süre ve konu eşiğinde ~1,5 görsel sayılır
+
+
+def etkin_gorsel(gorseller: list[dict]) -> int:
+    """Süre bütçesi ve konu eşiği için görsel sayısı: tekil görsel 1, her benzer grup GRUP_DEGERI."""
+    tekil = sum(1 for x in gorseller if not x.get("grup"))
+    grup = len({x["grup"] for x in gorseller if x.get("grup")})
+    return int(tekil + GRUP_DEGERI * grup)
 
 
 GORSEL_EN_AZ = 10  # konunun kabulü için süzgeçten geçen görsel (altında video ~5 dk'nın altına iner ya da tekrar eder)
@@ -228,7 +239,7 @@ def asama_senaryo(d: Path, oturum: Oturum, secim: dict, kay: dict) -> dict:
     s = secim["secim"]
     kayit: list = []
     sen = senaryo.uret(oturum, {"ad": s["hikaye"], "neden": s.get("neden", ""), "aci": s.get("aci", "")}, metin, gmetin,
-                       len(gorsel), kayit=kayit, dizin=d)  # fmt: skip
+                       len(gorsel), kayit=kayit, dizin=d, butce=kay.get("suzgec_kalan"))  # fmt: skip
     _yaz(d / "senaryo_kayit.json", {"kayit": kayit, "kaynak_bag": bag, "kullanim": oturum.kullanim})
     (d / "kaynak_paketi.txt").write_text(metin + "\n\n" + gmetin, encoding="utf-8")
     son = kayit[-1] if kayit else {}
@@ -462,8 +473,10 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         degisen = senaryo_m.gorsel_eslestir(
             oturum, sen, gmetin, len(kay["gorseller"]), konu=secim["secim"].get("wiki_baslik", "")
         )
+        gruplar = {f"G{i + 1}": g["grup"] for i, g in enumerate(kay["gorseller"]) if g.get("grup")}
+        grup = senaryo_m.grup_siniri(sen, gruplar)
         _yaz(d / "senaryo.json", sen)
-        print(f"görsel eşleştirme: {len(degisen)} değişiklik", flush=True)
+        print(f"görsel eşleştirme: {len(degisen)} değişiklik, grup sınırı {len(grup)} sahne", flush=True)
     n = sum(len(s["anlatim"].split()) for s in sen["sahneler"])
     print(f"senaryo: {len(sen['sahneler'])} sahne, {n} kelime | tez: {sen.get('tez')}", flush=True)
     z = asama_ses(d, sen)

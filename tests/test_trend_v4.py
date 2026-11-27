@@ -291,3 +291,21 @@ def test_yukle_son_bayat_ve_isaretli_isi_almaz(tmp_path):
         if yuklu:
             (d / "yukleme.json").write_text("{}")
     assert [d.name for d in yukle.yuklenebilir(tmp_path, simdi)] == ["a-taze", "d-bayat-yuklu"]
+
+
+def test_grup_siniri_uyumu_dusuk_olani_bosaltir():
+    s = {"sahneler": [{"tur": "foto", "anlatim": "a", "gorsel": g, "gorsel_uyum": u}
+                      for g, u in [("G1", 2), ("G2", 2), ("G1", 0), ("G3", 1), ("G2", 1), ("G3", 2), ("G4", 2),
+                                   ("G1", 1), ("G5", 2)]]}  # fmt: skip
+    gruplar = {"G1": "k1", "G2": "k1", "G3": "k1"}  # G4, G5 tekil
+    yapilan = senaryo.grup_siniri(s, gruplar)
+    kalan = [sh.get("gorsel") for sh in s["sahneler"]]
+    grupta = [g for g in kalan if g in gruplar]
+    assert len(grupta) == senaryo.GRUP_KULLANIM and len(yapilan) == 3
+    assert kalan[2] is None  # G1'in uyumu 0 olan kullanımı ilk düşer
+    assert kalan[6] == "G4" and kalan[8] == "G5"  # tekiller dokunulmaz
+
+
+def test_etkin_gorsel_grubu_bir_bucuk_sayar():
+    g = [{"grup": "k1"}] * 4 + [{"grup": "k2"}] * 2 + [{}] * 5
+    assert uretim.etkin_gorsel(g) == 8  # 5 tekil + 2 grup × 1,5
