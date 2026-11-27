@@ -48,3 +48,20 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 - **Sıradaki:** bugünün konusuyla (11-27 deneme seçimi: Wu-Tang Clan NFL Şükran Günü şovu) tam v4 hattında video üret,
   kareleri ve eleştirmen sayılarını A/B ile kıyasla; iyiyse yükle (ilk boş Pzt/Çar/Cmt 21:50 UTC) ve görevi aç.
   Scryne'da: Ming anlatıcısını dinleyip onaylamak.
+
+## 2026-11-28 gece: v5 (dış dersler + Wu-Tang) ve yayın başladı
+
+- Scryne'ın verdiği üç videodan (Onur Naci Öztürk) çıkan dersler uygulandı (araştırma 14 bölüm 11): kanca seçimi
+  (`senaryo.kanca_sec`), sık kesme (`kurgu.vurus_anlari`), İngilizce altyazı + 8 dilde başlık/açıklama (`trend/yerel.py`,
+  yükleme ekler), kapak varyantları (`kapak/v2`, `v3`), kapanışta somut yorum sorusu.
+- Wu-Tang ölçümünden çıkan düzeltmeler: süzgeç adı geçenleri görür, görselsiz sahne ad eşleşmesiyle/kişi kuralıyla
+  dolar, alt yazı yalnız kendi fotoğrafında, eleştirmen P0 anlamsız görseli onarılır, alıntı kartı yalnız insan sözü,
+  sarı perde şerit, foto yedeği karartılmaz, kapak kesiti dikine konu ister, ses sayı kapısı tırnak hatası,
+  yasak kalıp "other way round"/"whole story". pytest 502.
+- **Yüklendi:** Wu-Tang Clan (`calisma/trend/2026-11-28-wutang-v5`, 6:52) `j3_MFi2OZwQ`, 2026-11-28 21:50 UTC;
+  Short'lar `7Ka14VRbr5g` (11-29 00:50), `unETXMD8LIA` (11-29 21:50), `w9yjQuV64Hg` (11-30 21:50). Kapak, 8 dil,
+  İngilizce altyazı tamam. Eski render'lar (`_v5_ilk`, `_v5_iki`, `2026-11-27-2031-…`) `yuklenmez`.
+- `Otomat-Trend-gunluk` **yeniden açık** (her gün 09:00; yükleme Pzt/Çar/Cmt slotlarına).
+- Kalan bilinen kusurlar: Short'ta fotoğraf kartı küçük, alt yarı bulanık dolgu; Ford Field ve aynı konser kareleri
+  videoda 3-4 kez; kapak varyantları aynı metni taşıyor (alternatif metin yeni senaryolarda gelir).
+- Ölçüm: ~30 video / 8 hafta dolmadan format değişmez (2027-01-23). Short hedefi "izlemeye devam" ≥ %70.
