@@ -33,3 +33,18 @@ videosunu uçtan uca üretti) · Ön yüz ⚪ (arayüz yok; `site/` yalnız gizl
 - Stok klipte tanımadık tek kişi orta planda (izleyici hikâyedeki kişi sanabilir): etiket/istem yetmiyor, görüntüye bakan seçim.
 - Soyut konularda aynı diyagram 4-5 kez: konuya göre üretilen hareketli grafik sahnesi.
 - HyperFrames 0.9.19 → güncel: `check` (yüz üstü metin, güvenli alan) ve `measure` kalite kapısı olarak.
+
+## 2026-11-27 akşam: v4 ("en iyi haline getir", yayın durduruldu)
+
+- Kanaldaki 5 private video (Miss Universe + 3 Short, Riemann) Scryne'ın isteğiyle silindi; `Otomat-Trend-gunluk`
+  görevi **kapalı** (hat en iyi hale gelince yeniden açılır: `schtasks /Change /TN \Otomat-Trend-gunluk /ENABLE`).
+- v4 (commit 11b6158…b68a566, pytest 487): süre görsel havuzuna göre, stok klip görüntüyle seçilir (kişili satırda görünür
+  kişi yok, 1080p), zayıf havuzlu konu yedeğe bırakılır, benzer görsel grubu 4 üye + toplam 4 kullanım, yazım ritmi
+  kapısı (bağlaç zinciri, "isn't X, it's Y", slogan), kapak metni alana sığan en büyük boy, Shorts ilk sahnesi kanca
+  panelinin altından başlar, eleştirmen sahne anlatımını görür, `yukle son` bayat/`yuklenmez` işi almaz.
+- A/B (aynı Miss Universe havuzu, `calisma/trend/2026-11-27-ab-miss-universe`, yüklenmez): 9:14 → 5:28, eleştirmen
+  174 → 93 bulgu, ilgisiz görsel 40 → 15; tekrar yoğunluğu hâlâ yüksek (grup düzeltmesi ve anlatımlı eleştirmen bu
+  koşudan sonra geldi).
+- **Sıradaki:** bugünün konusuyla (11-27 deneme seçimi: Wu-Tang Clan NFL Şükran Günü şovu) tam v4 hattında video üret,
+  kareleri ve eleştirmen sayılarını A/B ile kıyasla; iyiyse yükle (ilk boş Pzt/Çar/Cmt 21:50 UTC) ve görevi aç.
+  Scryne'da: Ming anlatıcısını dinleyip onaylamak.
