@@ -864,6 +864,10 @@ bağlar. Aradaki fazlar projeye özeldir. Kararların gerekçesi `docs/Final-Dok
 - **Yayın (2026-11-27, K-49):** kanal açıldı (@WhyItsEverywhereNow, Marka Hesabı), kimlik API ile uygulandı, ilk video
   (Miss Universe) + 3 Shorts yüklendi, 11-27 21:50 UTC'ye zamanlı. Plan: haftada 3 uzun video (Pzt/Çar/Cmt), video
   başına 3 Short, ilk 5 video elle son kontrol, 6. videoda ilk okuma, 30. günde Faz 20 eşiği. Kanıt: araştırma 15.
+- **v4 (2026-11-27):** Scryne: "videoları sil, sistemi en üst seviyeye çıkar, sonra baştan at". 5 private video
+  silindi, günlük görev kapatıldı. Süre görsel havuzuna göre, stok klip görüntüyle seçilir, zayıf havuzlu konu yedeğe
+  bırakılır, benzer görsel grubu sınırı, yazım ritmi kapısı, büyük kapak metni, Shorts kanca düzeni, anlatımı gören
+  eleştirmen. A/B (MU): 9:14 → 5:28, eleştirmen 174 → 93. Ayrıntı: araştırma 14, bölüm 10.
 - **Bitti Kriteri:** tablodaki gibi.
 
 ### Faz 18: Film ölçümü ve biçim kararı (2026-10-23)

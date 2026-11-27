@@ -328,3 +328,43 @@ kusur başlık değil görüntü denetimi ister (sıradaki iş: görsel süzgece
   işçiyle yeniden render.
 - *Karanlık başlayan stok klip* (animasyon girişi) indirildikten sonra ölçülür ve reddedilir (YAVG < 22).
 - Disk: Scryne'ın onayıyla ~/ComfyUI silindi (56 GB); render artık 4 işçiyle ~10 dk.
+
+## 10. v4: "en iyi haline getir" (11-27) [Ö]
+
+Scryne (11-27): "yaptığımız videoları sil, en son ve en iyi sistemle baştan atalım; önce sistemi en üst seviyeye
+çıkar." Kanaldaki 5 private video (Miss Universe + 3 Short, Riemann) silindi, günlük görev kapatıldı.
+
+**Ölçüm (Miss Universe, v3).** 10 sn'de bir kare + eleştirmen: 9:14, 72 sahne, 1452 kelime (tavan 1350), havuzda 11
+görsel; bir fotoğraf 9 kez, kolezyum örnek karelerin ~%18'inde. 17 stok klibin ~10'u ilgisiz (etiketle seçim: "judges
+table" → dosya dolabı, "children playing" → sabun köpüğü, "moving boxes" → havalimanı) ve "she decided to prepare"
+satırında spor yapan yabancı bir kadın. Eleştirmen 174 bulgu (ilgisiz 40, tekrar 42).
+
+**Değişenler.**
+- *Süre görsel havuzuna göre* (`senaryo.kelime_hedefi`): görsel başına ~75 kelime, 700-1350; iskelet bütçesi ve bölüm
+  kelimeleri orantılı küçülür; 4. kullanım son çaresi kalktı, havuz biterse sahne görselsiz kalır (stok doldurur).
+- *Stok klip görüntüyle* (`stok.goruntuyle_sec`): sahne başına iki sorgu, 6 adayın küçük resmi kontak satırında,
+  gemini-4-argon seçer ya da hiçbirini seçmez; zamirle belirli kişiyi anlatan satırda görünür kişi yok; Pixabay
+  `isAiGenerated`/`isLowQuality` elenir; 1080p sürüm. Test (MU senaryosu, render yok): 21 sahneden 9'u klip aldı.
+- *Konu görsel havuzuyla* (`uretim.konu_kaynak`): editör seçimi + 3 yedek; süzgeçten etkin 10 görsel geçmeyen konu
+  yedeğe bırakılır, hiçbiri geçmezse 8+ olan en zengin, o da yoksa o gün video yok.
+- *Benzer grup* (`gorsel_secici` GRUP_EN_COK 3 → 4, `senaryo.grup_siniri`): 3'lük kırpma MU havuzunu 22 → 11'e
+  indirip aynı fotoğrafı döndürüyordu; grup 4 üyeyle kalır, grubun toplam kullanımı 4, üye başına 2; bütçede grup
+  1,5 görsel sayılır.
+- *Yazım ritmi* (`senaryo.ritim_kapisi`, `YASAK_KALIP`): A/B senaryosunda 43 sahnenin 17'si So/And/But/Because ile
+  başlıyordu, "because" 9 kez, "the real question isn't whether…, it's whether…", "that gap is the story". Yazar
+  istemi içerikle bağlanmayı ister; kapı bağlaç payını (≤ %22), art arda başlangıcı, because sıklığını ve karşıtlık/
+  slogan kalıplarını yakalar; baştaki So/And kodla atılır; kalan ritim/kalıp bulgusu son turda uyarıdır. Kıvrık
+  kesme işareti (’) yasak ifadeyi kaçırıyordu.
+- *Kapak*: metin alana sığan en büyük boya büyür (MU: 94 → ~150 px), alan 570 px.
+- *Shorts*: kanca paneli (620 px) ilk 2,6 sn'de yüzü örtüyordu; ilk sahne panelin altından başlar, panel kalkarken
+  yerine oturur.
+- *Eleştirmen* sahnelerin zaman + anlatımını görür; ilgisiz bulunan stok klip çıkarılır (fotoğrafı varsa). A/B'de
+  anlatımı görmeyen eleştirmen 5 klibin 4'ünü çıkardı ("U.S. Army'de çalıştı" satırındaki helikopter dahil).
+- *Görselsiz sahne* kapak görseli yerine en az kullanılan fotoğrafın koyusunu alır.
+- *Yükleme güvenliği* (`yukle.yuklenebilir`): `yuklenmez` işaretli ve 48 saatten eski (yüklenmemiş) iş alınmaz.
+- Openverse denendi (MU, Barreto, Riemann, GTA VI): sonuçlar çoğunlukla Commons kopyası ya da ilgisiz Flickr, en çok
+  1024 px. Eklenmedi.
+
+**A/B (aynı MU havuzu, grup ve anlatımlı eleştirmenden önce).** 5:28, 43 sahne, 840 kelime; eleştirmen 93 bulgu
+(ilgisiz 15, tekrar 33); konser/yabancı kadın yok. Tekrar yoğunluğu dakikada 4,6 → 6,0 (kısa video, aynı 11 görsel):
+grup düzeltmesinin gerekçesi.
