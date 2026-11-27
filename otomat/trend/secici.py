@@ -159,7 +159,9 @@ def sec(oturum: Oturum, zengin: list[dict], gecmis: list[str], model: str = "kim
             for d in aday[:18]]  # fmt: skip
     mesaj = (f"RECENTLY COVERED: {json.dumps(gecmis, ensure_ascii=False)}\n\nCANDIDATES:\n"
              f"{json.dumps(sade, ensure_ascii=False, indent=1)}")  # fmt: skip
-    return oturum.json_sor(SISTEM_EDITOR, mesaj, model=model, en_cok=4000, sicaklik=0.4)
+    return oturum.json_sor(
+        SISTEM_EDITOR, mesaj, model=model, en_cok=9000, sicaklik=0.4
+    )  # 3 yedekle 4000 yetmedi (11-27)
 
 
 def kaydet(yol: Path, zengin: list[dict], secim: dict) -> None:

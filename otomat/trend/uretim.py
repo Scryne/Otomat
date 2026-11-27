@@ -221,7 +221,8 @@ def _haber_nesne(dct: dict):
 def _gorsel_nesne(dct: dict):
     from otomat.trend.kaynak import Gorsel
 
-    return Gorsel(**{k: v for k, v in dct.items() if k not in ("yerel", "hazir")})
+    alanlar = {f.name for f in __import__("dataclasses").fields(Gorsel)}  # yerel/hazir/grup gibi iş alanları düşer
+    return Gorsel(**{k: v for k, v in dct.items() if k in alanlar})
 
 
 def asama_senaryo(d: Path, oturum: Oturum, secim: dict, kay: dict) -> dict:

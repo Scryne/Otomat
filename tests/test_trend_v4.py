@@ -327,3 +327,10 @@ def test_elestirmen_anlatimi_gorur(monkeypatch, tmp_path):
 
     elestirmen.incele([sayfa], "tez", Sahte(), liste)
     assert "SCENES (time: narration):\n0.0-4.2s: She worked" in giden["metin"]
+
+
+def test_gorsel_nesne_is_alanlarini_atar():
+    g = uretim._gorsel_nesne({"dosya": "File:a.jpg", "url": "u", "genislik": 10, "yukseklik": 10, "mime": "image/jpeg",
+                              "lisans": "CC0", "yazar": "", "kredi_satiri": "", "sayfa": "", "yerel": "x",
+                              "hazir": "y", "grup": "k1"})  # fmt: skip
+    assert g.dosya == "File:a.jpg"
