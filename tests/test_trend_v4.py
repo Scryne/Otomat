@@ -309,3 +309,21 @@ def test_grup_siniri_uyumu_dusuk_olani_bosaltir():
 def test_etkin_gorsel_grubu_bir_bucuk_sayar():
     g = [{"grup": "k1"}] * 4 + [{"grup": "k2"}] * 2 + [{}] * 5
     assert uretim.etkin_gorsel(g) == 8  # 5 tekil + 2 grup × 1,5
+
+
+def test_elestirmen_anlatimi_gorur(monkeypatch, tmp_path):
+    plan = {"sahneler": [{"bas": 0.0, "sure": 4.2, "anlatim": "She worked for the U.S. Army."},
+                         {"bas": 4.2, "sure": 3.0, "anlatim": "The show went on."}]}  # fmt: skip
+    liste = elestirmen.sahne_listesi(plan)
+    assert liste.splitlines() == ["0.0-4.2s: She worked for the U.S. Army.", "4.2-7.2s: The show went on."]
+    sayfa = tmp_path / "s.jpg"
+    Image.new("RGB", (64, 36)).save(sayfa)
+    giden = {}
+
+    class Sahte:
+        def _istek(self, govde):
+            giden["metin"] = govde["messages"][0]["content"][1]["text"]
+            return {"content": [{"type": "text", "text": '{"bulgular": []}'}]}
+
+    elestirmen.incele([sayfa], "tez", Sahte(), liste)
+    assert "SCENES (time: narration):\n0.0-4.2s: She worked" in giden["metin"]

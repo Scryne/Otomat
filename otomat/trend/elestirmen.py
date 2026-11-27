@@ -20,13 +20,22 @@ SISTEM = """You are a harsh motion-graphics director reviewing frames of a narra
 You see a contact sheet: numbered frames with timestamps. Judge only what is visible. For each real problem give:
 {"t": seconds from the label, "tur": one of [okunmuyor (text unreadable/too small), kontrast (text fights the
 background), bos_kadraj (frame mostly empty, small elements floating), kirpik (important element cut off at the edge),
-yazi_tasma (text overflows or overlaps other text), anlamsiz_gorsel (photo has nothing to do with the on-screen words or
-shows a wrong/irrelevant subject), tekrar (looks identical to another frame), diger], "siddet": "P0" (breaks the read)
+yazi_tasma (text overflows or overlaps other text), anlamsiz_gorsel (the picture has nothing to do with what
+the NARRATION says at that moment, or shows a wrong/irrelevant subject; use the SCENES list to know what is being said
+— stock footage that illustrates the spoken line is fine: a military helicopter while the narrator says she worked for
+the U.S. Army is relevant), tekrar (looks identical to another frame), diger], "siddet": "P0" (breaks the read)
 or "P1" (weakens the film), "not": one short sentence}.
 Do not report style preferences. Do not report problems that are not visible. Return ONLY JSON: {"bulgular": [...]}."""
 
 
-def incele(sayfalar: list[Path], baglam: str = "", oturum: Oturum | None = None) -> list[dict]:
+def sahne_listesi(plan: dict) -> str:
+    """Eleştirmene zaman aralığı + anlatım. 11-27 A/B: yalnız tezi gören eleştirmen "U.S. Army'de çalıştı" sahnesindeki
+    askeri helikopteri "güzellik yarışmasıyla ilgisiz" saydı; 5 stok klibin 4'ü çıkarıldı, kolezyum fotoğrafı döndü."""
+    return "\n".join(f"{sh['bas']:.1f}-{sh['bas'] + sh['sure']:.1f}s: {sh.get('anlatim', '')}"
+                     for sh in plan.get("sahneler") or [] if "bas" in sh)  # fmt: skip
+
+
+def incele(sayfalar: list[Path], baglam: str = "", oturum: Oturum | None = None, sahneler: str = "") -> list[dict]:
     oturum = oturum or Oturum("elestirmen")
     bulgular: list[dict] = []
     for s in sayfalar:
@@ -37,7 +46,8 @@ def incele(sayfalar: list[Path], baglam: str = "", oturum: Oturum | None = None)
         govde = {"model": MODEL, "max_tokens": 3000, "temperature": 0, "system": SISTEM, "messages": [{
             "role": "user", "content": [
                 {"type": "image", "source": {"type": "base64", "media_type": tip, "data": b64}},
-                {"type": "text", "text": f"Sheet: {s.name}. Video context: {baglam[:600]}"}]}]}  # fmt: skip
+                {"type": "text", "text": f"Sheet: {s.name}. Video context: {baglam[:600]}"
+                 + (f"\n\nSCENES (time: narration):\n{sahneler}" if sahneler else "")}]}]}  # fmt: skip
         try:
             y = oturum._istek(govde)
             metin = "".join(c.get("text", "") for c in y.get("content", []) if c.get("type") == "text")

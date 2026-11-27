@@ -507,7 +507,8 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         from otomat.trend import elestirmen
 
         sayfalar = kurgu.inceleme_sayfalari(proje)
-        bulgular = elestirmen.sahneye_bagla(elestirmen.incele(sayfalar, sen.get("tez", ""), oturum), plan)
+        ham_bulgu = elestirmen.incele(sayfalar, sen.get("tez", ""), oturum, elestirmen.sahne_listesi(plan))
+        bulgular = elestirmen.sahneye_bagla(ham_bulgu, plan)
         yapilan = elestirmen.duzelt(plan, bulgular)
         _yaz(d / "elestiri.json", {"bulgular": bulgular, "duzeltmeler": yapilan})
         if yapilan:  # düzeltilen sahneler yeniden yazılır
