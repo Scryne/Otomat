@@ -456,8 +456,8 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
             if gi >= 0:
                 varlik[f"assets/img/g{gi + 1:02d}.jpg"] = Path(gorsel[gi]["hazir"])
                 p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"])
-                if not ilgili:
-                    p["koyu"] = True
+                if not ilgili and sh["tur"] != "foto":  # kart okunsun diye koyu; fotoğraf sahnesinde fotoğraf içeriktir
+                    p["koyu"] = True  # (11-28 Wu-Tang: ikinci yarı koyu-flu yedek karelerle yer tutucu gibiydi)
         # alt yazı yalnız onu taşıyan fotoğrafın altında kalır (11-27: "RZA" yazısı bir NFL maçı fotoğrafının altında)
         if p.get("etiket") and sh["tur"] == "foto":
             gi = _plan_gorsel_no(p)

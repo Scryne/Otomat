@@ -153,10 +153,12 @@ def _giris_js(gecis: str, sid: str) -> tuple[str, str]:
     if gecis == "zoom":
         return "", ("tl.fromTo(S('.icerik'), {scale: 1.18, filter:'blur(14px)'}, "
                     "{scale: 1, filter:'blur(0px)', duration: .42, ease: 'power3.out'}, 0);")  # fmt: skip
-    if gecis == "perde":  # vurgu renginde perde soldan açılır
+    if gecis == "perde":  # vurgu renginde ince şerit kesmenin üstünden geçer
+        # 11-28 Wu-Tang: tam ekran sarı perde ilk ~0,2 sn kadrajı boş bıraktı (eleştirmen 5 P0 "boş kadraj", kareler
+        # örneklemesinde iki renderda da düz sarı kare); şerit yeni sahneyi örtmeden süpürür
         return (
-            f'<div class="perde" id="{sid}-perde" style="background:{RENK["vurgu"]}"></div>',
-            "tl.fromTo(S('.perde'), {xPercent: 0}, {xPercent: 101, duration: .38, ease: 'power3.inOut'}, 0);",
+            f'<div class="perde" id="{sid}-perde" style="background:{RENK["vurgu"]}; right:auto; width:22%"></div>',
+            "tl.fromTo(S('.perde'), {xPercent: -110}, {xPercent: 470, duration: .42, ease: 'power2.inOut'}, 0);",
         )
     if gecis == "sel":  # mürekkep seli: karartıp açılır (dip cut)
         return (
