@@ -626,6 +626,7 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         shutil.rmtree(proje / ".hyperframes" / "artifacts" / "snapshots", ignore_errors=True)
     bag = _oku(d / "senaryo_kayit.json")["kaynak_bag"] if (d / "senaryo_kayit.json").exists() else {}
     _yaz(d / "meta.json", metadata(sen, plan, kay, bag))
+    asama_yerel(d, sen, z, oturum)
     if not render_yap:
         return proje
     ham = d / "video_ham.mp4"
@@ -643,6 +644,25 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     asama_kapak(d, sen, kay)
     asama_kesitler(d, sen, plan, varlik, kay)
     return son
+
+
+def asama_yerel(d: Path, sen: dict, z: dict, oturum: Oturum) -> None:
+    """İngilizce altyazı (`altyazi_en.srt`) ve başlık/açıklama çevirileri (`yerel.json`); düşerse video yine çıkar."""
+    from otomat.trend import yerel
+
+    srt_yol = d / "altyazi_en.srt"
+    if not srt_yol.exists():
+        srt_yol.write_text(yerel.srt(yerel.ipuclari(sen["sahneler"], z)), encoding="utf-8")
+    if (d / "yerel.json").exists():
+        return
+    meta = _oku(d / "meta.json")
+    try:
+        ceviri = yerel.yerellestir(oturum, meta["baslik"], meta["aciklama"])
+    except Exception as e:  # noqa: BLE001
+        print(f"çeviri düştü: {str(e)[:120]}", flush=True)
+        return
+    _yaz(d / "yerel.json", ceviri)
+    print(f"çeviri: {len(ceviri)} dil ({', '.join(ceviri)})", flush=True)
 
 
 def _proje_ozeti(proje: Path) -> str:

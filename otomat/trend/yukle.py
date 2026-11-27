@@ -175,6 +175,8 @@ def yukle(d: Path, simdi: dt.datetime | None = None, yt=None) -> dict:
         kayit["yayin"] = _zaman(t)
         yaz()
     kayit.pop("durum", None)
+    ek_parcalar(yt, d, kayit)
+    yaz()
     ana = dt.datetime.fromisoformat(kayit["yayin"].replace("Z", "+00:00"))
     sen = json.loads((d / "senaryo.json").read_text(encoding="utf-8"))
     for i, k in enumerate(sen.get("kesitler") or []):
@@ -194,6 +196,26 @@ def yukle(d: Path, simdi: dt.datetime | None = None, yt=None) -> dict:
         kayit["kesitler"][str(i)] = ks
         yaz()
     return kayit
+
+
+def ek_parcalar(yt, d: Path, kayit: dict) -> None:
+    """Başlık/açıklama çevirileri (`yerel.json`, 50 birim) ve İngilizce altyazı izi (`altyazi_en.srt`, 400 birim).
+    Düşerse video etkilenmez; kayıtta hata kalır, sonraki `yukle son` yeniden dener (kota ertesi gün açılır)."""
+    yerel_yol, srt_yol = d / "yerel.json", d / "altyazi_en.srt"
+    if kayit.get("yerel") != "tamam" and yerel_yol.exists():
+        try:
+            ceviri = json.loads(yerel_yol.read_text(encoding="utf-8"))
+            if ceviri:
+                youtube.yerellestir(kayit["video_id"], ceviri, yt=yt)
+            kayit["yerel"] = "tamam"
+        except Exception as e:  # noqa: BLE001
+            kayit["yerel"] = youtube.kisa_hata(e)
+    if kayit.get("altyazi") != "tamam" and srt_yol.exists():
+        try:
+            youtube.altyazi_ekle(kayit["video_id"], "en", srt_yol.read_text(encoding="utf-8"), yt=yt)
+            kayit["altyazi"] = "tamam"
+        except Exception as e:  # noqa: BLE001
+            kayit["altyazi"] = youtube.kisa_hata(e)
 
 
 TAZE = dt.timedelta(hours=48)  # trend videosu bundan eskiyse günlük koşu onu yüklemez

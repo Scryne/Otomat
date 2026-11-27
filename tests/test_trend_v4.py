@@ -421,3 +421,53 @@ def test_kanca_sec_esitlikte_yazarinki_kalir():
     ad = [{"metin": "Wu-Tang opened an NFL halftime show with a five-minute song with nine verses.", "kaynak": []}]
     o = _KancaOturum(ad, [{"i": 0, "toplam": 40}, {"i": 1, "toplam": 40}])
     assert senaryo.kanca_sec(o, s, "k") is None and s["sahneler"][0]["anlatim"].startswith("On Thanksgiving")
+
+
+# ------------------------------------------------------------------- altyazı ve çeviri (11-27 ders: çok dilli meta)
+def test_altyazi_senaryonun_yazimini_ve_zamanini_kullanir():
+    from otomat.trend import yerel
+
+    sah = [{"anlatim": "RZA met Ghostface Killah. They built Wu-Tang Clan from the Stapleton Houses, slowly."}]
+    kel = [{"w": w.strip(".,").lower(), "s": i * 0.4, "e": i * 0.4 + 0.3}
+           for i, w in enumerate(sah[0]["anlatim"].split())]  # fmt: skip
+    ip = yerel.ipuclari(sah, {"sahneler": [{"bas": 10.0, "kelimeler": kel}]})
+    assert ip[0][2] == "RZA met Ghostface Killah." and ip[0][0] == 10.0  # sahne başı + kelime zamanı
+    assert all(len(sat) <= yerel.SATIR for _, _, m in ip for sat in m.split("\n"))
+    s = yerel.srt(ip)
+    assert s.startswith("1\n00:00:10,000 --> ") and "\n2\n" in s
+
+
+def test_yerellestir_rakami_bozan_ve_cevrilmeyen_dili_atar():
+    from otomat.trend import yerel
+
+    class Cevirmen:
+        def json_sor(self, *a, **k):
+            return {"es": {"title": "Wu-Tang en 1993", "description": "Capítulos\n0:00 Inicio"},
+                    "de": {"title": "Wu-Tang 1994", "description": "Kapitel\n0:00 Anfang"},
+                    "fr": {"title": "Wu-Tang in 1993", "description": "Chapitres\n0:00 Début"}}  # fmt: skip
+
+    c = yerel.yerellestir(
+        Cevirmen(), "Wu-Tang in 1993", "Chapters\n0:00 Start\n\nSources:\n- x", {"es": "", "de": "", "fr": ""}
+    )
+    assert set(c) == {"es"} and c["es"]["description"].endswith("\n\nSources:\n- x")
+
+
+def test_ek_parcalar_hatada_yuklemeyi_dusurmez(tmp_path, monkeypatch):
+    from otomat.trend import yukle
+    from otomat.yayin import youtube
+
+    (tmp_path / "yerel.json").write_text('{"es": {"title": "t", "description": "d"}}', encoding="utf-8")
+    (tmp_path / "altyazi_en.srt").write_text("1\n00:00:00,000 --> 00:00:01,000\nx\n", encoding="utf-8")
+    cagri = []
+    monkeypatch.setattr(youtube, "yerellestir", lambda v, c, yt=None: cagri.append(("yerel", v, set(c))))
+
+    def kota(*a, **k):
+        raise RuntimeError("quota")
+
+    monkeypatch.setattr(youtube, "altyazi_ekle", kota)
+    kayit = {"video_id": "V1"}
+    yukle.ek_parcalar(None, tmp_path, kayit)
+    assert kayit["yerel"] == "tamam" and kayit["altyazi"] != "tamam" and cagri == [("yerel", "V1", {"es"})]
+    monkeypatch.setattr(youtube, "altyazi_ekle", lambda v, dil, m, yt=None: cagri.append(("srt", v, dil)))
+    yukle.ek_parcalar(None, tmp_path, kayit)
+    assert kayit["altyazi"] == "tamam" and cagri[-1] == ("srt", "V1", "en") and len(cagri) == 2
