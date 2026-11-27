@@ -31,6 +31,8 @@ from otomat.trend.kurgu import (
 
 W, H = 1080, 1920
 UST, ALT = 200, 1300  # okunacak her şey bu bant içinde
+KANCA_PANEL = UST + 420  # kanca satırının koyu paneli (üstten)
+KANCA_KAYMA = KANCA_PANEL - 160  # ilk sahne bu kadar aşağıdan başlar (fotoğrafın üstü panelin hemen altında)
 ALTYAZI_Y = 1120  # altyazı bandının üstü
 ICERIK_ALT = ALTYAZI_Y - 40  # sahne içeriği bunun altına inmez (altyazıyla çakışmasın)
 
@@ -384,7 +386,7 @@ def kanca_html(metin: str, sure: float) -> str:
     return f"""<template>
   <style>
     #root {{ position:absolute; inset:0; }}
-    .panel {{ position:absolute; left:0; right:0; top:0; height:{UST + 420}px; background:{RENK["murekkep"]}; }}
+    .panel {{ position:absolute; left:0; right:0; top:0; height:{KANCA_PANEL}px; background:{RENK["murekkep"]}; }}
     .kanca {{ position:absolute; left:50px; right:50px; top:{UST + 10}px; font-family:'League Gothic', sans-serif;
               text-transform:uppercase; font-size:120px; line-height:.95; color:#111; }}
     .kanca span {{ background:{RENK["vurgu"]}; padding:0 16px; box-decoration-break:clone; -webkit-box-decoration-break:clone; }}
@@ -453,6 +455,11 @@ def proje_yaz(plan: dict, kesit: dict, dizin: Path, varlik: dict[str, Path], dik
     sure = alt["sure"]
     (dizin / "compositions" / "altyazi.html").write_text(altyazi_html(kelimeler, sure), encoding="utf-8")
     kanca_sure = min(2.6, sure)
+    # 11-27: kanca paneli (üstten KANCA_PANEL px) ilk sahnenin üst üçte birini örtüyordu; dikey kırpmada yüz orada
+    # (Miss Universe kesiti: ilk 2,6 sn yalnız gövde göründü). İlk sahne panelin altından başlar, panel kalkarken yukarı
+    # oturur: hem yüz görünür hem açılış hareket kazanır.
+    ilk_kayma = (f"window.__timelines['main'].fromTo('#{alt['sahneler'][0]['id']}', {{y:{KANCA_KAYMA}}}, {{y:0, "
+                 f"duration:.42, ease:'power3.inOut'}}, {max(0.0, kanca_sure - 0.34):.2f});")  # fmt: skip
     (dizin / "compositions" / "kanca.html").write_text(kanca_html(kesit["kanca"], kanca_sure), encoding="utf-8")
     hostlar = [
         f'<div id="{sh["id"]}" data-composition-id="{sh["id"]}" data-composition-src="compositions/{sh["id"]}.html" '
@@ -490,7 +497,8 @@ background:{RENK['murekkep']}; }} #root {{ position:relative; width:100%; height
 data-height="{H}" data-fps="{kurgu.FPS}">
 {chr(10).join(hostlar)}
 {chr(10).join(sesler)}
-</div><script>window.__timelines = window.__timelines || {{}}; window.__timelines["main"] = gsap.timeline({{ paused: true }});</script>
+</div><script>window.__timelines = window.__timelines || {{}}; window.__timelines["main"] = gsap.timeline({{ paused: true }});
+{ilk_kayma}</script>
 </body></html>
 """, encoding="utf-8")  # fmt: skip
     shutil.copy2(kurgu.VARLIK / "px.js", dizin / "assets" / "px.js")

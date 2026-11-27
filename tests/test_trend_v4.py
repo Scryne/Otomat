@@ -254,3 +254,19 @@ def test_bastaki_so_and_atilir():
     }
     senaryo.yapi_onar(s, 4)
     assert s["sahneler"][1]["anlatim"] == "It grew."
+
+
+def test_kesit_ilk_sahne_kanca_panelinin_altindan_baslar(tmp_path):
+    from otomat.trend import kesit
+
+    wav = tmp_path / "a.wav"
+    wav.write_bytes(b"RIFF")
+    kel = [{"w": "Hello", "s": 0.1, "e": 0.5}]
+    plan = {"sahneler": [{"id": "s01", "tur": "foto", "bas": 0.0, "sure": 4.0, "anlatim": "Hello", "kelimeler": kel},
+                         {"id": "s02", "tur": "foto", "bas": 4.0, "sure": 4.0, "anlatim": "Hi", "kelimeler": kel}],
+            "sure": 8.0}  # fmt: skip
+    d = kesit.proje_yaz(plan, {"sahneler": [0, 1], "kanca": "A HOOK"}, tmp_path / "p", {"assets/ses/anlatim.wav": wav},
+                        {})  # fmt: skip
+    html = (d / "index.html").read_text(encoding="utf-8")
+    assert f"fromTo('#k01', {{y:{kesit.KANCA_KAYMA}}}" in html
+    assert 0 < kesit.KANCA_KAYMA < kesit.KANCA_PANEL
