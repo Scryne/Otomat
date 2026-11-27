@@ -164,6 +164,19 @@ GORSEL_EN_AZ = 10  # konunun kabulü için süzgeçten geçen görsel (altında 
 GORSEL_SON_CARE = 8  # hiçbir aday eşiği geçmezse en zengin havuz bu sayıdaysa yine kullanılır; altı: o gün video yok
 
 
+def suzgec_hikayesi(aday: dict) -> str:
+    """Görsel süzgecine giden hikâye: başlık + açı + adı geçen kişiler/yerler. 11-27 Wu-Tang: süzgeç yalnız "Wu-Tang
+    Clan's NFL Thanksgiving halftime takeover" başlığını gördü, tezin ikinci kahramanı Chad Smith'in 5 fotoğrafını
+    "hikâyede adı geçmeyen kişi" diye attı; yazar onun çocukluğunu Ghostface Killah fotoğrafıyla anlattı (22 P0)."""
+    adlar = [str(b).replace("_", " ") for b in [aday.get("wiki_baslik"), *(aday.get("ilgili") or [])] if b]
+    parca = [aday.get("hikaye") or "", aday.get("aci") or ""]
+    if adlar:
+        parca.append("Named in this story: " + ", ".join(dict.fromkeys(adlar)))
+    if aday.get("gorsel_aramalari"):
+        parca.append("The editor wants pictures of: " + "; ".join(aday["gorsel_aramalari"][:8]))
+    return "\n".join(x for x in parca if x)
+
+
 def konu_kaynak(d: Path, oturum: Oturum, secim: dict) -> tuple[dict, dict]:
     """Editörün seçimi + yedekleri arasından görsel havuzu yeten ilk konu. 11-27: Miss Universe 11, Riemann 9 görselle
     6-9 dakikaya yayıldı; fotoğraflar 5-9 kez döndü. Havuz yazımdan önce ölçülür, yetmeyen konu yedeğe bırakılır.
@@ -171,7 +184,7 @@ def konu_kaynak(d: Path, oturum: Oturum, secim: dict) -> tuple[dict, dict]:
     if secim.get("gorsel_onay") or (d / "senaryo.json").exists():
         kay = asama_kaynak(d, secim)
         if not kay.get("suzuldu"):
-            kay = gorsel_suz(oturum, secim["secim"]["hikaye"], kay)
+            kay = gorsel_suz(oturum, suzgec_hikayesi(secim["secim"]), kay)
             _yaz(d / "kaynak.json", kay)
         return secim, kay
     yedek = [y for y in secim.get("yedekler") or [] if isinstance(y, dict) and y.get("wiki_baslik")]
@@ -186,7 +199,7 @@ def konu_kaynak(d: Path, oturum: Oturum, secim: dict) -> tuple[dict, dict]:
             print(f"konu adayı atlandı ({aday.get('hikaye')}): {str(e)[:120]}", flush=True)
             continue
         if not kay.get("suzuldu"):
-            kay = gorsel_suz(oturum, aday["hikaye"], kay)
+            kay = gorsel_suz(oturum, suzgec_hikayesi(aday), kay)
             _yaz(d / "kaynak.json", kay)
         kalan = kay.get("suzgec_kalan") or 0
         print(f"konu adayı {n}: {aday['hikaye']} → {kalan} görsel", flush=True)
@@ -292,6 +305,75 @@ def _en_az_gorsel(onceki: list[dict], sonraki: list[dict], n: int) -> int:
     return min(adaylar, key=lambda k: (say[k], k)) if adaylar else -1
 
 
+_AD_DISI = frozenset({"file", "the", "and", "new", "with", "from", "for", "jpg", "png", "jpeg", "copie", "dsc"})
+ILGILI_EN_COK = 3  # ad eşleşmesiyle seçilen yedek fotoğraf en çok bu kadar sahnede
+
+
+def ad_sozcukleri(dosya: str) -> set[str]:
+    """Commons dosya adındaki özel ad gibi sözcükler (büyük harfle başlayan, ≥3 harf), küçük harfle."""
+    ad = dosya.removeprefix("File:").rsplit(".", 1)[0]
+    return {w.lower() for w in re.findall(r"[A-ZÀ-Þ][\w']{2,}", ad)} - _AD_DISI  # "Smith-Rio" → smith, rio
+
+
+def _plan_gorsel_no(p: dict) -> int:
+    g = str(p.get("gorsel") or "")
+    return int(g.rsplit("/g", 1)[-1][:2]) - 1 if "/g" in g and not p.get("klip") else -1
+
+
+def ilgili_gorsel(metin: str, gorsel: list[dict], kullanim: dict[int, int], yasak: set[int]) -> int:
+    """Anlatımda adı geçen kişiyi/yeri gösteren fotoğraf (dosya adındaki özel adlarla eşleşme); yoksa -1.
+    11-27 Wu-Tang: görselsiz kalan sahneler en az kullanılan fotoğrafla dolduruluyordu; "RZA ve Ghostface" satırı
+    Washington-Lions maçının, plak anlaşmaları Ford Field'ın üstüne düştü (eleştirmen 22 P0)."""
+    kelime = set(re.findall(r"[\w']+", metin.lower()))
+    en, en_iyi = -1, (0, 0)
+    for k, g in enumerate(gorsel):
+        if k in yasak or kullanim.get(k, 0) >= ILGILI_EN_COK:
+            continue
+        puan = len(ad_sozcukleri(g.get("dosya", "")) & kelime)
+        if puan and (puan, -kullanim.get(k, 0)) > en_iyi:
+            en, en_iyi = k, (puan, -kullanim.get(k, 0))
+    return en
+
+
+def etiket_uygun(etiket: str, dosya: str) -> bool:
+    """Fotoğraf alt yazısındaki özel adların hepsi fotoğrafın dosya adında geçmeli (yanlış kişinin altında ad yok)."""
+    adlar = ad_sozcukleri("File:" + etiket)
+    return not adlar or adlar <= ad_sozcukleri(dosya) | {w.lower() for w in re.findall(r"\w+", dosya)}
+
+
+def gorsel_onar(plan: dict, bulgular: list[dict], gorsel: list[dict], varlik: dict) -> list[str]:
+    """Eleştirmenin P0 "anlamsız görsel" dediği fotoğraf sahnesi (stok klipsiz) anlatımda adı geçeni gösteren
+    fotoğrafa geçer; bulunamazsa sahne olduğu gibi kalır (rapora girer)."""
+    s = plan["sahneler"]
+    sira = {sh["id"]: i for i, sh in enumerate(s)}
+    hedef = {b["sahne"] for b in bulgular if b.get("tur") == "anlamsiz_gorsel" and b.get("siddet") == "P0"
+             and b.get("sahne") in sira}  # fmt: skip
+    yapilan = []
+    for sid in sorted(hedef, key=lambda x: sira[x]):
+        i = sira[sid]
+        sh = s[i]
+        if sh.get("klip") or sh.get("tur") == "harita" or not sh.get("gorsel"):
+            continue
+        kullanim: dict[int, int] = {}
+        for p in s:
+            if (k := _plan_gorsel_no(p)) >= 0:
+                kullanim[k] = kullanim.get(k, 0) + 1
+        yasak = {_plan_gorsel_no(s[j]) for j in (i - 1, i, i + 1) if 0 <= j < len(s)}
+        gi = ilgili_gorsel(sh.get("anlatim", ""), gorsel, kullanim, yasak)
+        if gi < 0:
+            continue
+        eski = sh["gorsel"]
+        yol = f"assets/img/g{gi + 1:02d}.jpg"
+        varlik[yol] = Path(gorsel[gi]["hazir"])
+        sh.update(gorsel=yol, kredi=gorsel[gi]["kredi_satiri"])
+        for k in ("derinlik", "kesit", "koyu"):
+            sh.pop(k, None)
+        if sh.get("etiket") and not etiket_uygun(sh["etiket"], gorsel[gi].get("dosya", "")):
+            sh.pop("etiket")
+        yapilan.append(f"{sid}: {eski} → {yol} (anlamsız görsel, ad eşleşmesi)")
+    return yapilan
+
+
 def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple[dict, dict[str, Path]]:
     from otomat.trend import derinlik, stok
 
@@ -340,10 +422,31 @@ def plan_kur(sen: dict, kay: dict, z: dict, secim: dict, kategori: str) -> tuple
             # havuz tükenince görselsiz kalan sahne (11-26 Miss Universe: sayı kartı ve kapanış koyu lekeler üstündeydi)
             # koyulaştırılmış bir fotoğraf üstünde durur. 11-27: hep kapak görseli seçiliyordu, o fotoğraf videoda
             # tekrarın başı oldu; artık en az kullanılan, önceki sahnede görünmeyen fotoğraf
-            gi = _en_az_gorsel(sahneler, sen["sahneler"][i + 1 :], len(gorsel))
+            kullanim: dict[int, int] = {}
+            for q in sahneler:
+                if (k := _plan_gorsel_no(q)) >= 0:
+                    kullanim[k] = kullanim.get(k, 0) + 1
+            for q in sen["sahneler"][i + 1 :]:
+                if (g := str(q.get("gorsel") or ""))[1:].isdigit() and not q.get("klip"):
+                    kullanim[int(g[1:]) - 1] = kullanim.get(int(g[1:]) - 1, 0) + 1
+            yasak = {_plan_gorsel_no(sahneler[-1])} if sahneler else set()
+            if (g := str((sen["sahneler"][i + 1 :] or [{}])[0].get("gorsel") or ""))[1:].isdigit():
+                yasak.add(int(g[1:]) - 1)
+            metin = " ".join(str(sh.get(k) or "") for k in ("anlatim", "baslik", "metin", "etiket", "kim"))
+            gi = ilgili_gorsel(metin, gorsel, kullanim, yasak)  # önce anlatımda adı geçeni gösteren fotoğraf
+            ilgili = gi >= 0
+            if not ilgili:
+                gi = _en_az_gorsel(sahneler, sen["sahneler"][i + 1 :], len(gorsel))
             if gi >= 0:
                 varlik[f"assets/img/g{gi + 1:02d}.jpg"] = Path(gorsel[gi]["hazir"])
-                p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"], koyu=True)
+                p.update(gorsel=f"assets/img/g{gi + 1:02d}.jpg", kredi=gorsel[gi]["kredi_satiri"])
+                if not ilgili:
+                    p["koyu"] = True
+        # alt yazı yalnız onu taşıyan fotoğrafın altında kalır (11-27: "RZA" yazısı bir NFL maçı fotoğrafının altında)
+        if p.get("etiket") and sh["tur"] == "foto":
+            gi = _plan_gorsel_no(p)
+            if gi < 0 or not etiket_uygun(p["etiket"], gorsel[gi].get("dosya", "")):
+                p.pop("etiket")
         if sh["tur"] == "kapanis":
             p["kanal"] = KANAL_ADI
         if sh["tur"] == "harita":
@@ -500,7 +603,9 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
     if (d / "elestiri.json").exists():  # önceki eleştirinin düzeltmeleri her koşuda yeniden uygulanır
         from otomat.trend import elestirmen
 
-        elestirmen.duzelt(plan, _oku(d / "elestiri.json")["bulgular"])
+        onceki = _oku(d / "elestiri.json")["bulgular"]
+        elestirmen.duzelt(plan, onceki)
+        gorsel_onar(plan, onceki, kay["gorseller"], varlik)
     proje = kurgu.proje_yaz(plan, d / "proje", varlik)
     rapor = kurgu.denetle(proje)
     _yaz(d / "denetim.json", rapor)
@@ -511,6 +616,7 @@ def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool
         ham_bulgu = elestirmen.incele(sayfalar, sen.get("tez", ""), oturum, elestirmen.sahne_listesi(plan))
         bulgular = elestirmen.sahneye_bagla(ham_bulgu, plan)
         yapilan = elestirmen.duzelt(plan, bulgular)
+        yapilan += gorsel_onar(plan, bulgular, kay["gorseller"], varlik)
         _yaz(d / "elestiri.json", {"bulgular": bulgular, "duzeltmeler": yapilan})
         if yapilan:  # düzeltilen sahneler yeniden yazılır
             proje = kurgu.proje_yaz(plan, d / "proje", varlik)

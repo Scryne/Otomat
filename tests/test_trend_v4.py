@@ -334,3 +334,50 @@ def test_gorsel_nesne_is_alanlarini_atar():
                               "lisans": "CC0", "yazar": "", "kredi_satiri": "", "sayfa": "", "yerel": "x",
                               "hazir": "y", "grup": "k1"})  # fmt: skip
     assert g.dosya == "File:a.jpg"
+
+
+# ------------------------------------------------------------------- 11-27 Wu-Tang: görsel süzgeci ve yedek fotoğraf
+def test_suzgec_hikayesi_adlari_tasir():
+    h = uretim.suzgec_hikayesi({"hikaye": "Wu-Tang Clan's NFL halftime", "aci": "a rock drummer felt normal",
+                                "wiki_baslik": "Wu-Tang_Clan", "ilgili": ["Chad_Smith"],
+                                "gorsel_aramalari": ["Chad Smith drummer"]})  # fmt: skip
+    assert "Chad Smith" in h and "rock drummer" in h and "Named in this story" in h
+
+
+_HAVUZ = [{"dosya": "File:RZA @ Virgin festival 2007.jpg", "hazir": "a", "kredi_satiri": "k"},
+          {"dosya": "File:Washington Football Team vs. Detroit Lions at Ford Field.jpg", "hazir": "b",
+           "kredi_satiri": "k"},
+          {"dosya": "File:Chad Smith-Rio De Janeiro-2011.jpg", "hazir": "c", "kredi_satiri": "k"}]  # fmt: skip
+
+
+def test_ilgili_gorsel_adla_secer_kullanim_ve_komsuyu_sayar():
+    assert uretim.ilgili_gorsel("RZA started building something bigger", _HAVUZ, {}, set()) == 0
+    assert uretim.ilgili_gorsel("Smith started drums at seven", _HAVUZ, {}, set()) == 2
+    assert uretim.ilgili_gorsel("Smith started drums", _HAVUZ, {2: uretim.ILGILI_EN_COK}, set()) == -1
+    assert uretim.ilgili_gorsel("Smith started drums", _HAVUZ, {}, {2}) == -1
+    assert uretim.ilgili_gorsel("the record deals of the 1990s", _HAVUZ, {}, set()) == -1
+
+
+def test_etiket_yalniz_kendi_fotografinda():
+    assert uretim.etiket_uygun("RZA", _HAVUZ[0]["dosya"])
+    assert not uretim.etiket_uygun("RZA", _HAVUZ[1]["dosya"])
+    assert uretim.etiket_uygun("the stadium", _HAVUZ[1]["dosya"])  # özel ad yoksa serbest
+
+
+def test_gorsel_onar_p0_anlamsiz_fotografi_degistirir():
+    plan = {"sahneler": [
+        {"id": "s01", "tur": "foto", "gorsel": "assets/img/g02.jpg", "anlatim": "The NFL booked them."},
+        {"id": "s02", "tur": "foto", "gorsel": "assets/img/g02.jpg", "anlatim": "Chad Smith learned drums at seven.",
+         "etiket": "Ford Field", "derinlik": "x"},
+        {"id": "s03", "tur": "foto", "klip": "assets/klip/a.mp4", "gorsel": "assets/img/g02.jpg",
+         "anlatim": "RZA said it."}]}  # fmt: skip
+    bulgu = [{"tur": "anlamsiz_gorsel", "siddet": "P0", "sahne": "s02"},
+             {"tur": "anlamsiz_gorsel", "siddet": "P0", "sahne": "s03"},
+             {"tur": "anlamsiz_gorsel", "siddet": "P1", "sahne": "s01"}]  # fmt: skip
+    varlik: dict = {}
+    yapilan = uretim.gorsel_onar(plan, bulgu, _HAVUZ, varlik)
+    s = plan["sahneler"]
+    assert s[1]["gorsel"] == "assets/img/g03.jpg" and "etiket" not in s[1] and "derinlik" not in s[1]
+    assert s[2]["gorsel"] == "assets/img/g02.jpg"  # stok klipli sahne eleştirmen.duzelt'in işi
+    assert s[0]["gorsel"] == "assets/img/g02.jpg"  # P1 dokunulmaz
+    assert len(yapilan) == 1 and "assets/img/g03.jpg" in varlik
