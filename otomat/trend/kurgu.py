@@ -923,7 +923,11 @@ def artiklari_kapat() -> int:
 
     if os.name != "nt":
         return 0
-    r = subprocess.run(["powershell", "-NoProfile", "-Command", ARTIK_PS], capture_output=True, text=True, timeout=60)
+    try:  # 11-28: CIM sorgusu 60 sn'yi aştı, asıl hatanın (LLM kotası) üstüne ikinci bir traceback bindi
+        r = subprocess.run(["powershell", "-NoProfile", "-Command", ARTIK_PS], capture_output=True, text=True,
+                           timeout=180)  # fmt: skip
+    except subprocess.TimeoutExpired:
+        return 0
     return len([s for s in r.stdout.split() if s.isdigit()])
 
 
