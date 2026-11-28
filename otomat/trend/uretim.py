@@ -571,7 +571,24 @@ def metadata(sen: dict, plan: dict, kay: dict, bag: dict) -> dict:
     }
 
 
+def on_kontrol(render_yap: bool = True) -> list[str]:
+    """Yerel araçların eksikleri. 11-28: `~/ace-step` silinmişti; koşu konu ve senaryo için LLM kotasını harcayıp
+    müzik aşamasında düşecekti. Eksik varsa koşu en başta durur."""
+    from otomat.film import anlatim
+    from otomat.trend import muzik
+
+    gerekli = {"ACE-Step (müzik)": muzik.ACE_PY, "Ming (anlatım)": anlatim.MING_PY}
+    if render_yap:
+        gerekli["HyperFrames (render)"] = kurgu.MOTOR_DIZIN / "node_modules" / "hyperframes" / "bin" / "hyperframes.mjs"
+    eksik = [f"{ad}: {yol}" for ad, yol in gerekli.items() if not Path(yol).exists()]
+    if not shutil.which("ffmpeg"):
+        eksik.append("ffmpeg: PATH'te yok")
+    return eksik
+
+
 def calistir(konu: str | None = None, is_id: str | None = None, render_yap: bool = True) -> Path:
+    if eksik := on_kontrol(render_yap):
+        raise SystemExit("yerel araç eksik, koşu başlamadı:\n  " + "\n  ".join(eksik))
     if is_id:
         d = CALISMA / is_id
     else:

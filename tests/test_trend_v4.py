@@ -520,3 +520,13 @@ def test_yedek_gorsel_adi_gecmeyen_kisiyi_gostermez():
     y = uretim.gorsel_onar(plan, [{"tur": "anlamsiz_gorsel", "siddet": "P0", "sahne": "s01"}], havuz, {},
                            lambda m: uretim.kisi_izni(sen, m, "Wu-Tang Clan", 4))  # fmt: skip
     assert y and plan["sahneler"][0]["gorsel"] == "assets/img/g03.jpg"
+
+
+def test_on_kontrol_eksik_araci_bildirir(tmp_path, monkeypatch):
+    from otomat.trend import muzik, uretim
+
+    monkeypatch.setattr(muzik, "ACE_PY", tmp_path / "yok" / "python.exe")
+    eksik = uretim.on_kontrol(render_yap=False)
+    assert any(e.startswith("ACE-Step") for e in eksik)
+    with pytest.raises(SystemExit, match="ACE-Step"):
+        uretim.calistir(is_id="x", render_yap=False)
