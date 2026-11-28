@@ -218,6 +218,67 @@ def ek_parcalar(yt, d: Path, kayit: dict) -> None:
             kayit["altyazi"] = youtube.kisa_hata(e)
 
 
+KALIR = {".json", ".srt", ".txt", ".md"}  # temizlikten sonra kalan: senaryo, kaynak, eleştiri, yükleme kaydı
+
+
+def bitti(d: Path, kayit: dict) -> bool:
+    """Her parça YouTube'da: uzun video kapaklı ve zamanlı, diskte duran her kesit yüklü ve zamanlı."""
+    if not (kayit.get("video_id") and kayit.get("kapak") == "tamam" and kayit.get("yayin")):
+        return False
+    for i in range(len(KESIT_GECIKME)):
+        if (d / f"kesit{i + 1}" / "kesit.mp4").exists():
+            ks = kayit.get("kesitler", {}).get(str(i)) or {}
+            if not (ks.get("video_id") and ks.get("yayin")):
+                return False
+    return True
+
+
+def islendi(yt, kimlikler: list[str]) -> bool:
+    """YouTube dosyaları işledi mi (uploadStatus "processed"); işlenmeden silinen yerel kopya geri gelmez."""
+    cevap = yt.videos().list(part="status", id=",".join(kimlikler)).execute().get("items", [])
+    durum = {v["id"]: v["status"].get("uploadStatus") for v in cevap}
+    return all(durum.get(k) == "processed" for k in kimlikler)
+
+
+def temizle(d: Path, yt=None) -> int:
+    """Yüklenmiş işin büyük dosyalarını siler (video, ses, müzik, klip, görsel, render projesi; ~3 GB). Kalan: JSON/SRT
+    kayıtları (yükleme günleri, ölçüm, ders çıkarma) ve `kapak/` (Test & compare varyantları). Her parça işlenmeden
+    hiçbir şey silinmez. Scryne (11-28): disk dolmasın; C: %96 doluydu. Silinen bayt döner (0 = silinmedi)."""
+    kayit_yol = d / "yukleme.json"
+    if not kayit_yol.exists():
+        return 0
+    kayit = json.loads(kayit_yol.read_text(encoding="utf-8"))
+    if kayit.get("temizlik") or not bitti(d, kayit):
+        return 0
+    kimlikler = [kayit["video_id"], *(k["video_id"] for k in kayit.get("kesitler", {}).values() if k.get("video_id"))]
+    if not islendi(yt or servis(), kimlikler):
+        return 0
+    kapak = d / "kapak"
+    silinen = 0
+    for f in sorted(d.rglob("*"), reverse=True):
+        if f.is_dir():
+            if f != kapak and not any(f.iterdir()):
+                f.rmdir()
+        elif f.suffix.lower() not in KALIR and kapak not in f.parents:
+            silinen += f.stat().st_size
+            f.unlink()
+    kayit["temizlik"] = {"tarih": _zaman(dt.datetime.now(dt.UTC)), "silinen_mb": round(silinen / 1e6)}
+    kayit_yol.write_text(json.dumps(kayit, indent=1), encoding="utf-8")
+    return silinen
+
+
+def temizle_hepsi(kok: Path, yt=None) -> dict[str, int]:
+    """Bitmiş ve işlenmiş her iş klasörü temizlenir (işlenmesi süren sonraki koşuda)."""
+    out = {}
+    for y in sorted(kok.glob("*/yukleme.json")):
+        try:
+            if n := temizle(y.parent, yt):
+                out[y.parent.name] = round(n / 1e6)
+        except Exception as e:  # noqa: BLE001 — temizlik yüklemeyi düşürmez
+            print(f"temizlik atlandı {y.parent.name}: {youtube.kisa_hata(e)}")
+    return out
+
+
 TAZE = dt.timedelta(hours=48)  # trend videosu bundan eskiyse günlük koşu onu yüklemez
 
 
@@ -290,6 +351,9 @@ def main() -> None:
         for b in reversed(bekleyenler()):
             if b != isler[-1]:
                 print(json.dumps({"is": b.name, **yukle(b)}, indent=1, ensure_ascii=False))
+        print("temizlik (MB):", temizle_hepsi(kok))
+    elif a == ["temizle"]:
+        print("temizlik (MB):", temizle_hepsi(Path(__file__).resolve().parents[2] / "calisma" / "trend"))
     elif a:
         print(json.dumps(yukle(Path(a[0])), indent=1, ensure_ascii=False))
     else:

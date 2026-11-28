@@ -71,3 +71,45 @@ def test_kapak_yoksa_zamanlanmaz_sonra_tamamlanir(is_klasoru):
     k2 = yukle.yukle(is_klasoru, simdi, yt2)
     assert k2["kapak"] == "tamam" and k2["yayin"] == "2026-11-28T21:50:00.000Z" and "durum" not in k2
     assert yt2.guncellemeler[0]["status"]["publishAt"] == "2026-11-28T21:50:00.000Z"
+
+
+class _Durum:
+    def __init__(self, durum: dict[str, str]):
+        self.durum = durum
+
+    def videos(self):
+        return self
+
+    def list(self, part, id):
+        return _Istek({"items": [{"id": k, "status": {"uploadStatus": self.durum.get(k, "uploaded")}}
+                                 for k in id.split(",")]})  # fmt: skip
+
+
+def _bitmis_is(tmp_path, kesit_yuklu=True):
+    d = tmp_path / "2026-11-28-is"
+    for yol in ("video.mp4", "ses/p000.wav", "kesit1/kesit.mp4", "proje/index.html", "kapak/kapak.jpg"):
+        (d / yol).parent.mkdir(parents=True, exist_ok=True)
+        (d / yol).write_bytes(b"x" * 10)
+    (d / "senaryo.json").write_text("{}", encoding="utf-8")
+    (d / "altyazi_en.srt").write_text("1", encoding="utf-8")
+    kesitler = {"0": {"video_id": "K1", "yayin": "2026-11-29T00:50:00Z"}} if kesit_yuklu else {}
+    (d / "yukleme.json").write_text(json.dumps({"video_id": "V1", "kapak": "tamam", "yayin": "2026-11-28T21:50:00Z",
+                                                "kesitler": kesitler}), encoding="utf-8")  # fmt: skip
+    return d
+
+
+def test_temizlik_yalniz_bitmis_ve_islenmis_iste_medyayi_siler(tmp_path):
+    d = _bitmis_is(tmp_path)
+    assert yukle.temizle(d, _Durum({"V1": "processed"})) == 0  # kesit hâlâ işleniyor
+    assert (d / "video.mp4").exists()
+    assert yukle.temizle(d, _Durum({"V1": "processed", "K1": "processed"})) == 40
+    kalan = sorted(str(p.relative_to(d)).replace("\\", "/") for p in d.rglob("*") if p.is_file())
+    assert kalan == ["altyazi_en.srt", "kapak/kapak.jpg", "senaryo.json", "yukleme.json"]
+    assert json.loads((d / "yukleme.json").read_text(encoding="utf-8"))["temizlik"]["silinen_mb"] == 0
+    assert yukle.temizle(d, _Durum({})) == 0  # ikinci kez dokunmaz
+
+
+def test_temizlik_kesiti_yuklenmemis_ise_dokunmaz(tmp_path):
+    d = _bitmis_is(tmp_path, kesit_yuklu=False)
+    assert yukle.temizle(d, _Durum({"V1": "processed"})) == 0
+    assert (d / "kesit1" / "kesit.mp4").exists()

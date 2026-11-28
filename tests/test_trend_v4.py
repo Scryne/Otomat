@@ -482,6 +482,16 @@ def test_sayi_kapisi_tirnaga_yapisik_rakami_sayar():
     assert anlatim.kelimeler("They didn't stop.")[1] == "didn't"  # iç kesme işareti kalır
 
 
+def test_sayi_kapisi_harfe_yapisik_rakam():
+    from otomat.film import anlatim
+
+    metin = "Stefan Bradl, a rival from the Moto2 years, weighed in on the loss to a MotoGP now."
+    duyulan = "Stefan Bradle, a rival from the Moto 2 years, weighed in on the loss to a Moto GP now."
+    assert anlatim.sayilar(metin) == anlatim.sayilar(duyulan) == ["2"]
+    assert anlatim.fark(metin, duyulan) < 0.3
+    assert anlatim.sayilar("He won 21st place in 1999.") == ["1999", "21"]
+
+
 def test_yasak_kalip_ters_cevirme_ve_butun_hikaye():
     for m in ("It's the other way round.", "He's the whole story in one seat.", "it was actually the other way around"):
         assert any(r.search(m.lower()) for r in senaryo.YASAK_KALIP), m

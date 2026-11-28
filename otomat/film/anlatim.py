@@ -131,6 +131,9 @@ def kelimeler(s: str) -> list[str]:
     birim = {"£": "pounds", "$": "dollars", "€": "euros"}
     s = re.sub(r"([£$€])(\d+(?:\.\d+)?)m\b", lambda m: f"{m[2]} million {birim[m[1]]}", s)
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode().lower().replace("-", " ")
+    # harfe yapışık rakam ayrılır: senaryo "Moto2", Whisper "Moto 2" yazıyor; doğru okunmuş parça üç denemede de
+    # reddedildi ve otomatik koşu durdu (11-28 Márquez)
+    s = re.sub(r"(?<=[a-z])(?=\d)", " ", s)
     # senaryo "35 lbs", ses "35 pounds" der (soylenis açar): iki taraf aynı birime iner
     s = re.sub(r"(?<=\d)\s?(lbs|lb|kg|km/h|km|mph|ft)\b", lambda m: " " + BIRIMLER[m[1]], s)
     s = re.sub(r"\bdouble oh seven\b|\b00 7\b", "007", s)
